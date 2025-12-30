@@ -61,6 +61,16 @@ export class ToastManager {
     }
 
     /**
+     * Escape HTML to prevent XSS
+     */
+    escapeHtml(str) {
+        if (typeof str !== 'string') return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    /**
      * Show a toast notification
      */
     show(message, options = {}) {
@@ -70,16 +80,16 @@ export class ToastManager {
 
         if (this.toasts.length >= this.maxToasts) {
             const oldest = this.toasts.shift();
-            if (oldest && oldest.element) {
-                oldest.element.remove();
+            if (oldest) {
+                this.removeToast(oldest);
             }
         }
 
         const toast = document.createElement('div');
         toast.className = `toast ${config.class}`;
         toast.innerHTML = `
-            <span class="toast-icon">${options.icon || config.icon}</span>
-            <span class="toast-message">${message}</span>
+            <span class="toast-icon">${this.escapeHtml(options.icon || config.icon)}</span>
+            <span class="toast-message">${this.escapeHtml(message)}</span>
         `;
 
         this.container.appendChild(toast);
@@ -106,6 +116,7 @@ export class ToastManager {
     removeToast(toastData) {
         if (toastData.timeout) {
             clearTimeout(toastData.timeout);
+            toastData.timeout = null;
         }
 
         const index = this.toasts.indexOf(toastData);
@@ -116,7 +127,9 @@ export class ToastManager {
         if (toastData.element) {
             toastData.element.style.animation = 'toast-out 0.3s ease-out forwards';
             setTimeout(() => {
-                toastData.element.remove();
+                if (toastData.element && toastData.element.parentNode) {
+                    toastData.element.remove();
+                }
             }, 300);
         }
     }
@@ -153,10 +166,22 @@ export class ToastManager {
      * Clear all toasts
      */
     clear() {
-        for (const toast of this.toasts) {
+        for (const toast of [...this.toasts]) {
             this.removeToast(toast);
         }
         this.toasts = [];
+    }
+
+    /**
+     * Cleanup all resources
+     */
+    cleanup() {
+        this.clear();
+
+        if (this.container && this.container.parentNode) {
+            this.container.remove();
+        }
+        this.container = null;
     }
 }
 
@@ -168,4 +193,14 @@ export function getToastManager(options) {
         toastManagerInstance = new ToastManager(options);
     }
     return toastManagerInstance;
+}
+
+/**
+ * Cleanup toast resources
+ */
+export function cleanupToasts() {
+    if (toastManagerInstance) {
+        toastManagerInstance.cleanup();
+        toastManagerInstance = null;
+    }
 }

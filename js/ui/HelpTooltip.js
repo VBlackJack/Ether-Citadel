@@ -12,13 +12,41 @@ export class HelpTooltipManager {
         this.game = game;
         this.activeTooltip = null;
         this.tooltips = new Map();
+        this._boundHover = null;
+        this._boundMouseOut = null;
+        this._boundClick = null;
         this.init();
     }
 
     init() {
-        document.addEventListener('mouseover', (e) => this.handleHover(e));
-        document.addEventListener('mouseout', (e) => this.handleMouseOut(e));
-        document.addEventListener('click', (e) => this.handleClick(e));
+        this._boundHover = (e) => this.handleHover(e);
+        this._boundMouseOut = (e) => this.handleMouseOut(e);
+        this._boundClick = (e) => this.handleClick(e);
+
+        document.addEventListener('mouseover', this._boundHover);
+        document.addEventListener('mouseout', this._boundMouseOut);
+        document.addEventListener('click', this._boundClick);
+    }
+
+    /**
+     * Cleanup all event listeners
+     */
+    cleanup() {
+        if (this._boundHover) {
+            document.removeEventListener('mouseover', this._boundHover);
+            this._boundHover = null;
+        }
+        if (this._boundMouseOut) {
+            document.removeEventListener('mouseout', this._boundMouseOut);
+            this._boundMouseOut = null;
+        }
+        if (this._boundClick) {
+            document.removeEventListener('click', this._boundClick);
+            this._boundClick = null;
+        }
+
+        this.hideTooltip();
+        this.tooltips.clear();
     }
 
     /**
@@ -65,6 +93,16 @@ export class HelpTooltipManager {
         }
     }
 
+    /**
+     * Escape HTML to prevent XSS
+     */
+    escapeHtml(str) {
+        if (typeof str !== 'string') return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
     showTooltip(key, anchor) {
         const config = this.tooltips.get(key);
         if (!config) return;
@@ -74,19 +112,19 @@ export class HelpTooltipManager {
         const tooltip = document.createElement('div');
         tooltip.className = 'help-tooltip';
 
-        const title = config.titleKey && this.game
+        const title = config.titleKey && this.game?.t
             ? this.game.t(config.titleKey)
             : config.title;
 
-        const content = config.contentKey && this.game
+        const content = config.contentKey && this.game?.t
             ? this.game.t(config.contentKey)
             : config.content;
 
         let tipsHtml = '';
         if (config.tips.length > 0) {
             const tipsItems = config.tips.map(tip => {
-                const tipText = tip.key && this.game ? this.game.t(tip.key) : tip.text;
-                return `<div class="help-tooltip-tip"><span class="help-tooltip-tip-icon">💡</span>${tipText}</div>`;
+                const tipText = tip.key && this.game?.t ? this.game.t(tip.key) : tip.text;
+                return `<div class="help-tooltip-tip"><span class="help-tooltip-tip-icon">💡</span>${this.escapeHtml(tipText)}</div>`;
             }).join('');
 
             tipsHtml = `<div class="help-tooltip-tips">${tipsItems}</div>`;
@@ -94,10 +132,10 @@ export class HelpTooltipManager {
 
         tooltip.innerHTML = `
             <div class="help-tooltip-title">
-                <span class="help-tooltip-title-icon">${config.icon}</span>
-                ${title}
+                <span class="help-tooltip-title-icon">${this.escapeHtml(config.icon)}</span>
+                ${this.escapeHtml(title)}
             </div>
-            <div class="help-tooltip-content">${content}</div>
+            <div class="help-tooltip-content">${this.escapeHtml(content)}</div>
             ${tipsHtml}
         `;
 
@@ -224,4 +262,14 @@ export function getHelpTooltipManager(game) {
         helpTooltipInstance.registerAll(HelpTooltipManager.getDefaultTooltips());
     }
     return helpTooltipInstance;
+}
+
+/**
+ * Cleanup help tooltip resources
+ */
+export function cleanupHelpTooltips() {
+    if (helpTooltipInstance) {
+        helpTooltipInstance.cleanup();
+        helpTooltipInstance = null;
+    }
 }

@@ -3,6 +3,37 @@
  * UI Systems Index
  */
 
-export { ModalManager, DialogHelper, getModalManager, getDialogHelper, MODAL_COLORS } from './Modal.js';
-export { ToastManager, getToastManager } from './Toast.js';
-export { HelpTooltipManager, getHelpTooltipManager } from './HelpTooltip.js';
+export {
+    ModalManager,
+    DialogHelper,
+    getModalManager,
+    getDialogHelper,
+    cleanupModals,
+    MODAL_COLORS,
+    DIALOG_I18N_KEYS
+} from './Modal.js';
+
+export {
+    ToastManager,
+    getToastManager,
+    cleanupToasts
+} from './Toast.js';
+
+export {
+    HelpTooltipManager,
+    getHelpTooltipManager,
+    cleanupHelpTooltips
+} from './HelpTooltip.js';
+
+import { cleanupModals } from './Modal.js';
+import { cleanupToasts } from './Toast.js';
+import { cleanupHelpTooltips } from './HelpTooltip.js';
+
+/**
+ * Cleanup all UI resources
+ */
+export function cleanupAllUI() {
+    cleanupModals();
+    cleanupToasts();
+    cleanupHelpTooltips();
+}

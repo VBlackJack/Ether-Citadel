@@ -6175,7 +6175,10 @@ class Game {
         if (this.prestige?.autoPrestige && this.prestige.canPrestige() && this.wave >= this.prestige.autoPrestigeWave) {
             document.getElementById('auto-retry-timer').classList.remove('hidden');
             document.getElementById('retry-countdown').innerText = 'PP';
-            if (this.retryTimeoutId) clearInterval(this.retryTimeoutId);
+            if (this.retryTimeoutId) {
+                clearTimeout(this.retryTimeoutId);
+                clearInterval(this.retryTimeoutId);
+            }
             this.retryTimeoutId = setTimeout(() => {
                 this.prestige.doPrestige();
             }, 1500);
@@ -6186,7 +6189,10 @@ class Game {
             document.getElementById('auto-retry-timer').classList.remove('hidden');
             let countdown = 3;
             document.getElementById('retry-countdown').innerText = countdown;
-            if (this.retryTimeoutId) clearInterval(this.retryTimeoutId);
+            if (this.retryTimeoutId) {
+                clearTimeout(this.retryTimeoutId);
+                clearInterval(this.retryTimeoutId);
+            }
             this.retryTimeoutId = setInterval(() => {
                 countdown--;
                 document.getElementById('retry-countdown').innerText = countdown;
@@ -6201,7 +6207,10 @@ class Game {
     }
 
     manualRestart() {
-        if (this.retryTimeoutId) clearInterval(this.retryTimeoutId);
+        if (this.retryTimeoutId) {
+            clearTimeout(this.retryTimeoutId);
+            clearInterval(this.retryTimeoutId);
+        }
         this.restart(false);
     }
 

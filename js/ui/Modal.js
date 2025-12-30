@@ -4,6 +4,16 @@
  */
 
 /**
+ * Default i18n keys for dialog buttons
+ */
+export const DIALOG_I18N_KEYS = {
+    confirm: 'dialog.confirm',
+    cancel: 'dialog.cancel',
+    ok: 'dialog.ok',
+    notice: 'dialog.notice'
+};
+
+/**
  * Modal configuration and templates
  */
 export const MODAL_COLORS = {
@@ -21,11 +31,20 @@ export const MODAL_COLORS = {
  * Modal Manager - Handles creation and management of modal dialogs
  */
 export class ModalManager {
-    constructor() {
+    constructor(translator = null) {
         this.modals = new Map();
         this.activeModal = null;
         this.container = null;
+        this.t = translator || ((key) => key);
+        this._boundKeyHandler = null;
         this.init();
+    }
+
+    /**
+     * Set translator function
+     */
+    setTranslator(translator) {
+        this.t = translator;
     }
 
     init() {
@@ -37,11 +56,12 @@ export class ModalManager {
             document.body.appendChild(this.container);
         }
 
-        document.addEventListener('keydown', (e) => {
+        this._boundKeyHandler = (e) => {
             if (e.key === 'Escape' && this.activeModal) {
                 this.hide(this.activeModal);
             }
-        });
+        };
+        document.addEventListener('keydown', this._boundKeyHandler);
     }
 
     /**
@@ -89,12 +109,13 @@ export class ModalManager {
             }
         };
 
+        const titleText = config.titleKey ? this.t(config.titleKey) : config.title;
         const titleHtml = config.titleKey
-            ? `<span data-i18n="${config.titleKey}">${config.title}</span>`
-            : config.title;
+            ? `<span data-i18n="${config.titleKey}">${titleText}</span>`
+            : this.escapeHtml(config.title);
 
         const helpHtml = config.helpKey
-            ? `<span class="help-icon" data-help="${config.helpKey}">?</span>`
+            ? `<span class="help-icon" data-help="${this.escapeHtml(config.helpKey)}">?</span>`
             : '';
 
         modal.innerHTML = `
@@ -116,6 +137,16 @@ export class ModalManager {
 
         config.element = modal;
         return modal;
+    }
+
+    /**
+     * Escape HTML to prevent XSS
+     */
+    escapeHtml(str) {
+        if (typeof str !== 'string') return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
     }
 
     /**
@@ -265,6 +296,27 @@ export class ModalManager {
         }
         this.modals.delete(id);
     }
+
+    /**
+     * Cleanup all resources
+     */
+    cleanup() {
+        if (this._boundKeyHandler) {
+            document.removeEventListener('keydown', this._boundKeyHandler);
+            this._boundKeyHandler = null;
+        }
+
+        for (const [id] of this.modals) {
+            this.destroy(id);
+        }
+
+        if (this.container) {
+            this.container.remove();
+            this.container = null;
+        }
+
+        this.activeModal = null;
+    }
 }
 
 /**
@@ -278,6 +330,7 @@ export class DialogHelper {
 
     registerDialogs() {
         this.modalManager.register('confirm', {
+            titleKey: DIALOG_I18N_KEYS.confirm,
             title: 'Confirm',
             color: 'warning',
             size: 'sm',
@@ -285,6 +338,7 @@ export class DialogHelper {
         });
 
         this.modalManager.register('alert', {
+            titleKey: DIALOG_I18N_KEYS.notice,
             title: 'Notice',
             color: 'info',
             size: 'sm',
@@ -297,20 +351,23 @@ export class DialogHelper {
      */
     confirm(message, options = {}) {
         return new Promise((resolve) => {
-            const title = options.title || 'Confirm';
-            const confirmText = options.confirmText || 'Confirm';
-            const cancelText = options.cancelText || 'Cancel';
+            const t = this.modalManager.t;
+            const title = options.title || t(DIALOG_I18N_KEYS.confirm);
+            const confirmText = options.confirmText || t(DIALOG_I18N_KEYS.confirm);
+            const cancelText = options.cancelText || t(DIALOG_I18N_KEYS.cancel);
             const danger = options.danger || false;
+
+            const escapedMessage = this.modalManager.escapeHtml(message);
 
             const content = `
                 <div class="text-center">
-                    <p class="text-slate-300 mb-6">${message}</p>
+                    <p class="text-slate-300 mb-6">${escapedMessage}</p>
                     <div class="flex gap-4 justify-center">
                         <button class="dialog-cancel px-6 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded font-bold transition">
-                            ${cancelText}
+                            ${this.modalManager.escapeHtml(cancelText)}
                         </button>
                         <button class="dialog-confirm px-6 py-2 ${danger ? 'bg-red-600 hover:bg-red-500' : 'bg-blue-600 hover:bg-blue-500'} text-white rounded font-bold transition">
-                            ${confirmText}
+                            ${this.modalManager.escapeHtml(confirmText)}
                         </button>
                     </div>
                 </div>
@@ -327,8 +384,13 @@ export class DialogHelper {
             this.modalManager.show('confirm');
 
             const contentEl = this.modalManager.getContent('confirm');
-            const confirmBtn = contentEl.querySelector('.dialog-confirm');
-            const cancelBtn = contentEl.querySelector('.dialog-cancel');
+            const confirmBtn = contentEl?.querySelector('.dialog-confirm');
+            const cancelBtn = contentEl?.querySelector('.dialog-cancel');
+
+            if (!confirmBtn || !cancelBtn) {
+                resolve(false);
+                return;
+            }
 
             const cleanup = () => {
                 this.modalManager.hide('confirm');
@@ -351,14 +413,17 @@ export class DialogHelper {
      */
     alert(message, options = {}) {
         return new Promise((resolve) => {
-            const title = options.title || 'Notice';
-            const buttonText = options.buttonText || 'OK';
+            const t = this.modalManager.t;
+            const title = options.title || t(DIALOG_I18N_KEYS.notice);
+            const buttonText = options.buttonText || t(DIALOG_I18N_KEYS.ok);
+
+            const escapedMessage = this.modalManager.escapeHtml(message);
 
             const content = `
                 <div class="text-center">
-                    <p class="text-slate-300 mb-6">${message}</p>
+                    <p class="text-slate-300 mb-6">${escapedMessage}</p>
                     <button class="dialog-ok px-8 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded font-bold transition">
-                        ${buttonText}
+                        ${this.modalManager.escapeHtml(buttonText)}
                     </button>
                 </div>
             `;
@@ -374,7 +439,12 @@ export class DialogHelper {
             this.modalManager.show('alert');
 
             const contentEl = this.modalManager.getContent('alert');
-            const okBtn = contentEl.querySelector('.dialog-ok');
+            const okBtn = contentEl?.querySelector('.dialog-ok');
+
+            if (!okBtn) {
+                resolve();
+                return;
+            }
 
             okBtn.onclick = () => {
                 this.modalManager.hide('alert');
@@ -388,9 +458,11 @@ export class DialogHelper {
 let modalManagerInstance = null;
 let dialogHelperInstance = null;
 
-export function getModalManager() {
+export function getModalManager(translator = null) {
     if (!modalManagerInstance) {
-        modalManagerInstance = new ModalManager();
+        modalManagerInstance = new ModalManager(translator);
+    } else if (translator) {
+        modalManagerInstance.setTranslator(translator);
     }
     return modalManagerInstance;
 }
@@ -400,4 +472,15 @@ export function getDialogHelper() {
         dialogHelperInstance = new DialogHelper(getModalManager());
     }
     return dialogHelperInstance;
+}
+
+/**
+ * Cleanup all modal resources
+ */
+export function cleanupModals() {
+    if (modalManagerInstance) {
+        modalManagerInstance.cleanup();
+        modalManagerInstance = null;
+    }
+    dialogHelperInstance = null;
 }
