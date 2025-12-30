@@ -122,8 +122,9 @@ export function calculateExponentialCost(baseCost, costMultiplier, level) {
 export function calculateBulkPurchase(gold, baseCost, costMultiplier, currentLevel, maxLevel = null) {
     let count = 0;
     let totalCost = 0;
+    const MAX_ITERATIONS = 10000;
 
-    while (true) {
+    for (let i = 0; i < MAX_ITERATIONS; i++) {
         const nextCost = calculateExponentialCost(baseCost, costMultiplier, currentLevel + count);
 
         if (gold < totalCost + nextCost && count > 0) break;

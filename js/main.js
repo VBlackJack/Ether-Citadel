@@ -64,6 +64,28 @@ import {
 import { getEventDelegation } from './ui/EventDelegation.js';
 import { getErrorHandler, logError } from './utils/ErrorHandler.js';
 
+/**
+ * Sanitize color values to prevent CSS injection
+ * @param {string} color - Color value to sanitize
+ * @returns {string} Safe color value or fallback
+ */
+function sanitizeColor(color) {
+    if (typeof color !== 'string') return '#888';
+    // Allow hex colors, rgb/rgba, hsl/hsla, and named colors
+    const hexPattern = /^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/;
+    const rgbPattern = /^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*[\d.]+)?\s*\)$/;
+    const hslPattern = /^hsla?\(\s*\d{1,3}\s*,\s*\d{1,3}%\s*,\s*\d{1,3}%\s*(,\s*[\d.]+)?\s*\)$/;
+    const namedColors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'white', 'black', 'gray', 'grey', 'cyan', 'magenta'];
+
+    if (hexPattern.test(color) || rgbPattern.test(color) || hslPattern.test(color)) {
+        return color;
+    }
+    if (namedColors.includes(color.toLowerCase())) {
+        return color;
+    }
+    return '#888';
+}
+
 class SoundManager {
     constructor() {
         this.ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1316,7 +1338,7 @@ class StatsManager {
             const div = document.createElement('div');
             div.className = `p-3 rounded border flex items-center gap-3 ${seen ? 'bg-slate-700 border-blue-500' : 'bg-slate-800 border-slate-700 opacity-50'}`;
             div.innerHTML = seen
-                ? `<div class="w-8 h-8 rounded-full" style="background:${e.color}"></div><div><div class="font-bold text-white">${t(e.nameKey)}</div><div class="text-xs text-slate-300">${t(e.descKey)}</div><div class="text-[10px] text-slate-400 mt-1">${t('modals.codex.hpMult', { value: e.hpMult })} • ${t('modals.codex.speedMult', { value: e.speedMult })}</div></div>`
+                ? `<div class="w-8 h-8 rounded-full" style="background:${sanitizeColor(e.color)}"></div><div><div class="font-bold text-white">${t(e.nameKey)}</div><div class="text-xs text-slate-300">${t(e.descKey)}</div><div class="text-[10px] text-slate-400 mt-1">${t('modals.codex.hpMult', { value: e.hpMult })} • ${t('modals.codex.speedMult', { value: e.speedMult })}</div></div>`
                 : `<div class="w-8 h-8 rounded-full bg-black"></div><div><div class="font-bold text-slate-500">${t('modals.codex.unknown')}</div><div class="text-xs text-slate-600">${t('modals.codex.unknownDesc')}</div></div>`;
             cGrid.appendChild(div);
         }
@@ -4581,12 +4603,12 @@ class Game {
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <span class="text-2xl">${resource.icon}</span>
-                        <span class="font-bold" style="color: ${resource.color}">${t(resource.nameKey)}</span>
+                        <span class="font-bold" style="color: ${sanitizeColor(resource.color)}">${t(resource.nameKey)}</span>
                     </div>
                     <span class="text-white font-mono">${formatNumber(amount)}</span>
                 </div>
                 <div class="h-2 bg-slate-900 rounded-full overflow-hidden">
-                    <div class="h-full transition-all duration-200" style="width: ${isMining ? progress * 100 : 0}%; background: ${resource.color}"></div>
+                    <div class="h-full transition-all duration-200" style="width: ${isMining ? progress * 100 : 0}%; background: ${sanitizeColor(resource.color)}"></div>
                 </div>
                 <button class="mining-btn text-xs py-1 px-2 rounded font-bold ${isMining ? 'bg-red-600 hover:bg-red-500' : 'bg-cyan-600 hover:bg-cyan-500'} text-white" data-resource="${resource.id}">
                     ${isMining ? t('mining.stop') : t('mining.start')}

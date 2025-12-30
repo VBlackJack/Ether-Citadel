@@ -146,29 +146,33 @@ export class HelpTooltipManager {
     }
 
     positionTooltip(tooltip, anchor) {
-        if (!anchor.isConnected) return;
+        try {
+            if (!anchor.isConnected) return;
 
-        const rect = anchor.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) return;
+            const rect = anchor.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return;
 
-        const tooltipRect = tooltip.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
 
-        let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
-        let top = rect.bottom + 8;
+            let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+            let top = rect.bottom + 8;
 
-        if (left < 10) left = 10;
-        if (left + tooltipRect.width > window.innerWidth - 10) {
-            left = window.innerWidth - tooltipRect.width - 10;
+            if (left < 10) left = 10;
+            if (left + tooltipRect.width > window.innerWidth - 10) {
+                left = window.innerWidth - tooltipRect.width - 10;
+            }
+
+            if (top + tooltipRect.height > window.innerHeight - 10) {
+                top = rect.top - tooltipRect.height - 8;
+            }
+
+            top = Math.max(10, top);
+
+            tooltip.style.left = `${left}px`;
+            tooltip.style.top = `${top}px`;
+        } catch {
+            this.hideTooltip();
         }
-
-        if (top + tooltipRect.height > window.innerHeight - 10) {
-            top = rect.top - tooltipRect.height - 8;
-        }
-
-        top = Math.max(10, top);
-
-        tooltip.style.left = `${left}px`;
-        tooltip.style.top = `${top}px`;
     }
 
     hideTooltip() {

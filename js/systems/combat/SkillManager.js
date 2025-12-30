@@ -87,7 +87,7 @@ export class SkillManager {
         const game = this.game;
         if (!game || game.isGameOver) return;
         const s = this.skills[id];
-        const maxCd = s.cooldown * (1 - (game.relicMults.cooldown || 0));
+        const maxCd = s.cooldown * (1 - (game.relicMults?.cooldown || 0));
         if (s.cdTime <= 0) {
             s.activeTime = s.duration;
             s.cdTime = maxCd;
@@ -132,14 +132,14 @@ export class SkillManager {
                 }
             }
             const btn = this.getElement(`cd-${key}`);
-            const maxCd = s.cooldown * (1 - (game.relicMults.cooldown || 0));
+            const maxCd = s.cooldown * (1 - (game.relicMults?.cooldown || 0));
             if (btn) btn.style.height = `${Math.max(0, s.cdTime / maxCd) * 100}%`;
 
             if (this.autoSkills[key] && s.cdTime <= 0 && game.enemies.length > 0 && !game.isGameOver) {
-                const canAuto = (key === 'overdrive' && game.metaUpgrades.getEffectValue('autoSkillQ')) ||
-                               (key === 'nuke' && game.metaUpgrades.getEffectValue('autoSkillW')) ||
-                               (key === 'blackhole' && game.metaUpgrades.getEffectValue('autoSkillE')) ||
-                               game.relicMults.autoSkill;
+                const canAuto = (key === 'overdrive' && game.metaUpgrades?.getEffectValue?.('autoSkillQ')) ||
+                               (key === 'nuke' && game.metaUpgrades?.getEffectValue?.('autoSkillW')) ||
+                               (key === 'blackhole' && game.metaUpgrades?.getEffectValue?.('autoSkillE')) ||
+                               (game.relicMults?.autoSkill || false);
                 if (canAuto) {
                     this.activate(key);
                 }

@@ -7,6 +7,14 @@
  * Event Delegation Manager
  * Centralizes UI event handling to avoid inline onclick handlers
  */
+/**
+ * Safely parse integer with validation
+ */
+function safeParseInt(value, defaultValue = 0) {
+    const parsed = parseInt(value, 10);
+    return Number.isFinite(parsed) ? parsed : defaultValue;
+}
+
 export class EventDelegationManager {
     constructor(game) {
         this.game = game;
@@ -62,23 +70,23 @@ export class EventDelegationManager {
 
         // Preset actions
         this.register('preset.save', (params) => {
-            this.game.buildPresets.savePreset(parseInt(params.id, 10));
+            this.game.buildPresets.savePreset(safeParseInt(params.id));
             this.game.renderPresetsUI();
         });
 
         this.register('preset.load', (params) => {
-            this.game.buildPresets.loadPreset(parseInt(params.id, 10));
+            this.game.buildPresets.loadPreset(safeParseInt(params.id));
             this.game.renderPresetsUI();
         });
 
         this.register('preset.delete', (params) => {
-            this.game.buildPresets.deletePreset(parseInt(params.id, 10));
+            this.game.buildPresets.deletePreset(safeParseInt(params.id));
             this.game.renderPresetsUI();
         });
 
         // Turret slots actions
         this.register('turretSlot.remove', (params) => {
-            this.game.turretSlots.removeTurret(parseInt(params.id, 10));
+            this.game.turretSlots.removeTurret(safeParseInt(params.id));
             this.game.renderTurretSlotsUI();
         });
 
@@ -89,7 +97,7 @@ export class EventDelegationManager {
 
         // Dread level actions
         this.register('dread.setLevel', (params) => {
-            this.game.prestige.setDreadLevel(parseInt(params.level, 10));
+            this.game.prestige.setDreadLevel(safeParseInt(params.level));
         });
 
         // Awakening actions
