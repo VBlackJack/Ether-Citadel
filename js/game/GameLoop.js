@@ -150,11 +150,17 @@ export class GameLoopManager {
 
         g.gameTime += dt;
 
-        // Update wave spawning
+        // Update wave spawning with burst support
         if (g.waveInProgress && g.enemiesToSpawn > 0) {
             g.spawnTimer -= dt;
             if (g.spawnTimer <= 0) {
-                g.spawnEnemy();
+                // Spawn multiple enemies per burst for late-game pressure
+                const burst = g.getSpawnBurst ? g.getSpawnBurst() : 1;
+                const toSpawn = Math.min(burst, g.enemiesToSpawn);
+                for (let i = 0; i < toSpawn; i++) {
+                    g.spawnEnemy();
+                    g.enemiesToSpawn--;
+                }
                 g.spawnTimer = g.getSpawnInterval();
             }
         }

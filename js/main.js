@@ -6196,6 +6196,32 @@ class Game {
         }
     }
 
+    /**
+     * Get spawn interval in milliseconds
+     * Decreases with wave progression for faster spawns
+     */
+    getSpawnInterval() {
+        const baseInterval = CONFIG.enemySpawnRate / (1 + this.wave * 0.05);
+        // After wave 50, spawn rate accelerates further
+        if (this.wave > 50) {
+            const lateGameFactor = Math.pow(0.98, this.wave - 50); // -2% per wave
+            return Math.max(200, baseInterval * lateGameFactor); // Min 200ms between spawns
+        }
+        return baseInterval;
+    }
+
+    /**
+     * Get number of enemies to spawn per burst
+     * Increases after wave 50 for more simultaneous enemies
+     */
+    getSpawnBurst() {
+        if (this.isBossWave) return 1;
+        if (this.wave <= 50) return 1;
+        // +1 enemy per burst every 10 waves after 50
+        // Wave 60: 2, Wave 70: 3, Wave 80: 4, etc.
+        return 1 + Math.floor((this.wave - 50) / 10);
+    }
+
     findTarget(sourceX, sourceY, range) {
         let nearest = null;
         let minDist = Infinity;
@@ -6324,13 +6350,8 @@ class Game {
             }
         }
 
-        if (this.enemiesToSpawn > 0) {
-            if (this.gameTime - this.spawnTimer > CONFIG.enemySpawnRate / (1 + this.wave * 0.05)) {
-                this.spawnEnemy();
-                this.enemiesToSpawn--;
-                this.spawnTimer = this.gameTime;
-            }
-        } else if (this.enemies.length === 0 && this.waveInProgress) {
+        // Enemy spawning is now handled by GameLoop.js with burst support
+        if (this.enemiesToSpawn <= 0 && this.enemies.length === 0 && this.waveInProgress) {
             this.waveInProgress = false;
             this.wave++;
             // Repair all turrets at wave end
