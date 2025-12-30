@@ -372,6 +372,10 @@ class Projectile {
         ctx.fill();
         ctx.shadowBlur = 0;
     }
+
+    static create(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props) {
+        return new Projectile(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props);
+    }
 }
 
 class Turret {
@@ -3352,6 +3356,10 @@ class SynergyManager {
             ctx.fillText(`${t(syn.nameKey)}`, 15, this.game.height - 30 + i * 12);
         });
         ctx.restore();
+    }
+
+    getActiveSynergies() {
+        return this.activeSynergies;
     }
 
     getSaveData() { return { active: this.activeSynergies.map(s => s.id) }; }
@@ -6558,7 +6566,8 @@ function initHelpTooltips() {
     let activeTooltip = null;
 
     // Use event delegation for dynamic elements
-    document.addEventListener('mouseenter', (e) => {
+    document.addEventListener('mouseover', (e) => {
+        if (!e.target || !e.target.closest) return;
         const icon = e.target.closest('.help-icon[data-help]');
         if (!icon) return;
 
