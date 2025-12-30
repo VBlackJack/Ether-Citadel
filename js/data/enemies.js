@@ -44,14 +44,14 @@ export const BOSS_MECHANICS = {
  * Boss abilities
  */
 export const BOSS_ABILITIES = {
-    summonMinions: { nameKey: 'bossAbility.summonMinions', count: 5, type: 'NORMAL' },
-    summonElites: { nameKey: 'bossAbility.summonElites', count: 2, type: 'TANK' },
-    enrage: { nameKey: 'bossAbility.enrage', speedMult: 2, damageMult: 1.5, duration: 5000 },
-    shieldBurst: { nameKey: 'bossAbility.shieldBurst', shieldAmount: 0.3 },
-    barrier: { nameKey: 'bossAbility.barrier', duration: 3000, invulnerable: true },
-    deathSpiral: { nameKey: 'bossAbility.deathSpiral', damage: 50, radius: 200 },
-    heal: { nameKey: 'bossAbility.heal', amount: 0.1 },
-    meteorStorm: { nameKey: 'bossAbility.meteorStorm', count: 10, damage: 100 }
+    summonMinions: { nameKey: 'bossAbility.summonMinions', count: 5, type: 'NORMAL', cooldown: 10000 },
+    summonElites: { nameKey: 'bossAbility.summonElites', count: 2, type: 'TANK', cooldown: 15000 },
+    enrage: { nameKey: 'bossAbility.enrage', speedMult: 2, damageMult: 1.5, duration: 5000, cooldown: 20000 },
+    shieldBurst: { nameKey: 'bossAbility.shieldBurst', shieldAmount: 0.3, cooldown: 12000 },
+    barrier: { nameKey: 'bossAbility.barrier', duration: 3000, invulnerable: true, cooldown: 15000 },
+    deathSpiral: { nameKey: 'bossAbility.deathSpiral', damage: 50, radius: 200, cooldown: 8000 },
+    heal: { nameKey: 'bossAbility.heal', amount: 0.1, cooldown: 12000 },
+    meteorStorm: { nameKey: 'bossAbility.meteorStorm', count: 10, damage: 100, cooldown: 25000 }
 };
 
 /**

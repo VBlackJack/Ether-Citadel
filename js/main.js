@@ -6160,6 +6160,7 @@ class Game {
         this.isBossWave = (this.wave % 10 === 0);
         this.isRushBonus = false;
         this.enemiesToSpawn = this.isBossWave ? 1 : (5 + Math.floor(this.wave * 3));
+        this.spawnTimer = 0;
         if (this.activeChallenge && this.activeChallenge.id === 'horde') this.enemiesToSpawn *= 3;
         if (this.isBossWave) {
             const notif = document.getElementById('boss-notification');

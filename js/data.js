@@ -229,7 +229,7 @@ export const ACHIEVEMENTS_DB = [
  * @type {Object<string, {color: string, hpMult: number, speedMult: number, scale: number, nameKey: string, descKey: string}>}
  */
 export const ENEMY_TYPES = {
-    NORMAL: { color: 'hsl(0, 70%, 60%)', hpMult: 1, speedMult: 1, scale: 1, nameKey: 'enemies.NORMAL.name', descKey: 'enemies.NORMAL.desc' },
+    NORMAL: { color: '#d94949', hpMult: 1, speedMult: 1, scale: 1, nameKey: 'enemies.NORMAL.name', descKey: 'enemies.NORMAL.desc' },
     SPEEDY: { color: '#fbbf24', hpMult: 0.6, speedMult: 1.8, scale: 0.8, nameKey: 'enemies.SPEEDY.name', descKey: 'enemies.SPEEDY.desc' },
     TANK: { color: '#64748b', hpMult: 2.5, speedMult: 0.6, scale: 1.4, nameKey: 'enemies.TANK.name', descKey: 'enemies.TANK.desc' },
     BOSS: { color: '#ef4444', hpMult: 12, speedMult: 0.4, scale: 2.5, nameKey: 'enemies.BOSS.name', descKey: 'enemies.BOSS.desc' },
@@ -251,9 +251,9 @@ export const ENEMY_TYPES = {
  * @type {Array<{id: string, nameKey: string, color: string, icon: string, duration: number, descKey: string, instant?: boolean}>}
  */
 export const RUNE_TYPES = [
-    { id: 'rage', nameKey: 'runes.rage.name', color: '#ef4444', icon: '\ud83d\udd34', duration: 10000, descKey: 'runes.rage.desc' },
-    { id: 'midas', nameKey: 'runes.midas.name', color: '#fbbf24', icon: '\ud83d\udfe1', duration: 10000, descKey: 'runes.midas.desc' },
-    { id: 'heal', nameKey: 'runes.heal.name', color: '#4ade80', icon: '\ud83d\udfe2', duration: 0, descKey: 'runes.heal.desc', instant: true }
+    { id: 'rage', nameKey: 'runes.rage.name', color: '#ef4444', icon: '🔴', duration: 10000, descKey: 'runes.rage.desc' },
+    { id: 'midas', nameKey: 'runes.midas.name', color: '#fbbf24', icon: '🟡', duration: 10000, descKey: 'runes.midas.desc' },
+    { id: 'heal', nameKey: 'runes.heal.name', color: '#4ade80', icon: '🟢', duration: 0, descKey: 'runes.heal.desc', instant: true }
 ];
 
 /**
@@ -744,11 +744,11 @@ export const SOUND_EFFECTS = [
  * Build presets structure
  */
 export const BUILD_PRESET_SLOTS = [
-    { id: 0, name: 'Preset 1', icon: '1️⃣' },
-    { id: 1, name: 'Preset 2', icon: '2️⃣' },
-    { id: 2, name: 'Preset 3', icon: '3️⃣' },
-    { id: 3, name: 'Preset 4', icon: '4️⃣' },
-    { id: 4, name: 'Preset 5', icon: '5️⃣' }
+    { id: 0, nameKey: 'presets.slot1.name', icon: '1️⃣' },
+    { id: 1, nameKey: 'presets.slot2.name', icon: '2️⃣' },
+    { id: 2, nameKey: 'presets.slot3.name', icon: '3️⃣' },
+    { id: 3, nameKey: 'presets.slot4.name', icon: '4️⃣' },
+    { id: 4, nameKey: 'presets.slot5.name', icon: '5️⃣' }
 ];
 
 /**
@@ -762,7 +762,7 @@ export const LEADERBOARD_CATEGORIES = [
     { id: 'bosses_defeated', nameKey: 'leaderboard.bossesDefeated', icon: '👑', sortDesc: true },
     { id: 'highest_combo', nameKey: 'leaderboard.highestCombo', icon: '🔥', sortDesc: true },
     { id: 'endless_record', nameKey: 'leaderboard.endlessRecord', icon: '♾️', sortDesc: true },
-    { id: 'boss_rush_record', nameKey: 'leaderboard.bossRushRecord', icon: '👑', sortDesc: true }
+    { id: 'boss_rush_record', nameKey: 'leaderboard.bossRushRecord', icon: '⚔️', sortDesc: true }
 ];
 
 /**

@@ -1177,5 +1177,12 @@
       "campaign": "Complete missions to earn rewards. Missions are organized by chapters with increasing difficulty.",
       "leaderboard": "Track your best scores across different categories. Compete against your own records!"
     }
+  },
+  "presets": {
+    "slot1": { "name": "Preset 1" },
+    "slot2": { "name": "Preset 2" },
+    "slot3": { "name": "Preset 3" },
+    "slot4": { "name": "Preset 4" },
+    "slot5": { "name": "Preset 5" }
   }
 }

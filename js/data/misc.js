@@ -91,11 +91,11 @@ export const SOUND_EFFECTS = [
  * Build presets structure
  */
 export const BUILD_PRESET_SLOTS = [
-    { id: 0, name: 'Preset 1', icon: '1️⃣' },
-    { id: 1, name: 'Preset 2', icon: '2️⃣' },
-    { id: 2, name: 'Preset 3', icon: '3️⃣' },
-    { id: 3, name: 'Preset 4', icon: '4️⃣' },
-    { id: 4, name: 'Preset 5', icon: '5️⃣' }
+    { id: 0, nameKey: 'presets.slot1.name', icon: '1️⃣' },
+    { id: 1, nameKey: 'presets.slot2.name', icon: '2️⃣' },
+    { id: 2, nameKey: 'presets.slot3.name', icon: '3️⃣' },
+    { id: 3, nameKey: 'presets.slot4.name', icon: '4️⃣' },
+    { id: 4, nameKey: 'presets.slot5.name', icon: '5️⃣' }
 ];
 
 /**
@@ -109,5 +109,5 @@ export const LEADERBOARD_CATEGORIES = [
     { id: 'bosses_defeated', nameKey: 'leaderboard.bossesDefeated', icon: '👑', sortDesc: true },
     { id: 'highest_combo', nameKey: 'leaderboard.highestCombo', icon: '🔥', sortDesc: true },
     { id: 'endless_record', nameKey: 'leaderboard.endlessRecord', icon: '♾️', sortDesc: true },
-    { id: 'boss_rush_record', nameKey: 'leaderboard.bossRushRecord', icon: '👑', sortDesc: true }
+    { id: 'boss_rush_record', nameKey: 'leaderboard.bossRushRecord', icon: '⚔️', sortDesc: true }
 ];
