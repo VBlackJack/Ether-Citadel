@@ -1329,18 +1329,19 @@ select:focus-visible {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     background: #334155;
     border: 1px solid #475569;
     border-radius: 50%;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     color: #94a3b8;
     cursor: help;
-    margin-left: 6px;
+    margin-left: 4px;
     transition: all 0.2s;
     flex-shrink: 0;
+    vertical-align: middle;
 }
 
 .help-icon:hover {

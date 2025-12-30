@@ -27,7 +27,7 @@
     <link rel="apple-touch-icon" href="favicon.svg">
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/styles.css?v=18">
+    <link rel="stylesheet" href="css/styles.css?v=19">
 </head>
 <body class="h-screen w-screen flex flex-col md:flex-row">
 
@@ -292,7 +292,7 @@
         <div id="relic-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="relic-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-yellow-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-yellow-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-yellow-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="modals.collection.title">Collection</span>
                         <span class="help-icon" data-help="collection">?</span>
                     </h2>
@@ -306,7 +306,7 @@
         <div id="codex-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-2xl bg-slate-800 border border-blue-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-blue-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-blue-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="modals.codex.title">Codex</span>
                         <span class="help-icon" data-help="codex">?</span>
                     </h2>
@@ -320,7 +320,7 @@
         <div id="mining-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-2xl bg-slate-800 border border-cyan-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-cyan-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-cyan-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="mining.title">Mining</span>
                         <span class="help-icon" data-help="mining">?</span>
                     </h2>
@@ -340,7 +340,7 @@
         <div id="forge-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-2xl bg-slate-800 border border-yellow-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-yellow-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-yellow-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="forge.title">Relic Forge</span>
                         <span class="help-icon" data-help="forge">?</span>
                     </h2>
@@ -357,7 +357,7 @@
         <div id="research-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-4xl bg-slate-800 border border-purple-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-purple-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-purple-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="research.title">Research Tree</span>
                         <span class="help-icon" data-help="research">?</span>
                     </h2>
@@ -376,7 +376,7 @@
         <div id="challenges-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-2xl bg-slate-800 border border-red-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-red-500 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-red-500 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="modals.challenges.title">Hardcore Mode</span>
                         <span class="help-icon" data-help="challenges">?</span>
                     </h2>
@@ -494,7 +494,7 @@
         <div id="production-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-2xl bg-slate-800 border border-orange-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-orange-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-orange-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="production.title">Production</span>
                         <span class="help-icon" data-help="production">?</span>
                     </h2>
@@ -512,7 +512,7 @@
         <div id="quests-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-2xl bg-slate-800 border border-emerald-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-emerald-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-emerald-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="quests.title">Daily Quests</span>
                         <span class="help-icon" data-help="quests">?</span>
                     </h2>
@@ -532,7 +532,7 @@
         <div id="prestige-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-3xl bg-slate-800 border border-amber-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-amber-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-amber-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="prestige.title">Prestige</span>
                         <span class="help-icon" data-help="prestige">?</span>
                     </h2>
@@ -594,7 +594,7 @@
         <div id="chips-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-3xl bg-slate-800 border border-pink-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-pink-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-pink-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="chips.title">Turret Chips</span>
                         <span class="help-icon" data-help="chips">?</span>
                     </h2>
@@ -618,7 +618,7 @@
         <div id="town-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-3xl bg-slate-800 border border-teal-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-teal-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-teal-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="town.title">Town</span>
                         <span class="help-icon" data-help="town">?</span>
                     </h2>
@@ -654,7 +654,7 @@
         <div id="school-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-3xl bg-slate-800 border border-indigo-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-indigo-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-indigo-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="school.title">School</span>
                         <span class="help-icon" data-help="school">?</span>
                     </h2>
@@ -674,7 +674,7 @@
         <div id="office-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-3xl bg-slate-800 border border-lime-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-lime-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-lime-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="office.title">Office</span>
                         <span class="help-icon" data-help="office">?</span>
                     </h2>
@@ -697,7 +697,7 @@
         <div id="awakening-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-3xl bg-slate-800 border border-fuchsia-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-fuchsia-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-fuchsia-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="awakening.title">Awakening</span>
                         <span class="help-icon" data-help="awakening">?</span>
                     </h2>
@@ -721,7 +721,7 @@
         <div id="slots-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="w-full max-w-2xl bg-slate-800 border border-cyan-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-cyan-400 font-bold uppercase flex items-center gap-2">
+                    <h2 class="text-2xl text-cyan-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="slots.title">Turret Slot</span>
                         <span class="help-icon" data-help="turrets">?</span>
                     </h2>
@@ -830,6 +830,6 @@
         <div id="lab-footer" onclick="game.triggerDevSecret()" class="p-2 text-center text-xs text-slate-500 bg-slate-900 cursor-pointer select-none" data-i18n="lab.footer">Click on Runes on the ground for bonuses!</div>
     </div>
 
-<script type="module" src="js/main.js?v=18"></script>
+<script type="module" src="js/main.js?v=19"></script>
 </body>
 </html>
