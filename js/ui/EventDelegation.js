@@ -208,8 +208,8 @@ export class EventDelegationManager {
             }
         }
 
-        // Check if button is disabled
-        if (target.disabled || target.classList.contains('cursor-not-allowed')) {
+        // Check if button is disabled (only check disabled attribute, not CSS classes)
+        if (target.disabled) {
             return;
         }
 

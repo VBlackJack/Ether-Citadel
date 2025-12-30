@@ -146,7 +146,6 @@
                     <div class="menu-group-content hidden" id="menu-combat">
                         <button onclick="game.renderChipsUI(); document.getElementById('chips-modal').classList.remove('hidden')" class="menu-item">🔧 <span data-i18n="chips.title">Chips</span></button>
                         <button onclick="game.renderPresetsUI(); document.getElementById('presets-modal').classList.remove('hidden')" class="menu-item">💾 <span data-i18n="presets.title">Presets</span></button>
-                        <button id="btn-school" onclick="game.renderSchoolUI(); document.getElementById('school-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="school">🎓 <span data-i18n="school.title">School</span></button>
                     </div>
                 </div>
 
@@ -169,6 +168,7 @@
                         <span>📈</span><span data-i18n="ux.menu.progression">Progression</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-progression">
+                        <button id="btn-school" onclick="game.renderSchoolUI(); document.getElementById('school-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="school">🎓 <span data-i18n="school.title">School</span></button>
                         <button onclick="game.renderResearchUI(); document.getElementById('research-modal').classList.remove('hidden')" class="menu-item">🔬 <span data-i18n="research.title">Research</span></button>
                         <button id="btn-prestige-menu" onclick="game.renderPrestigeUI(); document.getElementById('prestige-modal').classList.remove('hidden')" class="menu-item">👑 <span data-i18n="prestige.title">Prestige</span></button>
                         <button onclick="game.renderTownUI(); document.getElementById('town-modal').classList.remove('hidden')" class="menu-item">🏰 <span data-i18n="town.title">Town</span></button>

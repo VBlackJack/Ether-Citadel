@@ -5844,13 +5844,6 @@ class Game {
             }};
         }
 
-        if (this.crystals >= 50 && this.town.level >= 3 && !localStorage.getItem('seen_intro_school')) {
-            return { text: t('ux.suggestion.trySchool') || 'Try School', action: () => {
-                this.renderSchoolUI();
-                document.getElementById('school-modal').classList.remove('hidden');
-            }};
-        }
-
         return null;
     }
 
@@ -6350,7 +6343,21 @@ class Game {
             }
         }
 
-        // Enemy spawning is now handled by GameLoop.js with burst support
+        // Enemy spawning with burst support
+        if (this.waveInProgress && this.enemiesToSpawn > 0) {
+            this.spawnTimer -= dt;
+            if (this.spawnTimer <= 0) {
+                const burst = this.getSpawnBurst();
+                const toSpawn = Math.min(burst, this.enemiesToSpawn);
+                for (let i = 0; i < toSpawn; i++) {
+                    this.spawnEnemy();
+                    this.enemiesToSpawn--;
+                }
+                this.spawnTimer = this.getSpawnInterval();
+            }
+        }
+
+        // Wave completion check
         if (this.enemiesToSpawn <= 0 && this.enemies.length === 0 && this.waveInProgress) {
             this.waveInProgress = false;
             this.wave++;
