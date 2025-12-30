@@ -50,16 +50,16 @@ export const TURRET_TIERS = {
  */
 export const DREAD_LEVELS = [
     { level: 0, nameKey: 'dread.level0', enemyMult: 1.0, rewardMult: 1.0, color: '#94a3b8' },
-    { level: 1, nameKey: 'dread.level1', enemyMult: 1.5, rewardMult: 1.3, color: '#fbbf24' },
-    { level: 2, nameKey: 'dread.level2', enemyMult: 2.5, rewardMult: 1.8, color: '#f97316' },
-    { level: 3, nameKey: 'dread.level3', enemyMult: 4.0, rewardMult: 2.5, color: '#ef4444' },
-    { level: 4, nameKey: 'dread.level4', enemyMult: 7.0, rewardMult: 4.0, color: '#dc2626' },
-    { level: 5, nameKey: 'dread.level5', enemyMult: 12.0, rewardMult: 6.0, color: '#991b1b' },
-    { level: 6, nameKey: 'dread.level6', enemyMult: 20.0, rewardMult: 10.0, color: '#7f1d1d' },
-    { level: 7, nameKey: 'dread.level7', enemyMult: 35.0, rewardMult: 18.0, color: '#a855f7' },
-    { level: 8, nameKey: 'dread.level8', enemyMult: 60.0, rewardMult: 30.0, color: '#9333ea' },
-    { level: 9, nameKey: 'dread.level9', enemyMult: 100.0, rewardMult: 50.0, color: '#6b21a8' },
-    { level: 10, nameKey: 'dread.level10', enemyMult: 200.0, rewardMult: 100.0, color: '#000' }
+    { level: 1, nameKey: 'dread.level1', enemyMult: 1.5, rewardMult: 1.5, color: '#fbbf24' },
+    { level: 2, nameKey: 'dread.level2', enemyMult: 2.0, rewardMult: 2.0, color: '#f97316' },
+    { level: 3, nameKey: 'dread.level3', enemyMult: 3.0, rewardMult: 3.0, color: '#ef4444' },
+    { level: 4, nameKey: 'dread.level4', enemyMult: 5.0, rewardMult: 5.0, color: '#dc2626' },
+    { level: 5, nameKey: 'dread.level5', enemyMult: 8.0, rewardMult: 8.0, color: '#991b1b' },
+    { level: 6, nameKey: 'dread.level6', enemyMult: 12.0, rewardMult: 12.0, color: '#7f1d1d' },
+    { level: 7, nameKey: 'dread.level7', enemyMult: 20.0, rewardMult: 20.0, color: '#a855f7' },
+    { level: 8, nameKey: 'dread.level8', enemyMult: 30.0, rewardMult: 33.0, color: '#9333ea' },
+    { level: 9, nameKey: 'dread.level9', enemyMult: 40.0, rewardMult: 48.0, color: '#6b21a8' },
+    { level: 10, nameKey: 'dread.level10', enemyMult: 50.0, rewardMult: 65.0, color: '#000' }
 ];
 
 /**
@@ -382,11 +382,11 @@ export const OFFICE_BOOSTS = [
  * Awakening bonuses (unlocked at Dread 6)
  */
 export const AWAKENING_BONUSES = [
-    { id: 'wave_skip_100', nameKey: 'awakening.waveSkip.name', descKey: 'awakening.waveSkip.desc', icon: '🚀', effect: { waveSkip: 100 } },
-    { id: 'auto_all', nameKey: 'awakening.autoAll.name', descKey: 'awakening.autoAll.desc', icon: '🤖', effect: { autoPlacement: true, autoBuy: true } },
-    { id: 'prestige_x2', nameKey: 'awakening.prestigeX2.name', descKey: 'awakening.prestigeX2.desc', icon: '👑', effect: { prestigeMult: 2.0 } },
-    { id: 'production_x3', nameKey: 'awakening.productionX3.name', descKey: 'awakening.productionX3.desc', icon: '🏭', effect: { productionMult: 3.0 } },
-    { id: 'starting_gold', nameKey: 'awakening.startGold.name', descKey: 'awakening.startGold.desc', icon: '💎', effect: { startGold: 10000 } }
+    { id: 'wave_skip_100', nameKey: 'awakening.waveSkip.name', descKey: 'awakening.waveSkip.desc', icon: '⏫', effect: { waveSkip: 100 } },
+    { id: 'auto_all', nameKey: 'awakening.autoAll.name', descKey: 'awakening.autoAll.desc', icon: '🦾', effect: { autoPlacement: true, autoBuy: true } },
+    { id: 'prestige_x2', nameKey: 'awakening.prestigeX2.name', descKey: 'awakening.prestigeX2.desc', icon: '✨', effect: { prestigeMult: 2.0 } },
+    { id: 'production_x3', nameKey: 'awakening.productionX3.name', descKey: 'awakening.productionX3.desc', icon: '🏗️', effect: { productionMult: 3.0 } },
+    { id: 'starting_gold', nameKey: 'awakening.startGold.name', descKey: 'awakening.startGold.desc', icon: '💰', effect: { startGold: 10000 } }
 ];
 
 /**
@@ -499,13 +499,13 @@ export const RANDOM_EVENTS = [
  * Ascension system (prestige of prestige)
  */
 export const ASCENSION_PERKS = [
-    { id: 'eternal_damage', nameKey: 'ascension.eternalDamage.name', descKey: 'ascension.eternalDamage.desc', icon: '⚔️', cost: 1, effect: { permanentDamage: 0.25 } },
-    { id: 'eternal_health', nameKey: 'ascension.eternalHealth.name', descKey: 'ascension.eternalHealth.desc', icon: '❤️', cost: 1, effect: { permanentHealth: 0.25 } },
-    { id: 'eternal_gold', nameKey: 'ascension.eternalGold.name', descKey: 'ascension.eternalGold.desc', icon: '💰', cost: 1, effect: { permanentGold: 0.25 } },
+    { id: 'eternal_damage', nameKey: 'ascension.eternalDamage.name', descKey: 'ascension.eternalDamage.desc', icon: '🗡️', cost: 1, effect: { permanentDamage: 0.25 } },
+    { id: 'eternal_health', nameKey: 'ascension.eternalHealth.name', descKey: 'ascension.eternalHealth.desc', icon: '💓', cost: 1, effect: { permanentHealth: 0.25 } },
+    { id: 'eternal_gold', nameKey: 'ascension.eternalGold.name', descKey: 'ascension.eternalGold.desc', icon: '🪙', cost: 1, effect: { permanentGold: 0.25 } },
     { id: 'ether_mastery', nameKey: 'ascension.etherMastery.name', descKey: 'ascension.etherMastery.desc', icon: '🔮', cost: 2, effect: { etherGainMult: 0.5 } },
-    { id: 'starting_power', nameKey: 'ascension.startingPower.name', descKey: 'ascension.startingPower.desc', icon: '🚀', cost: 2, effect: { startWave: 10, startGold: 5000 } },
-    { id: 'relic_affinity', nameKey: 'ascension.relicAffinity.name', descKey: 'ascension.relicAffinity.desc', icon: '💎', cost: 3, effect: { relicDropMult: 1.5 } },
-    { id: 'time_dilation', nameKey: 'ascension.timeDilation.name', descKey: 'ascension.timeDilation.desc', icon: '⏰', cost: 3, effect: { offlineProgress: 0.5 } },
+    { id: 'starting_power', nameKey: 'ascension.startingPower.name', descKey: 'ascension.startingPower.desc', icon: '🌠', cost: 2, effect: { startWave: 10, startGold: 5000 } },
+    { id: 'relic_affinity', nameKey: 'ascension.relicAffinity.name', descKey: 'ascension.relicAffinity.desc', icon: '🎁', cost: 3, effect: { relicDropMult: 1.5 } },
+    { id: 'time_dilation', nameKey: 'ascension.timeDilation.name', descKey: 'ascension.timeDilation.desc', icon: '⏳', cost: 3, effect: { offlineProgress: 0.5 } },
     { id: 'cosmic_power', nameKey: 'ascension.cosmicPower.name', descKey: 'ascension.cosmicPower.desc', icon: '🌟', cost: 5, effect: { allStats: 0.1 } },
     { id: 'infinite_growth', nameKey: 'ascension.infiniteGrowth.name', descKey: 'ascension.infiniteGrowth.desc', icon: '♾️', cost: 10, effect: { scalingBonus: true } }
 ];
@@ -760,9 +760,9 @@ export const LEADERBOARD_CATEGORIES = [
     { id: 'fastest_wave_50', nameKey: 'leaderboard.fastestWave50', icon: '⏱️', sortDesc: false },
     { id: 'total_kills', nameKey: 'leaderboard.totalKills', icon: '💀', sortDesc: true },
     { id: 'bosses_defeated', nameKey: 'leaderboard.bossesDefeated', icon: '👑', sortDesc: true },
-    { id: 'highest_combo', nameKey: 'leaderboard.highestCombo', icon: '🔥', sortDesc: true },
+    { id: 'highest_combo', nameKey: 'leaderboard.highestCombo', icon: '🔗', sortDesc: true },
     { id: 'endless_record', nameKey: 'leaderboard.endlessRecord', icon: '♾️', sortDesc: true },
-    { id: 'boss_rush_record', nameKey: 'leaderboard.bossRushRecord', icon: '⚔️', sortDesc: true }
+    { id: 'boss_rush_record', nameKey: 'leaderboard.bossRushRecord', icon: '🏆', sortDesc: true }
 ];
 
 /**

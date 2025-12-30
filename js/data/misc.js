@@ -107,7 +107,7 @@ export const LEADERBOARD_CATEGORIES = [
     { id: 'fastest_wave_50', nameKey: 'leaderboard.fastestWave50', icon: '⏱️', sortDesc: false },
     { id: 'total_kills', nameKey: 'leaderboard.totalKills', icon: '💀', sortDesc: true },
     { id: 'bosses_defeated', nameKey: 'leaderboard.bossesDefeated', icon: '👑', sortDesc: true },
-    { id: 'highest_combo', nameKey: 'leaderboard.highestCombo', icon: '🔥', sortDesc: true },
+    { id: 'highest_combo', nameKey: 'leaderboard.highestCombo', icon: '🔗', sortDesc: true },
     { id: 'endless_record', nameKey: 'leaderboard.endlessRecord', icon: '♾️', sortDesc: true },
-    { id: 'boss_rush_record', nameKey: 'leaderboard.bossRushRecord', icon: '⚔️', sortDesc: true }
+    { id: 'boss_rush_record', nameKey: 'leaderboard.bossRushRecord', icon: '🏆', sortDesc: true }
 ];

@@ -34,24 +34,24 @@ export const TOWN_LEVELS = [
  * Awakening bonuses (unlocked at Dread 6)
  */
 export const AWAKENING_BONUSES = [
-    { id: 'wave_skip_100', nameKey: 'awakening.waveSkip.name', descKey: 'awakening.waveSkip.desc', icon: '🚀', effect: { waveSkip: 100 } },
-    { id: 'auto_all', nameKey: 'awakening.autoAll.name', descKey: 'awakening.autoAll.desc', icon: '🤖', effect: { autoPlacement: true, autoBuy: true } },
-    { id: 'prestige_x2', nameKey: 'awakening.prestigeX2.name', descKey: 'awakening.prestigeX2.desc', icon: '👑', effect: { prestigeMult: 2.0 } },
-    { id: 'production_x3', nameKey: 'awakening.productionX3.name', descKey: 'awakening.productionX3.desc', icon: '🏭', effect: { productionMult: 3.0 } },
-    { id: 'starting_gold', nameKey: 'awakening.startGold.name', descKey: 'awakening.startGold.desc', icon: '💎', effect: { startGold: 10000 } }
+    { id: 'wave_skip_100', nameKey: 'awakening.waveSkip.name', descKey: 'awakening.waveSkip.desc', icon: '⏫', effect: { waveSkip: 100 } },
+    { id: 'auto_all', nameKey: 'awakening.autoAll.name', descKey: 'awakening.autoAll.desc', icon: '🦾', effect: { autoPlacement: true, autoBuy: true } },
+    { id: 'prestige_x2', nameKey: 'awakening.prestigeX2.name', descKey: 'awakening.prestigeX2.desc', icon: '✨', effect: { prestigeMult: 2.0 } },
+    { id: 'production_x3', nameKey: 'awakening.productionX3.name', descKey: 'awakening.productionX3.desc', icon: '🏗️', effect: { productionMult: 3.0 } },
+    { id: 'starting_gold', nameKey: 'awakening.startGold.name', descKey: 'awakening.startGold.desc', icon: '💰', effect: { startGold: 10000 } }
 ];
 
 /**
  * Ascension system (prestige of prestige)
  */
 export const ASCENSION_PERKS = [
-    { id: 'eternal_damage', nameKey: 'ascension.eternalDamage.name', descKey: 'ascension.eternalDamage.desc', icon: '⚔️', cost: 1, effect: { permanentDamage: 0.25 } },
-    { id: 'eternal_health', nameKey: 'ascension.eternalHealth.name', descKey: 'ascension.eternalHealth.desc', icon: '❤️', cost: 1, effect: { permanentHealth: 0.25 } },
-    { id: 'eternal_gold', nameKey: 'ascension.eternalGold.name', descKey: 'ascension.eternalGold.desc', icon: '💰', cost: 1, effect: { permanentGold: 0.25 } },
+    { id: 'eternal_damage', nameKey: 'ascension.eternalDamage.name', descKey: 'ascension.eternalDamage.desc', icon: '🗡️', cost: 1, effect: { permanentDamage: 0.25 } },
+    { id: 'eternal_health', nameKey: 'ascension.eternalHealth.name', descKey: 'ascension.eternalHealth.desc', icon: '💓', cost: 1, effect: { permanentHealth: 0.25 } },
+    { id: 'eternal_gold', nameKey: 'ascension.eternalGold.name', descKey: 'ascension.eternalGold.desc', icon: '🪙', cost: 1, effect: { permanentGold: 0.25 } },
     { id: 'ether_mastery', nameKey: 'ascension.etherMastery.name', descKey: 'ascension.etherMastery.desc', icon: '🔮', cost: 2, effect: { etherGainMult: 0.5 } },
-    { id: 'starting_power', nameKey: 'ascension.startingPower.name', descKey: 'ascension.startingPower.desc', icon: '🚀', cost: 2, effect: { startWave: 10, startGold: 5000 } },
-    { id: 'relic_affinity', nameKey: 'ascension.relicAffinity.name', descKey: 'ascension.relicAffinity.desc', icon: '💎', cost: 3, effect: { relicDropMult: 1.5 } },
-    { id: 'time_dilation', nameKey: 'ascension.timeDilation.name', descKey: 'ascension.timeDilation.desc', icon: '⏰', cost: 3, effect: { offlineProgress: 0.5 } },
+    { id: 'starting_power', nameKey: 'ascension.startingPower.name', descKey: 'ascension.startingPower.desc', icon: '🌠', cost: 2, effect: { startWave: 10, startGold: 5000 } },
+    { id: 'relic_affinity', nameKey: 'ascension.relicAffinity.name', descKey: 'ascension.relicAffinity.desc', icon: '🎁', cost: 3, effect: { relicDropMult: 1.5 } },
+    { id: 'time_dilation', nameKey: 'ascension.timeDilation.name', descKey: 'ascension.timeDilation.desc', icon: '⏳', cost: 3, effect: { offlineProgress: 0.5 } },
     { id: 'cosmic_power', nameKey: 'ascension.cosmicPower.name', descKey: 'ascension.cosmicPower.desc', icon: '🌟', cost: 5, effect: { allStats: 0.1 } },
     { id: 'infinite_growth', nameKey: 'ascension.infiniteGrowth.name', descKey: 'ascension.infiniteGrowth.desc', icon: '♾️', cost: 10, effect: { scalingBonus: true } }
 ];
