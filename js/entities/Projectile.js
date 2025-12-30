@@ -128,10 +128,15 @@ export class Projectile {
         if (this.effects.poison) target.applyStatus('poison', this.damage * 0.2, 3000);
         if (this.stasisChance > 0 && Math.random() < this.stasisChance) target.applyStatus('stasis', 0, 2000);
         if (this.leech > 0 && target.hp <= 0) game.castle.heal(this.leech);
-        if (this.blastRadius > 0) this.explode(game);
-        if (this.bounceCount > 0) this.bounce(target, game);
-        else if (this.blastRadius <= 0) this.active = false;
-        if (this.bounceCount <= 0) this.active = false;
+        if (this.blastRadius > 0) {
+            this.explode(game);
+            this.active = false;
+        }
+        if (this.bounceCount > 0) {
+            this.bounce(target, game);
+        } else if (this.blastRadius <= 0) {
+            this.active = false;
+        }
         if (game.particles.length < PARTICLE_COUNTS.MAX_PARTICLES) {
             for (let i = 0; i < PARTICLE_COUNTS.ENEMY_DEATH; i++) {
                 game.particles.push(new Particle(this.x, this.y, this.color));

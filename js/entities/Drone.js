@@ -41,7 +41,10 @@ export class Drone {
             const target = game.findTarget(this.x, this.y, 400);
             if (target) {
                 const dmg = Math.max(1, Math.floor(game.currentDamage * 0.1));
-                game.projectiles.push(new Projectile(this.x, this.y, target, dmg, 20, '#06b6d4', 1));
+                game.projectiles.push(Projectile.create(
+                    this.x, this.y, target, dmg, 20, '#06b6d4', 1,
+                    false, false, false, {}, {}
+                ));
                 game.sound.play('shoot');
                 this.lastShotTime = gameTime;
             }

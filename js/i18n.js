@@ -193,8 +193,22 @@ class I18n {
 
         document.querySelectorAll('[data-i18n-html]').forEach(element => {
             const key = element.getAttribute('data-i18n-html');
-            element.innerHTML = this.t(key);
+            element.innerHTML = this.sanitizeHtml(this.t(key));
         });
+    }
+
+    /**
+     * Sanitize HTML to prevent XSS - allows only safe tags
+     * @param {string} html
+     * @returns {string}
+     */
+    sanitizeHtml(html) {
+        if (typeof html !== 'string') return '';
+        // Remove script tags and event handlers
+        return html
+            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+            .replace(/on\w+\s*=/gi, 'data-blocked=')
+            .replace(/javascript:/gi, 'blocked:');
     }
 
     /**

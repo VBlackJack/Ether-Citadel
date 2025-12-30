@@ -30,6 +30,27 @@ export class SkillManager {
             nuke: false,
             blackhole: false
         };
+        this._cachedElements = {};
+    }
+
+    /**
+     * Cache DOM elements for performance
+     */
+    cacheElements() {
+        for (const key in this.skills) {
+            this._cachedElements[`skill-${key}`] = document.getElementById(`skill-${key}`);
+            this._cachedElements[`cd-${key}`] = document.getElementById(`cd-${key}`);
+        }
+    }
+
+    /**
+     * Get cached element or query if not cached
+     */
+    getElement(id) {
+        if (!this._cachedElements[id]) {
+            this._cachedElements[id] = document.getElementById(id);
+        }
+        return this._cachedElements[id];
     }
 
     toggleAutoSkill(id) {
@@ -54,7 +75,12 @@ export class SkillManager {
 
     canUseAutoSkill() {
         const game = this.game;
-        return game && (game.relicMults.autoSkill || game.metaUpgrades.getEffectValue('autoSkillQ') || game.metaUpgrades.getEffectValue('autoSkillW') || game.metaUpgrades.getEffectValue('autoSkillE'));
+        if (!game) return false;
+        const hasRelicAutoSkill = game.relicMults?.autoSkill || false;
+        const hasAutoQ = game.metaUpgrades?.getEffectValue?.('autoSkillQ') || false;
+        const hasAutoW = game.metaUpgrades?.getEffectValue?.('autoSkillW') || false;
+        const hasAutoE = game.metaUpgrades?.getEffectValue?.('autoSkillE') || false;
+        return hasRelicAutoSkill || hasAutoQ || hasAutoW || hasAutoE;
     }
 
     activate(id) {
@@ -87,7 +113,7 @@ export class SkillManager {
         const game = this.game;
         for (let key in this.skills) {
             const s = this.skills[key];
-            const skillEl = document.getElementById('skill-' + key);
+            const skillEl = this.getElement(`skill-${key}`);
 
             if (s.activeTime > 0) {
                 s.activeTime -= dt;
@@ -105,7 +131,7 @@ export class SkillManager {
                     }
                 }
             }
-            const btn = document.getElementById(`cd-${key}`);
+            const btn = this.getElement(`cd-${key}`);
             const maxCd = s.cooldown * (1 - (game.relicMults.cooldown || 0));
             if (btn) btn.style.height = `${Math.max(0, s.cdTime / maxCd) * 100}%`;
 

@@ -173,7 +173,9 @@ export class HelpTooltipManager {
 
     hideTooltip() {
         if (this.activeTooltip) {
-            this.activeTooltip.remove();
+            if (this.activeTooltip.parentNode) {
+                this.activeTooltip.remove();
+            }
             this.activeTooltip = null;
         }
     }

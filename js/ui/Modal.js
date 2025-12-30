@@ -110,9 +110,10 @@ export class ModalManager {
         };
 
         const titleText = config.titleKey ? this.t(config.titleKey) : config.title;
+        const escapedTitleText = this.escapeHtml(titleText);
         const titleHtml = config.titleKey
-            ? `<span data-i18n="${config.titleKey}">${titleText}</span>`
-            : this.escapeHtml(config.title);
+            ? `<span data-i18n="${this.escapeHtml(config.titleKey)}">${escapedTitleText}</span>`
+            : escapedTitleText;
 
         const helpHtml = config.helpKey
             ? `<span class="help-icon" data-help="${this.escapeHtml(config.helpKey)}">?</span>`
