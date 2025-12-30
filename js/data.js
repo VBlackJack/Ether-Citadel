@@ -222,7 +222,13 @@ export const ENEMY_TYPES = {
     SPLITTER: { color: '#a855f7', hpMult: 1.2, speedMult: 0.8, scale: 1.3, nameKey: 'enemies.SPLITTER.name', descKey: 'enemies.SPLITTER.desc' },
     MINI: { color: '#d8b4fe', hpMult: 0.4, speedMult: 1.2, scale: 0.6, nameKey: 'enemies.MINI.name', descKey: 'enemies.MINI.desc' },
     THIEF: { color: '#94a3b8', hpMult: 0.8, speedMult: 2.5, scale: 0.9, nameKey: 'enemies.THIEF.name', descKey: 'enemies.THIEF.desc' },
-    PHANTOM: { color: '#ffffff', hpMult: 0.8, speedMult: 1.0, scale: 1.0, nameKey: 'enemies.PHANTOM.name', descKey: 'enemies.PHANTOM.desc' }
+    PHANTOM: { color: '#ffffff', hpMult: 0.8, speedMult: 1.0, scale: 1.0, nameKey: 'enemies.PHANTOM.name', descKey: 'enemies.PHANTOM.desc' },
+    FLYING: { color: '#38bdf8', hpMult: 0.7, speedMult: 1.4, scale: 0.9, nameKey: 'enemies.FLYING.name', descKey: 'enemies.FLYING.desc', flying: true },
+    ARMORED: { color: '#78716c', hpMult: 3.0, speedMult: 0.5, scale: 1.5, nameKey: 'enemies.ARMORED.name', descKey: 'enemies.ARMORED.desc', armor: 0.5 },
+    SHIELDED: { color: '#06b6d4', hpMult: 1.0, speedMult: 0.9, scale: 1.2, nameKey: 'enemies.SHIELDED.name', descKey: 'enemies.SHIELDED.desc', shield: true },
+    NECRO: { color: '#581c87', hpMult: 2.0, speedMult: 0.6, scale: 1.3, nameKey: 'enemies.NECRO.name', descKey: 'enemies.NECRO.desc', summon: true },
+    BERSERKER: { color: '#dc2626', hpMult: 1.8, speedMult: 1.0, scale: 1.2, nameKey: 'enemies.BERSERKER.name', descKey: 'enemies.BERSERKER.desc', enrage: true },
+    MEGA_BOSS: { color: '#7c3aed', hpMult: 50, speedMult: 0.3, scale: 3.5, nameKey: 'enemies.MEGA_BOSS.name', descKey: 'enemies.MEGA_BOSS.desc', phases: 3 }
 };
 
 /**
@@ -382,6 +388,123 @@ export const TURRET_SLOTS = [
     { id: 5, angle: -135, distance: 80, free: false, cost: 2500 },
     { id: 6, angle: 135, distance: 80, free: false, cost: 5000 },
     { id: 7, angle: 180, distance: 95, free: false, cost: 10000 }
+];
+
+/**
+ * Weather system - Dynamic conditions affecting gameplay
+ */
+export const WEATHER_TYPES = [
+    { id: 'clear', nameKey: 'weather.clear.name', icon: '☀️', color: '#fbbf24', effects: {}, duration: 120, weight: 40 },
+    { id: 'rain', nameKey: 'weather.rain.name', icon: '🌧️', color: '#3b82f6', effects: { enemySpeed: -0.15, goldMult: 1.1 }, duration: 90, weight: 20 },
+    { id: 'storm', nameKey: 'weather.storm.name', icon: '⛈️', color: '#6366f1', effects: { enemySpeed: -0.2, damage: 1.2, critChance: 10 }, duration: 60, weight: 10 },
+    { id: 'fog', nameKey: 'weather.fog.name', icon: '🌫️', color: '#94a3b8', effects: { range: -0.3, enemySpeed: -0.1 }, duration: 90, weight: 15 },
+    { id: 'wind', nameKey: 'weather.wind.name', icon: '💨', color: '#22d3ee', effects: { projectileSpeed: 1.3, enemySpeed: 0.1 }, duration: 75, weight: 15 },
+    { id: 'blood_moon', nameKey: 'weather.bloodMoon.name', icon: '🌑', color: '#dc2626', effects: { enemyHp: 1.5, enemySpeed: 0.2, goldMult: 2.0, xpMult: 1.5 }, duration: 45, weight: 5 },
+    { id: 'aurora', nameKey: 'weather.aurora.name', icon: '🌌', color: '#a855f7', effects: { xpMult: 2.0, critDamage: 0.5 }, duration: 60, weight: 5 },
+    { id: 'solar_flare', nameKey: 'weather.solarFlare.name', icon: '🔥', color: '#f97316', effects: { damage: 1.5, regenMult: -0.5 }, duration: 45, weight: 5 }
+];
+
+/**
+ * Talent tree - Permanent character specialization
+ */
+export const TALENT_TREES = [
+    {
+        id: 'warrior',
+        nameKey: 'talents.warrior.name',
+        icon: '⚔️',
+        color: '#ef4444',
+        talents: [
+            { id: 'brute_force', nameKey: 'talents.bruteForce.name', descKey: 'talents.bruteForce.desc', max: 5, cost: 1, effect: { damage: 0.1 }, row: 0 },
+            { id: 'berserker', nameKey: 'talents.berserker.name', descKey: 'talents.berserker.desc', max: 3, cost: 2, effect: { damageOnLowHp: 0.25 }, row: 1, requires: ['brute_force'] },
+            { id: 'executioner', nameKey: 'talents.executioner.name', descKey: 'talents.executioner.desc', max: 3, cost: 2, effect: { executeDmg: 0.15 }, row: 1, requires: ['brute_force'] },
+            { id: 'rampage', nameKey: 'talents.rampage.name', descKey: 'talents.rampage.desc', max: 1, cost: 5, effect: { killDmgStack: true }, row: 2, requires: ['berserker', 'executioner'] },
+            { id: 'warlord', nameKey: 'talents.warlord.name', descKey: 'talents.warlord.desc', max: 1, cost: 10, effect: { allDamage: 0.5 }, row: 3, requires: ['rampage'] }
+        ]
+    },
+    {
+        id: 'guardian',
+        nameKey: 'talents.guardian.name',
+        icon: '🛡️',
+        color: '#3b82f6',
+        talents: [
+            { id: 'fortify', nameKey: 'talents.fortify.name', descKey: 'talents.fortify.desc', max: 5, cost: 1, effect: { health: 0.1 }, row: 0 },
+            { id: 'regenerator', nameKey: 'talents.regenerator.name', descKey: 'talents.regenerator.desc', max: 3, cost: 2, effect: { regen: 0.2 }, row: 1, requires: ['fortify'] },
+            { id: 'barrier', nameKey: 'talents.barrier.name', descKey: 'talents.barrier.desc', max: 3, cost: 2, effect: { shield: 0.15 }, row: 1, requires: ['fortify'] },
+            { id: 'second_wind', nameKey: 'talents.secondWind.name', descKey: 'talents.secondWind.desc', max: 1, cost: 5, effect: { reviveChance: 0.25 }, row: 2, requires: ['regenerator', 'barrier'] },
+            { id: 'immortal', nameKey: 'talents.immortal.name', descKey: 'talents.immortal.desc', max: 1, cost: 10, effect: { damageReduction: 0.25 }, row: 3, requires: ['second_wind'] }
+        ]
+    },
+    {
+        id: 'mystic',
+        nameKey: 'talents.mystic.name',
+        icon: '🔮',
+        color: '#a855f7',
+        talents: [
+            { id: 'arcane_power', nameKey: 'talents.arcanePower.name', descKey: 'talents.arcanePower.desc', max: 5, cost: 1, effect: { skillDamage: 0.15 }, row: 0 },
+            { id: 'quick_cast', nameKey: 'talents.quickCast.name', descKey: 'talents.quickCast.desc', max: 3, cost: 2, effect: { cooldown: 0.1 }, row: 1, requires: ['arcane_power'] },
+            { id: 'mana_surge', nameKey: 'talents.manaSurge.name', descKey: 'talents.manaSurge.desc', max: 3, cost: 2, effect: { runeChance: 0.1 }, row: 1, requires: ['arcane_power'] },
+            { id: 'time_warp', nameKey: 'talents.timeWarp.name', descKey: 'talents.timeWarp.desc', max: 1, cost: 5, effect: { skillDuration: 0.5 }, row: 2, requires: ['quick_cast', 'mana_surge'] },
+            { id: 'archmage', nameKey: 'talents.archmage.name', descKey: 'talents.archmage.desc', max: 1, cost: 10, effect: { doubleSkill: true }, row: 3, requires: ['time_warp'] }
+        ]
+    },
+    {
+        id: 'merchant',
+        nameKey: 'talents.merchant.name',
+        icon: '💰',
+        color: '#fbbf24',
+        talents: [
+            { id: 'gold_sense', nameKey: 'talents.goldSense.name', descKey: 'talents.goldSense.desc', max: 5, cost: 1, effect: { gold: 0.1 }, row: 0 },
+            { id: 'treasure_hunter', nameKey: 'talents.treasureHunter.name', descKey: 'talents.treasureHunter.desc', max: 3, cost: 2, effect: { relicChance: 0.1 }, row: 1, requires: ['gold_sense'] },
+            { id: 'efficient', nameKey: 'talents.efficient.name', descKey: 'talents.efficient.desc', max: 3, cost: 2, effect: { upgradeCost: -0.05 }, row: 1, requires: ['gold_sense'] },
+            { id: 'lucky', nameKey: 'talents.lucky.name', descKey: 'talents.lucky.desc', max: 1, cost: 5, effect: { doubleGold: 0.1 }, row: 2, requires: ['treasure_hunter', 'efficient'] },
+            { id: 'tycoon', nameKey: 'talents.tycoon.name', descKey: 'talents.tycoon.desc', max: 1, cost: 10, effect: { passiveGold: true }, row: 3, requires: ['lucky'] }
+        ]
+    }
+];
+
+/**
+ * Random events system
+ */
+export const RANDOM_EVENTS = [
+    { id: 'gold_rush', nameKey: 'events.goldRush.name', descKey: 'events.goldRush.desc', icon: '💰', duration: 30, effects: { goldMult: 3 }, weight: 15 },
+    { id: 'power_surge', nameKey: 'events.powerSurge.name', descKey: 'events.powerSurge.desc', icon: '⚡', duration: 20, effects: { damageMult: 2 }, weight: 15 },
+    { id: 'slow_motion', nameKey: 'events.slowMotion.name', descKey: 'events.slowMotion.desc', icon: '🐌', duration: 15, effects: { enemySpeedMult: 0.5 }, weight: 12 },
+    { id: 'critical_frenzy', nameKey: 'events.critFrenzy.name', descKey: 'events.critFrenzy.desc', icon: '💥', duration: 25, effects: { critChance: 50 }, weight: 12 },
+    { id: 'meteor_shower', nameKey: 'events.meteorShower.name', descKey: 'events.meteorShower.desc', icon: '☄️', duration: 15, effects: { meteorDamage: true }, weight: 8 },
+    { id: 'healing_aura', nameKey: 'events.healingAura.name', descKey: 'events.healingAura.desc', icon: '💚', duration: 30, effects: { regenMult: 5 }, weight: 10 },
+    { id: 'xp_boost', nameKey: 'events.xpBoost.name', descKey: 'events.xpBoost.desc', icon: '📈', duration: 45, effects: { xpMult: 2 }, weight: 15 },
+    { id: 'invasion', nameKey: 'events.invasion.name', descKey: 'events.invasion.desc', icon: '👾', duration: 20, effects: { enemySpawn: 2, goldMult: 2 }, weight: 8, negative: true },
+    { id: 'elite_wave', nameKey: 'events.eliteWave.name', descKey: 'events.eliteWave.desc', icon: '👑', duration: 0, effects: { eliteSpawn: true }, weight: 5, negative: true },
+    { id: 'treasure_goblin', nameKey: 'events.treasureGoblin.name', descKey: 'events.treasureGoblin.desc', icon: '🧌', duration: 0, effects: { spawnGoblin: true }, weight: 5 }
+];
+
+/**
+ * Ascension system (prestige of prestige)
+ */
+export const ASCENSION_PERKS = [
+    { id: 'eternal_damage', nameKey: 'ascension.eternalDamage.name', descKey: 'ascension.eternalDamage.desc', icon: '⚔️', cost: 1, effect: { permanentDamage: 0.25 } },
+    { id: 'eternal_health', nameKey: 'ascension.eternalHealth.name', descKey: 'ascension.eternalHealth.desc', icon: '❤️', cost: 1, effect: { permanentHealth: 0.25 } },
+    { id: 'eternal_gold', nameKey: 'ascension.eternalGold.name', descKey: 'ascension.eternalGold.desc', icon: '💰', cost: 1, effect: { permanentGold: 0.25 } },
+    { id: 'ether_mastery', nameKey: 'ascension.etherMastery.name', descKey: 'ascension.etherMastery.desc', icon: '🔮', cost: 2, effect: { etherGainMult: 0.5 } },
+    { id: 'starting_power', nameKey: 'ascension.startingPower.name', descKey: 'ascension.startingPower.desc', icon: '🚀', cost: 2, effect: { startWave: 10, startGold: 5000 } },
+    { id: 'relic_affinity', nameKey: 'ascension.relicAffinity.name', descKey: 'ascension.relicAffinity.desc', icon: '💎', cost: 3, effect: { relicDropMult: 1.5 } },
+    { id: 'time_dilation', nameKey: 'ascension.timeDilation.name', descKey: 'ascension.timeDilation.desc', icon: '⏰', cost: 3, effect: { offlineProgress: 0.5 } },
+    { id: 'cosmic_power', nameKey: 'ascension.cosmicPower.name', descKey: 'ascension.cosmicPower.desc', icon: '🌟', cost: 5, effect: { allStats: 0.1 } },
+    { id: 'infinite_growth', nameKey: 'ascension.infiniteGrowth.name', descKey: 'ascension.infiniteGrowth.desc', icon: '♾️', cost: 10, effect: { scalingBonus: true } }
+];
+
+/**
+ * Combo system tiers
+ */
+export const COMBO_TIERS = [
+    { tier: 1, hits: 5, nameKey: 'combo.tier1', color: '#94a3b8', mult: 1.1 },
+    { tier: 2, hits: 15, nameKey: 'combo.tier2', color: '#22c55e', mult: 1.25 },
+    { tier: 3, hits: 30, nameKey: 'combo.tier3', color: '#3b82f6', mult: 1.5 },
+    { tier: 4, hits: 50, nameKey: 'combo.tier4', color: '#a855f7', mult: 1.75 },
+    { tier: 5, hits: 75, nameKey: 'combo.tier5', color: '#f97316', mult: 2.0 },
+    { tier: 6, hits: 100, nameKey: 'combo.tier6', color: '#ef4444', mult: 2.5 },
+    { tier: 7, hits: 150, nameKey: 'combo.tier7', color: '#fbbf24', mult: 3.0 },
+    { tier: 8, hits: 200, nameKey: 'combo.tier8', color: '#fff', mult: 4.0 }
 ];
 
 /**

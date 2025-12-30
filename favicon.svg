@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="citadelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#22d3ee"/>
+      <stop offset="100%" style="stop-color:#0891b2"/>
+    </linearGradient>
+    <linearGradient id="etherGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#6366f1"/>
+    </linearGradient>
+  </defs>
+  <!-- Base -->
+  <rect x="8" y="44" width="48" height="12" rx="2" fill="#1e293b"/>
+  <!-- Castle body -->
+  <rect x="12" y="28" width="40" height="20" fill="url(#citadelGrad)"/>
+  <!-- Towers -->
+  <rect x="8" y="20" width="12" height="28" fill="url(#citadelGrad)"/>
+  <rect x="44" y="20" width="12" height="28" fill="url(#citadelGrad)"/>
+  <!-- Tower tops -->
+  <polygon points="14,20 8,10 20,10" fill="url(#citadelGrad)"/>
+  <polygon points="50,20 44,10 56,10" fill="url(#citadelGrad)"/>
+  <!-- Center tower -->
+  <rect x="26" y="16" width="12" height="16" fill="url(#citadelGrad)"/>
+  <polygon points="32,16 24,6 40,6" fill="url(#citadelGrad)"/>
+  <!-- Ether orb -->
+  <circle cx="32" cy="24" r="6" fill="url(#etherGrad)"/>
+  <circle cx="32" cy="24" r="3" fill="#fff" opacity="0.6"/>
+  <!-- Windows -->
+  <rect x="12" y="36" width="4" height="6" fill="#0f172a"/>
+  <rect x="48" y="36" width="4" height="6" fill="#0f172a"/>
+  <rect x="30" y="38" width="4" height="10" fill="#0f172a"/>
+</svg>

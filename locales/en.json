@@ -299,6 +299,30 @@
     "PHANTOM": {
       "name": "Phantom",
       "desc": "Teleports forward."
+    },
+    "FLYING": {
+      "name": "Flyer",
+      "desc": "Flies over obstacles, ignores slow."
+    },
+    "ARMORED": {
+      "name": "Armored",
+      "desc": "Takes 50% reduced damage."
+    },
+    "SHIELDED": {
+      "name": "Shielded",
+      "desc": "Has a regenerating shield."
+    },
+    "NECRO": {
+      "name": "Necromancer",
+      "desc": "Summons undead minions."
+    },
+    "BERSERKER": {
+      "name": "Berserker",
+      "desc": "Enrages when damaged, gaining speed."
+    },
+    "MEGA_BOSS": {
+      "name": "MEGA BOSS",
+      "desc": "Ultimate challenge with multiple phases."
     }
   },
   "relics": {
@@ -727,5 +751,110 @@
     "confirmBuy": "Purchase this slot for {{cost}} gold?",
     "purchased": "Slot Purchased!",
     "notEnoughGold": "Not enough gold!"
+  },
+  "weather": {
+    "title": "Weather",
+    "clear": { "name": "Clear" },
+    "rain": { "name": "Rain" },
+    "storm": { "name": "Storm" },
+    "fog": { "name": "Fog" },
+    "wind": { "name": "Windy" },
+    "bloodMoon": { "name": "Blood Moon" },
+    "aurora": { "name": "Aurora" },
+    "solarFlare": { "name": "Solar Flare" }
+  },
+  "talents": {
+    "title": "Talents",
+    "points": "Talent Points",
+    "reset": "Reset Talents",
+    "warrior": { "name": "Warrior" },
+    "guardian": { "name": "Guardian" },
+    "mystic": { "name": "Mystic" },
+    "merchant": { "name": "Merchant" },
+    "bruteForce": { "name": "Brute Force", "desc": "+10% damage per level." },
+    "berserker": { "name": "Berserker", "desc": "+25% damage when below 50% HP." },
+    "executioner": { "name": "Executioner", "desc": "+15% damage to low HP enemies." },
+    "rampage": { "name": "Rampage", "desc": "Each kill increases damage (stacks)." },
+    "warlord": { "name": "Warlord", "desc": "+50% all damage." },
+    "fortify": { "name": "Fortify", "desc": "+10% max HP per level." },
+    "regenerator": { "name": "Regenerator", "desc": "+20% HP regen per level." },
+    "barrier": { "name": "Barrier", "desc": "+15% shield per level." },
+    "secondWind": { "name": "Second Wind", "desc": "25% chance to revive on death." },
+    "immortal": { "name": "Immortal", "desc": "25% damage reduction." },
+    "arcanePower": { "name": "Arcane Power", "desc": "+15% skill damage per level." },
+    "quickCast": { "name": "Quick Cast", "desc": "-10% cooldown per level." },
+    "manaSurge": { "name": "Mana Surge", "desc": "+10% rune drop chance per level." },
+    "timeWarp": { "name": "Time Warp", "desc": "+50% skill duration." },
+    "archmage": { "name": "Archmage", "desc": "Skills can trigger twice." },
+    "goldSense": { "name": "Gold Sense", "desc": "+10% gold per level." },
+    "treasureHunter": { "name": "Treasure Hunter", "desc": "+10% relic drop chance per level." },
+    "efficient": { "name": "Efficient", "desc": "-5% upgrade cost per level." },
+    "lucky": { "name": "Lucky", "desc": "10% chance for double gold drops." },
+    "tycoon": { "name": "Tycoon", "desc": "Earn passive gold over time." }
+  },
+  "events": {
+    "title": "Event",
+    "active": "Active Event",
+    "goldRush": { "name": "Gold Rush", "desc": "Triple gold for 30 seconds!" },
+    "powerSurge": { "name": "Power Surge", "desc": "Double damage for 20 seconds!" },
+    "slowMotion": { "name": "Slow Motion", "desc": "Enemies move at half speed!" },
+    "critFrenzy": { "name": "Critical Frenzy", "desc": "+50% crit chance for 25 seconds!" },
+    "meteorShower": { "name": "Meteor Shower", "desc": "Meteors rain from the sky!" },
+    "healingAura": { "name": "Healing Aura", "desc": "Massive HP regeneration!" },
+    "xpBoost": { "name": "XP Boost", "desc": "Double XP for 45 seconds!" },
+    "invasion": { "name": "Invasion", "desc": "Double enemies, double gold!" },
+    "eliteWave": { "name": "Elite Wave", "desc": "A wave of elite enemies approaches!" },
+    "treasureGoblin": { "name": "Treasure Goblin", "desc": "A golden goblin has spawned!" }
+  },
+  "combo": {
+    "title": "Combo",
+    "tier1": "Combo x1",
+    "tier2": "Good!",
+    "tier3": "Great!",
+    "tier4": "Awesome!",
+    "tier5": "Amazing!",
+    "tier6": "Incredible!",
+    "tier7": "Legendary!",
+    "tier8": "GODLIKE!"
+  },
+  "ascension": {
+    "title": "Ascension",
+    "desc": "Transcend and gain permanent cosmic powers.",
+    "points": "Ascension Points",
+    "requirement": "Requires 1000+ Ether to ascend",
+    "ascend": "ASCEND",
+    "perks": "Cosmic Perks",
+    "eternalDamage": { "name": "Eternal Damage", "desc": "+25% permanent damage." },
+    "eternalHealth": { "name": "Eternal Health", "desc": "+25% permanent health." },
+    "eternalGold": { "name": "Eternal Gold", "desc": "+25% permanent gold." },
+    "etherMastery": { "name": "Ether Mastery", "desc": "+50% ether gain." },
+    "startingPower": { "name": "Starting Power", "desc": "Start at wave 10 with 5000 gold." },
+    "relicAffinity": { "name": "Relic Affinity", "desc": "+50% relic drop rate." },
+    "timeDilation": { "name": "Time Dilation", "desc": "+50% offline progress." },
+    "cosmicPower": { "name": "Cosmic Power", "desc": "+10% all stats." },
+    "infiniteGrowth": { "name": "Infinite Growth", "desc": "Scaling bonuses never cap." }
+  },
+  "statistics": {
+    "title": "Statistics",
+    "general": "General",
+    "combat": "Combat",
+    "economy": "Economy",
+    "progression": "Progression",
+    "totalPlayTime": "Total Play Time",
+    "totalKills": "Total Kills",
+    "totalBosses": "Bosses Defeated",
+    "totalGold": "Total Gold Earned",
+    "totalDamage": "Total Damage Dealt",
+    "highestWave": "Highest Wave",
+    "highestCombo": "Highest Combo",
+    "totalPrestiges": "Total Prestiges",
+    "totalAscensions": "Total Ascensions",
+    "criticalHits": "Critical Hits",
+    "projectilesFired": "Projectiles Fired",
+    "skillsUsed": "Skills Used",
+    "runesCollected": "Runes Collected",
+    "relicsFound": "Relics Found",
+    "dps": "Current DPS",
+    "avgWaveTime": "Avg Wave Time"
   }
 }

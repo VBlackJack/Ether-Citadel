@@ -297,8 +297,32 @@
       "desc": "Vole votre or et s'enfuit."
     },
     "PHANTOM": {
-      "name": "Fant\u00f4me",
-      "desc": "Se t\u00e9l\u00e9porte vers l'avant."
+      "name": "Fantome",
+      "desc": "Se teleporte vers l'avant."
+    },
+    "FLYING": {
+      "name": "Volant",
+      "desc": "Vole au-dessus des obstacles, ignore le ralentissement."
+    },
+    "ARMORED": {
+      "name": "Blinde",
+      "desc": "Subit 50% de degats en moins."
+    },
+    "SHIELDED": {
+      "name": "Bouclier",
+      "desc": "Possede un bouclier regenerant."
+    },
+    "NECRO": {
+      "name": "Necromancien",
+      "desc": "Invoque des serviteurs morts-vivants."
+    },
+    "BERSERKER": {
+      "name": "Berserker",
+      "desc": "S'enrage quand blesse, gagne en vitesse."
+    },
+    "MEGA_BOSS": {
+      "name": "MEGA BOSS",
+      "desc": "Defi ultime avec plusieurs phases."
     }
   },
   "relics": {
@@ -718,14 +742,119 @@
   },
   "slots": {
     "title": "Emplacement de tourelle",
-    "desc": "S\u00e9lectionnez une tourelle \u00e0 placer dans cet emplacement.",
+    "desc": "Selectionnez une tourelle a placer dans cet emplacement.",
     "current": "Tourelle actuelle",
     "available": "Tourelles disponibles",
     "empty": "Emplacement vide",
     "remove": "Retirer",
-    "locked": "Verrouill\u00e9",
+    "locked": "Verrouille",
     "confirmBuy": "Acheter cet emplacement pour {{cost}} or ?",
-    "purchased": "Emplacement achet\u00e9 !",
+    "purchased": "Emplacement achete !",
     "notEnoughGold": "Pas assez d'or !"
+  },
+  "weather": {
+    "title": "Meteo",
+    "clear": { "name": "Degage" },
+    "rain": { "name": "Pluie" },
+    "storm": { "name": "Orage" },
+    "fog": { "name": "Brouillard" },
+    "wind": { "name": "Venteux" },
+    "bloodMoon": { "name": "Lune de Sang" },
+    "aurora": { "name": "Aurore" },
+    "solarFlare": { "name": "Eruption Solaire" }
+  },
+  "talents": {
+    "title": "Talents",
+    "points": "Points de Talent",
+    "reset": "Reinitialiser",
+    "warrior": { "name": "Guerrier" },
+    "guardian": { "name": "Gardien" },
+    "mystic": { "name": "Mystique" },
+    "merchant": { "name": "Marchand" },
+    "bruteForce": { "name": "Force Brute", "desc": "+10% degats par niveau." },
+    "berserker": { "name": "Berserker", "desc": "+25% degats en dessous de 50% PV." },
+    "executioner": { "name": "Executeur", "desc": "+15% degats aux ennemis faibles." },
+    "rampage": { "name": "Carnage", "desc": "Chaque kill augmente les degats." },
+    "warlord": { "name": "Seigneur de Guerre", "desc": "+50% tous les degats." },
+    "fortify": { "name": "Fortifier", "desc": "+10% PV max par niveau." },
+    "regenerator": { "name": "Regenerateur", "desc": "+20% regen PV par niveau." },
+    "barrier": { "name": "Barriere", "desc": "+15% bouclier par niveau." },
+    "secondWind": { "name": "Second Souffle", "desc": "25% chance de revivre." },
+    "immortal": { "name": "Immortel", "desc": "25% reduction de degats." },
+    "arcanePower": { "name": "Pouvoir Arcanique", "desc": "+15% degats de competence par niveau." },
+    "quickCast": { "name": "Incantation Rapide", "desc": "-10% temps de recharge par niveau." },
+    "manaSurge": { "name": "Afflux de Mana", "desc": "+10% chance de rune par niveau." },
+    "timeWarp": { "name": "Distorsion Temporelle", "desc": "+50% duree des competences." },
+    "archmage": { "name": "Archimage", "desc": "Les competences peuvent se declencher deux fois." },
+    "goldSense": { "name": "Sens de l'Or", "desc": "+10% or par niveau." },
+    "treasureHunter": { "name": "Chasseur de Tresor", "desc": "+10% chance de relique par niveau." },
+    "efficient": { "name": "Efficace", "desc": "-5% cout d'amelioration par niveau." },
+    "lucky": { "name": "Chanceux", "desc": "10% chance de doubler l'or." },
+    "tycoon": { "name": "Magnat", "desc": "Gagnez de l'or passivement." }
+  },
+  "events": {
+    "title": "Evenement",
+    "active": "Evenement Actif",
+    "goldRush": { "name": "Ruee vers l'Or", "desc": "Triple or pendant 30 secondes !" },
+    "powerSurge": { "name": "Surge de Puissance", "desc": "Double degats pendant 20 secondes !" },
+    "slowMotion": { "name": "Ralenti", "desc": "Les ennemis bougent a moitie vitesse !" },
+    "critFrenzy": { "name": "Frenesie Critique", "desc": "+50% chance critique pendant 25 secondes !" },
+    "meteorShower": { "name": "Pluie de Meteores", "desc": "Des meteores tombent du ciel !" },
+    "healingAura": { "name": "Aura de Soin", "desc": "Regeneration massive de PV !" },
+    "xpBoost": { "name": "Boost d'XP", "desc": "Double XP pendant 45 secondes !" },
+    "invasion": { "name": "Invasion", "desc": "Double ennemis, double or !" },
+    "eliteWave": { "name": "Vague d'Elite", "desc": "Une vague d'ennemis d'elite approche !" },
+    "treasureGoblin": { "name": "Gobelin au Tresor", "desc": "Un gobelin dore est apparu !" }
+  },
+  "combo": {
+    "title": "Combo",
+    "tier1": "Combo x1",
+    "tier2": "Bien !",
+    "tier3": "Super !",
+    "tier4": "Genial !",
+    "tier5": "Incroyable !",
+    "tier6": "Fantastique !",
+    "tier7": "Legendaire !",
+    "tier8": "DIVIN !"
+  },
+  "ascension": {
+    "title": "Ascension",
+    "desc": "Transcendez et obtenez des pouvoirs cosmiques permanents.",
+    "points": "Points d'Ascension",
+    "requirement": "Necessite 1000+ Ether pour ascensionner",
+    "ascend": "ASCENSIONNER",
+    "perks": "Avantages Cosmiques",
+    "eternalDamage": { "name": "Degats Eternels", "desc": "+25% degats permanents." },
+    "eternalHealth": { "name": "Sante Eternelle", "desc": "+25% sante permanente." },
+    "eternalGold": { "name": "Or Eternel", "desc": "+25% or permanent." },
+    "etherMastery": { "name": "Maitrise de l'Ether", "desc": "+50% gain d'ether." },
+    "startingPower": { "name": "Puissance Initiale", "desc": "Commencez vague 10 avec 5000 or." },
+    "relicAffinity": { "name": "Affinite Relique", "desc": "+50% taux de drop de reliques." },
+    "timeDilation": { "name": "Dilatation Temporelle", "desc": "+50% progression hors ligne." },
+    "cosmicPower": { "name": "Pouvoir Cosmique", "desc": "+10% toutes les stats." },
+    "infiniteGrowth": { "name": "Croissance Infinie", "desc": "Les bonus ne plafonnent jamais." }
+  },
+  "statistics": {
+    "title": "Statistiques",
+    "general": "General",
+    "combat": "Combat",
+    "economy": "Economie",
+    "progression": "Progression",
+    "totalPlayTime": "Temps de jeu total",
+    "totalKills": "Kills totaux",
+    "totalBosses": "Boss vaincus",
+    "totalGold": "Or total gagne",
+    "totalDamage": "Degats totaux infliges",
+    "highestWave": "Vague la plus haute",
+    "highestCombo": "Combo le plus haut",
+    "totalPrestiges": "Prestiges totaux",
+    "totalAscensions": "Ascensions totales",
+    "criticalHits": "Coups critiques",
+    "projectilesFired": "Projectiles tires",
+    "skillsUsed": "Competences utilisees",
+    "runesCollected": "Runes collectees",
+    "relicsFound": "Reliques trouvees",
+    "dps": "DPS actuel",
+    "avgWaveTime": "Temps moyen par vague"
   }
 }

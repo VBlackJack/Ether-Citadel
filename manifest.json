@@ -1,0 +1,19 @@
+{
+  "name": "Ether Citadel",
+  "short_name": "Ether Citadel",
+  "description": "Browser-based idle tower defense with deep progression systems",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "entertainment"]
+}

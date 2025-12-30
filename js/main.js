@@ -40,6 +40,11 @@ import {
     OFFICE_BOOSTS,
     AWAKENING_BONUSES,
     TURRET_SLOTS,
+    WEATHER_TYPES,
+    TALENT_TREES,
+    RANDOM_EVENTS,
+    ASCENSION_PERKS,
+    COMBO_TIERS,
     createUpgrades,
     createMetaUpgrades,
     getName,
@@ -2804,6 +2809,453 @@ class TurretSlotManager {
     }
 }
 
+class WeatherManager {
+    constructor(game) {
+        this.game = game;
+        this.currentWeather = WEATHER_TYPES[0];
+        this.timeRemaining = 0;
+        this.particles = [];
+    }
+
+    update(dt) {
+        this.timeRemaining -= dt / 1000;
+        if (this.timeRemaining <= 0) {
+            this.changeWeather();
+        }
+        this.updateParticles(dt);
+    }
+
+    changeWeather() {
+        const totalWeight = WEATHER_TYPES.reduce((sum, w) => sum + w.weight, 0);
+        let random = Math.random() * totalWeight;
+        for (const weather of WEATHER_TYPES) {
+            random -= weather.weight;
+            if (random <= 0) {
+                this.currentWeather = weather;
+                this.timeRemaining = weather.duration;
+                break;
+            }
+        }
+    }
+
+    getEffects() {
+        return this.currentWeather.effects || {};
+    }
+
+    updateParticles(dt) {
+        const id = this.currentWeather.id;
+        if (id === 'rain' || id === 'storm') {
+            if (Math.random() < 0.3) {
+                this.particles.push({
+                    x: Math.random() * this.game.width,
+                    y: -10,
+                    vy: 400 + Math.random() * 200,
+                    life: 2
+                });
+            }
+        }
+        this.particles = this.particles.filter(p => {
+            p.y += p.vy * dt / 1000;
+            p.life -= dt / 1000;
+            return p.life > 0 && p.y < this.game.height;
+        });
+    }
+
+    draw(ctx) {
+        const id = this.currentWeather.id;
+        if (id === 'rain' || id === 'storm') {
+            ctx.strokeStyle = id === 'storm' ? '#6366f1' : '#3b82f6';
+            ctx.lineWidth = 1;
+            this.particles.forEach(p => {
+                ctx.beginPath();
+                ctx.moveTo(p.x, p.y);
+                ctx.lineTo(p.x - 2, p.y + 15);
+                ctx.stroke();
+            });
+        }
+        if (id === 'fog') {
+            ctx.fillStyle = 'rgba(148, 163, 184, 0.3)';
+            ctx.fillRect(0, 0, this.game.width, this.game.height);
+        }
+        if (id === 'blood_moon') {
+            ctx.fillStyle = 'rgba(220, 38, 38, 0.15)';
+            ctx.fillRect(0, 0, this.game.width, this.game.height);
+        }
+        // Weather HUD
+        ctx.fillStyle = this.currentWeather.color;
+        ctx.font = '14px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText(`${this.currentWeather.icon} ${t(this.currentWeather.nameKey)}`, 10, this.game.height - 10);
+    }
+
+    getSaveData() {
+        return { weatherId: this.currentWeather.id, timeRemaining: this.timeRemaining };
+    }
+
+    loadSaveData(data) {
+        if (!data) return;
+        const weather = WEATHER_TYPES.find(w => w.id === data.weatherId);
+        if (weather) {
+            this.currentWeather = weather;
+            this.timeRemaining = data.timeRemaining || weather.duration;
+        }
+    }
+}
+
+class ComboManager {
+    constructor(game) {
+        this.game = game;
+        this.hits = 0;
+        this.timer = 0;
+        this.maxCombo = 0;
+        this.currentTier = null;
+    }
+
+    addHit() {
+        this.hits++;
+        this.timer = 2;
+        if (this.hits > this.maxCombo) this.maxCombo = this.hits;
+        this.updateTier();
+    }
+
+    updateTier() {
+        this.currentTier = null;
+        for (let i = COMBO_TIERS.length - 1; i >= 0; i--) {
+            if (this.hits >= COMBO_TIERS[i].hits) {
+                this.currentTier = COMBO_TIERS[i];
+                break;
+            }
+        }
+    }
+
+    update(dt) {
+        if (this.timer > 0) {
+            this.timer -= dt / 1000;
+            if (this.timer <= 0) {
+                this.hits = 0;
+                this.currentTier = null;
+            }
+        }
+    }
+
+    getMultiplier() {
+        return this.currentTier ? this.currentTier.mult : 1;
+    }
+
+    draw(ctx) {
+        if (!this.currentTier || this.hits < 5) return;
+        const centerX = this.game.width / 2;
+        ctx.save();
+        ctx.font = 'bold 24px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = this.currentTier.color;
+        ctx.shadowColor = this.currentTier.color;
+        ctx.shadowBlur = 10;
+        ctx.fillText(`${this.hits} ${t(this.currentTier.nameKey)}`, centerX, 80);
+        ctx.fillStyle = '#fff';
+        ctx.font = '14px Arial';
+        ctx.fillText(`x${this.currentTier.mult.toFixed(1)}`, centerX, 100);
+        ctx.restore();
+    }
+
+    getSaveData() {
+        return { maxCombo: this.maxCombo };
+    }
+
+    loadSaveData(data) {
+        if (data) this.maxCombo = data.maxCombo || 0;
+    }
+}
+
+class EventManager {
+    constructor(game) {
+        this.game = game;
+        this.activeEvent = null;
+        this.eventTimer = 0;
+        this.nextEventIn = 60 + Math.random() * 60;
+    }
+
+    update(dt) {
+        const seconds = dt / 1000;
+        if (this.activeEvent) {
+            this.eventTimer -= seconds;
+            if (this.eventTimer <= 0) {
+                this.activeEvent = null;
+            }
+        } else {
+            this.nextEventIn -= seconds;
+            if (this.nextEventIn <= 0) {
+                this.triggerRandomEvent();
+                this.nextEventIn = 90 + Math.random() * 90;
+            }
+        }
+    }
+
+    triggerRandomEvent() {
+        const totalWeight = RANDOM_EVENTS.reduce((sum, e) => sum + e.weight, 0);
+        let random = Math.random() * totalWeight;
+        for (const event of RANDOM_EVENTS) {
+            random -= event.weight;
+            if (random <= 0) {
+                this.activeEvent = event;
+                this.eventTimer = event.duration;
+                this.game.showNotification(`${event.icon} ${t(event.nameKey)}!`, event.negative ? '#ef4444' : '#22c55e');
+                break;
+            }
+        }
+    }
+
+    getEffects() {
+        if (!this.activeEvent) return {};
+        return this.activeEvent.effects || {};
+    }
+
+    draw(ctx) {
+        if (!this.activeEvent) return;
+        ctx.save();
+        ctx.fillStyle = this.activeEvent.negative ? 'rgba(239, 68, 68, 0.8)' : 'rgba(34, 197, 94, 0.8)';
+        ctx.fillRect(this.game.width / 2 - 100, 10, 200, 30);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${this.activeEvent.icon} ${t(this.activeEvent.nameKey)} (${Math.ceil(this.eventTimer)}s)`, this.game.width / 2, 30);
+        ctx.restore();
+    }
+
+    getSaveData() {
+        return { nextEventIn: this.nextEventIn };
+    }
+
+    loadSaveData(data) {
+        if (data) this.nextEventIn = data.nextEventIn || 60;
+    }
+}
+
+class TalentManager {
+    constructor(game) {
+        this.game = game;
+        this.points = 0;
+        this.allocated = {};
+    }
+
+    getPoints() {
+        return this.points;
+    }
+
+    addPoints(amount) {
+        this.points += amount;
+    }
+
+    canAllocate(talentId) {
+        const talent = this.findTalent(talentId);
+        if (!talent) return false;
+        const current = this.allocated[talentId] || 0;
+        if (current >= talent.max) return false;
+        if (this.points < talent.cost) return false;
+        if (talent.requires) {
+            for (const req of talent.requires) {
+                if (!this.allocated[req] || this.allocated[req] === 0) return false;
+            }
+        }
+        return true;
+    }
+
+    allocate(talentId) {
+        if (!this.canAllocate(talentId)) return false;
+        const talent = this.findTalent(talentId);
+        this.allocated[talentId] = (this.allocated[talentId] || 0) + 1;
+        this.points -= talent.cost;
+        this.game.save();
+        return true;
+    }
+
+    findTalent(talentId) {
+        for (const tree of TALENT_TREES) {
+            const talent = tree.talents.find(t => t.id === talentId);
+            if (talent) return talent;
+        }
+        return null;
+    }
+
+    getLevel(talentId) {
+        return this.allocated[talentId] || 0;
+    }
+
+    getTotalEffects() {
+        const effects = {};
+        for (const tree of TALENT_TREES) {
+            for (const talent of tree.talents) {
+                const level = this.getLevel(talent.id);
+                if (level > 0) {
+                    for (const [key, value] of Object.entries(talent.effect)) {
+                        effects[key] = (effects[key] || 0) + value * level;
+                    }
+                }
+            }
+        }
+        return effects;
+    }
+
+    reset() {
+        let refund = 0;
+        for (const tree of TALENT_TREES) {
+            for (const talent of tree.talents) {
+                const level = this.allocated[talent.id] || 0;
+                refund += level * talent.cost;
+            }
+        }
+        this.allocated = {};
+        this.points += refund;
+        this.game.save();
+    }
+
+    getSaveData() {
+        return { points: this.points, allocated: this.allocated };
+    }
+
+    loadSaveData(data) {
+        if (!data) return;
+        this.points = data.points || 0;
+        this.allocated = data.allocated || {};
+    }
+}
+
+class StatisticsManager {
+    constructor(game) {
+        this.game = game;
+        this.stats = {
+            totalPlayTime: 0,
+            totalKills: 0,
+            totalBosses: 0,
+            totalGoldEarned: 0,
+            totalDamageDealt: 0,
+            highestWave: 0,
+            highestCombo: 0,
+            totalPrestiges: 0,
+            totalAscensions: 0,
+            criticalHits: 0,
+            projectilesFired: 0,
+            skillsUsed: 0,
+            runesCollected: 0,
+            relicsFound: 0
+        };
+    }
+
+    increment(stat, amount = 1) {
+        if (this.stats[stat] !== undefined) {
+            this.stats[stat] += amount;
+        }
+    }
+
+    setMax(stat, value) {
+        if (this.stats[stat] !== undefined && value > this.stats[stat]) {
+            this.stats[stat] = value;
+        }
+    }
+
+    get(stat) {
+        return this.stats[stat] || 0;
+    }
+
+    update(dt) {
+        this.stats.totalPlayTime += dt / 1000;
+    }
+
+    formatTime(seconds) {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = Math.floor(seconds % 60);
+        return `${h}h ${m}m ${s}s`;
+    }
+
+    getSaveData() {
+        return this.stats;
+    }
+
+    loadSaveData(data) {
+        if (!data) return;
+        Object.assign(this.stats, data);
+    }
+}
+
+class AscensionManager {
+    constructor(game) {
+        this.game = game;
+        this.ascensionPoints = 0;
+        this.totalAscensions = 0;
+        this.purchasedPerks = {};
+    }
+
+    canAscend() {
+        return this.game.ether >= 1000;
+    }
+
+    getAscensionGain() {
+        return Math.floor(Math.sqrt(this.game.ether / 100));
+    }
+
+    doAscend() {
+        if (!this.canAscend()) return false;
+        const gain = this.getAscensionGain();
+        this.ascensionPoints += gain;
+        this.totalAscensions++;
+        this.game.statistics?.increment('totalAscensions');
+        // Full reset including prestige
+        this.game.ether = 0;
+        this.game.prestige?.fullReset();
+        this.game.restart();
+        this.game.save();
+        return true;
+    }
+
+    canPurchasePerk(perkId) {
+        const perk = ASCENSION_PERKS.find(p => p.id === perkId);
+        if (!perk) return false;
+        if (this.purchasedPerks[perkId]) return false;
+        return this.ascensionPoints >= perk.cost;
+    }
+
+    purchasePerk(perkId) {
+        if (!this.canPurchasePerk(perkId)) return false;
+        const perk = ASCENSION_PERKS.find(p => p.id === perkId);
+        this.ascensionPoints -= perk.cost;
+        this.purchasedPerks[perkId] = true;
+        this.game.save();
+        return true;
+    }
+
+    hasPerk(perkId) {
+        return !!this.purchasedPerks[perkId];
+    }
+
+    getTotalEffects() {
+        const effects = {};
+        for (const perk of ASCENSION_PERKS) {
+            if (this.purchasedPerks[perk.id]) {
+                for (const [key, value] of Object.entries(perk.effect)) {
+                    effects[key] = (effects[key] || 0) + value;
+                }
+            }
+        }
+        return effects;
+    }
+
+    getSaveData() {
+        return {
+            points: this.ascensionPoints,
+            total: this.totalAscensions,
+            perks: this.purchasedPerks
+        };
+    }
+
+    loadSaveData(data) {
+        if (!data) return;
+        this.ascensionPoints = data.points || 0;
+        this.totalAscensions = data.total || 0;
+        this.purchasedPerks = data.perks || {};
+    }
+}
+
 class Game {
     constructor() {
         window.game = this;
@@ -2841,6 +3293,12 @@ class Game {
         this.office = new OfficeManager(this);
         this.awakening = new AwakeningManager(this);
         this.turretSlots = new TurretSlotManager(this);
+        this.weather = new WeatherManager(this);
+        this.combo = new ComboManager(this);
+        this.events = new EventManager(this);
+        this.talents = new TalentManager(this);
+        this.statistics = new StatisticsManager(this);
+        this.ascensionMgr = new AscensionManager(this);
         this.dreadLevel = 0;
         this.speedIndex = 0;
         this.selectedForgeRelic = null;
@@ -4287,6 +4745,10 @@ class Game {
         this.production.update();
         this.office.update(dt);
         this.turretSlots.update(dt);
+        this.weather.update(dt);
+        this.combo.update(dt);
+        this.events.update(dt);
+        this.statistics.update(dt);
         if (this.isGameOver) return;
         this.skills.update(dt);
         if (this.drone) this.drone.update(dt, this.gameTime);
@@ -4410,6 +4872,9 @@ class Game {
         this.projectiles.forEach(p => p.draw(this.ctx));
         this.particles.forEach(p => p.draw(this.ctx));
         this.floatingTexts.forEach(t => t.draw(this.ctx));
+        this.weather.draw(this.ctx);
+        this.combo.draw(this.ctx);
+        this.events.draw(this.ctx);
     }
 
     gameOver() {
@@ -4573,7 +5038,13 @@ class Game {
             school: this.school.getSaveData(),
             office: this.office.getSaveData(),
             awakening: this.awakening.getSaveData(),
-            turretSlots: this.turretSlots.getSaveData()
+            turretSlots: this.turretSlots.getSaveData(),
+            weather: this.weather.getSaveData(),
+            combo: this.combo.getSaveData(),
+            events: this.events.getSaveData(),
+            talents: this.talents.getSaveData(),
+            statistics: this.statistics.getSaveData(),
+            ascensionMgr: this.ascensionMgr.getSaveData()
         };
         localStorage.setItem(CONFIG.saveKey, JSON.stringify(data));
         if (document.getElementById('save-string')) {
@@ -4673,6 +5144,24 @@ class Game {
                 }
                 if (data.turretSlots) {
                     this.turretSlots.loadSaveData(data.turretSlots);
+                }
+                if (data.weather) {
+                    this.weather.loadSaveData(data.weather);
+                }
+                if (data.combo) {
+                    this.combo.loadSaveData(data.combo);
+                }
+                if (data.events) {
+                    this.events.loadSaveData(data.events);
+                }
+                if (data.talents) {
+                    this.talents.loadSaveData(data.talents);
+                }
+                if (data.statistics) {
+                    this.statistics.loadSaveData(data.statistics);
+                }
+                if (data.ascensionMgr) {
+                    this.ascensionMgr.loadSaveData(data.ascensionMgr);
                 }
             } catch (e) {
                 console.error("Save error", e);
