@@ -3,6 +3,8 @@
  * Toast Notification System
  */
 
+import { escapeHtml } from '../utils/HtmlSanitizer.js';
+
 /**
  * Toast types configuration
  */
@@ -64,10 +66,7 @@ export class ToastManager {
      * Escape HTML to prevent XSS
      */
     escapeHtml(str) {
-        if (typeof str !== 'string') return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
+        return escapeHtml(str);
     }
 
     /**

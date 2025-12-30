@@ -4,7 +4,7 @@
  */
 
 import { CONFIG } from '../config.js';
-import { getErrorHandler } from '../utils/ErrorHandler.js';
+import { getErrorHandler, logError, ErrorSeverity } from '../utils/ErrorHandler.js';
 
 /**
  * Validate base64 string format
@@ -132,7 +132,7 @@ export class GameStateManager {
             if (!encoded) return false;
 
             if (!isValidBase64(encoded)) {
-                console.warn('Invalid save data format, clearing corrupted save');
+                logError('Invalid save data format, clearing corrupted save', 'GameState.load', ErrorSeverity.WARNING);
                 localStorage.removeItem(this.saveKey);
                 return false;
             }
@@ -141,7 +141,7 @@ export class GameStateManager {
             const data = JSON.parse(json);
 
             if (!data || typeof data !== 'object') {
-                console.warn('Invalid save data structure');
+                logError('Invalid save data structure', 'GameState.load', ErrorSeverity.WARNING);
                 return false;
             }
 
@@ -228,7 +228,7 @@ export class GameStateManager {
     importSave(saveString) {
         try {
             if (!isValidBase64(saveString)) {
-                console.error('Import failed: Invalid base64 format');
+                logError('Import failed: Invalid base64 format', 'GameState.import', ErrorSeverity.WARNING);
                 return false;
             }
 
@@ -236,7 +236,7 @@ export class GameStateManager {
             const data = JSON.parse(json);
 
             if (!data || typeof data !== 'object') {
-                console.error('Import failed: Invalid data structure');
+                logError('Import failed: Invalid data structure', 'GameState.import', ErrorSeverity.WARNING);
                 return false;
             }
 
@@ -265,7 +265,7 @@ export class GameStateManager {
 
         const now = Date.now();
         const elapsedMs = now - savedTime;
-        const maxOfflineMs = 8 * 60 * 60 * 1000; // 8 hours max
+        const maxOfflineMs = (CONFIG.maxOfflineHours || 24) * 60 * 60 * 1000;
 
         if (elapsedMs < 60000) return null; // Less than 1 minute
 
@@ -275,7 +275,8 @@ export class GameStateManager {
         return {
             elapsed: elapsedMs,
             capped: cappedMs,
-            minutes: offlineMinutes
+            minutes: offlineMinutes,
+            multiplier: CONFIG.offlineEarningsMultiplier || 0.75
         };
     }
 }

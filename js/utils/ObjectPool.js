@@ -18,11 +18,12 @@
  * Generic object pool for reducing garbage collection
  */
 export class ObjectPool {
-    constructor(factory, reset, initialSize = 50) {
+    constructor(factory, reset, initialSize = 50, maxSize = 500) {
         this.factory = factory;
         this.reset = reset;
         this.pool = [];
         this.active = [];
+        this.maxSize = maxSize;
 
         // Pre-populate pool
         for (let i = 0; i < initialSize; i++) {
@@ -52,7 +53,10 @@ export class ObjectPool {
         const idx = this.active.indexOf(obj);
         if (idx !== -1) {
             this.active.splice(idx, 1);
-            this.pool.push(obj);
+            // Only keep object if pool is under max size
+            if (this.pool.length < this.maxSize) {
+                this.pool.push(obj);
+            }
         }
     }
 
@@ -65,7 +69,8 @@ export class ObjectPool {
         for (const obj of this.active) {
             if (checkFn(obj)) {
                 stillActive.push(obj);
-            } else {
+            } else if (this.pool.length < this.maxSize) {
+                // Only return to pool if under max size
                 this.pool.push(obj);
             }
         }

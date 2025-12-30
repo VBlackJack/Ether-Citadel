@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { logError, ErrorSeverity } from './utils/ErrorHandler.js';
+
 /**
  * Lightweight i18n system for Defender Idle
  */
@@ -83,7 +85,7 @@ class I18n {
             }
             this.translations[locale] = await response.json();
         } catch (error) {
-            console.error(`i18n: Error loading ${locale}:`, error);
+            logError(error, `i18n.loadTranslations(${locale})`, ErrorSeverity.ERROR);
             this.translations[locale] = {};
         }
     }
@@ -95,7 +97,7 @@ class I18n {
      */
     async setLocale(locale) {
         if (!this.supportedLocales.includes(locale)) {
-            console.warn(`i18n: Unsupported locale: ${locale}`);
+            logError(`Unsupported locale: ${locale}`, 'i18n.setLocale', ErrorSeverity.WARNING);
             return;
         }
 
@@ -139,7 +141,7 @@ class I18n {
         }
 
         if (value === undefined) {
-            console.warn(`i18n: Missing translation key: ${key}`);
+            // Don't log missing keys to avoid spam - just return the key
             return key;
         }
 
@@ -227,7 +229,7 @@ class I18n {
             try {
                 callback(this.currentLocale);
             } catch (error) {
-                console.error('i18n: Error in locale change callback:', error);
+                logError(error, 'i18n.notifyLocaleChange', ErrorSeverity.ERROR);
             }
         });
     }

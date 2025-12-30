@@ -470,7 +470,9 @@
     "devModeActivated": "MODE DEV ACTIV\u00c9",
     "saveCopied": "Sauvegarde copi\u00e9e!",
     "invalidSave": "Invalide",
-    "pasteSave": "Collez votre sauvegarde:"
+    "pasteSave": "Collez votre sauvegarde:",
+    "autoSaved": "Partie sauvegard\u00e9e",
+    "importFailed": "\u00c9chec de l'import"
   },
   "status": {
     "active": "ACTIF",

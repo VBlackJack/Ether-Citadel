@@ -4,6 +4,7 @@
  */
 
 import { MathUtils } from '../config.js';
+import { logError, ErrorSeverity } from '../utils/ErrorHandler.js';
 
 /**
  * Game Loop Manager
@@ -24,6 +25,22 @@ export class GameLoopManager {
         this.gridCtx = null;
         this.lastGridWidth = 0;
         this.lastGridHeight = 0;
+
+        // Debug stats
+        this.debugStats = {
+            fps: 0,
+            frameTime: 0,
+            updateTime: 0,
+            renderTime: 0,
+            entityCounts: {}
+        };
+        this.fpsHistory = [];
+        this.lastFpsUpdate = 0;
+
+        // Error handling
+        this.errorCount = 0;
+        this.maxErrors = 10;
+        this.lastErrorTime = 0;
     }
 
     /**
@@ -54,22 +71,70 @@ export class GameLoopManager {
     loop() {
         if (!this.isRunning) return;
 
-        const now = performance.now();
-        const delta = now - this.then;
+        try {
+            const now = performance.now();
+            const delta = now - this.then;
 
-        if (delta >= this.frameInterval) {
-            this.then = now - (delta % this.frameInterval);
+            if (delta >= this.frameInterval) {
+                this.then = now - (delta % this.frameInterval);
 
-            const rawDt = now - this.lastTime;
-            this.lastTime = now;
+                const rawDt = now - this.lastTime;
+                this.lastTime = now;
 
-            const dt = Math.min(rawDt, 100) * this.game.speedMultiplier;
+                const dt = Math.min(rawDt, 100) * this.game.speedMultiplier;
 
-            if (!this.game.isPaused && !this.game.isGameOver) {
-                this.update(dt);
+                // Track update time
+                let updateStart = 0;
+                if (!this.game.isPaused && !this.game.isGameOver) {
+                    updateStart = performance.now();
+                    this.update(dt);
+                    this.debugStats.updateTime = performance.now() - updateStart;
+                }
+
+                // Track render time
+                const renderStart = performance.now();
+                this.render();
+                this.debugStats.renderTime = performance.now() - renderStart;
+
+                // Update FPS stats (smoothed average)
+                this.debugStats.frameTime = rawDt;
+                this.fpsHistory.push(rawDt);
+                if (this.fpsHistory.length > 30) this.fpsHistory.shift();
+                const avgFrameTime = this.fpsHistory.reduce((a, b) => a + b, 0) / this.fpsHistory.length;
+                this.debugStats.fps = Math.round(1000 / avgFrameTime);
+
+                // Update entity counts periodically
+                if (now - this.lastFpsUpdate > 500) {
+                    this.lastFpsUpdate = now;
+                    const g = this.game;
+                    this.debugStats.entityCounts = {
+                        enemies: g.enemies?.length || 0,
+                        projectiles: g.projectiles?.length || 0,
+                        particles: g.particles?.length || 0,
+                        turrets: g.turrets?.length || 0,
+                        floatingTexts: g.floatingTexts?.length || 0
+                    };
+                }
+
+                // Reset error count on successful frame
+                if (this.errorCount > 0 && now - this.lastErrorTime > 5000) {
+                    this.errorCount = 0;
+                }
             }
+        } catch (error) {
+            this.errorCount++;
+            this.lastErrorTime = performance.now();
+            logError(error, 'GameLoop.loop', ErrorSeverity.ERROR);
 
-            this.render();
+            // Stop loop if too many errors
+            if (this.errorCount >= this.maxErrors) {
+                logError('Too many errors, stopping game loop', 'GameLoop.loop', ErrorSeverity.CRITICAL);
+                this.stop();
+                if (this.game.ui) {
+                    this.game.ui.showToast('Game error - please reload', 'error');
+                }
+                return;
+            }
         }
 
         if (this.isRunning) {

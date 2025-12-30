@@ -3,6 +3,9 @@
  * Modal System
  */
 
+import { escapeHtml } from '../utils/HtmlSanitizer.js';
+import { logError, ErrorSeverity } from '../utils/ErrorHandler.js';
+
 /**
  * Default i18n keys for dialog buttons
  */
@@ -89,7 +92,7 @@ export class ModalManager {
     create(id) {
         const config = this.modals.get(id);
         if (!config) {
-            console.error(`Modal ${id} not registered`);
+            logError(`Modal ${id} not registered`, 'ModalManager.create', ErrorSeverity.ERROR);
             return null;
         }
 
@@ -148,10 +151,7 @@ export class ModalManager {
      * Escape HTML to prevent XSS
      */
     escapeHtml(str) {
-        if (typeof str !== 'string') return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
+        return escapeHtml(str);
     }
 
     /**
@@ -174,7 +174,7 @@ export class ModalManager {
     show(id, data = {}) {
         const config = this.modals.get(id);
         if (!config) {
-            console.error(`Modal ${id} not registered`);
+            logError(`Modal ${id} not registered`, 'ModalManager.show', ErrorSeverity.ERROR);
             return;
         }
 

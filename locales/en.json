@@ -470,7 +470,9 @@
     "devModeActivated": "DEV MODE ACTIVATED",
     "saveCopied": "Save copied!",
     "invalidSave": "Invalid",
-    "pasteSave": "Paste your save:"
+    "pasteSave": "Paste your save:",
+    "autoSaved": "Game saved",
+    "importFailed": "Import failed"
   },
   "status": {
     "active": "ACTIVE",

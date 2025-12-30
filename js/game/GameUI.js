@@ -5,6 +5,7 @@
 
 import { formatNumber } from '../config.js';
 import { t } from '../i18n.js';
+import { escapeHtml } from '../utils/HtmlSanitizer.js';
 
 /**
  * Game UI Manager
@@ -45,15 +46,6 @@ export class GameUIManager {
         return this.elements[id];
     }
 
-    /**
-     * Escape HTML to prevent XSS
-     */
-    escapeHtml(str) {
-        if (typeof str !== 'string') return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
 
     /**
      * Update gold display
@@ -274,7 +266,7 @@ export class GameUIManager {
         }
 
         const toast = document.createElement('div');
-        toast.className = `toast toast-${this.escapeHtml(type)}`;
+        toast.className = `toast toast-${escapeHtml(type)}`;
 
         const iconSpan = document.createElement('span');
         iconSpan.className = 'toast-icon';

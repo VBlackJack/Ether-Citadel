@@ -63,28 +63,7 @@ import {
 } from './data.js';
 import { getEventDelegation } from './ui/EventDelegation.js';
 import { getErrorHandler, logError } from './utils/ErrorHandler.js';
-
-/**
- * Sanitize color values to prevent CSS injection
- * @param {string} color - Color value to sanitize
- * @returns {string} Safe color value or fallback
- */
-function sanitizeColor(color) {
-    if (typeof color !== 'string') return '#888';
-    // Allow hex colors, rgb/rgba, hsl/hsla, and named colors
-    const hexPattern = /^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/;
-    const rgbPattern = /^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*[\d.]+)?\s*\)$/;
-    const hslPattern = /^hsla?\(\s*\d{1,3}\s*,\s*\d{1,3}%\s*,\s*\d{1,3}%\s*(,\s*[\d.]+)?\s*\)$/;
-    const namedColors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'white', 'black', 'gray', 'grey', 'cyan', 'magenta'];
-
-    if (hexPattern.test(color) || rgbPattern.test(color) || hslPattern.test(color)) {
-        return color;
-    }
-    if (namedColors.includes(color.toLowerCase())) {
-        return color;
-    }
-    return '#888';
-}
+import { sanitizeColor, calculateChecksum, verifyChecksum } from './utils/HtmlSanitizer.js';
 
 class SoundManager {
     constructor() {
@@ -4151,6 +4130,8 @@ class Game {
         this.buyMode = '1';
         this._intervals = [];
         this._boundEventHandlers = {};
+        this.showDebugPanel = false;
+        this.devClickCount = 0;
         this.sound = new SoundManager();
         this.metaUpgrades = new MetaUpgradeManager();
         this.skills = new SkillManager();
@@ -4240,6 +4221,10 @@ class Game {
             if (e.key.toLowerCase() === 'w') this.activateSkill('nuke');
             if (e.key.toLowerCase() === 'e') this.activateSkill('blackhole');
             if (e.key.toLowerCase() === 'p') this.togglePause();
+            if (e.key === 'F3') {
+                e.preventDefault();
+                this.toggleDebugPanel();
+            }
         };
         window.addEventListener('resize', this._boundResize);
         window.addEventListener('keydown', this._boundKeydown);
@@ -4340,6 +4325,14 @@ class Game {
                 document.getElementById('auto-status').classList.add('hidden');
             }
         }, 500));
+
+        // Auto-save with toast notification
+        this._intervals.push(setInterval(() => {
+            if (this.isDirty || Date.now() - this.lastSaveTime > CONFIG.saveIntervalMs) {
+                this.save();
+                this.ui.showToast(t('notifications.autoSaved') || 'Game saved', 'success', { duration: 1500 });
+            }
+        }, CONFIG.saveIntervalMs || 30000));
     }
 
     cleanup() {
@@ -4388,6 +4381,69 @@ class Game {
             btn.classList.remove('bg-yellow-600');
             this.lastTime = performance.now();
         }
+    }
+
+    toggleDebugPanel() {
+        this.showDebugPanel = !this.showDebugPanel;
+        const panel = document.getElementById('debug-panel');
+        if (panel) {
+            panel.classList.toggle('hidden', !this.showDebugPanel);
+        } else if (this.showDebugPanel) {
+            this.createDebugPanel();
+        }
+    }
+
+    createDebugPanel() {
+        const panel = document.createElement('div');
+        panel.id = 'debug-panel';
+        panel.className = 'fixed top-2 left-2 bg-black/80 text-green-400 text-xs font-mono p-2 rounded z-50 min-w-[180px]';
+        panel.innerHTML = `
+            <div class="font-bold mb-1 text-green-300">Debug Stats</div>
+            <div id="debug-fps">FPS: --</div>
+            <div id="debug-frame-time">Frame: -- ms</div>
+            <div id="debug-update-time">Update: -- ms</div>
+            <div id="debug-render-time">Render: -- ms</div>
+            <div class="border-t border-green-800 my-1 pt-1">Entities</div>
+            <div id="debug-enemies">Enemies: --</div>
+            <div id="debug-projectiles">Projectiles: --</div>
+            <div id="debug-particles">Particles: --</div>
+            <div id="debug-turrets">Turrets: --</div>
+            <div id="debug-memory" class="border-t border-green-800 mt-1 pt-1">Memory: --</div>
+        `;
+        document.body.appendChild(panel);
+        this.startDebugUpdates();
+    }
+
+    startDebugUpdates() {
+        this._intervals.push(setInterval(() => {
+            if (!this.showDebugPanel || !this.gameLoop) return;
+            const stats = this.gameLoop.debugStats;
+            const counts = stats.entityCounts;
+
+            const fpsEl = document.getElementById('debug-fps');
+            const frameEl = document.getElementById('debug-frame-time');
+            const updateEl = document.getElementById('debug-update-time');
+            const renderEl = document.getElementById('debug-render-time');
+            const enemiesEl = document.getElementById('debug-enemies');
+            const projEl = document.getElementById('debug-projectiles');
+            const partEl = document.getElementById('debug-particles');
+            const turretEl = document.getElementById('debug-turrets');
+            const memEl = document.getElementById('debug-memory');
+
+            if (fpsEl) fpsEl.textContent = `FPS: ${stats.fps}`;
+            if (frameEl) frameEl.textContent = `Frame: ${stats.frameTime.toFixed(1)} ms`;
+            if (updateEl) updateEl.textContent = `Update: ${stats.updateTime.toFixed(2)} ms`;
+            if (renderEl) renderEl.textContent = `Render: ${stats.renderTime.toFixed(2)} ms`;
+            if (enemiesEl) enemiesEl.textContent = `Enemies: ${counts.enemies || 0}`;
+            if (projEl) projEl.textContent = `Projectiles: ${counts.projectiles || 0}`;
+            if (partEl) partEl.textContent = `Particles: ${counts.particles || 0}`;
+            if (turretEl) turretEl.textContent = `Turrets: ${counts.turrets || 0}`;
+
+            if (memEl && performance.memory) {
+                const mb = (performance.memory.usedJSHeapSize / 1048576).toFixed(1);
+                memEl.textContent = `Memory: ${mb} MB`;
+            }
+        }, 200));
     }
 
     resize() {
@@ -6576,7 +6632,11 @@ class Game {
         // Create rotating backups (keep 3 backups)
         this.createSaveBackup();
 
-        localStorage.setItem(CONFIG.saveKey, JSON.stringify(data));
+        // Add checksum for data integrity
+        const jsonData = JSON.stringify(data);
+        const checksum = calculateChecksum(jsonData);
+        const saveData = { data, checksum };
+        localStorage.setItem(CONFIG.saveKey, JSON.stringify(saveData));
         this.isDirty = false;
         this.lastSaveTime = Date.now();
         const saveStringEl = document.getElementById('save-string');
@@ -6657,7 +6717,23 @@ class Game {
         const saved = localStorage.getItem(CONFIG.saveKey);
         if (saved) {
             try {
-                const data = JSON.parse(saved);
+                const parsed = JSON.parse(saved);
+
+                // Handle new format with checksum
+                let data;
+                if (parsed.checksum !== undefined && parsed.data !== undefined) {
+                    const jsonData = JSON.stringify(parsed.data);
+                    if (!verifyChecksum(jsonData, parsed.checksum)) {
+                        logError('Save data checksum mismatch - data may be corrupted', 'Game.load');
+                        // Continue loading anyway, but warn the user
+                        this.ui?.showToast('Save data may be corrupted', 'warning');
+                    }
+                    data = parsed.data;
+                } else {
+                    // Legacy format without checksum
+                    data = parsed;
+                }
+
                 this.ether = data.ether || 0;
                 this.crystals = data.crystals || 0;
                 this.miningResources = data.miningResources || {};
@@ -6810,6 +6886,26 @@ async function init() {
     await i18n.init();
     i18n.translatePage();
     new Game();
+
+    // Save and cleanup on window unload
+    window.addEventListener('beforeunload', () => {
+        if (window.game) {
+            window.game.save();
+            window.game.cleanup();
+        }
+    });
+
+    // Pause game when tab loses focus
+    document.addEventListener('visibilitychange', () => {
+        if (!window.game) return;
+        if (document.hidden && !window.game.isPaused) {
+            window.game._wasPausedBeforeBlur = false;
+            window.game.togglePause();
+        } else if (!document.hidden && window.game.isPaused && window.game._wasPausedBeforeBlur === false) {
+            window.game.togglePause();
+            delete window.game._wasPausedBeforeBlur;
+        }
+    });
 
     // Escape key to close modals
     document.addEventListener('keydown', (e) => {

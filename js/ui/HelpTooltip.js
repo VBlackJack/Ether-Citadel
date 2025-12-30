@@ -3,6 +3,8 @@
  * Help Tooltip System
  */
 
+import { escapeHtml } from '../utils/HtmlSanitizer.js';
+
 /**
  * Help Tooltip Manager
  * Manages help icons and their tooltips throughout the UI
@@ -97,10 +99,7 @@ export class HelpTooltipManager {
      * Escape HTML to prevent XSS
      */
     escapeHtml(str) {
-        if (typeof str !== 'string') return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
+        return escapeHtml(str);
     }
 
     showTooltip(key, anchor) {

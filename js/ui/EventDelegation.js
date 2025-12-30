@@ -3,6 +3,8 @@
  * Event Delegation System
  */
 
+import { logError, ErrorSeverity } from '../utils/ErrorHandler.js';
+
 /**
  * Event Delegation Manager
  * Centralizes UI event handling to avoid inline onclick handlers
@@ -194,7 +196,7 @@ export class EventDelegationManager {
 
         const handler = this.actions.get(action);
         if (!handler) {
-            console.warn(`EventDelegation: No handler for action "${action}"`);
+            logError(`No handler for action "${action}"`, 'EventDelegation.handleClick', ErrorSeverity.WARNING);
             return;
         }
 

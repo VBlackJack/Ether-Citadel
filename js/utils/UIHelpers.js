@@ -140,17 +140,8 @@ export function calculateBulkPurchase(gold, baseCost, costMultiplier, currentLev
     return { count, totalCost };
 }
 
-/**
- * Escape HTML to prevent XSS
- * @param {string} str - String to escape
- * @returns {string}
- */
-export function escapeHtml(str) {
-    if (typeof str !== 'string') return '';
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-}
+// Re-export escapeHtml from centralized sanitizer
+export { escapeHtml } from './HtmlSanitizer.js';
 
 /**
  * Create a button element with data-action

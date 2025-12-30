@@ -20,20 +20,7 @@ import { t } from '../i18n.js';
 import { FloatingText, Particle, Rune } from '../effects/index.js';
 import { COLORS, getEnemyDisplayColor } from '../constants/colors.js';
 import { ENEMY_BALANCE, COMBAT_BALANCE, PARTICLE_COUNTS } from '../constants/balance.js';
-
-/**
- * Sanitize color values to prevent CSS injection
- */
-function sanitizeColor(color) {
-    if (typeof color !== 'string') return '#888';
-    const hexPattern = /^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/;
-    const rgbPattern = /^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*[\d.]+)?\s*\)$/;
-    const hslPattern = /^hsla?\(\s*-?\d{1,3}\s*,\s*\d{1,3}%\s*,\s*\d{1,3}%\s*(,\s*[\d.]+)?\s*\)$/;
-    const namedColors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'white', 'black', 'gray', 'grey', 'cyan', 'magenta'];
-    if (hexPattern.test(color) || rgbPattern.test(color) || hslPattern.test(color)) return color;
-    if (namedColors.includes(color.toLowerCase())) return color;
-    return '#888';
-}
+import { sanitizeColor } from '../utils/HtmlSanitizer.js';
 
 /**
  * Enemy entity
