@@ -31,7 +31,47 @@ export class Turret {
         this.x = 0;
         this.y = 0;
         this.lastShotTime = 0;
+        this.destroyed = false;
         this.updateTierStats();
+        this.initHP();
+    }
+
+    /**
+     * Initialize HP based on tier
+     */
+    initHP() {
+        const baseHP = 50;
+        const tierMult = 1 + (this.tier - 1) * 0.5;
+        this.maxHp = Math.floor(baseHP * tierMult);
+        this.hp = this.maxHp;
+        this.destroyed = false;
+    }
+
+    /**
+     * Take damage from enemies
+     */
+    takeDamage(amount) {
+        if (this.destroyed) return;
+        this.hp -= amount;
+        if (this.hp <= 0) {
+            this.hp = 0;
+            this.destroyed = true;
+        }
+    }
+
+    /**
+     * Repair turret (called on wave completion or prestige)
+     */
+    repair() {
+        this.hp = this.maxHp;
+        this.destroyed = false;
+    }
+
+    /**
+     * Check if turret can attack
+     */
+    isOperational() {
+        return !this.destroyed && this.hp > 0;
     }
 
     updateTierStats() {
@@ -55,6 +95,14 @@ export class Turret {
             this.fireRateMult *= 1.5;
             this.rangeMult *= 0.8;
         }
+
+        // Update max HP when tier changes
+        const baseHP = 50;
+        const tierMult = 1 + (this.tier - 1) * 0.5;
+        const newMaxHp = Math.floor(baseHP * tierMult);
+        const hpRatio = this.maxHp > 0 ? this.hp / this.maxHp : 1;
+        this.maxHp = newMaxHp;
+        this.hp = Math.floor(newMaxHp * hpRatio);
     }
 
     upgradeTier(game) {
@@ -73,6 +121,7 @@ export class Turret {
     }
 
     update(dt, gameTime, game) {
+        // Update position even if destroyed (for visual)
         const slots = [{ x: -40, y: -60 }, { x: 40, y: -60 }, { x: -40, y: 60 }, { x: 40, y: 60 }];
         if (this.type === 'ARTILLERY') {
             this.x = game.castle.x;
@@ -95,6 +144,9 @@ export class Turret {
                 this.y = game.castle.y + Math.sin(angle) * CONFIG.turret.orbitRadius;
             }
         }
+
+        // Don't shoot if destroyed
+        if (!this.isOperational()) return;
 
         const isRapidFire = game.skills.isActive('overdrive') || game.activeBuffs['rage'] > 0;
         const baseFireRate = isRapidFire ? game.currentFireRate / 3 : game.currentFireRate;
@@ -143,7 +195,15 @@ export class Turret {
         const tierData = TURRET_TIERS[this.tier] || TURRET_TIERS[1];
         ctx.save();
         ctx.translate(this.x, this.y);
-        const target = game.findTarget(this.x, this.y, game.currentRange * this.rangeMult);
+
+        // Apply destroyed visual effect
+        if (this.destroyed) {
+            ctx.globalAlpha = 0.3;
+        }
+
+        const target = this.isOperational()
+            ? game.findTarget(this.x, this.y, game.currentRange * this.rangeMult)
+            : null;
         if (target) ctx.rotate(Math.atan2(target.y - this.y, target.x - this.x));
 
         ctx.shadowColor = tierData.color;
@@ -167,9 +227,55 @@ export class Turret {
         else { ctx.fillStyle = tierData.color; ctx.fillRect(0, -6, 20, 12); }
         ctx.beginPath();
         ctx.arc(0, 0, 10, 0, Math.PI * 2);
-        ctx.fillStyle = '#312e81';
+        ctx.fillStyle = this.destroyed ? '#4a044e' : '#312e81';
         ctx.fill();
         ctx.shadowBlur = 0;
+
         ctx.restore();
+
+        // Draw HP bar (only if not at full HP and not destroyed)
+        if (!this.destroyed && this.hp < this.maxHp) {
+            this.drawHpBar(ctx);
+        }
+
+        // Draw destroyed indicator
+        if (this.destroyed) {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(-8, -8);
+            ctx.lineTo(8, 8);
+            ctx.moveTo(8, -8);
+            ctx.lineTo(-8, 8);
+            ctx.stroke();
+            ctx.restore();
+        }
+    }
+
+    /**
+     * Draw turret HP bar
+     */
+    drawHpBar(ctx) {
+        const barWidth = 24;
+        const barHeight = 4;
+        const x = this.x - barWidth / 2;
+        const y = this.y - 20;
+
+        // Background
+        ctx.fillStyle = '#1e1b4b';
+        ctx.fillRect(x, y, barWidth, barHeight);
+
+        // HP fill
+        const hpRatio = this.hp / this.maxHp;
+        const hpColor = hpRatio > 0.5 ? '#22c55e' : hpRatio > 0.25 ? '#eab308' : '#ef4444';
+        ctx.fillStyle = hpColor;
+        ctx.fillRect(x, y, barWidth * hpRatio, barHeight);
+
+        // Border
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x, y, barWidth, barHeight);
     }
 }

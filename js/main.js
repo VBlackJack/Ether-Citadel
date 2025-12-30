@@ -1156,7 +1156,9 @@ class UpgradeManager {
             tabBtn.classList.toggle('tab-notify', hasAffordable);
         });
 
-        document.getElementById('btn-bulk-buy').innerHTML = `<span>${t('lab.bulkBuy')}</span>: ${game.buyMode}`;
+        const bulkBtn = document.getElementById('btn-bulk-buy');
+        const safeBuyMode = ['1', 'MAX'].includes(game.buyMode) ? game.buyMode : '1';
+        if (bulkBtn) bulkBtn.innerHTML = `<span>${t('lab.bulkBuy')}</span>: ${safeBuyMode}`;
 
         filtered.forEach(u => {
             let cost = this.getCost(u);
@@ -1179,8 +1181,8 @@ class UpgradeManager {
             const isMaxed = u.maxLevel && u.level >= u.maxLevel;
             const canAfford = game.gold >= cost && !isMaxed;
             const tm = Math.pow(CONFIG.evolutionMultiplier, game.castle.tier - 1);
-            const mdm = game.metaUpgrades.getEffectValue('damageMult') * (1 + (game.relicMults.damage || 0));
-            const mhm = game.metaUpgrades.getEffectValue('healthMult') * (1 + (game.relicMults.health || 0));
+            const mdm = (game.metaUpgrades.getEffectValue('damageMult') || 1) * (1 + (game.relicMults.damage || 0));
+            const mhm = (game.metaUpgrades.getEffectValue('healthMult') || 1) * (1 + (game.relicMults.health || 0));
 
             let val = u.getValue(u.level);
             let next = u.getValue(u.level + 1);
@@ -4154,6 +4156,7 @@ class Game {
         this.autoBuyEnabled = false;
         this.isGameOver = false;
         this.retryTimeoutId = null;
+        this.retryIntervalId = null;
         this.gold = 0;
         this.wave = 1;
         this.lastSaveTime = Date.now();
@@ -5591,17 +5594,23 @@ class Game {
         const feature = features[featureId];
         if (!feature) return;
 
-        document.getElementById('feature-intro-icon').textContent = feature.icon;
-        document.getElementById('feature-intro-title').textContent = t(feature.titleKey);
-        document.getElementById('feature-intro-desc').textContent = t(feature.descKey);
-        document.getElementById('feature-intro-tips').innerHTML = '';
-        document.getElementById('feature-intro-modal').classList.remove('hidden');
+        const iconEl = document.getElementById('feature-intro-icon');
+        const titleEl = document.getElementById('feature-intro-title');
+        const descEl = document.getElementById('feature-intro-desc');
+        const tipsEl = document.getElementById('feature-intro-tips');
+        const modalEl = document.getElementById('feature-intro-modal');
+
+        if (iconEl) iconEl.textContent = feature.icon;
+        if (titleEl) titleEl.textContent = t(feature.titleKey);
+        if (descEl) descEl.textContent = t(feature.descKey);
+        if (tipsEl) tipsEl.innerHTML = '';
+        if (modalEl) modalEl.classList.remove('hidden');
 
         localStorage.setItem(introKey, 'true');
     }
 
     closeFeatureIntro() {
-        document.getElementById('feature-intro-modal').classList.add('hidden');
+        document.getElementById('feature-intro-modal')?.classList.add('hidden');
     }
 
     updateSuggestedAction() {
@@ -6128,12 +6137,14 @@ class Game {
         } else if (this.enemies.length === 0 && this.waveInProgress) {
             this.waveInProgress = false;
             this.wave++;
+            // Repair all turrets at wave end
+            this.turrets.forEach(t => t.repair());
             this.save();
             setTimeout(() => this.startWave(), 2000 / this.speedMultiplier);
         }
 
         this.castle.update(dt);
-        this.turrets.forEach(t => t.update(dt, this.gameTime));
+        this.turrets.forEach(t => t.update(dt, this.gameTime, this));
         this.runes.forEach(r => r.update(dt));
         this.runes = this.runes.filter(r => r.life > 0);
 
@@ -6243,14 +6254,14 @@ class Game {
         this.metaUpgrades.render();
         this.sound.play('gameover');
 
+        const timerEl = document.getElementById('auto-retry-timer');
+        const countdownEl = document.getElementById('retry-countdown');
+
         // Check auto-prestige first (priority over auto-retry)
         if (this.prestige?.autoPrestige && this.prestige.canPrestige() && this.wave >= this.prestige.autoPrestigeWave) {
-            document.getElementById('auto-retry-timer').classList.remove('hidden');
-            document.getElementById('retry-countdown').innerText = 'PP';
-            if (this.retryTimeoutId) {
-                clearTimeout(this.retryTimeoutId);
-                clearInterval(this.retryTimeoutId);
-            }
+            if (timerEl) timerEl.classList.remove('hidden');
+            if (countdownEl) countdownEl.innerText = 'PP';
+            this.clearRetryTimers();
             this.retryTimeoutId = setTimeout(() => {
                 this.prestige.doPrestige();
             }, 1500);
@@ -6258,31 +6269,36 @@ class Game {
         }
 
         if (this.autoRetryEnabled && this.metaUpgrades.getEffectValue('unlockAuto')) {
-            document.getElementById('auto-retry-timer').classList.remove('hidden');
+            if (timerEl) timerEl.classList.remove('hidden');
             let countdown = 3;
-            document.getElementById('retry-countdown').innerText = countdown;
-            if (this.retryTimeoutId) {
-                clearTimeout(this.retryTimeoutId);
-                clearInterval(this.retryTimeoutId);
-            }
-            this.retryTimeoutId = setInterval(() => {
+            if (countdownEl) countdownEl.innerText = countdown;
+            this.clearRetryTimers();
+            this.retryIntervalId = setInterval(() => {
                 countdown--;
-                document.getElementById('retry-countdown').innerText = countdown;
+                if (countdownEl) countdownEl.innerText = countdown;
                 if (countdown <= 0) {
-                    clearInterval(this.retryTimeoutId);
+                    this.clearRetryTimers();
                     this.restart(true);
                 }
             }, 1000);
         } else {
-            document.getElementById('auto-retry-timer').classList.add('hidden');
+            if (timerEl) timerEl.classList.add('hidden');
+        }
+    }
+
+    clearRetryTimers() {
+        if (this.retryTimeoutId) {
+            clearTimeout(this.retryTimeoutId);
+            this.retryTimeoutId = null;
+        }
+        if (this.retryIntervalId) {
+            clearInterval(this.retryIntervalId);
+            this.retryIntervalId = null;
         }
     }
 
     manualRestart() {
-        if (this.retryTimeoutId) {
-            clearTimeout(this.retryTimeoutId);
-            clearInterval(this.retryTimeoutId);
-        }
+        this.clearRetryTimers();
         this.restart(false);
     }
 

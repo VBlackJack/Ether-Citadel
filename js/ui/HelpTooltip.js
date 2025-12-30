@@ -112,18 +112,20 @@ export class HelpTooltipManager {
         const tooltip = document.createElement('div');
         tooltip.className = 'help-tooltip';
 
-        const title = config.titleKey && this.game?.t
+        const hasTranslator = typeof this.game?.t === 'function';
+
+        const title = config.titleKey && hasTranslator
             ? this.game.t(config.titleKey)
             : config.title;
 
-        const content = config.contentKey && this.game?.t
+        const content = config.contentKey && hasTranslator
             ? this.game.t(config.contentKey)
             : config.content;
 
         let tipsHtml = '';
         if (config.tips.length > 0) {
             const tipsItems = config.tips.map(tip => {
-                const tipText = tip.key && this.game?.t ? this.game.t(tip.key) : tip.text;
+                const tipText = tip.key && hasTranslator ? this.game.t(tip.key) : tip.text;
                 return `<div class="help-tooltip-tip"><span class="help-tooltip-tip-icon">💡</span>${this.escapeHtml(tipText)}</div>`;
             }).join('');
 

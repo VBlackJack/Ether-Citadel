@@ -77,6 +77,7 @@ export class Enemy {
         this.state = 'APPROACH';
         this.teleportTimer = 0;
         this.thermalShockCooldown = 0;
+        this.attackingTurret = null;
     }
 
     applyStatus(type, power, duration) {
@@ -86,6 +87,31 @@ export class Enemy {
             this.status.poisonDmg = power;
         }
         if (type === 'stasis') this.status.stasisTimer = duration;
+    }
+
+    /**
+     * Find the nearest operational turret within attack consideration range
+     * @param {Object} game - Game instance
+     * @returns {Object|null} Nearest turret or null
+     */
+    findNearestTurret(game) {
+        if (!game.turrets || game.turrets.length === 0) return null;
+
+        let nearest = null;
+        let nearestDist = Infinity;
+
+        for (const turret of game.turrets) {
+            if (!turret.isOperational()) continue;
+
+            const dist = MathUtils.dist(this.x, this.y, turret.x, turret.y);
+            // Only consider turrets that are between enemy and castle
+            if (turret.x < this.x && dist < nearestDist) {
+                nearestDist = dist;
+                nearest = turret;
+            }
+        }
+
+        return nearest;
     }
 
     update(dt) {
@@ -124,16 +150,40 @@ export class Enemy {
             this.takeDamage(tickDmg, false, false, true);
         }
 
-        const targetX = game.castle.x;
-        const targetY = game.height / 2;
-        const dist = MathUtils.dist(this.x, this.y, targetX, targetY);
-        if (dist > 80) {
-            const angle = Math.atan2(targetY - this.y, targetX - this.x);
-            const moveStep = currentSpeed * (dt / 16);
-            this.x += Math.cos(angle) * moveStep;
-            this.y += Math.sin(angle) * moveStep;
+        // Check for nearby turrets to attack first
+        const nearestTurret = this.findNearestTurret(game);
+
+        if (nearestTurret) {
+            const turretDist = MathUtils.dist(this.x, this.y, nearestTurret.x, nearestTurret.y);
+
+            if (turretDist <= ENEMY_BALANCE.TURRET_ATTACK_RANGE) {
+                // Attack turret - enemy slows down while attacking
+                currentSpeed *= ENEMY_BALANCE.TURRET_ATTACK_SLOW;
+                nearestTurret.takeDamage((this.damage * ENEMY_BALANCE.TURRET_DAMAGE_RATE) * (dt / 16));
+                this.attackingTurret = nearestTurret;
+            } else {
+                // Move toward turret
+                const angle = Math.atan2(nearestTurret.y - this.y, nearestTurret.x - this.x);
+                const moveStep = currentSpeed * (dt / 16);
+                this.x += Math.cos(angle) * moveStep;
+                this.y += Math.sin(angle) * moveStep;
+                this.attackingTurret = null;
+            }
         } else {
-            game.castle.takeDamage((this.damage * 0.05) * (dt / 16));
+            // No turrets - attack castle
+            const targetX = game.castle.x;
+            const targetY = game.height / 2;
+            const dist = MathUtils.dist(this.x, this.y, targetX, targetY);
+
+            if (dist > 80) {
+                const angle = Math.atan2(targetY - this.y, targetX - this.x);
+                const moveStep = currentSpeed * (dt / 16);
+                this.x += Math.cos(angle) * moveStep;
+                this.y += Math.sin(angle) * moveStep;
+            } else {
+                game.castle.takeDamage((this.damage * COMBAT_BALANCE.CASTLE_DAMAGE_RATE) * (dt / 16));
+            }
+            this.attackingTurret = null;
         }
         if (this.typeKey === 'PHANTOM') {
             this.teleportTimer += dt;
