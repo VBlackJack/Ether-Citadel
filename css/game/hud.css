@@ -1,0 +1,101 @@
+/*
+ * Copyright 2025 Julien Bombled
+ * Game HUD Styles
+ */
+
+#hud {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1rem;
+    pointer-events: none;
+    z-index: 10;
+}
+
+#hud > * {
+    pointer-events: auto;
+}
+
+.hud-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.hud-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.stat-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+}
+
+.stat-icon {
+    font-size: 1.2rem;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+}
+
+.health-bar-container {
+    width: 200px;
+    height: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.health-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-danger), #f87171);
+    transition: width 0.3s ease;
+}
+
+.health-bar-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.shield-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light));
+    opacity: 0.7;
+}
+
+.wave-display {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.wave-number {
+    color: var(--color-primary-light);
+}
+
+.dps-display {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}

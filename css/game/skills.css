@@ -1,0 +1,26 @@
+/*
+ * Copyright 2025 Julien Bombled
+ * Skill and Cooldown Styles
+ */
+
+.cooldown-overlay {
+    transition: height 0.1s linear;
+}
+
+.skill-active {
+    box-shadow: 0 0 15px currentColor;
+}
+
+.orbital-laser {
+    position: absolute;
+    background: #fff;
+    box-shadow: 0 0 10px #60a5fa, 0 0 20px #3b82f6;
+    animation: laser-fade 0.5s forwards;
+    transform-origin: top center;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.dark-matter-text {
+    text-shadow: 0 0 5px #a855f7, 0 0 10px #000;
+}

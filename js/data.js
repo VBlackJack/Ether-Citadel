@@ -14,6 +14,21 @@
  * limitations under the License.
  */
 
+/**
+ * Data Module
+ *
+ * Note: Modular data files are available in ./data/ directory:
+ * - enemies.js: ENEMY_TYPES, BOSS_MECHANICS, etc.
+ * - turrets.js: TURRET_TIERS, SCHOOL_TURRETS, etc.
+ * - resources.js: MINING_RESOURCES, FORGE_RECIPES, etc.
+ * - progression.js: PRESTIGE_UPGRADES, TALENT_TREES, etc.
+ * - content.js: CHALLENGES, CAMPAIGN_MISSIONS, etc.
+ * - upgrades.js: createUpgrades, createMetaUpgrades
+ * - misc.js: RELIC_DB, ACHIEVEMENTS_DB, etc.
+ *
+ * New code can import from './data/index.js' for modular access.
+ */
+
 import { t } from './i18n.js';
 
 /**

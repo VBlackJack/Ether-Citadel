@@ -1,0 +1,78 @@
+/*
+ * Copyright 2025 Julien Bombled
+ * Dread Mode Styles
+ */
+
+.dread-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem;
+    justify-content: center;
+}
+
+.dread-level {
+    width: 50px;
+    height: 50px;
+    border-radius: 0.5rem;
+    border: 2px solid #334155;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #1e293b;
+}
+
+.dread-level:hover:not(.locked) {
+    transform: scale(1.1);
+}
+
+.dread-level.locked {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.dread-level.selected {
+    border-color: #a855f7;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+    background: rgba(168, 85, 247, 0.2);
+}
+
+.dread-level[data-level="0"] { color: #94a3b8; }
+.dread-level[data-level="1"] { color: #4ade80; }
+.dread-level[data-level="2"] { color: #22d3ee; }
+.dread-level[data-level="3"] { color: #3b82f6; }
+.dread-level[data-level="4"] { color: #a855f7; }
+.dread-level[data-level="5"] { color: #f97316; }
+.dread-level[data-level="6"] { color: #ef4444; }
+.dread-level[data-level="7"] { color: #dc2626; }
+.dread-level[data-level="8"] { color: #991b1b; }
+.dread-level[data-level="9"] { color: #7f1d1d; }
+.dread-level[data-level="10"] { color: #000; text-shadow: 0 0 10px #a855f7; }
+
+.dread-info {
+    text-align: center;
+    padding: 1rem;
+    background: #0f172a;
+    border-radius: 0.5rem;
+    margin: 1rem;
+}
+
+.dread-info-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.dread-info-bonus {
+    color: #22c55e;
+    font-size: 0.875rem;
+}
+
+.dread-info-difficulty {
+    color: #ef4444;
+    font-size: 0.875rem;
+}

@@ -1,0 +1,70 @@
+/*
+ * Copyright 2025 Julien Bombled
+ * Modal Components
+ */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-modal);
+    z-index: var(--z-modal);
+    opacity: 1;
+    transition: opacity var(--transition-normal);
+}
+
+.modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: var(--color-bg-card);
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.modal-close {
+    font-size: 1.5rem;
+    color: var(--color-text-muted);
+    transition: color var(--transition-fast);
+}
+
+.modal-close:hover {
+    color: var(--color-danger);
+}
+
+.modal-body {
+    color: var(--color-text);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}

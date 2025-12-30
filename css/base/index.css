@@ -1,0 +1,9 @@
+/*
+ * Copyright 2025 Julien Bombled
+ * Base Styles Index
+ */
+
+@import url('./reset.css');
+@import url('./variables.css');
+@import url('./animations.css');
+@import url('./ux.css');

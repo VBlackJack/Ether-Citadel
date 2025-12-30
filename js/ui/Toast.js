@@ -1,0 +1,171 @@
+/*
+ * Copyright 2025 Julien Bombled
+ * Toast Notification System
+ */
+
+/**
+ * Toast types configuration
+ */
+const TOAST_TYPES = {
+    success: {
+        icon: '✓',
+        class: 'toast-success'
+    },
+    error: {
+        icon: '✕',
+        class: 'toast-error'
+    },
+    warning: {
+        icon: '⚠',
+        class: 'toast-warning'
+    },
+    info: {
+        icon: 'ℹ',
+        class: 'toast-info'
+    }
+};
+
+/**
+ * Toast Manager - Handles toast notifications
+ */
+export class ToastManager {
+    constructor(options = {}) {
+        this.container = null;
+        this.toasts = [];
+        this.maxToasts = options.maxToasts || 5;
+        this.defaultDuration = options.defaultDuration || 3000;
+        this.position = options.position || 'bottom-center';
+        this.init();
+    }
+
+    init() {
+        this.container = document.getElementById('toast-container');
+        if (!this.container) {
+            this.container = document.createElement('div');
+            this.container.id = 'toast-container';
+            this.container.className = this.getPositionClasses();
+            document.body.appendChild(this.container);
+        }
+    }
+
+    getPositionClasses() {
+        const positions = {
+            'top-left': 'fixed top-4 left-4 z-[9999] flex flex-col gap-2',
+            'top-center': 'fixed top-4 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2 items-center',
+            'top-right': 'fixed top-4 right-4 z-[9999] flex flex-col gap-2 items-end',
+            'bottom-left': 'fixed bottom-4 left-4 z-[9999] flex flex-col-reverse gap-2',
+            'bottom-center': 'fixed bottom-4 left-1/2 -translate-x-1/2 z-[9999] flex flex-col-reverse gap-2 items-center',
+            'bottom-right': 'fixed bottom-4 right-4 z-[9999] flex flex-col-reverse gap-2 items-end'
+        };
+        return positions[this.position] || positions['bottom-center'];
+    }
+
+    /**
+     * Show a toast notification
+     */
+    show(message, options = {}) {
+        const type = options.type || 'info';
+        const duration = options.duration !== undefined ? options.duration : this.defaultDuration;
+        const config = TOAST_TYPES[type] || TOAST_TYPES.info;
+
+        if (this.toasts.length >= this.maxToasts) {
+            const oldest = this.toasts.shift();
+            if (oldest && oldest.element) {
+                oldest.element.remove();
+            }
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${config.class}`;
+        toast.innerHTML = `
+            <span class="toast-icon">${options.icon || config.icon}</span>
+            <span class="toast-message">${message}</span>
+        `;
+
+        this.container.appendChild(toast);
+
+        const toastData = {
+            element: toast,
+            timeout: null
+        };
+
+        this.toasts.push(toastData);
+
+        if (duration > 0) {
+            toastData.timeout = setTimeout(() => {
+                this.removeToast(toastData);
+            }, duration);
+        }
+
+        return toastData;
+    }
+
+    /**
+     * Remove a toast
+     */
+    removeToast(toastData) {
+        if (toastData.timeout) {
+            clearTimeout(toastData.timeout);
+        }
+
+        const index = this.toasts.indexOf(toastData);
+        if (index > -1) {
+            this.toasts.splice(index, 1);
+        }
+
+        if (toastData.element) {
+            toastData.element.style.animation = 'toast-out 0.3s ease-out forwards';
+            setTimeout(() => {
+                toastData.element.remove();
+            }, 300);
+        }
+    }
+
+    /**
+     * Show success toast
+     */
+    success(message, options = {}) {
+        return this.show(message, { ...options, type: 'success' });
+    }
+
+    /**
+     * Show error toast
+     */
+    error(message, options = {}) {
+        return this.show(message, { ...options, type: 'error' });
+    }
+
+    /**
+     * Show warning toast
+     */
+    warning(message, options = {}) {
+        return this.show(message, { ...options, type: 'warning' });
+    }
+
+    /**
+     * Show info toast
+     */
+    info(message, options = {}) {
+        return this.show(message, { ...options, type: 'info' });
+    }
+
+    /**
+     * Clear all toasts
+     */
+    clear() {
+        for (const toast of this.toasts) {
+            this.removeToast(toast);
+        }
+        this.toasts = [];
+    }
+}
+
+// Singleton instance
+let toastManagerInstance = null;
+
+export function getToastManager(options) {
+    if (!toastManagerInstance) {
+        toastManagerInstance = new ToastManager(options);
+    }
+    return toastManagerInstance;
+}

@@ -1,0 +1,40 @@
+/*
+ * Copyright 2025 Julien Bombled
+ * Tab Components
+ */
+
+.tab-btn {
+    position: relative;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    border-top-left-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    border-bottom-width: 2px;
+    border-color: transparent;
+    color: #94a3b8;
+    background-color: transparent;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    color: white;
+}
+
+.tab-btn.active {
+    color: #60a5fa;
+    border-color: #3b82f6;
+    background-color: #1e293b;
+}
+
+.tab-notify::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 8px;
+    height: 8px;
+    background-color: #fbbf24;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #fbbf24;
+}

@@ -1,0 +1,16 @@
+/*
+ * Copyright 2025 Julien Bombled
+ * Modular CSS Entry Point
+ *
+ * This file imports all modular CSS components.
+ * Use this as an alternative to styles.css for modular development.
+ */
+
+/* Base styles */
+@import url('./base/index.css');
+
+/* Reusable components */
+@import url('./components/index.css');
+
+/* Game-specific styles */
+@import url('./game/index.css');

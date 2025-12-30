@@ -1,0 +1,129 @@
+/*
+ * Copyright 2025 Julien Bombled
+ * Mining UI Styles
+ */
+
+.mining-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.mining-slot {
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.mining-slot:hover {
+    border-color: #3b82f6;
+}
+
+.mining-slot.active {
+    border-color: #22c55e;
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
+}
+
+.mining-resource-icon {
+    font-size: 2rem;
+}
+
+.mining-resource-name {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.mining-resource-count {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.mining-progress {
+    width: 100%;
+    height: 8px;
+    background: #334155;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.mining-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    border-radius: 4px;
+    transition: width 0.1s linear;
+}
+
+.mining-btn {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 0.25rem;
+    background: #3b82f6;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mining-btn:hover {
+    background: #2563eb;
+}
+
+.mining-btn:disabled {
+    background: #334155;
+    cursor: not-allowed;
+}
+
+.mining-inventory {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: #0f172a;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+}
+
+.mining-inventory-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: #1e293b;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+}
+
+/* Forge UI */
+.forge-recipes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.forge-recipe {
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.forge-recipe:hover {
+    border-color: #a855f7;
+}
+
+.forge-recipe.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
