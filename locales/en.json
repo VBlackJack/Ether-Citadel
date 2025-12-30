@@ -856,5 +856,107 @@
     "relicsFound": "Relics Found",
     "dps": "Current DPS",
     "avgWaveTime": "Avg Wave Time"
+  },
+  "help": {
+    "lab": {
+      "title": "Laboratory",
+      "text": "Buy permanent upgrades with gold. Upgrades are divided into 3 categories: Attack (damage, speed, crit), Defense (health, shield, armor), and Tech (turrets, effects). All upgrades persist through runs but reset on Prestige."
+    },
+    "mining": {
+      "title": "Mining",
+      "text": "Assign miners to extract resources over time. Higher tier resources take longer to mine but are more valuable. Resources are used in the Forge to upgrade relics. Mining continues even when offline."
+    },
+    "forge": {
+      "title": "Relic Forge",
+      "text": "Use mining resources to enhance your relics. Upgrade: increase relic tier. Reroll: swap for another relic of the same tier. Fuse: combine 2 relics into a higher tier one. Forge Legendary: create a random legendary relic."
+    },
+    "research": {
+      "title": "Research Tree",
+      "text": "Spend crystals to unlock permanent bonuses. Research is organized into 3 branches: Offense, Defense, and Utility. Some nodes require previous research. Research persists through Prestige."
+    },
+    "production": {
+      "title": "Production",
+      "text": "Build passive resource generators. Each building produces resources automatically over time. Upgrade buildings to increase output. Production continues while offline."
+    },
+    "prestige": {
+      "title": "Prestige",
+      "text": "Reset your run progress to gain Prestige Points based on your highest wave. Use points to buy permanent upgrades. Requires wave 25+. Resets: gold, upgrades, wave. Keeps: research, production, relics."
+    },
+    "quests": {
+      "title": "Daily Quests",
+      "text": "Complete daily objectives for bonus rewards. Quests reset every 24 hours. Objectives include killing enemies, reaching waves, defeating bosses, and more. Rewards include gold, crystals, and ether."
+    },
+    "school": {
+      "title": "School",
+      "text": "Unlock and upgrade different turret types. Each turret has unique stats and abilities. Use crystals to unlock new turrets or enhance existing ones. Turret levels persist permanently."
+    },
+    "office": {
+      "title": "Office",
+      "text": "Activate powerful temporary boosts using gems. Boosts last for a limited time and provide significant bonuses. Multiple boosts can be active at once. Plan your boost usage for difficult waves."
+    },
+    "awakening": {
+      "title": "Awakening",
+      "text": "The ultimate evolution. Reach Dread Level 6+ to unlock. Awakening grants powerful permanent bonuses including wave skip, automation, and multipliers. Represents true mastery of the game."
+    },
+    "talents": {
+      "title": "Talents",
+      "text": "Allocate talent points across 4 specializations: Warrior (damage), Guardian (defense), Mystic (skills), Merchant (economy). Each tree has 5 talents with increasing power. Reset talents to reassign points."
+    },
+    "weather": {
+      "title": "Weather",
+      "text": "Dynamic weather affects gameplay. Clear: normal. Rain: enemies slower, +gold. Storm: +damage, less gold. Fog: reduced range. Wind: projectiles affected. Blood Moon: stronger enemies, more rewards."
+    },
+    "events": {
+      "title": "Events",
+      "text": "Random events occur during gameplay, providing temporary bonuses or challenges. Events can double gold, boost damage, spawn special enemies, or trigger meteor showers. Stay alert for opportunities!"
+    },
+    "combo": {
+      "title": "Combo System",
+      "text": "Build combos by killing enemies in rapid succession. Higher combos increase your damage multiplier up to 4x. Combos decay if you don't get kills. Watch the combo meter to maintain your streak."
+    },
+    "ascension": {
+      "title": "Ascension",
+      "text": "Transcend reality with 1000+ Ether. Ascension is a super-prestige that resets everything including prestige progress. Grants Ascension Points for permanent cosmic perks that carry across all future runs."
+    },
+    "statistics": {
+      "title": "Statistics",
+      "text": "Track all your gameplay stats including total kills, gold earned, highest wave, play time, and more. Compare your progress across different categories: General, Combat, Economy, and Progression."
+    },
+    "collection": {
+      "title": "Relic Collection",
+      "text": "View all your collected relics. Relics drop from bosses and provide passive bonuses. Relics are tiered from Common to Legendary. Use the Forge to upgrade relics to higher tiers."
+    },
+    "codex": {
+      "title": "Codex",
+      "text": "Encyclopedia of all enemy types. Encounter enemies to unlock their entries. View enemy stats, abilities, and weaknesses. Useful for planning strategies against difficult enemies."
+    },
+    "challenges": {
+      "title": "Challenges",
+      "text": "Hardcore modes with special rules. Challenges provide Dark Matter rewards for forbidden research. Each challenge has unique modifiers like no regen, faster enemies, or reduced HP."
+    },
+    "dread": {
+      "title": "Dread Mode",
+      "text": "Increase difficulty for better rewards. Higher Dread levels make enemies stronger but grant bonus gold, ether, and relic drop rates. Progress through 10 Dread levels to unlock Awakening."
+    },
+    "turrets": {
+      "title": "Turret Slots",
+      "text": "Place turrets in slots around your castle. Each slot can hold one turret. Turrets automatically attack enemies in range. Purchase additional slots with gold. Rearrange turrets by selecting slots."
+    },
+    "chips": {
+      "title": "Turret Chips",
+      "text": "Equip chips on turrets for bonus effects. Chips drop from bosses. Each turret can hold multiple chips. Chip effects stack. Collect rare chips like Void Chip for massive bonuses."
+    },
+    "skills": {
+      "title": "Skills",
+      "text": "Powerful abilities on cooldown. Overdrive: 3x speed for 5s. Meteor: massive area damage. Black Hole: pulls and crushes enemies. Use skills strategically on tough waves or bosses."
+    },
+    "runes": {
+      "title": "Runes",
+      "text": "Click on glowing runes that appear on the battlefield. Rage: 2x speed. Midas: 5x gold. Heal: restore 25% HP. Runes disappear after a few seconds, so grab them quickly!"
+    },
+    "town": {
+      "title": "Town",
+      "text": "Your town grows as you play. Level up by gaining XP through gameplay. Higher town levels unlock new features: quests, school, office, awakening. Current unlocks are shown in the town panel."
+    }
   }
 }

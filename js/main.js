@@ -2999,7 +2999,14 @@ class EventManager {
             if (random <= 0) {
                 this.activeEvent = event;
                 this.eventTimer = event.duration;
-                this.game.showNotification(`${event.icon} ${t(event.nameKey)}!`, event.negative ? '#ef4444' : '#22c55e');
+                const color = event.negative ? '#ef4444' : '#22c55e';
+                this.game.floatingTexts.push(new FloatingText(
+                    this.game.width / 2,
+                    this.game.height / 2 - 100,
+                    `${event.icon} ${t(event.nameKey)}!`,
+                    color,
+                    36
+                ));
                 break;
             }
         }
@@ -5217,12 +5224,71 @@ async function init() {
         }
     }, 2000);
 
+    // Initialize help tooltips
+    initHelpTooltips();
+
     // Hide loading screen when game is ready
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) {
         loadingScreen.classList.add('fade-out');
         setTimeout(() => loadingScreen.remove(), 500);
     }
+}
+
+function initHelpTooltips() {
+    let activeTooltip = null;
+
+    document.querySelectorAll('.help-icon[data-help]').forEach(icon => {
+        icon.addEventListener('mouseenter', (e) => {
+            const helpKey = icon.getAttribute('data-help');
+            const titleKey = `help.${helpKey}.title`;
+            const textKey = `help.${helpKey}.text`;
+
+            const title = t(titleKey);
+            const text = t(textKey);
+
+            if (!title || title === titleKey) return;
+
+            if (activeTooltip) {
+                activeTooltip.remove();
+            }
+
+            const tooltip = document.createElement('div');
+            tooltip.className = 'help-tooltip';
+            tooltip.innerHTML = `
+                <div class="help-tooltip-title">${title}</div>
+                <div class="help-tooltip-text">${text}</div>
+            `;
+            document.body.appendChild(tooltip);
+
+            const rect = icon.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+
+            let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+            let top = rect.bottom + 10;
+
+            if (left < 10) left = 10;
+            if (left + tooltipRect.width > window.innerWidth - 10) {
+                left = window.innerWidth - tooltipRect.width - 10;
+            }
+
+            if (top + tooltipRect.height > window.innerHeight - 10) {
+                top = rect.top - tooltipRect.height - 10;
+            }
+
+            tooltip.style.left = `${left}px`;
+            tooltip.style.top = `${top}px`;
+
+            activeTooltip = tooltip;
+        });
+
+        icon.addEventListener('mouseleave', () => {
+            if (activeTooltip) {
+                activeTooltip.remove();
+                activeTooltip = null;
+            }
+        });
+    });
 }
 
 init();

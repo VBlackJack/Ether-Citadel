@@ -856,5 +856,107 @@
     "relicsFound": "Reliques trouvees",
     "dps": "DPS actuel",
     "avgWaveTime": "Temps moyen par vague"
+  },
+  "help": {
+    "lab": {
+      "title": "Laboratoire",
+      "text": "Achetez des ameliorations permanentes avec de l'or. Les ameliorations sont divisees en 3 categories : Attaque (degats, vitesse, crit), Defense (sante, bouclier, armure) et Tech (tourelles, effets). Toutes persistent entre les parties mais se reinitialise au Prestige."
+    },
+    "mining": {
+      "title": "Minage",
+      "text": "Assignez des mineurs pour extraire des ressources au fil du temps. Les ressources de tier superieur prennent plus de temps mais sont plus precieuses. Les ressources servent a la Forge pour ameliorer les reliques. Le minage continue hors ligne."
+    },
+    "forge": {
+      "title": "Forge de Reliques",
+      "text": "Utilisez les ressources de minage pour ameliorer vos reliques. Ameliorer : augmente le tier. Reroll : echange contre une autre du meme tier. Fusionner : combine 2 reliques en une de tier superieur. Forger Legendaire : cree une relique legendaire aleatoire."
+    },
+    "research": {
+      "title": "Arbre de Recherche",
+      "text": "Depensez des cristaux pour debloquer des bonus permanents. La recherche est organisee en 3 branches : Offense, Defense et Utilitaire. Certains noeuds necessitent des recherches prealables. La recherche persiste apres le Prestige."
+    },
+    "production": {
+      "title": "Production",
+      "text": "Construisez des generateurs de ressources passifs. Chaque batiment produit des ressources automatiquement. Ameliorez les batiments pour augmenter la production. La production continue hors ligne."
+    },
+    "prestige": {
+      "title": "Prestige",
+      "text": "Reinitialise votre progression pour gagner des Points de Prestige selon votre vague max. Utilisez les points pour acheter des ameliorations permanentes. Necessite vague 25+. Reset : or, ameliorations, vague. Garde : recherche, production, reliques."
+    },
+    "quests": {
+      "title": "Quetes Quotidiennes",
+      "text": "Completez des objectifs quotidiens pour des recompenses bonus. Les quetes se reinitialises toutes les 24h. Les objectifs incluent tuer des ennemis, atteindre des vagues, battre des boss. Recompenses : or, cristaux, ether."
+    },
+    "school": {
+      "title": "Ecole",
+      "text": "Debloquez et ameliorez differents types de tourelles. Chaque tourelle a des stats et capacites uniques. Utilisez les cristaux pour debloquer de nouvelles tourelles ou ameliorer les existantes. Les niveaux de tourelles sont permanents."
+    },
+    "office": {
+      "title": "Bureau",
+      "text": "Activez des boosts temporaires puissants avec des gemmes. Les boosts durent un temps limite et offrent des bonus significatifs. Plusieurs boosts peuvent etre actifs simultanement. Planifiez vos boosts pour les vagues difficiles."
+    },
+    "awakening": {
+      "title": "Eveil",
+      "text": "L'evolution ultime. Atteignez le niveau Terreur 6+ pour debloquer. L'Eveil accorde des bonus permanents puissants incluant saut de vague, automatisation et multiplicateurs. Represente la vraie maitrise du jeu."
+    },
+    "talents": {
+      "title": "Talents",
+      "text": "Allouez des points de talent dans 4 specialisations : Guerrier (degats), Gardien (defense), Mystique (competences), Marchand (economie). Chaque arbre a 5 talents de puissance croissante. Reinitialiser pour reassigner les points."
+    },
+    "weather": {
+      "title": "Meteo",
+      "text": "La meteo dynamique affecte le gameplay. Degage : normal. Pluie : ennemis plus lents, +or. Orage : +degats, moins d'or. Brouillard : portee reduite. Vent : projectiles affectes. Lune de Sang : ennemis plus forts, plus de recompenses."
+    },
+    "events": {
+      "title": "Evenements",
+      "text": "Des evenements aleatoires surviennent pendant le jeu, offrant des bonus temporaires ou des defis. Les evenements peuvent doubler l'or, booster les degats, faire apparaitre des ennemis speciaux ou declencher des pluies de meteores. Restez attentif !"
+    },
+    "combo": {
+      "title": "Systeme de Combo",
+      "text": "Construisez des combos en tuant des ennemis rapidement. Des combos plus eleves augmentent votre multiplicateur de degats jusqu'a 4x. Les combos se degradent sans kills. Surveillez la jauge de combo pour maintenir votre serie."
+    },
+    "ascension": {
+      "title": "Ascension",
+      "text": "Transcendez la realite avec 1000+ Ether. L'Ascension est un super-prestige qui reinitialise tout, y compris la progression de prestige. Accorde des Points d'Ascension pour des avantages cosmiques permanents."
+    },
+    "statistics": {
+      "title": "Statistiques",
+      "text": "Suivez toutes vos stats de jeu incluant kills totaux, or gagne, vague max, temps de jeu et plus. Comparez votre progression dans differentes categories : General, Combat, Economie et Progression."
+    },
+    "collection": {
+      "title": "Collection de Reliques",
+      "text": "Visualisez toutes vos reliques collectees. Les reliques tombent des boss et fournissent des bonus passifs. Les reliques vont de Commun a Legendaire. Utilisez la Forge pour ameliorer les reliques."
+    },
+    "codex": {
+      "title": "Codex",
+      "text": "Encyclopedie de tous les types d'ennemis. Rencontrez les ennemis pour debloquer leurs entrees. Consultez les stats, capacites et faiblesses. Utile pour planifier des strategies contre les ennemis difficiles."
+    },
+    "challenges": {
+      "title": "Defis",
+      "text": "Modes hardcore avec regles speciales. Les defis donnent de la Matiere Noire pour la recherche interdite. Chaque defi a des modificateurs uniques comme pas de regen, ennemis plus rapides ou PV reduits."
+    },
+    "dread": {
+      "title": "Mode Terreur",
+      "text": "Augmentez la difficulte pour de meilleures recompenses. Des niveaux de Terreur plus eleves rendent les ennemis plus forts mais donnent plus d'or, d'ether et de reliques. Progressez a travers 10 niveaux pour debloquer l'Eveil."
+    },
+    "turrets": {
+      "title": "Emplacements de Tourelle",
+      "text": "Placez des tourelles dans les emplacements autour de votre chateau. Chaque emplacement contient une tourelle. Les tourelles attaquent automatiquement les ennemis a portee. Achetez des emplacements supplementaires avec de l'or."
+    },
+    "chips": {
+      "title": "Puces de Tourelle",
+      "text": "Equipez des puces sur les tourelles pour des bonus. Les puces tombent des boss. Chaque tourelle peut contenir plusieurs puces. Les effets se cumulent. Collectez des puces rares comme la Puce du Vide pour des bonus massifs."
+    },
+    "skills": {
+      "title": "Competences",
+      "text": "Capacites puissantes avec temps de recharge. Surcharge : vitesse x3 pendant 5s. Meteore : degats de zone massifs. Trou Noir : aspire et ecrase les ennemis. Utilisez strategiquement sur les vagues ou boss difficiles."
+    },
+    "runes": {
+      "title": "Runes",
+      "text": "Cliquez sur les runes brillantes qui apparaissent sur le champ de bataille. Rage : vitesse x2. Midas : or x5. Soin : restaure 25% PV. Les runes disparaissent apres quelques secondes, attrapez-les vite !"
+    },
+    "town": {
+      "title": "Ville",
+      "text": "Votre ville grandit au fil du jeu. Montez de niveau en gagnant de l'XP. Des niveaux de ville plus eleves debloquent de nouvelles fonctionnalites : quetes, ecole, bureau, eveil. Les deblocages actuels sont affiches dans le panneau ville."
+    }
   }
 }
