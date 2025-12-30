@@ -1,0 +1,62 @@
+/*
+ * Copyright 2025 Julien Bombled
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Game configuration constants
+ */
+export const CONFIG = {
+    baseEnemySpeed: 0.8,
+    baseEnemyHp: 10,
+    enemySpawnRate: 1500,
+    saveKey: 'defenderIdleSave_Patch81_v1',
+    evolutionInterval: 10,
+    evolutionMultiplier: 1.5
+};
+
+/**
+ * Sound definitions for procedural audio
+ */
+export const SOUND_DB = {
+    shoot: { type: 'square', freq: 400, decay: 0.1, vol: 0.1 },
+    hit: { type: 'sawtooth', freq: 100, decay: 0.1, vol: 0.1 },
+    coin: { type: 'sine', freq: 800, decay: 0.2, vol: 0.05, slide: true },
+    levelup: { type: 'triangle', freq: 600, decay: 0.5, vol: 0.2, melody: true },
+    gameover: { type: 'sawtooth', freq: 150, decay: 1.0, vol: 0.3, slideDown: true }
+};
+
+/**
+ * Math utility functions
+ */
+export const MathUtils = {
+    lerp: (a, b, t) => a + (b - a) * t,
+    dist: (x1, y1, x2, y2) => Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2),
+    randomRange: (min, max) => Math.random() * (max - min) + min
+};
+
+/**
+ * Format large numbers with suffixes
+ * @param {number} num
+ * @returns {string}
+ */
+export function formatNumber(num) {
+    if (num >= 1e18) return (num / 1e18).toFixed(2) + 'Qi';
+    if (num >= 1e15) return (num / 1e15).toFixed(2) + 'Qa';
+    if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
+    if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+    if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+    if (num >= 1e3) return (num / 1e3).toFixed(1) + 'k';
+    return Math.floor(num).toString();
+}

@@ -1,0 +1,731 @@
+{
+  "locales": {
+    "en": "English",
+    "fr": "Fran\u00e7ais"
+  },
+  "game": {
+    "title": "Ether Citadel",
+    "level": "Niveau",
+    "gold": "Or",
+    "wave": "Vague",
+    "enemies": "Ennemis",
+    "hp": "PV",
+    "rush": "RUSH",
+    "rushTooltip": "Appeler la vague suivante (+25% Or)",
+    "codex": "Codex",
+    "challenges": "D\u00e9fis",
+    "options": "Opt.",
+    "success": "Succ\u00e8s"
+  },
+  "hud": {
+    "evolutionTier": "\u00c9volution Tier",
+    "activeChallenge": "D\u00c9FI ACTIF :",
+    "autoRetry": "AUTO RETRY",
+    "autoBuy": "AUTO BUY",
+    "aiActive": "IA ACTIVE"
+  },
+  "skills": {
+    "overdrive": {
+      "name": "Surcharge",
+      "desc": "Vitesse x3 pendant 5s."
+    },
+    "nuke": {
+      "name": "M\u00e9t\u00e9ore",
+      "desc": "D\u00e9g\u00e2ts massifs de zone."
+    },
+    "blackhole": {
+      "name": "Trou Noir",
+      "desc": "Aspire et broie les ennemis."
+    }
+  },
+  "modals": {
+    "collection": {
+      "title": "Collection",
+      "empty": "Aucune relique trouv\u00e9e. Tuez des Boss !"
+    },
+    "codex": {
+      "title": "Codex",
+      "unknown": "???",
+      "unknownDesc": "Rencontrez cet ennemi pour le d\u00e9bloquer.",
+      "hpMult": "HP x{{value}}",
+      "speedMult": "Vit x{{value}}"
+    },
+    "challenges": {
+      "title": "Mode Hardcore",
+      "darkMatter": "Mati\u00e8re Noire",
+      "forbiddenResearch": "Recherches Interdites",
+      "availableChallenges": "D\u00e9fis Disponibles",
+      "abandon": "Abandonner le d\u00e9fi",
+      "go": "GO"
+    },
+    "mastery": {
+      "title": "Ma\u00eetrise",
+      "points": "Points"
+    },
+    "achievements": {
+      "title": "Succ\u00e8s",
+      "enemies": "Ennemis",
+      "bosses": "Boss",
+      "gold": "Or",
+      "wave": "Vague",
+      "unlocked": "SUCC\u00c8S D\u00c9BLOQU\u00c9"
+    },
+    "settings": {
+      "title": "Param\u00e8tres",
+      "showDamage": "Afficher D\u00e9g\u00e2ts",
+      "showRange": "Afficher Port\u00e9e",
+      "save": "Sauvegarde",
+      "copy": "COPIER",
+      "import": "IMPORTER",
+      "reset": "RESET",
+      "confirmReset": "Tout effacer ?",
+      "language": "Langue"
+    },
+    "dev": {
+      "title": "MODE D\u00c9VELOPPEUR",
+      "addGold": "+1M OR",
+      "addEther": "+10k ETHER",
+      "skipWaves": "+10 VAGUES",
+      "resetCooldowns": "CD RESET",
+      "heal": "HEAL",
+      "close": "FERMER"
+    },
+    "offline": {
+      "title": "Retour",
+      "subtitle": "Gain Hors-Ligne",
+      "collect": "R\u00e9cup\u00e9rer"
+    },
+    "gameOver": {
+      "title": "D\u00e9faite",
+      "wave": "Vague",
+      "ether": "Ether",
+      "darkMatter": "Mati\u00e8re",
+      "ancestralShop": "Boutique Ancestrale",
+      "etherTotal": "Ether",
+      "fight": "COMBATTRE",
+      "autoRetryTimer": "Auto-Retry"
+    }
+  },
+  "lab": {
+    "title": "Laboratoire",
+    "tabs": {
+      "attack": "Attaque",
+      "defense": "D\u00e9fense",
+      "tech": "Tech"
+    },
+    "bulkBuy": "ACHAT",
+    "footer": "Cliquez sur les Runes au sol pour les bonus !",
+    "level": "Niv",
+    "max": "MAX",
+    "empty": "Rien \u00e0 voir ici..."
+  },
+  "upgrades": {
+    "damage": {
+      "name": "D\u00e9g\u00e2ts",
+      "desc": "D\u00e9g\u00e2ts par tir."
+    },
+    "speed": {
+      "name": "Cadence",
+      "desc": "Vitesse de tir."
+    },
+    "crit": {
+      "name": "Critique",
+      "desc": "Chance et D\u00e9g\u00e2ts."
+    },
+    "range": {
+      "name": "Port\u00e9e",
+      "desc": "Distance de tir."
+    },
+    "multishot": {
+      "name": "Multicoup",
+      "desc": "Double tir."
+    },
+    "health": {
+      "name": "Sant\u00e9",
+      "desc": "PV de la base."
+    },
+    "regen": {
+      "name": "R\u00e9g\u00e9n\u00e9ration",
+      "desc": "Soin passif."
+    },
+    "leech": {
+      "name": "Vampirisme",
+      "desc": "Soin par kill."
+    },
+    "shield": {
+      "name": "Bouclier Plasma",
+      "desc": "Protection rechargeable."
+    },
+    "armor": {
+      "name": "Placage",
+      "desc": "R\u00e9duit les d\u00e9g\u00e2ts re\u00e7us."
+    },
+    "turret": {
+      "name": "Renforts",
+      "desc": "Tourelles auto."
+    },
+    "artillery": {
+      "name": "Artillerie",
+      "desc": "Tourelle Explosive."
+    },
+    "rocket": {
+      "name": "Silo Roquette",
+      "desc": "Missiles guid\u00e9s."
+    },
+    "tesla": {
+      "name": "Bobine Tesla",
+      "desc": "\u00c9clairs en cha\u00eene."
+    },
+    "orbital": {
+      "name": "Frappe Orbitale",
+      "desc": "Laser automatique."
+    },
+    "ice": {
+      "name": "Cryo",
+      "desc": "Ralentissement."
+    },
+    "poison": {
+      "name": "Toxine",
+      "desc": "D\u00e9g\u00e2ts dur\u00e9e."
+    },
+    "stasis": {
+      "name": "Chrono-Stasis",
+      "desc": "Fige les ennemis."
+    },
+    "bounce": {
+      "name": "Ricochet",
+      "desc": "Rebonds."
+    },
+    "blast": {
+      "name": "Explosion",
+      "desc": "Rayon d'explosion."
+    }
+  },
+  "metaUpgrades": {
+    "startGold": {
+      "name": "H\u00e9ritage",
+      "desc": "Or initial."
+    },
+    "goldMult": {
+      "name": "Avarice",
+      "desc": "Gain d'or."
+    },
+    "damageMult": {
+      "name": "Puissance Ancienne",
+      "desc": "D\u00e9g\u00e2ts de base."
+    },
+    "healthMult": {
+      "name": "Architecture",
+      "desc": "PV max."
+    },
+    "unlockAuto": {
+      "name": "Protocole Ph\u00e9nix",
+      "desc": "Auto-Retry."
+    },
+    "unlockAI": {
+      "name": "IA de Gestion",
+      "desc": "Auto-Upgrade."
+    },
+    "unlockDrone": {
+      "name": "Drone Sentinelle",
+      "desc": "Active le compagnon."
+    }
+  },
+  "darkMatter": {
+    "berserk": {
+      "name": "Berserk",
+      "desc": "+1% D\u00e9g\u00e2ts / 1% PV perdus"
+    },
+    "siphon": {
+      "name": "Siphon d'\u00c2me",
+      "desc": "Chance d'Ether sur ennemis normaux"
+    },
+    "overlord": {
+      "name": "Suzerain",
+      "desc": "Drone attaque 2x plus vite"
+    }
+  },
+  "challenges": {
+    "noregen": {
+      "name": "Sang Froid",
+      "desc": "R\u00e9g\u00e9n\u00e9ration d\u00e9sactiv\u00e9e."
+    },
+    "speed": {
+      "name": "Blitzkrieg",
+      "desc": "Ennemis +100% Vitesse."
+    },
+    "glass": {
+      "name": "Mur de Verre",
+      "desc": "PV Max r\u00e9duits de 90%."
+    },
+    "horde": {
+      "name": "La Horde",
+      "desc": "Ennemis x3."
+    }
+  },
+  "enemies": {
+    "NORMAL": {
+      "name": "Normal",
+      "desc": "Ennemi de base."
+    },
+    "SPEEDY": {
+      "name": "Speedy",
+      "desc": "Rapide mais fragile."
+    },
+    "TANK": {
+      "name": "Tank",
+      "desc": "Lent et tr\u00e8s r\u00e9sistant."
+    },
+    "BOSS": {
+      "name": "BOSS",
+      "desc": "Le chef de la vague."
+    },
+    "HEALER": {
+      "name": "Healer",
+      "desc": "Soigne les alli\u00e9s proches."
+    },
+    "SPLITTER": {
+      "name": "Splitter",
+      "desc": "Se divise en 2 \u00e0 la mort."
+    },
+    "MINI": {
+      "name": "Rejeton",
+      "desc": "Issu d'un Splitter."
+    },
+    "THIEF": {
+      "name": "Pillard",
+      "desc": "Vole votre or et s'enfuit."
+    },
+    "PHANTOM": {
+      "name": "Fant\u00f4me",
+      "desc": "Se t\u00e9l\u00e9porte vers l'avant."
+    }
+  },
+  "relics": {
+    "dmg_boost": {
+      "name": "Lame du Roi",
+      "desc": "+20% D\u00e9g\u00e2ts globaux"
+    },
+    "gold_boost": {
+      "name": "Pi\u00e8ce Maudite",
+      "desc": "+25% Gain d'or"
+    },
+    "speed_boost": {
+      "name": "Bottes de Vent",
+      "desc": "+15% Vitesse de tir"
+    },
+    "crit_boost": {
+      "name": "\u0152il de Faucon",
+      "desc": "+10% Chance critique"
+    },
+    "hp_boost": {
+      "name": "C\u0153ur de Titan",
+      "desc": "+30% PV Max"
+    },
+    "skill_cd": {
+      "name": "Sablier Ancien",
+      "desc": "-10% Temps de recharge"
+    },
+    "vampiric_blade": {
+      "name": "Lame Vampirique",
+      "desc": "+15% D\u00e9g\u00e2ts, +5% Vol de vie"
+    },
+    "miners_pick": {
+      "name": "Pioche du Mineur",
+      "desc": "+50% Vitesse de minage"
+    },
+    "chaos_gem": {
+      "name": "Gemme du Chaos",
+      "desc": "+25% R\u00e9compenses Dread"
+    },
+    "temporal_shard": {
+      "name": "Fragment Temporel",
+      "desc": "-15% Recharge, +10% Vitesse"
+    },
+    "dragon_heart": {
+      "name": "C\u0153ur de Dragon",
+      "desc": "+35% D\u00e9g\u00e2ts et Sant\u00e9"
+    },
+    "void_crystal": {
+      "name": "Cristal du Vide",
+      "desc": "+20% Chance crit, +50% D\u00e9g\u00e2ts crit"
+    },
+    "phoenix_feather": {
+      "name": "Plume de Ph\u00e9nix",
+      "desc": "R\u00e9surrection unique par run"
+    },
+    "infinity_stone": {
+      "name": "Pierre d'Infini",
+      "desc": "+50% D\u00e9g\u00e2ts, Sant\u00e9 et Or"
+    },
+    "time_loop": {
+      "name": "Boucle Temporelle",
+      "desc": "-30% Recharge, Auto-skill activ\u00e9"
+    },
+    "world_eater": {
+      "name": "D\u00e9voreur de Mondes",
+      "desc": "+100% D\u00e9g\u00e2ts, -30% Sant\u00e9"
+    }
+  },
+  "achievements": {
+    "kill_100": {
+      "name": "Chasseur",
+      "desc": "Tuer 100 ennemis"
+    },
+    "kill_1000": {
+      "name": "Exterminateur",
+      "desc": "Tuer 1000 ennemis"
+    },
+    "kill_5000": {
+      "name": "L\u00e9gende",
+      "desc": "Tuer 5000 ennemis"
+    },
+    "boss_5": {
+      "name": "Tueur de Rois",
+      "desc": "Vaincre 5 Boss"
+    },
+    "boss_50": {
+      "name": "D\u00e9icide",
+      "desc": "Vaincre 50 Boss"
+    },
+    "wave_20": {
+      "name": "Survivant",
+      "desc": "Atteindre la vague 20"
+    },
+    "wave_50": {
+      "name": "V\u00e9t\u00e9ran",
+      "desc": "Atteindre la vague 50"
+    },
+    "gold_10k": {
+      "name": "Riche",
+      "desc": "Gagner 10k Or (Total)"
+    }
+  },
+  "mastery": {
+    "crit_dmg": {
+      "name": "Impact Critique",
+      "desc": "+10% D\u00e9g\u00e2ts Critiques"
+    },
+    "ether_gain": {
+      "name": "Sagesse Antique",
+      "desc": "+5% Gain Ether"
+    },
+    "drone_spd": {
+      "name": "Turbor\u00e9acteurs",
+      "desc": "+10% Vitesse Drone"
+    },
+    "gold_drop": {
+      "name": "Alchimie",
+      "desc": "+5% Or"
+    }
+  },
+  "runes": {
+    "rage": {
+      "name": "Rage",
+      "desc": "Vitesse x2"
+    },
+    "midas": {
+      "name": "Midas",
+      "desc": "Or x5"
+    },
+    "heal": {
+      "name": "Soin",
+      "desc": "+25% PV"
+    }
+  },
+  "notifications": {
+    "evolution": "\u00c9VOLUTION !",
+    "evolutionSub": "Tier Sup\u00e9rieur Atteint",
+    "bossWarning": "BOSS",
+    "bossWarningSub": "Pr\u00e9parez vos d\u00e9fenses !",
+    "relicObtained": "RELIQUE OBTENUE!",
+    "levelUp": "NIVEAU SUP\u00c9RIEUR !",
+    "thermalShock": "CHOC THERMIQUE!",
+    "orbital": "ORBITAL!",
+    "waveRush": "VAGUE RUSH!",
+    "devModeActivated": "MODE DEV ACTIV\u00c9",
+    "saveCopied": "Sauvegarde copi\u00e9e!",
+    "invalidSave": "Invalide",
+    "pasteSave": "Collez votre sauvegarde:"
+  },
+  "status": {
+    "active": "ACTIF",
+    "inactive": "INACTIF",
+    "on": "ON",
+    "off": "OFF"
+  },
+  "currency": {
+    "crystals": "Cristaux"
+  },
+  "mining": {
+    "title": "Minage",
+    "copper": { "name": "Cuivre" },
+    "iron": { "name": "Fer" },
+    "crystal": { "name": "Cristal" },
+    "gold_ore": { "name": "Minerai d'Or" },
+    "void_shard": { "name": "Fragment du Vide" },
+    "starlight": { "name": "Lumiere Stellaire" },
+    "start": "Demarrer",
+    "stop": "Arreter",
+    "slots": "Emplacements Mineur",
+    "progress": "Progression"
+  },
+  "forge": {
+    "title": "Forge de Reliques",
+    "desc": "Ameliorez, rerollez ou fusionnez vos reliques avec des ressources minieres.",
+    "craft": "Forger",
+    "success": "Succes !",
+    "failed": "Echec !",
+    "notEnough": "Ressources insuffisantes",
+    "selectRelic": "Selectionnez une relique...",
+    "upgrade": { "name": "Ameliorer Relique", "desc": "Transforme une relique en tier superieur." },
+    "reroll": { "name": "Reroll Relique", "desc": "Change une relique pour une autre du meme tier." },
+    "fuse": { "name": "Fusionner Reliques", "desc": "Sacrifie 2 reliques pour en obtenir une de tier superieur." },
+    "legendary": { "name": "Forger Legendaire", "desc": "Cree une relique legendaire aleatoire." }
+  },
+  "surrender": {
+    "button": "Abandon",
+    "bonus": "Bonus Strategique !",
+    "confirm": "Abandonner maintenant pour des bonus ?"
+  },
+  "dread": {
+    "title": "Mode Dread",
+    "level": "Niveau",
+    "bonus": "Bonus",
+    "difficulty": "Difficulte",
+    "level0": "Normal",
+    "level1": "Agitation",
+    "level2": "Tumulte",
+    "level3": "Chaos",
+    "level4": "Carnage",
+    "level5": "Cauchemar",
+    "level6": "Enfer",
+    "level7": "Apocalypse",
+    "level8": "Cataclysme",
+    "level9": "Neant",
+    "level10": "Vide"
+  },
+  "research": {
+    "title": "Arbre de Recherche",
+    "purchase": "Acheter",
+    "purchased": "Debloque",
+    "unlocked": "Recherche Debloquee !",
+    "cannotPurchase": "Achat impossible",
+    "offense": { "name": "Offense" },
+    "defense": { "name": "Defense" },
+    "utility": { "name": "Utilitaire" },
+    "dmg_1": { "name": "Affutage I", "desc": "+10% Degats" },
+    "dmg_2": { "name": "Affutage II", "desc": "+15% Degats" },
+    "dmg_3": { "name": "Affutage III", "desc": "+25% Degats" },
+    "crit_1": { "name": "Precision I", "desc": "+5% Chance critique" },
+    "crit_2": { "name": "Letalite", "desc": "+50% Degats critiques" },
+    "speed_1": { "name": "Rapidite I", "desc": "+10% Cadence" },
+    "speed_2": { "name": "Rapidite II", "desc": "+15% Cadence" },
+    "hp_1": { "name": "Fortifier I", "desc": "+10% Sante" },
+    "hp_2": { "name": "Fortifier II", "desc": "+15% Sante" },
+    "hp_3": { "name": "Fortifier III", "desc": "+25% Sante" },
+    "regen_1": { "name": "Recuperation", "desc": "+20% Regen" },
+    "shield_1": { "name": "Barriere", "desc": "+20% Bouclier" },
+    "armor_1": { "name": "Blindage", "desc": "+5% Armure" },
+    "gold_1": { "name": "Prosperite I", "desc": "+10% Or" },
+    "gold_2": { "name": "Prosperite II", "desc": "+15% Or" },
+    "xp_1": { "name": "Sagesse", "desc": "+20% XP" },
+    "mining_1": { "name": "Excavation I", "desc": "+25% Minage" },
+    "mining_2": { "name": "Excavation II", "desc": "+50% Minage" },
+    "forge_1": { "name": "Forge", "desc": "+10% Succes forge" }
+  },
+  "turretTiers": {
+    "T1": { "name": "Basique" },
+    "T2": { "name": "Ameliore" },
+    "T3": { "name": "Avance" },
+    "T4": { "name": "Elite" },
+    "T5": { "name": "Legendaire" },
+    "T6": { "name": "Mythique" }
+  },
+  "units": {
+    "units": "Unites",
+    "bounces": "Rebonds",
+    "perSecond": "/s",
+    "second": "s"
+  },
+  "production": {
+    "title": "Production",
+    "desc": "Construisez des generateurs de ressources passifs.",
+    "level": "Niveau",
+    "upgrade": "Ameliorer",
+    "upgraded": "Batiment ameliore !",
+    "gold_mine": { "name": "Mine d'or", "desc": "Genere de l'or passivement." },
+    "crystal_extractor": { "name": "Extracteur de cristaux", "desc": "Extrait des cristaux au fil du temps." },
+    "ether_condenser": { "name": "Condenseur d'ether", "desc": "Condense l'ether du vide." },
+    "void_harvester": { "name": "Moissonneur du vide", "desc": "Recolte des fragments du vide." }
+  },
+  "auras": {
+    "title": "Auras",
+    "damage": { "name": "Aura de degats", "desc": "Augmente les degats des tourelles proches." },
+    "speed": { "name": "Aura de vitesse", "desc": "Augmente la cadence des tourelles proches." },
+    "range": { "name": "Aura de portee", "desc": "Augmente la portee des tourelles proches." },
+    "crit": { "name": "Aura critique", "desc": "Augmente les critiques des tourelles proches." },
+    "regen": { "name": "Aura de regeneration", "desc": "Soigne le chateau au fil du temps." }
+  },
+  "chips": {
+    "title": "Puces de tourelle",
+    "desc": "Equipez des puces sur les tourelles pour des bonus. Les puces tombent des boss.",
+    "inventory": "Inventaire de puces",
+    "equipped": "Puces equipees",
+    "empty": "Pas de puces. Battez des boss pour en trouver !",
+    "turret": "Tourelle",
+    "damage": { "name": "Puce de puissance", "desc": "+15% Degats" },
+    "speed": { "name": "Puce de hate", "desc": "+10% Cadence" },
+    "range": { "name": "Puce de visee", "desc": "+20% Portee" },
+    "crit": { "name": "Puce de precision", "desc": "+5% Crit, +25% Degats crit" },
+    "pierce": { "name": "Puce de percage", "desc": "+1 Perforation" },
+    "splash": { "name": "Puce d'explosion", "desc": "+30 Rayon d'explosion" },
+    "vampiric": { "name": "Puce vampirique", "desc": "+5% Vol de vie" },
+    "chaos": { "name": "Puce du chaos", "desc": "+30% Degats, -10% Cadence" },
+    "void": { "name": "Puce du vide", "desc": "+50% Degats, +10% Crit, +2 Perforation" }
+  },
+  "quests": {
+    "title": "Quetes quotidiennes",
+    "resetIn": "Reset dans",
+    "completed": "Complete !",
+    "noQuests": "Pas de quetes. Reessayez plus tard.",
+    "kill_enemies": { "name": "Exterminateur", "desc": "Tuez des ennemis." },
+    "reach_wave": { "name": "Survivant", "desc": "Atteignez des vagues." },
+    "kill_bosses": { "name": "Chasseur de boss", "desc": "Battez des boss." },
+    "collect_gold": { "name": "Chasseur de tresors", "desc": "Collectez de l'or." },
+    "use_skills": { "name": "Maitre des competences", "desc": "Utilisez des competences." },
+    "upgrade_turrets": { "name": "Ingenieur", "desc": "Ameliorez des tourelles." }
+  },
+  "prestige": {
+    "title": "Prestige",
+    "points": "Points de prestige",
+    "potential": "Gain potentiel",
+    "total": "Prestiges totaux",
+    "waveSkip": "Saut de vague",
+    "doPrestige": "PRESTIGE MAINTENANT",
+    "requirement": "N\u00e9cessite vague 25+",
+    "upgrades": "Am\u00e9liorations de prestige",
+    "buy": "Acheter",
+    "upgraded": "Prestige am\u00e9lior\u00e9 !",
+    "complete": "Prestige termin\u00e9 !",
+    "confirmReset": "Le prestige r\u00e9initialise votre progression mais accorde des bonus permanents. Continuer ?",
+    "autoTitle": "Auto-Prestige",
+    "autoEnable": "Activer l'Auto-Prestige",
+    "autoWave": "Prestige \u00e0 la vague",
+    "autoDesc": "Quand activ\u00e9, le prestige se d\u00e9clenchera automatiquement au game over si le seuil de vague est atteint.",
+    "damage": { "name": "Pouvoir ancestral", "desc": "+5% D\u00e9g\u00e2ts par niveau" },
+    "health": { "name": "Vitalit\u00e9 ancestrale", "desc": "+5% Sant\u00e9 par niveau" },
+    "gold": { "name": "H\u00e9ritage dor\u00e9", "desc": "+10% Or par niveau" },
+    "crystals": { "name": "Affinit\u00e9 cristalline", "desc": "+15% Cristaux par niveau" },
+    "start_wave": { "name": "Longueur d'avance", "desc": "Commencez \u00e0 une vague plus haute" },
+    "auto_turrets": { "name": "Auto-construction", "desc": "Commencez avec des tourelles" },
+    "production": { "name": "Industriel", "desc": "+20% Production par niveau" },
+    "skill_cd": { "name": "R\u00e9flexes rapides", "desc": "-5% Temps de recharge par niveau" }
+  },
+  "speeds": {
+    "x1": "x1",
+    "x2": "x2",
+    "x4": "x4",
+    "x8": "x8",
+    "x16": "x16"
+  },
+  "tutorial": {
+    "welcome": {
+      "title": "Bienvenue !",
+      "text": "D\u00e9fendez le ch\u00e2teau contre les vagues ennemies."
+    },
+    "upgrade": {
+      "title": "Am\u00e9lioration",
+      "text": "Achetez 'D\u00e9g\u00e2ts' pour survivre."
+    },
+    "understood": "Compris"
+  },
+  "town": {
+    "title": "Ville",
+    "currentLevel": "Niveau actuel",
+    "xp": "XP de ville",
+    "nextLevel": "Prochain niveau",
+    "maxLevel": "MAX",
+    "unlocks": "Fonctionnalit\u00e9s d\u00e9bloqu\u00e9es",
+    "requires": "N\u00e9cessite",
+    "levelUp": "Niveau de ville",
+    "level1": "Hameau",
+    "level2": "Village",
+    "level3": "Bourg",
+    "level4": "Cit\u00e9",
+    "level5": "M\u00e9tropole",
+    "level6": "Capitale",
+    "level7": "Empire",
+    "unlock": {
+      "basic": "Fonctions de base",
+      "dailyQuests": "Qu\u00eates quotidiennes",
+      "school": "\u00c9cole",
+      "autoRebirth": "Auto-renaissance",
+      "office": "Bureau",
+      "advancedResearch": "Recherche avanc\u00e9e",
+      "awakening": "\u00c9veil",
+      "legendary": "Mode l\u00e9gendaire"
+    }
+  },
+  "school": {
+    "title": "\u00c9cole",
+    "desc": "D\u00e9bloquez et am\u00e9liorez les types de tourelles. Co\u00fbte des cristaux.",
+    "level": "Niveau",
+    "unlock": "D\u00e9bloquer",
+    "upgrade": "Am\u00e9liorer",
+    "maxed": "NIVEAU MAX",
+    "sentry": { "name": "Sentinelle", "desc": "Tourelle de base \u00e9quilibr\u00e9e." },
+    "blaster": { "name": "Blaster", "desc": "D\u00e9g\u00e2ts \u00e9lev\u00e9s, attaques rapides, port\u00e9e courte." },
+    "laser": { "name": "Laser", "desc": "Tir rapide en faisceau continu." },
+    "solidifier": { "name": "Solidifieur", "desc": "Ralentit significativement les ennemis." },
+    "swamper": { "name": "Mar\u00e9cageur", "desc": "D\u00e9g\u00e2ts de zone larges, cadence lente." },
+    "rocket": { "name": "Fus\u00e9e", "desc": "D\u00e9g\u00e2ts de zone \u00e9lev\u00e9s, tr\u00e8s lent." },
+    "sniper": { "name": "Sniper", "desc": "D\u00e9g\u00e2ts et port\u00e9e extr\u00eames, tir lent." },
+    "inferno": { "name": "Inferno", "desc": "Br\u00fble les ennemis dans le temps." }
+  },
+  "office": {
+    "title": "Bureau",
+    "desc": "Activez des boosts temporaires avec des gemmes.",
+    "active": "Boosts actifs",
+    "available": "Boosts disponibles",
+    "noActive": "Aucun boost actif",
+    "activate": "Activer",
+    "damage": { "name": "Mont\u00e9e en puissance", "desc": "Double les d\u00e9g\u00e2ts pendant 5 minutes." },
+    "gold": { "name": "Ru\u00e9e vers l'or", "desc": "Triple l'or pendant 5 minutes." },
+    "speed": { "name": "Surcharge", "desc": "+50% vitesse d'attaque pendant 5 minutes." },
+    "xp": { "name": "Boost d'exp\u00e9rience", "desc": "Double l'XP pendant 5 minutes." },
+    "crit": { "name": "Focus critique", "desc": "Double les chances critiques pendant 3 minutes." }
+  },
+  "awakening": {
+    "title": "\u00c9veil",
+    "awakened": "\u00c9VEILL\u00c9",
+    "notAwakened": "Non \u00e9veill\u00e9",
+    "level": "Niveau d'\u00e9veil",
+    "requirement": "N\u00e9cessite niveau Terreur 6+",
+    "activate": "S'\u00c9VEILLER",
+    "bonuses": "Bonus d'\u00e9veil",
+    "active": "Actif",
+    "unlocked": "\u00c9VEILL\u00c9 !",
+    "waveSkip": { "name": "Saut temporel", "desc": "+100 bonus de saut de vague." },
+    "autoAll": { "name": "Automatisation totale", "desc": "Placement auto et achat auto activ\u00e9s." },
+    "prestigeX2": { "name": "Double prestige", "desc": "2x gains de points de prestige." },
+    "productionX3": { "name": "R\u00e9volution industrielle", "desc": "3x production des b\u00e2timents." },
+    "startGold": { "name": "D\u00e9part dor\u00e9", "desc": "Commencez chaque partie avec 10 000 or." }
+  },
+  "dread": {
+    "title": "Mode Terreur",
+    "level": "Niveau Terreur"
+  },
+  "slots": {
+    "title": "Emplacement de tourelle",
+    "desc": "S\u00e9lectionnez une tourelle \u00e0 placer dans cet emplacement.",
+    "current": "Tourelle actuelle",
+    "available": "Tourelles disponibles",
+    "empty": "Emplacement vide",
+    "remove": "Retirer",
+    "locked": "Verrouill\u00e9",
+    "confirmBuy": "Acheter cet emplacement pour {{cost}} or ?",
+    "purchased": "Emplacement achet\u00e9 !",
+    "notEnoughGold": "Pas assez d'or !"
+  }
+}
