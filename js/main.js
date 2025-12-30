@@ -5238,57 +5238,62 @@ async function init() {
 function initHelpTooltips() {
     let activeTooltip = null;
 
-    document.querySelectorAll('.help-icon[data-help]').forEach(icon => {
-        icon.addEventListener('mouseenter', (e) => {
-            const helpKey = icon.getAttribute('data-help');
-            const titleKey = `help.${helpKey}.title`;
-            const textKey = `help.${helpKey}.text`;
+    // Use event delegation for dynamic elements
+    document.addEventListener('mouseenter', (e) => {
+        const icon = e.target.closest('.help-icon[data-help]');
+        if (!icon) return;
 
-            const title = t(titleKey);
-            const text = t(textKey);
+        const helpKey = icon.getAttribute('data-help');
+        const titleKey = `help.${helpKey}.title`;
+        const textKey = `help.${helpKey}.text`;
 
-            if (!title || title === titleKey) return;
+        const title = t(titleKey);
+        const text = t(textKey);
 
-            if (activeTooltip) {
-                activeTooltip.remove();
-            }
+        if (!title || title === titleKey) return;
 
-            const tooltip = document.createElement('div');
-            tooltip.className = 'help-tooltip';
-            tooltip.innerHTML = `
-                <div class="help-tooltip-title">${title}</div>
-                <div class="help-tooltip-text">${text}</div>
-            `;
-            document.body.appendChild(tooltip);
+        if (activeTooltip) {
+            activeTooltip.remove();
+        }
 
-            const rect = icon.getBoundingClientRect();
-            const tooltipRect = tooltip.getBoundingClientRect();
+        const tooltip = document.createElement('div');
+        tooltip.className = 'help-tooltip';
+        tooltip.innerHTML = `
+            <div class="help-tooltip-title">${title}</div>
+            <div class="help-tooltip-text">${text}</div>
+        `;
+        document.body.appendChild(tooltip);
 
-            let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
-            let top = rect.bottom + 10;
+        const rect = icon.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
 
-            if (left < 10) left = 10;
-            if (left + tooltipRect.width > window.innerWidth - 10) {
-                left = window.innerWidth - tooltipRect.width - 10;
-            }
+        let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+        let top = rect.bottom + 10;
 
-            if (top + tooltipRect.height > window.innerHeight - 10) {
-                top = rect.top - tooltipRect.height - 10;
-            }
+        if (left < 10) left = 10;
+        if (left + tooltipRect.width > window.innerWidth - 10) {
+            left = window.innerWidth - tooltipRect.width - 10;
+        }
 
-            tooltip.style.left = `${left}px`;
-            tooltip.style.top = `${top}px`;
+        if (top + tooltipRect.height > window.innerHeight - 10) {
+            top = rect.top - tooltipRect.height - 10;
+        }
 
-            activeTooltip = tooltip;
-        });
+        tooltip.style.left = `${left}px`;
+        tooltip.style.top = `${top}px`;
 
-        icon.addEventListener('mouseleave', () => {
-            if (activeTooltip) {
-                activeTooltip.remove();
-                activeTooltip = null;
-            }
-        });
-    });
+        activeTooltip = tooltip;
+    }, true);
+
+    document.addEventListener('mouseout', (e) => {
+        const icon = e.target.closest('.help-icon[data-help]');
+        if (!icon) return;
+
+        if (activeTooltip) {
+            activeTooltip.remove();
+            activeTooltip = null;
+        }
+    }, true);
 }
 
 init();
