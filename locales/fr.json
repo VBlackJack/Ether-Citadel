@@ -958,5 +958,193 @@
       "title": "Ville",
       "text": "Votre ville grandit au fil du jeu. Montez de niveau en gagnant de l'XP. Des niveaux de ville plus eleves debloquent de nouvelles fonctionnalites : quetes, ecole, bureau, eveil. Les deblocages actuels sont affiches dans le panneau ville."
     }
+  },
+  "boss": {
+    "phase1": "Phase 1 - Éveil",
+    "phase2": "Phase 2 - Rage",
+    "phase3": "Phase 3 - Désespoir",
+    "abilities": {
+      "summon_minions": "Invoque des sbires",
+      "enrage": "Enragé",
+      "shield_burst": "Explosion de bouclier",
+      "death_spiral": "Spirale mortelle",
+      "heal": "Régénération",
+      "speed_boost": "Accélération",
+      "armor_up": "Blindage",
+      "teleport": "Téléportation"
+    }
+  },
+  "synergy": {
+    "active": "Synergies Actives",
+    "fireCombo": {
+      "name": "Combo de Feu",
+      "desc": "+25% Dégâts, +20 Zone d'effet"
+    },
+    "frostBurn": {
+      "name": "Brûlure Givrée",
+      "desc": "Dégâts de brûlure sur les ennemis ralentis"
+    },
+    "overcharge": {
+      "name": "Surcharge",
+      "desc": "+40% Dégâts Tesla avec Laser"
+    },
+    "siegeMode": {
+      "name": "Mode Siège",
+      "desc": "+50% Dégâts de zone, +30 Rayon"
+    },
+    "precisionStrike": {
+      "name": "Frappe de Précision",
+      "desc": "+30% Crit, +100% Dégâts crit"
+    },
+    "elementalMastery": {
+      "name": "Maîtrise Élémentaire",
+      "desc": "+35% tous dégâts, +20% effets"
+    }
+  },
+  "modes": {
+    "title": "Modes de Jeu",
+    "current": "Mode Actuel",
+    "select": "Sélectionner",
+    "standard": {
+      "name": "Standard",
+      "desc": "Mode de jeu classique"
+    },
+    "endless": {
+      "name": "Sans Fin",
+      "desc": "Les vagues continuent infiniment avec une difficulté croissante"
+    },
+    "bossRush": {
+      "name": "Rush Boss",
+      "desc": "Que des boss, récompenses élevées"
+    },
+    "survival": {
+      "name": "Survie",
+      "desc": "Pas de mises à niveau, tenez aussi longtemps que possible"
+    },
+    "speedrun": {
+      "name": "Speedrun",
+      "desc": "Chronométré, or bonus pour vagues rapides"
+    }
+  },
+  "seasonal": {
+    "halloween": {
+      "name": "Halloween",
+      "desc": "Ennemis fantomatiques, reliques maudites"
+    },
+    "christmas": {
+      "name": "Noël",
+      "desc": "Cadeaux, or bonus"
+    },
+    "lunar_new_year": {
+      "name": "Nouvel An Lunaire",
+      "desc": "Dragons, bonus de chance"
+    },
+    "summer": {
+      "name": "Festival d'Été",
+      "desc": "Feux d'artifice, vitesse bonus"
+    },
+    "exclusiveRelics": {
+      "cursed_pumpkin": {
+        "name": "Citrouille Maudite",
+        "desc": "+30% Dégâts, les ennemis sont fantomatiques"
+      },
+      "santas_gift": {
+        "name": "Cadeau du Père Noël",
+        "desc": "+50% Or, cadeaux bonus"
+      },
+      "dragon_pearl": {
+        "name": "Perle de Dragon",
+        "desc": "+25% Tout, chance bonus"
+      },
+      "solar_flare": {
+        "name": "Éruption Solaire",
+        "desc": "+40% Vitesse, projectiles ardents"
+      }
+    }
+  },
+  "campaign": {
+    "title": "Campagne",
+    "chapter": "Chapitre",
+    "mission": "Mission",
+    "complete": "Terminé",
+    "locked": "Verrouillé",
+    "objectives": {
+      "wave": "Atteindre la vague",
+      "kills": "Tuer des ennemis",
+      "boss": "Vaincre des boss",
+      "time": "Terminer dans le temps",
+      "noDamage": "Sans prendre de dégâts"
+    },
+    "missions": {
+      "tutorial": "Premiers Pas",
+      "wave_10": "Défendre la Citadelle",
+      "boss_hunter": "Chasseur de Boss",
+      "speed_clear": "Passage Rapide",
+      "elite_slayer": "Tueur d'Élites",
+      "wave_master": "Maître des Vagues",
+      "untouchable": "Intouchable",
+      "boss_rush": "Rush Boss",
+      "endurance": "Test d'Endurance",
+      "final_stand": "Ultime Résistance"
+    },
+    "chapters": {
+      "1": "Débuts",
+      "2": "Montée en Puissance",
+      "3": "Épreuves",
+      "4": "Maîtrise"
+    }
+  },
+  "leaderboard": {
+    "title": "Classements",
+    "categories": {
+      "highest_wave": "Vague la Plus Haute",
+      "total_kills": "Kills Totaux",
+      "boss_kills": "Boss Tués",
+      "total_gold": "Or Total",
+      "fastest_wave_50": "Vague 50 la Plus Rapide",
+      "highest_combo": "Combo le Plus Haut",
+      "endless_score": "Score Sans Fin",
+      "speedrun_time": "Temps Speedrun"
+    },
+    "rank": "Rang",
+    "score": "Score",
+    "date": "Date",
+    "empty": "Aucun score enregistré",
+    "newRecord": "Nouveau Record !"
+  },
+  "presets": {
+    "title": "Préréglages de Build",
+    "desc": "Sauvegardez et chargez vos configurations de tourelles.",
+    "save": "Sauvegarder",
+    "load": "Charger",
+    "delete": "Supprimer",
+    "empty": "Emplacement Vide",
+    "slots": {
+      "1": "Préréglage 1",
+      "2": "Préréglage 2",
+      "3": "Préréglage 3",
+      "4": "Préréglage 4",
+      "5": "Préréglage 5"
+    },
+    "saved": "Build Sauvegardé !",
+    "loaded": "Build Chargé !",
+    "deleted": "Préréglage Supprimé"
+  },
+  "music": {
+    "title": "Musique",
+    "tracks": {
+      "ambient": "Ambiance",
+      "battle": "Bataille",
+      "boss": "Combat de Boss",
+      "victory": "Victoire",
+      "menu": "Menu"
+    },
+    "volume": "Volume",
+    "mute": "Muet"
+  },
+  "effects": {
+    "screenShake": "Tremblement",
+    "particles": "Particules",
+    "trails": "Traînées"
   }
 }

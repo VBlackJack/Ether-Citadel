@@ -553,6 +553,196 @@ export function createMetaUpgrades() {
 }
 
 /**
+ * Boss phases and special mechanics
+ */
+export const BOSS_MECHANICS = {
+    MEGA_BOSS: {
+        phases: [
+            { hpThreshold: 1.0, nameKey: 'boss.phase1', color: '#7c3aed', abilities: ['summon_minions'] },
+            { hpThreshold: 0.66, nameKey: 'boss.phase2', color: '#dc2626', abilities: ['enrage', 'shield_burst'] },
+            { hpThreshold: 0.33, nameKey: 'boss.phase3', color: '#000', abilities: ['enrage', 'death_spiral', 'heal'] }
+        ],
+        loot: { guaranteed: true, tier: 3, bonusGold: 5 }
+    },
+    RAID_BOSS: {
+        phases: [
+            { hpThreshold: 1.0, nameKey: 'boss.phase1', color: '#f59e0b', abilities: [] },
+            { hpThreshold: 0.75, nameKey: 'boss.phase2', color: '#ef4444', abilities: ['barrier'] },
+            { hpThreshold: 0.5, nameKey: 'boss.phase3', color: '#dc2626', abilities: ['barrier', 'summon_elites'] },
+            { hpThreshold: 0.25, nameKey: 'boss.phase4', color: '#7f1d1d', abilities: ['enrage', 'barrier', 'meteor_storm'] }
+        ],
+        loot: { guaranteed: true, tier: 4, bonusGold: 10 }
+    }
+};
+
+export const BOSS_ABILITIES = {
+    summon_minions: { nameKey: 'bossAbility.summonMinions', cooldown: 10, count: 5, type: 'MINI' },
+    summon_elites: { nameKey: 'bossAbility.summonElites', cooldown: 15, count: 2, type: 'TANK' },
+    enrage: { nameKey: 'bossAbility.enrage', damageMult: 1.5, speedMult: 1.3 },
+    shield_burst: { nameKey: 'bossAbility.shieldBurst', shieldAmount: 0.2, duration: 5 },
+    barrier: { nameKey: 'bossAbility.barrier', immuneDuration: 3, cooldown: 12 },
+    death_spiral: { nameKey: 'bossAbility.deathSpiral', damage: 50, radius: 200 },
+    heal: { nameKey: 'bossAbility.heal', amount: 0.1, cooldown: 8 },
+    meteor_storm: { nameKey: 'bossAbility.meteorStorm', count: 5, damage: 100, radius: 80 }
+};
+
+/**
+ * Turret synergies - Bonuses when specific turrets are placed together
+ */
+export const TURRET_SYNERGIES = [
+    { id: 'fire_combo', nameKey: 'synergy.fireCombo.name', descKey: 'synergy.fireCombo.desc', requires: ['blaster', 'inferno'], bonus: { damage: 0.25, aoe: 20 }, color: '#f97316' },
+    { id: 'frost_combo', nameKey: 'synergy.frostCombo.name', descKey: 'synergy.frostCombo.desc', requires: ['solidifier', 'swamper'], bonus: { slow: 0.3, range: 0.15 }, color: '#22d3ee' },
+    { id: 'precision_combo', nameKey: 'synergy.precisionCombo.name', descKey: 'synergy.precisionCombo.desc', requires: ['laser', 'sniper'], bonus: { critChance: 15, critDamage: 0.5 }, color: '#ef4444' },
+    { id: 'artillery_combo', nameKey: 'synergy.artilleryCombo.name', descKey: 'synergy.artilleryCombo.desc', requires: ['rocket', 'swamper'], bonus: { aoe: 40, damage: 0.15 }, color: '#a855f7' },
+    { id: 'full_defense', nameKey: 'synergy.fullDefense.name', descKey: 'synergy.fullDefense.desc', requires: ['sentry', 'blaster', 'laser'], bonus: { fireRate: 0.2, damage: 0.1 }, color: '#3b82f6' },
+    { id: 'elemental_master', nameKey: 'synergy.elementalMaster.name', descKey: 'synergy.elementalMaster.desc', requires: ['solidifier', 'inferno', 'swamper'], bonus: { damage: 0.3, slow: 0.2, aoe: 30 }, color: '#fbbf24' }
+];
+
+/**
+ * Game modes
+ */
+export const GAME_MODES = [
+    { id: 'standard', nameKey: 'modes.standard.name', descKey: 'modes.standard.desc', icon: '🎮', unlocked: true },
+    { id: 'endless', nameKey: 'modes.endless.name', descKey: 'modes.endless.desc', icon: '♾️', unlocked: true, scaling: { hpMult: 1.05, speedMult: 1.02, goldMult: 1.03 } },
+    { id: 'boss_rush', nameKey: 'modes.bossRush.name', descKey: 'modes.bossRush.desc', icon: '👑', unlocked: true, bossOnly: true, bossInterval: 1 },
+    { id: 'survival', nameKey: 'modes.survival.name', descKey: 'modes.survival.desc', icon: '💀', unlockWave: 50, noRegen: true, oneLife: true },
+    { id: 'speedrun', nameKey: 'modes.speedrun.name', descKey: 'modes.speedrun.desc', icon: '⏱️', unlockWave: 25, timerMode: true, targetWave: 100 }
+];
+
+/**
+ * Seasonal events
+ */
+export const SEASONAL_EVENTS = [
+    {
+        id: 'halloween',
+        nameKey: 'seasonal.halloween.name',
+        descKey: 'seasonal.halloween.desc',
+        icon: '🎃',
+        startMonth: 10, startDay: 15,
+        endMonth: 11, endDay: 5,
+        theme: { bgColor: '#1a0a2e', accentColor: '#ff6b00' },
+        bonuses: { xpMult: 1.5, relicChance: 1.25 },
+        specialEnemy: { type: 'GHOST', color: '#9333ea', hpMult: 0.8, speedMult: 1.5, scale: 1.0, reward: 3 },
+        exclusiveRelic: { id: 'pumpkin_crown', nameKey: 'relics.pumpkinCrown.name', icon: '🎃', tier: 3, effect: (g) => { g.relicMults.critChance += 25; g.relicMults.gold += 0.3; } }
+    },
+    {
+        id: 'christmas',
+        nameKey: 'seasonal.christmas.name',
+        descKey: 'seasonal.christmas.desc',
+        icon: '🎄',
+        startMonth: 12, startDay: 15,
+        endMonth: 1, endDay: 5,
+        theme: { bgColor: '#0f2027', accentColor: '#c41e3a' },
+        bonuses: { goldMult: 2.0, productionMult: 1.5 },
+        specialEnemy: { type: 'SNOWMAN', color: '#e0f2fe', hpMult: 2.0, speedMult: 0.5, scale: 1.3, reward: 2, freezeOnDeath: true },
+        exclusiveRelic: { id: 'santas_blessing', nameKey: 'relics.santasBlessing.name', icon: '🎅', tier: 3, effect: (g) => { g.relicMults.gold += 0.5; g.relicMults.health += 0.25; } }
+    },
+    {
+        id: 'lunar_new_year',
+        nameKey: 'seasonal.lunarNewYear.name',
+        descKey: 'seasonal.lunarNewYear.desc',
+        icon: '🐉',
+        startMonth: 1, startDay: 20,
+        endMonth: 2, endDay: 15,
+        theme: { bgColor: '#2d0a0a', accentColor: '#ffd700' },
+        bonuses: { damageMult: 1.25, xpMult: 1.25, goldMult: 1.25 },
+        specialEnemy: { type: 'DRAGON', color: '#ffd700', hpMult: 5.0, speedMult: 0.8, scale: 2.0, reward: 5, fireBreath: true },
+        exclusiveRelic: { id: 'dragon_pearl', nameKey: 'relics.dragonPearl.name', icon: '🐲', tier: 4, effect: (g) => { g.relicMults.damage += 0.4; g.relicMults.critDamage += 0.75; } }
+    },
+    {
+        id: 'summer',
+        nameKey: 'seasonal.summer.name',
+        descKey: 'seasonal.summer.desc',
+        icon: '☀️',
+        startMonth: 6, startDay: 15,
+        endMonth: 8, endDay: 31,
+        theme: { bgColor: '#1a3a4a', accentColor: '#00bcd4' },
+        bonuses: { speedMult: 1.2, cooldownMult: 0.8 },
+        specialEnemy: { type: 'BEACH_CRAB', color: '#ff7043', hpMult: 1.5, speedMult: 1.2, scale: 0.9, reward: 2 },
+        exclusiveRelic: { id: 'sun_stone', nameKey: 'relics.sunStone.name', icon: '🌞', tier: 3, effect: (g) => { g.relicMults.speed += 0.3; g.relicMults.cooldown += 0.2; } }
+    }
+];
+
+/**
+ * Campaign missions
+ */
+export const CAMPAIGN_MISSIONS = [
+    { id: 'tutorial', chapter: 1, nameKey: 'campaign.tutorial.name', descKey: 'campaign.tutorial.desc', objective: { type: 'wave', target: 5 }, reward: { gold: 500, crystals: 5 }, stars: [] },
+    { id: 'first_boss', chapter: 1, nameKey: 'campaign.firstBoss.name', descKey: 'campaign.firstBoss.desc', objective: { type: 'boss', target: 1 }, reward: { gold: 1000, crystals: 10 }, stars: [] },
+    { id: 'speed_challenge', chapter: 1, nameKey: 'campaign.speedChallenge.name', descKey: 'campaign.speedChallenge.desc', objective: { type: 'wave', target: 10, timeLimit: 120 }, reward: { gold: 1500, ether: 5 }, stars: [] },
+    { id: 'tank_buster', chapter: 2, nameKey: 'campaign.tankBuster.name', descKey: 'campaign.tankBuster.desc', objective: { type: 'kill', target: 20, enemyType: 'TANK' }, reward: { crystals: 25, relic: true }, stars: [] },
+    { id: 'no_damage', chapter: 2, nameKey: 'campaign.noDamage.name', descKey: 'campaign.noDamage.desc', objective: { type: 'wave', target: 15, noDamage: true }, reward: { gold: 5000, ether: 15 }, stars: [] },
+    { id: 'mega_boss', chapter: 2, nameKey: 'campaign.megaBoss.name', descKey: 'campaign.megaBoss.desc', objective: { type: 'boss', target: 1, bossType: 'MEGA_BOSS' }, reward: { crystals: 50, relic: true, tier: 3 }, stars: [] },
+    { id: 'endless_50', chapter: 3, nameKey: 'campaign.endless50.name', descKey: 'campaign.endless50.desc', objective: { type: 'wave', target: 50 }, reward: { ether: 50, relic: true, tier: 3 }, stars: [] },
+    { id: 'boss_rush_10', chapter: 3, nameKey: 'campaign.bossRush10.name', descKey: 'campaign.bossRush10.desc', objective: { type: 'boss', target: 10, mode: 'boss_rush' }, reward: { crystals: 100, relic: true, tier: 4 }, stars: [] },
+    { id: 'dread_master', chapter: 3, nameKey: 'campaign.dreadMaster.name', descKey: 'campaign.dreadMaster.desc', objective: { type: 'wave', target: 25, dreadLevel: 5 }, reward: { ether: 100, relic: true, tier: 4 }, stars: [] },
+    { id: 'ultimate', chapter: 4, nameKey: 'campaign.ultimate.name', descKey: 'campaign.ultimate.desc', objective: { type: 'wave', target: 100, dreadLevel: 10 }, reward: { crystals: 500, ether: 500, relic: true, tier: 4 }, stars: [] }
+];
+
+/**
+ * Visual effects definitions
+ */
+export const VISUAL_EFFECTS = {
+    screenShake: { intensity: 5, duration: 200, triggers: ['boss_hit', 'critical', 'skill_use'] },
+    particles: {
+        hit: { count: 5, speed: 3, life: 300, size: 4 },
+        crit: { count: 12, speed: 5, life: 400, size: 6, color: '#fbbf24' },
+        death: { count: 8, speed: 4, life: 500, size: 5 },
+        gold: { count: 3, speed: 2, life: 600, size: 8, color: '#fbbf24', icon: '💰' },
+        levelUp: { count: 20, speed: 6, life: 800, size: 10, color: '#22d3ee' }
+    },
+    trails: {
+        projectile: { length: 5, width: 2, fade: 0.8 },
+        laser: { width: 3, glow: 10, color: '#ef4444' }
+    }
+};
+
+/**
+ * Music and sound tracks
+ */
+export const MUSIC_TRACKS = [
+    { id: 'menu', nameKey: 'music.menu', bpm: 80, mood: 'calm' },
+    { id: 'gameplay', nameKey: 'music.gameplay', bpm: 120, mood: 'action' },
+    { id: 'boss', nameKey: 'music.boss', bpm: 140, mood: 'intense' },
+    { id: 'victory', nameKey: 'music.victory', bpm: 100, mood: 'triumphant' },
+    { id: 'defeat', nameKey: 'music.defeat', bpm: 60, mood: 'somber' }
+];
+
+export const SOUND_EFFECTS = [
+    { id: 'turret_fire', variations: 3 },
+    { id: 'enemy_hit', variations: 4 },
+    { id: 'enemy_death', variations: 3 },
+    { id: 'boss_roar', variations: 2 },
+    { id: 'boss_phase', variations: 1 },
+    { id: 'skill_activate', variations: 3 },
+    { id: 'upgrade_buy', variations: 1 },
+    { id: 'gold_collect', variations: 2 },
+    { id: 'relic_drop', variations: 1 },
+    { id: 'level_up', variations: 1 },
+    { id: 'combo_increase', variations: 5 },
+    { id: 'critical_hit', variations: 2 }
+];
+
+/**
+ * Build presets structure
+ */
+export const BUILD_PRESET_SLOTS = 5;
+
+/**
+ * Leaderboard categories
+ */
+export const LEADERBOARD_CATEGORIES = [
+    { id: 'highest_wave', nameKey: 'leaderboard.highestWave', icon: '🌊', sortDesc: true },
+    { id: 'max_dps', nameKey: 'leaderboard.maxDps', icon: '⚔️', sortDesc: true },
+    { id: 'fastest_wave_50', nameKey: 'leaderboard.fastestWave50', icon: '⏱️', sortDesc: false },
+    { id: 'total_kills', nameKey: 'leaderboard.totalKills', icon: '💀', sortDesc: true },
+    { id: 'bosses_defeated', nameKey: 'leaderboard.bossesDefeated', icon: '👑', sortDesc: true },
+    { id: 'highest_combo', nameKey: 'leaderboard.highestCombo', icon: '🔥', sortDesc: true },
+    { id: 'endless_record', nameKey: 'leaderboard.endlessRecord', icon: '♾️', sortDesc: true },
+    { id: 'boss_rush_record', nameKey: 'leaderboard.bossRushRecord', icon: '👑', sortDesc: true }
+];
+
+/**
  * Get translated name for a data item
  * @param {Object} item - Item with nameKey
  * @returns {string}

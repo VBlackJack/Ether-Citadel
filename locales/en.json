@@ -958,5 +958,188 @@
       "title": "Town",
       "text": "Your town grows as you play. Level up by gaining XP through gameplay. Higher town levels unlock new features: quests, school, office, awakening. Current unlocks are shown in the town panel."
     }
+  },
+  "boss": {
+    "phase1": "Phase 1",
+    "phase2": "Phase 2",
+    "phase3": "Phase 3",
+    "phase4": "Final Phase"
+  },
+  "bossAbility": {
+    "summonMinions": "Summon Minions",
+    "summonElites": "Summon Elites",
+    "enrage": "Enrage",
+    "shieldBurst": "Shield Burst",
+    "barrier": "Barrier",
+    "deathSpiral": "Death Spiral",
+    "heal": "Heal",
+    "meteorStorm": "Meteor Storm"
+  },
+  "synergy": {
+    "active": "Active Synergies",
+    "fireCombo": {
+      "name": "Fire Combo",
+      "desc": "Blaster + Inferno: +25% damage, +20 AoE"
+    },
+    "frostCombo": {
+      "name": "Frost Combo",
+      "desc": "Solidifier + Swamper: +30% slow, +15% range"
+    },
+    "precisionCombo": {
+      "name": "Precision Combo",
+      "desc": "Laser + Sniper: +15% crit chance, +50% crit damage"
+    },
+    "artilleryCombo": {
+      "name": "Artillery Combo",
+      "desc": "Rocket + Swamper: +40 AoE, +15% damage"
+    },
+    "fullDefense": {
+      "name": "Full Defense",
+      "desc": "Sentry + Blaster + Laser: +20% fire rate, +10% damage"
+    },
+    "elementalMaster": {
+      "name": "Elemental Master",
+      "desc": "Solidifier + Inferno + Swamper: +30% damage, +20% slow, +30 AoE"
+    }
+  },
+  "modes": {
+    "title": "Game Modes",
+    "current": "Current Mode",
+    "select": "Select",
+    "standard": {
+      "name": "Standard",
+      "desc": "Classic tower defense experience"
+    },
+    "endless": {
+      "name": "Endless",
+      "desc": "Infinite scaling waves, see how far you can go"
+    },
+    "bossRush": {
+      "name": "Boss Rush",
+      "desc": "Face bosses every wave"
+    },
+    "survival": {
+      "name": "Survival",
+      "desc": "No regeneration, one life only"
+    },
+    "speedrun": {
+      "name": "Speedrun",
+      "desc": "Race against the clock to wave 100"
+    },
+    "bossKills": "Bosses"
+  },
+  "seasonal": {
+    "halloween": {
+      "name": "Halloween Event",
+      "desc": "Spooky enemies and exclusive rewards!"
+    },
+    "christmas": {
+      "name": "Winter Festival",
+      "desc": "Double gold and festive surprises!"
+    },
+    "lunarNewYear": {
+      "name": "Lunar New Year",
+      "desc": "Dragons and golden fortunes!"
+    },
+    "summer": {
+      "name": "Summer Splash",
+      "desc": "Fast-paced beach action!"
+    }
+  },
+  "campaign": {
+    "completed": "Mission Complete",
+    "kills": "Kills",
+    "time": "Time",
+    "tutorial": {
+      "name": "First Steps",
+      "desc": "Reach wave 5"
+    },
+    "firstBoss": {
+      "name": "Boss Hunter",
+      "desc": "Defeat your first boss"
+    },
+    "speedChallenge": {
+      "name": "Speed Challenge",
+      "desc": "Reach wave 10 in under 2 minutes"
+    },
+    "tankBuster": {
+      "name": "Tank Buster",
+      "desc": "Defeat 20 Tank enemies"
+    },
+    "noDamage": {
+      "name": "Untouchable",
+      "desc": "Reach wave 15 without taking damage"
+    },
+    "megaBoss": {
+      "name": "Mega Slayer",
+      "desc": "Defeat a Mega Boss"
+    },
+    "endless50": {
+      "name": "Endless Journey",
+      "desc": "Reach wave 50 in Endless mode"
+    },
+    "bossRush10": {
+      "name": "Boss Master",
+      "desc": "Defeat 10 bosses in Boss Rush"
+    },
+    "dreadMaster": {
+      "name": "Dread Master",
+      "desc": "Reach wave 25 at Dread level 5"
+    },
+    "ultimate": {
+      "name": "Ultimate Challenge",
+      "desc": "Reach wave 100 at Dread level 10"
+    }
+  },
+  "leaderboard": {
+    "highestWave": "Highest Wave",
+    "maxDps": "Max DPS",
+    "fastestWave50": "Fastest Wave 50",
+    "totalKills": "Total Kills",
+    "bossesDefeated": "Bosses Defeated",
+    "highestCombo": "Highest Combo",
+    "endlessRecord": "Endless Record",
+    "bossRushRecord": "Boss Rush Record"
+  },
+  "presets": {
+    "title": "Build Presets",
+    "desc": "Save and load your turret configurations.",
+    "slot": "Slot",
+    "save": "Save Build",
+    "load": "Load Build",
+    "delete": "Delete",
+    "empty": "Empty Slot",
+    "slots": {
+      "1": "Preset 1",
+      "2": "Preset 2",
+      "3": "Preset 3",
+      "4": "Preset 4",
+      "5": "Preset 5"
+    }
+  },
+  "music": {
+    "menu": "Menu Theme",
+    "gameplay": "Gameplay",
+    "boss": "Boss Battle",
+    "victory": "Victory",
+    "defeat": "Defeat"
+  },
+  "relics": {
+    "pumpkinCrown": {
+      "name": "Pumpkin Crown",
+      "desc": "+25% crit chance, +30% gold (Halloween exclusive)"
+    },
+    "santasBlessing": {
+      "name": "Santa's Blessing",
+      "desc": "+50% gold, +25% health (Christmas exclusive)"
+    },
+    "dragonPearl": {
+      "name": "Dragon Pearl",
+      "desc": "+40% damage, +75% crit damage (Lunar New Year exclusive)"
+    },
+    "sunStone": {
+      "name": "Sun Stone",
+      "desc": "+30% speed, +20% cooldown reduction (Summer exclusive)"
+    }
   }
 }

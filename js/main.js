@@ -45,6 +45,17 @@ import {
     RANDOM_EVENTS,
     ASCENSION_PERKS,
     COMBO_TIERS,
+    BOSS_MECHANICS,
+    BOSS_ABILITIES,
+    TURRET_SYNERGIES,
+    GAME_MODES,
+    SEASONAL_EVENTS,
+    CAMPAIGN_MISSIONS,
+    VISUAL_EFFECTS,
+    MUSIC_TRACKS,
+    SOUND_EFFECTS,
+    BUILD_PRESET_SLOTS,
+    LEADERBOARD_CATEGORIES,
     createUpgrades,
     createMetaUpgrades,
     getName,
@@ -3263,6 +3274,758 @@ class AscensionManager {
     }
 }
 
+class SynergyManager {
+    constructor(game) {
+        this.game = game;
+        this.activeSynergies = [];
+    }
+
+    update() {
+        this.activeSynergies = [];
+        if (!this.game.turretSlots) return;
+
+        const placedTurrets = this.game.turretSlots.slots
+            .filter(s => s.turret)
+            .map(s => s.turret.type);
+
+        for (const synergy of TURRET_SYNERGIES) {
+            if (synergy.requires.every(req => placedTurrets.includes(req))) {
+                this.activeSynergies.push(synergy);
+            }
+        }
+    }
+
+    getTotalBonus() {
+        const bonus = {};
+        for (const synergy of this.activeSynergies) {
+            for (const [key, value] of Object.entries(synergy.bonus)) {
+                bonus[key] = (bonus[key] || 0) + value;
+            }
+        }
+        return bonus;
+    }
+
+    draw(ctx) {
+        if (this.activeSynergies.length === 0) return;
+        ctx.save();
+        ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        ctx.fillRect(10, this.game.height - 60, 200, 50);
+        ctx.fillStyle = '#fbbf24';
+        ctx.font = 'bold 12px Arial';
+        ctx.fillText(t('synergy.active'), 15, this.game.height - 45);
+        ctx.font = '11px Arial';
+        this.activeSynergies.forEach((syn, i) => {
+            ctx.fillStyle = syn.color;
+            ctx.fillText(`${t(syn.nameKey)}`, 15, this.game.height - 30 + i * 12);
+        });
+        ctx.restore();
+    }
+
+    getSaveData() { return { active: this.activeSynergies.map(s => s.id) }; }
+    loadSaveData(data) { }
+}
+
+class GameModeManager {
+    constructor(game) {
+        this.game = game;
+        this.currentMode = 'standard';
+        this.modeStats = {};
+        this.endlessWave = 0;
+        this.bossRushKills = 0;
+        this.speedrunTime = 0;
+        this.speedrunActive = false;
+    }
+
+    setMode(modeId) {
+        const mode = GAME_MODES.find(m => m.id === modeId);
+        if (!mode) return false;
+        if (mode.unlockWave && this.game.maxWave < mode.unlockWave) return false;
+        this.currentMode = modeId;
+        this.resetModeStats();
+        return true;
+    }
+
+    resetModeStats() {
+        this.endlessWave = 0;
+        this.bossRushKills = 0;
+        this.speedrunTime = 0;
+        this.speedrunActive = this.currentMode === 'speedrun';
+    }
+
+    getScaling() {
+        const mode = GAME_MODES.find(m => m.id === this.currentMode);
+        if (!mode?.scaling) return { hpMult: 1, speedMult: 1, goldMult: 1 };
+        const wave = this.currentMode === 'endless' ? this.endlessWave : 0;
+        return {
+            hpMult: Math.pow(mode.scaling.hpMult, wave),
+            speedMult: Math.pow(mode.scaling.speedMult, wave),
+            goldMult: Math.pow(mode.scaling.goldMult, wave)
+        };
+    }
+
+    isBossWave(wave) {
+        const mode = GAME_MODES.find(m => m.id === this.currentMode);
+        if (mode?.bossOnly) return true;
+        return wave % 5 === 0;
+    }
+
+    update(dt) {
+        if (this.speedrunActive) {
+            this.speedrunTime += dt;
+        }
+        if (this.currentMode === 'endless') {
+            this.endlessWave = this.game.wave;
+        }
+    }
+
+    onBossKill() {
+        if (this.currentMode === 'boss_rush') {
+            this.bossRushKills++;
+            this.updateRecord('boss_rush_record', this.bossRushKills);
+        }
+    }
+
+    onWaveComplete(wave) {
+        if (this.currentMode === 'endless') {
+            this.updateRecord('endless_record', wave);
+        }
+        if (this.currentMode === 'speedrun' && wave >= 50) {
+            this.updateRecord('fastest_wave_50', this.speedrunTime);
+        }
+    }
+
+    updateRecord(category, value) {
+        if (!this.modeStats[category] ||
+            (category.includes('fastest') ? value < this.modeStats[category] : value > this.modeStats[category])) {
+            this.modeStats[category] = value;
+            this.game.leaderboards?.addEntry(category, value);
+        }
+    }
+
+    draw(ctx) {
+        if (this.currentMode === 'standard') return;
+        const mode = GAME_MODES.find(m => m.id === this.currentMode);
+        ctx.save();
+        ctx.fillStyle = 'rgba(0,0,0,0.8)';
+        ctx.fillRect(this.game.width - 150, 60, 140, 40);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${mode.icon} ${t(mode.nameKey)}`, this.game.width - 15, 80);
+        if (this.currentMode === 'boss_rush') {
+            ctx.font = '12px Arial';
+            ctx.fillText(`${t('modes.bossKills')}: ${this.bossRushKills}`, this.game.width - 15, 95);
+        }
+        ctx.restore();
+    }
+
+    getSaveData() {
+        return { mode: this.currentMode, stats: this.modeStats, endless: this.endlessWave, bossRush: this.bossRushKills };
+    }
+
+    loadSaveData(data) {
+        if (!data) return;
+        this.currentMode = data.mode || 'standard';
+        this.modeStats = data.stats || {};
+        this.endlessWave = data.endless || 0;
+        this.bossRushKills = data.bossRush || 0;
+    }
+}
+
+class SeasonalEventManager {
+    constructor(game) {
+        this.game = game;
+        this.activeEvent = null;
+        this.collectedRelics = [];
+    }
+
+    update() {
+        const now = new Date();
+        const month = now.getMonth() + 1;
+        const day = now.getDate();
+
+        this.activeEvent = null;
+        for (const event of SEASONAL_EVENTS) {
+            if (this.isEventActive(event, month, day)) {
+                this.activeEvent = event;
+                break;
+            }
+        }
+    }
+
+    isEventActive(event, month, day) {
+        if (event.startMonth <= event.endMonth) {
+            return (month > event.startMonth || (month === event.startMonth && day >= event.startDay)) &&
+                   (month < event.endMonth || (month === event.endMonth && day <= event.endDay));
+        } else {
+            return (month > event.startMonth || (month === event.startMonth && day >= event.startDay)) ||
+                   (month < event.endMonth || (month === event.endMonth && day <= event.endDay));
+        }
+    }
+
+    getBonuses() {
+        return this.activeEvent?.bonuses || {};
+    }
+
+    getSpecialEnemy() {
+        return this.activeEvent?.specialEnemy || null;
+    }
+
+    canDropExclusiveRelic() {
+        if (!this.activeEvent?.exclusiveRelic) return false;
+        return !this.collectedRelics.includes(this.activeEvent.exclusiveRelic.id);
+    }
+
+    collectExclusiveRelic() {
+        if (!this.canDropExclusiveRelic()) return null;
+        const relic = this.activeEvent.exclusiveRelic;
+        this.collectedRelics.push(relic.id);
+        return relic;
+    }
+
+    draw(ctx) {
+        if (!this.activeEvent) return;
+        ctx.save();
+        ctx.fillStyle = this.activeEvent.theme.accentColor;
+        ctx.font = 'bold 16px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${this.activeEvent.icon} ${t(this.activeEvent.nameKey)}`, this.game.width / 2, 25);
+        ctx.restore();
+    }
+
+    getSaveData() { return { collected: this.collectedRelics }; }
+    loadSaveData(data) { if (data) this.collectedRelics = data.collected || []; }
+}
+
+class CampaignManager {
+    constructor(game) {
+        this.game = game;
+        this.completedMissions = {};
+        this.activeMission = null;
+        this.missionProgress = {};
+    }
+
+    startMission(missionId) {
+        const mission = CAMPAIGN_MISSIONS.find(m => m.id === missionId);
+        if (!mission) return false;
+        this.activeMission = mission;
+        this.missionProgress = { kills: 0, bosses: 0, wave: 0, time: 0, damageTaken: 0 };
+        return true;
+    }
+
+    update(dt) {
+        if (!this.activeMission) return;
+        this.missionProgress.time += dt / 1000;
+        this.missionProgress.wave = this.game.wave;
+    }
+
+    onKill(enemyType) {
+        if (!this.activeMission) return;
+        this.missionProgress.kills++;
+        if (this.activeMission.objective.enemyType === enemyType) {
+            this.missionProgress.targetKills = (this.missionProgress.targetKills || 0) + 1;
+        }
+    }
+
+    onBossKill() {
+        if (!this.activeMission) return;
+        this.missionProgress.bosses++;
+    }
+
+    onDamageTaken(amount) {
+        if (!this.activeMission) return;
+        this.missionProgress.damageTaken += amount;
+    }
+
+    checkCompletion() {
+        if (!this.activeMission) return false;
+        const obj = this.activeMission.objective;
+        let completed = false;
+
+        switch (obj.type) {
+            case 'wave': completed = this.missionProgress.wave >= obj.target; break;
+            case 'boss': completed = this.missionProgress.bosses >= obj.target; break;
+            case 'kill': completed = (this.missionProgress.targetKills || this.missionProgress.kills) >= obj.target; break;
+        }
+
+        if (completed && obj.timeLimit && this.missionProgress.time > obj.timeLimit) completed = false;
+        if (completed && obj.noDamage && this.missionProgress.damageTaken > 0) completed = false;
+
+        if (completed) {
+            this.completeMission();
+        }
+        return completed;
+    }
+
+    completeMission() {
+        if (!this.activeMission) return;
+        const reward = this.activeMission.reward;
+        if (reward.gold) this.game.gold += reward.gold;
+        if (reward.crystals) this.game.crystals += reward.crystals;
+        if (reward.ether) this.game.ether += reward.ether;
+
+        this.completedMissions[this.activeMission.id] = {
+            time: this.missionProgress.time,
+            stars: this.calculateStars()
+        };
+
+        const color = '#22c55e';
+        this.game.floatingTexts.push(new FloatingText(
+            this.game.width / 2, this.game.height / 2,
+            `${t('campaign.completed')}!`, color, 36
+        ));
+
+        this.activeMission = null;
+    }
+
+    calculateStars() {
+        let stars = 1;
+        if (this.missionProgress.damageTaken === 0) stars++;
+        if (this.activeMission.objective.timeLimit &&
+            this.missionProgress.time < this.activeMission.objective.timeLimit * 0.5) stars++;
+        return stars;
+    }
+
+    draw(ctx) {
+        if (!this.activeMission) return;
+        ctx.save();
+        ctx.fillStyle = 'rgba(0,0,0,0.8)';
+        ctx.fillRect(10, 100, 200, 60);
+        ctx.fillStyle = '#fbbf24';
+        ctx.font = 'bold 12px Arial';
+        ctx.fillText(t(this.activeMission.nameKey), 15, 115);
+        ctx.fillStyle = '#fff';
+        ctx.font = '11px Arial';
+        const obj = this.activeMission.objective;
+        let progress = '';
+        switch (obj.type) {
+            case 'wave': progress = `${t('game.wave')}: ${this.missionProgress.wave}/${obj.target}`; break;
+            case 'boss': progress = `${t('enemies.BOSS.name')}: ${this.missionProgress.bosses}/${obj.target}`; break;
+            case 'kill': progress = `${t('campaign.kills')}: ${this.missionProgress.kills}/${obj.target}`; break;
+        }
+        ctx.fillText(progress, 15, 130);
+        if (obj.timeLimit) {
+            const remaining = Math.max(0, obj.timeLimit - this.missionProgress.time);
+            ctx.fillText(`${t('campaign.time')}: ${Math.floor(remaining)}s`, 15, 145);
+        }
+        ctx.restore();
+    }
+
+    getSaveData() { return { completed: this.completedMissions }; }
+    loadSaveData(data) { if (data) this.completedMissions = data.completed || {}; }
+}
+
+class LeaderboardManager {
+    constructor(game) {
+        this.game = game;
+        this.entries = {};
+        for (const cat of LEADERBOARD_CATEGORIES) {
+            this.entries[cat.id] = [];
+        }
+    }
+
+    addEntry(category, value, name = 'Player') {
+        if (!this.entries[category]) return;
+        const entry = { name, value, date: Date.now() };
+        this.entries[category].push(entry);
+        const cat = LEADERBOARD_CATEGORIES.find(c => c.id === category);
+        this.entries[category].sort((a, b) => cat.sortDesc ? b.value - a.value : a.value - b.value);
+        this.entries[category] = this.entries[category].slice(0, 10);
+        this.game.save();
+    }
+
+    getTopEntries(category, limit = 10) {
+        return (this.entries[category] || []).slice(0, limit);
+    }
+
+    getPersonalBest(category) {
+        const entries = this.entries[category] || [];
+        return entries[0]?.value || 0;
+    }
+
+    getSaveData() { return { entries: this.entries }; }
+    loadSaveData(data) { if (data) this.entries = data.entries || {}; }
+}
+
+class BuildPresetManager {
+    constructor(game) {
+        this.game = game;
+        this.presets = [];
+        for (let i = 0; i < BUILD_PRESET_SLOTS; i++) {
+            this.presets.push({ name: `${t('presets.slot')} ${i + 1}`, data: null });
+        }
+    }
+
+    savePreset(slotIndex, name) {
+        if (slotIndex < 0 || slotIndex >= BUILD_PRESET_SLOTS) return false;
+        this.presets[slotIndex] = {
+            name: name || `${t('presets.slot')} ${slotIndex + 1}`,
+            data: {
+                turrets: this.game.turretSlots?.getSaveData(),
+                upgrades: this.game.upgrades?.map(u => ({ id: u.id, level: u.level }))
+            }
+        };
+        this.game.save();
+        return true;
+    }
+
+    loadPreset(slotIndex) {
+        if (slotIndex < 0 || slotIndex >= BUILD_PRESET_SLOTS) return false;
+        const preset = this.presets[slotIndex];
+        if (!preset?.data) return false;
+
+        if (preset.data.turrets && this.game.turretSlots) {
+            this.game.turretSlots.loadSaveData(preset.data.turrets);
+        }
+        return true;
+    }
+
+    deletePreset(slotIndex) {
+        if (slotIndex < 0 || slotIndex >= BUILD_PRESET_SLOTS) return false;
+        this.presets[slotIndex] = { name: `${t('presets.slot')} ${slotIndex + 1}`, data: null };
+        this.game.save();
+        return true;
+    }
+
+    getSaveData() { return { presets: this.presets }; }
+    loadSaveData(data) { if (data) this.presets = data.presets || this.presets; }
+}
+
+class VisualEffectsManager {
+    constructor(game) {
+        this.game = game;
+        this.particles = [];
+        this.screenShake = { x: 0, y: 0, duration: 0 };
+        this.trails = [];
+    }
+
+    addParticle(x, y, type) {
+        const config = VISUAL_EFFECTS.particles[type];
+        if (!config) return;
+        for (let i = 0; i < config.count; i++) {
+            this.particles.push({
+                x, y,
+                vx: (Math.random() - 0.5) * config.speed * 2,
+                vy: (Math.random() - 0.5) * config.speed * 2,
+                life: config.life,
+                maxLife: config.life,
+                size: config.size,
+                color: config.color || '#fff',
+                icon: config.icon
+            });
+        }
+    }
+
+    triggerScreenShake(intensity = 5) {
+        this.screenShake.duration = VISUAL_EFFECTS.screenShake.duration;
+        this.screenShake.intensity = intensity;
+    }
+
+    addTrail(x, y, color) {
+        this.trails.push({ x, y, color, life: 10 });
+        if (this.trails.length > 50) this.trails.shift();
+    }
+
+    update(dt) {
+        // Update particles
+        this.particles = this.particles.filter(p => {
+            p.x += p.vx * (dt / 16);
+            p.y += p.vy * (dt / 16);
+            p.vy += 0.1;
+            p.life -= dt;
+            return p.life > 0;
+        });
+
+        // Update screen shake
+        if (this.screenShake.duration > 0) {
+            this.screenShake.duration -= dt;
+            this.screenShake.x = (Math.random() - 0.5) * this.screenShake.intensity;
+            this.screenShake.y = (Math.random() - 0.5) * this.screenShake.intensity;
+        } else {
+            this.screenShake.x = 0;
+            this.screenShake.y = 0;
+        }
+
+        // Update trails
+        this.trails = this.trails.filter(t => {
+            t.life -= dt / 16;
+            return t.life > 0;
+        });
+    }
+
+    draw(ctx) {
+        // Draw trails
+        for (const trail of this.trails) {
+            ctx.save();
+            ctx.globalAlpha = trail.life / 10;
+            ctx.fillStyle = trail.color;
+            ctx.beginPath();
+            ctx.arc(trail.x, trail.y, 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // Draw particles
+        for (const p of this.particles) {
+            ctx.save();
+            ctx.globalAlpha = p.life / p.maxLife;
+            if (p.icon) {
+                ctx.font = `${p.size}px Arial`;
+                ctx.fillText(p.icon, p.x, p.y);
+            } else {
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * (p.life / p.maxLife), 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+    }
+
+    getShakeOffset() {
+        return { x: this.screenShake.x, y: this.screenShake.y };
+    }
+
+    getSaveData() { return {}; }
+    loadSaveData(data) { }
+}
+
+class MusicManager {
+    constructor(game) {
+        this.game = game;
+        this.ctx = null;
+        this.currentTrack = null;
+        this.volume = 0.3;
+        this.enabled = false;
+        this.oscillators = [];
+    }
+
+    init() {
+        if (this.ctx) return;
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.gain.value = this.volume;
+        this.masterGain.connect(this.ctx.destination);
+    }
+
+    playTrack(trackId) {
+        if (!this.enabled || !this.ctx) return;
+        this.stopTrack();
+        const track = MUSIC_TRACKS.find(t => t.id === trackId);
+        if (!track) return;
+
+        this.currentTrack = trackId;
+        // Generate procedural music based on BPM and mood
+        this.generateMusic(track);
+    }
+
+    generateMusic(track) {
+        const beatInterval = 60000 / track.bpm;
+        const baseFreq = track.mood === 'intense' ? 110 : track.mood === 'calm' ? 220 : 165;
+
+        const playBeat = () => {
+            if (this.currentTrack !== track.id || !this.enabled) return;
+
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = track.mood === 'intense' ? 'sawtooth' : 'sine';
+            osc.frequency.value = baseFreq * (1 + Math.random() * 0.5);
+            gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.3);
+
+            setTimeout(playBeat, beatInterval);
+        };
+
+        if (this.enabled) playBeat();
+    }
+
+    stopTrack() {
+        this.currentTrack = null;
+        this.oscillators.forEach(o => o.stop());
+        this.oscillators = [];
+    }
+
+    setVolume(vol) {
+        this.volume = Math.max(0, Math.min(1, vol));
+        if (this.masterGain) this.masterGain.gain.value = this.volume;
+    }
+
+    toggle() {
+        this.enabled = !this.enabled;
+        if (this.enabled) {
+            this.init();
+            this.playTrack('gameplay');
+        } else {
+            this.stopTrack();
+        }
+        return this.enabled;
+    }
+
+    getSaveData() { return { enabled: this.enabled, volume: this.volume }; }
+    loadSaveData(data) {
+        if (!data) return;
+        this.enabled = data.enabled || false;
+        this.volume = data.volume || 0.3;
+    }
+}
+
+class BossMechanicsManager {
+    constructor(game) {
+        this.game = game;
+        this.activeBoss = null;
+        this.currentPhase = 0;
+        this.abilityCooldowns = {};
+        this.phaseTransitioning = false;
+    }
+
+    setBoss(enemy) {
+        const mechanics = BOSS_MECHANICS[enemy.type];
+        if (!mechanics) return;
+        this.activeBoss = enemy;
+        this.currentPhase = 0;
+        this.abilityCooldowns = {};
+        this.phaseTransitioning = false;
+    }
+
+    update(dt) {
+        if (!this.activeBoss || this.activeBoss.hp <= 0) {
+            this.activeBoss = null;
+            return;
+        }
+
+        const mechanics = BOSS_MECHANICS[this.activeBoss.type];
+        if (!mechanics) return;
+
+        // Check phase transitions
+        const hpPercent = this.activeBoss.hp / this.activeBoss.maxHp;
+        for (let i = mechanics.phases.length - 1; i >= 0; i--) {
+            if (hpPercent <= mechanics.phases[i].hpThreshold && i > this.currentPhase) {
+                this.transitionToPhase(i);
+                break;
+            }
+        }
+
+        // Update ability cooldowns
+        for (const ability in this.abilityCooldowns) {
+            if (this.abilityCooldowns[ability] > 0) {
+                this.abilityCooldowns[ability] -= dt / 1000;
+            }
+        }
+
+        // Execute phase abilities
+        this.executeAbilities(mechanics.phases[this.currentPhase], dt);
+    }
+
+    transitionToPhase(phaseIndex) {
+        const mechanics = BOSS_MECHANICS[this.activeBoss.type];
+        this.currentPhase = phaseIndex;
+        this.phaseTransitioning = true;
+
+        // Visual feedback
+        this.game.visualEffects?.triggerScreenShake(10);
+        this.game.floatingTexts.push(new FloatingText(
+            this.activeBoss.x, this.activeBoss.y - 50,
+            t(mechanics.phases[phaseIndex].nameKey),
+            mechanics.phases[phaseIndex].color, 28
+        ));
+
+        setTimeout(() => { this.phaseTransitioning = false; }, 1000);
+    }
+
+    executeAbilities(phase, dt) {
+        if (!phase || this.phaseTransitioning) return;
+
+        for (const abilityId of phase.abilities) {
+            const ability = BOSS_ABILITIES[abilityId];
+            if (!ability) continue;
+
+            if (this.abilityCooldowns[abilityId] > 0) continue;
+
+            // Execute ability
+            switch (abilityId) {
+                case 'summon_minions':
+                case 'summon_elites':
+                    for (let i = 0; i < ability.count; i++) {
+                        const angle = Math.random() * Math.PI * 2;
+                        const dist = 50 + Math.random() * 30;
+                        const x = this.activeBoss.x + Math.cos(angle) * dist;
+                        const y = this.activeBoss.y + Math.sin(angle) * dist;
+                        this.game.spawnEnemy(ability.type, x, y);
+                    }
+                    this.abilityCooldowns[abilityId] = ability.cooldown;
+                    break;
+
+                case 'enrage':
+                    this.activeBoss.enraged = true;
+                    this.activeBoss.speedMult = (this.activeBoss.speedMult || 1) * ability.speedMult;
+                    break;
+
+                case 'heal':
+                    this.activeBoss.hp = Math.min(this.activeBoss.maxHp,
+                        this.activeBoss.hp + this.activeBoss.maxHp * ability.amount);
+                    this.abilityCooldowns[abilityId] = ability.cooldown;
+                    break;
+
+                case 'barrier':
+                    this.activeBoss.immune = true;
+                    setTimeout(() => { if (this.activeBoss) this.activeBoss.immune = false; },
+                        ability.immuneDuration * 1000);
+                    this.abilityCooldowns[abilityId] = ability.cooldown;
+                    break;
+            }
+        }
+    }
+
+    getCurrentPhaseColor() {
+        if (!this.activeBoss) return null;
+        const mechanics = BOSS_MECHANICS[this.activeBoss.type];
+        return mechanics?.phases[this.currentPhase]?.color;
+    }
+
+    draw(ctx) {
+        if (!this.activeBoss) return;
+        const mechanics = BOSS_MECHANICS[this.activeBoss.type];
+        if (!mechanics) return;
+
+        // Draw phase indicator
+        ctx.save();
+        const phase = mechanics.phases[this.currentPhase];
+        ctx.fillStyle = phase.color;
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(t(phase.nameKey), this.activeBoss.x, this.activeBoss.y - 60);
+
+        // Draw HP bar with phase markers
+        const barWidth = 100;
+        const barHeight = 8;
+        const barX = this.activeBoss.x - barWidth / 2;
+        const barY = this.activeBoss.y - 75;
+
+        ctx.fillStyle = '#333';
+        ctx.fillRect(barX, barY, barWidth, barHeight);
+
+        const hpPercent = this.activeBoss.hp / this.activeBoss.maxHp;
+        ctx.fillStyle = phase.color;
+        ctx.fillRect(barX, barY, barWidth * hpPercent, barHeight);
+
+        // Phase markers
+        for (const p of mechanics.phases) {
+            if (p.hpThreshold < 1) {
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(barX + barWidth * p.hpThreshold - 1, barY - 2, 2, barHeight + 4);
+            }
+        }
+        ctx.restore();
+    }
+
+    getSaveData() { return {}; }
+    loadSaveData(data) { }
+}
+
 class Game {
     constructor() {
         window.game = this;
@@ -3306,6 +4069,15 @@ class Game {
         this.talents = new TalentManager(this);
         this.statistics = new StatisticsManager(this);
         this.ascensionMgr = new AscensionManager(this);
+        this.synergies = new SynergyManager(this);
+        this.gameModes = new GameModeManager(this);
+        this.seasonalEvents = new SeasonalEventManager(this);
+        this.campaign = new CampaignManager(this);
+        this.leaderboards = new LeaderboardManager(this);
+        this.buildPresets = new BuildPresetManager(this);
+        this.visualEffects = new VisualEffectsManager(this);
+        this.music = new MusicManager(this);
+        this.bossMechanics = new BossMechanicsManager(this);
         this.dreadLevel = 0;
         this.speedIndex = 0;
         this.selectedForgeRelic = null;
@@ -3425,6 +4197,8 @@ class Game {
             if (miningModal && !miningModal.classList.contains('hidden')) {
                 this.renderMiningUI();
             }
+            this.updateSynergiesHUD();
+            this.updateSeasonalBanner();
         }, 500);
 
         if (!this.waveInProgress && !document.getElementById('game-over-screen').classList.contains('hidden') === false) {
@@ -4372,6 +5146,242 @@ class Game {
         });
     }
 
+    renderGameModesUI() {
+        const currentModeEl = document.getElementById('current-mode-display');
+        const grid = document.getElementById('modes-grid');
+        if (!grid) return;
+
+        const currentMode = this.gameModes.getCurrentMode();
+        currentModeEl.innerText = `${currentMode.icon} ${t(currentMode.nameKey)}`;
+
+        grid.innerHTML = '';
+        GAME_MODES.forEach(mode => {
+            const isActive = this.gameModes.currentMode === mode.id;
+            const isUnlocked = mode.unlocked || this.gameModes.unlockedModes.includes(mode.id);
+
+            const div = document.createElement('div');
+            div.className = `p-4 rounded border ${isActive ? 'border-violet-400 bg-violet-900/50' : isUnlocked ? 'border-slate-600 bg-slate-800 hover:border-violet-500' : 'border-slate-700 bg-slate-900 opacity-50'}`;
+            div.innerHTML = `
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-3xl">${mode.icon}</span>
+                    <div>
+                        <div class="font-bold ${isActive ? 'text-violet-400' : 'text-white'}">${t(mode.nameKey)}</div>
+                        ${mode.scaling ? `<div class="text-xs text-slate-400">HP x${mode.scaling.hpMult} | Speed x${mode.scaling.speedMult}</div>` : ''}
+                    </div>
+                </div>
+                <div class="text-xs text-slate-300 mb-3">${t(mode.descKey)}</div>
+                ${isUnlocked ? `
+                    <button onclick="game.gameModes.setMode('${mode.id}'); game.renderGameModesUI()"
+                        class="w-full px-3 py-2 ${isActive ? 'bg-violet-600' : 'bg-slate-600 hover:bg-violet-600'} text-white text-sm rounded font-bold transition"
+                        ${isActive ? 'disabled' : ''}>
+                        ${isActive ? t('status.active') : t('modes.select') || 'Select'}
+                    </button>
+                ` : `<div class="text-center text-xs text-red-400">${t('slots.locked')}</div>`}
+            `;
+            grid.appendChild(div);
+        });
+    }
+
+    renderCampaignUI() {
+        const container = document.getElementById('campaign-chapters');
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        const chapters = {};
+        CAMPAIGN_MISSIONS.forEach(mission => {
+            if (!chapters[mission.chapter]) chapters[mission.chapter] = [];
+            chapters[mission.chapter].push(mission);
+        });
+
+        Object.keys(chapters).sort((a, b) => a - b).forEach(chapterNum => {
+            const chapterDiv = document.createElement('div');
+            chapterDiv.className = 'bg-slate-900/50 rounded-lg border border-rose-900/50 overflow-hidden';
+
+            const chapterTitle = t(`campaign.chapters.${chapterNum}`) || `${t('campaign.chapter')} ${chapterNum}`;
+
+            chapterDiv.innerHTML = `
+                <div class="bg-rose-900/30 px-4 py-2 border-b border-rose-800">
+                    <h3 class="text-lg font-bold text-rose-400">${t('campaign.chapter')} ${chapterNum}: ${chapterTitle}</h3>
+                </div>
+                <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-3" id="chapter-${chapterNum}-missions"></div>
+            `;
+            container.appendChild(chapterDiv);
+
+            const missionsGrid = chapterDiv.querySelector(`#chapter-${chapterNum}-missions`);
+
+            chapters[chapterNum].forEach(mission => {
+                const isCompleted = this.campaign.completedMissions.includes(mission.id);
+                const canAttempt = this.campaign.canAttemptMission(mission.id);
+
+                const missionDiv = document.createElement('div');
+                missionDiv.className = `p-3 rounded border ${isCompleted ? 'border-green-500 bg-green-900/30' : canAttempt ? 'border-slate-600 bg-slate-800' : 'border-slate-700 bg-slate-900 opacity-50'}`;
+
+                const objectiveText = `${t(`campaign.objectives.${mission.objective.type}`)} ${mission.objective.target}`;
+
+                missionDiv.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="font-bold ${isCompleted ? 'text-green-400' : 'text-white'}">${t(`campaign.missions.${mission.id}`) || mission.id}</div>
+                        ${isCompleted ? '<span class="text-green-400 text-xl">✓</span>' : ''}
+                    </div>
+                    <div class="text-xs text-slate-400 mb-2">${objectiveText}</div>
+                    <div class="text-xs text-yellow-400">
+                        ${t('game.gold')}: +${formatNumber(mission.reward.gold)} |
+                        ${t('currency.crystals')}: +${mission.reward.crystals}
+                    </div>
+                    ${!isCompleted && canAttempt ? `
+                        <button onclick="game.campaign.startMission('${mission.id}'); document.getElementById('campaign-modal').classList.add('hidden')"
+                            class="mt-2 w-full px-3 py-1 bg-rose-600 hover:bg-rose-500 text-white text-sm rounded">
+                            ${t('modes.select') || 'Start'}
+                        </button>
+                    ` : ''}
+                `;
+                missionsGrid.appendChild(missionDiv);
+            });
+        });
+    }
+
+    renderLeaderboardUI() {
+        const categorySelect = document.getElementById('leaderboard-category');
+        const listContainer = document.getElementById('leaderboard-list');
+        if (!categorySelect || !listContainer) return;
+
+        if (categorySelect.options.length === 0) {
+            LEADERBOARD_CATEGORIES.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.id;
+                option.textContent = t(cat.nameKey);
+                categorySelect.appendChild(option);
+            });
+        }
+
+        const selectedCategory = categorySelect.value || LEADERBOARD_CATEGORIES[0].id;
+        const entries = this.leaderboards.getTopScores(selectedCategory, 10);
+
+        listContainer.innerHTML = '';
+
+        if (entries.length === 0) {
+            listContainer.innerHTML = `<div class="text-slate-500 text-center py-8">${t('leaderboard.empty')}</div>`;
+            return;
+        }
+
+        entries.forEach((entry, index) => {
+            const div = document.createElement('div');
+            div.className = `flex items-center justify-between p-3 rounded ${index === 0 ? 'bg-yellow-900/30 border border-yellow-600' : index === 1 ? 'bg-slate-700/50 border border-slate-500' : index === 2 ? 'bg-orange-900/20 border border-orange-700' : 'bg-slate-800 border border-slate-700'}`;
+
+            const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
+            const date = new Date(entry.date).toLocaleDateString();
+
+            div.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <span class="text-xl w-8 text-center">${medal}</span>
+                    <div>
+                        <div class="font-bold text-sky-400">${formatNumber(entry.score)}</div>
+                        <div class="text-xs text-slate-400">${date}</div>
+                    </div>
+                </div>
+            `;
+            listContainer.appendChild(div);
+        });
+    }
+
+    renderPresetsUI() {
+        const grid = document.getElementById('presets-grid');
+        if (!grid) return;
+
+        grid.innerHTML = '';
+
+        BUILD_PRESET_SLOTS.forEach(slot => {
+            const preset = this.buildPresets.presets[slot.id];
+            const hasData = preset && preset.turrets && preset.turrets.length > 0;
+
+            const div = document.createElement('div');
+            div.className = 'p-4 rounded border border-slate-600 bg-slate-800';
+
+            div.innerHTML = `
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">${slot.icon}</span>
+                        <span class="font-bold text-white">${t(`presets.slots.${slot.id}`) || slot.name}</span>
+                    </div>
+                    ${hasData ? `<span class="text-xs text-green-400">${preset.turrets.length} ${t('chips.turret') || 'turrets'}</span>` : `<span class="text-xs text-slate-500">${t('presets.empty')}</span>`}
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="game.buildPresets.savePreset(${slot.id}); game.renderPresetsUI()"
+                        class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded font-bold">
+                        ${t('presets.save')}
+                    </button>
+                    ${hasData ? `
+                        <button onclick="game.buildPresets.loadPreset(${slot.id}); game.renderPresetsUI()"
+                            class="flex-1 px-3 py-2 bg-green-600 hover:bg-green-500 text-white text-sm rounded font-bold">
+                            ${t('presets.load')}
+                        </button>
+                        <button onclick="game.buildPresets.deletePreset(${slot.id}); game.renderPresetsUI()"
+                            class="px-3 py-2 bg-red-600 hover:bg-red-500 text-white text-sm rounded">
+                            🗑️
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+            grid.appendChild(div);
+        });
+    }
+
+    updateSynergiesHUD() {
+        const container = document.getElementById('synergies-hud');
+        const list = document.getElementById('synergies-list');
+        if (!container || !list) return;
+
+        const activeSynergies = this.synergies.getActiveSynergies();
+
+        if (activeSynergies.length === 0) {
+            container.classList.add('hidden');
+            return;
+        }
+
+        container.classList.remove('hidden');
+        list.innerHTML = '';
+
+        activeSynergies.forEach(synergy => {
+            const span = document.createElement('span');
+            span.className = 'px-2 py-1 rounded text-xs font-bold pointer-events-auto';
+            span.style.backgroundColor = synergy.color + '40';
+            span.style.borderColor = synergy.color;
+            span.style.border = '1px solid';
+            span.style.color = synergy.color;
+            span.textContent = t(synergy.nameKey);
+            span.title = t(synergy.descKey);
+            list.appendChild(span);
+        });
+    }
+
+    updateSeasonalBanner() {
+        const banner = document.getElementById('seasonal-banner');
+        const iconEl = document.getElementById('seasonal-icon');
+        const nameEl = document.getElementById('seasonal-name');
+        const bonusEl = document.getElementById('seasonal-bonus');
+
+        if (!banner) return;
+
+        const activeEvent = this.seasonalEvents.getActiveEvent();
+
+        if (!activeEvent) {
+            banner.classList.add('hidden');
+            return;
+        }
+
+        banner.classList.remove('hidden');
+        iconEl.textContent = activeEvent.icon;
+        nameEl.textContent = t(activeEvent.nameKey);
+
+        const bonuses = [];
+        if (activeEvent.bonuses.goldMult) bonuses.push(`${t('game.gold')} x${activeEvent.bonuses.goldMult}`);
+        if (activeEvent.bonuses.xpMult) bonuses.push(`XP x${activeEvent.bonuses.xpMult}`);
+        if (activeEvent.bonuses.dropMult) bonuses.push(`${t('relics.drop') || 'Drops'} x${activeEvent.bonuses.dropMult}`);
+
+        bonusEl.textContent = bonuses.join(' | ');
+    }
+
     handleSlotClick(slot) {
         if (!slot.purchased) {
             if (this.turretSlots.canPurchaseSlot(slot.id)) {
@@ -4756,6 +5766,12 @@ class Game {
         this.combo.update(dt);
         this.events.update(dt);
         this.statistics.update(dt);
+        this.synergies.update();
+        this.gameModes.update(dt);
+        this.seasonalEvents.update();
+        this.campaign.update(dt);
+        this.visualEffects.update(dt);
+        this.bossMechanics.update(dt);
         if (this.isGameOver) return;
         this.skills.update(dt);
         if (this.drone) this.drone.update(dt, this.gameTime);
@@ -4882,6 +5898,12 @@ class Game {
         this.weather.draw(this.ctx);
         this.combo.draw(this.ctx);
         this.events.draw(this.ctx);
+        this.synergies.draw(this.ctx);
+        this.gameModes.draw(this.ctx);
+        this.seasonalEvents.draw(this.ctx);
+        this.campaign.draw(this.ctx);
+        this.visualEffects.draw(this.ctx);
+        this.bossMechanics.draw(this.ctx);
     }
 
     gameOver() {
@@ -5051,7 +6073,14 @@ class Game {
             events: this.events.getSaveData(),
             talents: this.talents.getSaveData(),
             statistics: this.statistics.getSaveData(),
-            ascensionMgr: this.ascensionMgr.getSaveData()
+            ascensionMgr: this.ascensionMgr.getSaveData(),
+            synergies: this.synergies.getSaveData(),
+            gameModes: this.gameModes.getSaveData(),
+            seasonalEvents: this.seasonalEvents.getSaveData(),
+            campaign: this.campaign.getSaveData(),
+            leaderboards: this.leaderboards.getSaveData(),
+            buildPresets: this.buildPresets.getSaveData(),
+            music: this.music.getSaveData()
         };
         localStorage.setItem(CONFIG.saveKey, JSON.stringify(data));
         if (document.getElementById('save-string')) {
@@ -5169,6 +6198,27 @@ class Game {
                 }
                 if (data.ascensionMgr) {
                     this.ascensionMgr.loadSaveData(data.ascensionMgr);
+                }
+                if (data.synergies) {
+                    this.synergies.loadSaveData(data.synergies);
+                }
+                if (data.gameModes) {
+                    this.gameModes.loadSaveData(data.gameModes);
+                }
+                if (data.seasonalEvents) {
+                    this.seasonalEvents.loadSaveData(data.seasonalEvents);
+                }
+                if (data.campaign) {
+                    this.campaign.loadSaveData(data.campaign);
+                }
+                if (data.leaderboards) {
+                    this.leaderboards.loadSaveData(data.leaderboards);
+                }
+                if (data.buildPresets) {
+                    this.buildPresets.loadSaveData(data.buildPresets);
+                }
+                if (data.music) {
+                    this.music.loadSaveData(data.music);
                 }
             } catch (e) {
                 console.error("Save error", e);
