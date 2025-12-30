@@ -3421,6 +3421,19 @@ class GameModeManager {
         this.bossRushKills = 0;
         this.speedrunTime = 0;
         this.speedrunActive = false;
+        this.unlockedModes = ['standard'];
+    }
+
+    getCurrentMode() {
+        return GAME_MODES.find(m => m.id === this.currentMode) || GAME_MODES[0];
+    }
+
+    isUnlocked(modeId) {
+        const mode = GAME_MODES.find(m => m.id === modeId);
+        if (!mode) return false;
+        if (mode.unlocked) return true;
+        if (mode.unlockWave && this.game.stats?.maxWave >= mode.unlockWave) return true;
+        return this.unlockedModes.includes(modeId);
     }
 
     setMode(modeId) {
@@ -3507,7 +3520,7 @@ class GameModeManager {
     }
 
     getSaveData() {
-        return { mode: this.currentMode, stats: this.modeStats, endless: this.endlessWave, bossRush: this.bossRushKills };
+        return { mode: this.currentMode, stats: this.modeStats, endless: this.endlessWave, bossRush: this.bossRushKills, unlocked: this.unlockedModes };
     }
 
     loadSaveData(data) {
@@ -3516,6 +3529,7 @@ class GameModeManager {
         this.modeStats = data.stats || {};
         this.endlessWave = data.endless || 0;
         this.bossRushKills = data.bossRush || 0;
+        this.unlockedModes = Array.isArray(data.unlocked) ? data.unlocked : ['standard'];
     }
 }
 
@@ -3700,6 +3714,19 @@ class CampaignManager {
             ctx.fillText(`${t('campaign.time')}: ${Math.floor(remaining)}s`, 15, 145);
         }
         ctx.restore();
+    }
+
+    isCompleted(missionId) {
+        return missionId in this.completedMissions;
+    }
+
+    canAttemptMission(missionId) {
+        const mission = CAMPAIGN_MISSIONS.find(m => m.id === missionId);
+        if (!mission) return false;
+        if (this.isCompleted(missionId)) return true; // Can replay completed missions
+        // Check if prerequisites are met (previous missions in chapter completed)
+        const sameChaperMissions = CAMPAIGN_MISSIONS.filter(m => m.chapter === mission.chapter && m.order < mission.order);
+        return sameChaperMissions.every(m => this.isCompleted(m.id));
     }
 
     getSaveData() { return { completed: this.completedMissions }; }
@@ -5410,7 +5437,7 @@ class Game {
         grid.innerHTML = '';
         GAME_MODES.forEach(mode => {
             const isActive = this.gameModes.currentMode === mode.id;
-            const isUnlocked = mode.unlocked || this.gameModes.unlockedModes.includes(mode.id);
+            const isUnlocked = this.gameModes.isUnlocked(mode.id);
 
             const div = document.createElement('div');
             div.className = `p-4 rounded border ${isActive ? 'border-violet-400 bg-violet-900/50' : isUnlocked ? 'border-slate-600 bg-slate-800 hover:border-violet-500' : 'border-slate-700 bg-slate-900 opacity-50'}`;
@@ -5464,7 +5491,7 @@ class Game {
             const missionsGrid = chapterDiv.querySelector(`#chapter-${chapterNum}-missions`);
 
             chapters[chapterNum].forEach(mission => {
-                const isCompleted = this.campaign.completedMissions.includes(mission.id);
+                const isCompleted = this.campaign.isCompleted(mission.id);
                 const canAttempt = this.campaign.canAttemptMission(mission.id);
 
                 const missionDiv = document.createElement('div');
