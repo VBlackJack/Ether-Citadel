@@ -27,8 +27,8 @@ import { ENEMY_BALANCE, COMBAT_BALANCE, PARTICLE_COUNTS } from '../constants/bal
 export class Enemy {
     constructor(wave, typeKey = 'NORMAL', x, y, game) {
         this.game = game;
-        this.type = ENEMY_TYPES[typeKey];
-        this.typeKey = typeKey;
+        this.type = ENEMY_TYPES[typeKey] || ENEMY_TYPES['NORMAL'];
+        this.typeKey = this.type ? typeKey : 'NORMAL';
         this.radius = 12 * this.type.scale;
         this.isElite = Math.random() < ENEMY_BALANCE.ELITE_SPAWN_CHANCE;
         this.x = x || game.width + 50;

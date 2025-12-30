@@ -4082,6 +4082,8 @@ class Game {
         this.ether = 0;
         this.activeTab = 0;
         this.buyMode = '1';
+        this._intervals = [];
+        this._boundEventHandlers = {};
         this.sound = new SoundManager();
         this.metaUpgrades = new MetaUpgradeManager();
         this.skills = new SkillManager();
@@ -4241,7 +4243,7 @@ class Game {
         // Initialize event delegation for UI buttons
         this.eventDelegation = getEventDelegation(this);
 
-        setInterval(() => {
+        this._intervals.push(setInterval(() => {
             const miningModal = document.getElementById('mining-modal');
             if (miningModal && !miningModal.classList.contains('hidden')) {
                 this.renderMiningUI();
@@ -4250,21 +4252,26 @@ class Game {
             this.updateSeasonalBanner();
             this.updateSuggestedAction();
             this.updateMenuUnlocks();
-        }, 500);
+        }, 500));
 
         if (!this.waveInProgress && document.getElementById('game-over-screen').classList.contains('hidden')) {
             this.startWave();
         }
         requestAnimationFrame((t) => this.loop(t));
 
-        setInterval(() => {
+        this._intervals.push(setInterval(() => {
             if (this.autoBuyEnabled && !this.isPaused && !this.isGameOver && this.metaUpgrades.getEffectValue('unlockAI')) {
                 this.performAutoBuy();
                 document.getElementById('auto-status').classList.remove('hidden');
             } else {
                 document.getElementById('auto-status').classList.add('hidden');
             }
-        }, 500);
+        }, 500));
+    }
+
+    cleanup() {
+        this._intervals.forEach(id => clearInterval(id));
+        this._intervals = [];
     }
 
     async changeLanguage(locale) {
@@ -6280,16 +6287,27 @@ class Game {
     }
 
     exportSave() {
-        const str = btoa(localStorage.getItem(CONFIG.saveKey));
+        const saved = localStorage.getItem(CONFIG.saveKey);
+        if (!saved) {
+            this.ui.showToast(t('notifications.noSaveFound') || 'No save found', 'error');
+            return;
+        }
+        const str = btoa(encodeURIComponent(saved));
         document.getElementById('save-string').value = str;
-        navigator.clipboard.writeText(str).then(() => alert(t('notifications.saveCopied')));
+        navigator.clipboard.writeText(str)
+            .then(() => alert(t('notifications.saveCopied')))
+            .catch(err => {
+                logError(err, 'Clipboard.write');
+                this.ui.showToast(t('notifications.clipboardError') || 'Copy failed', 'error');
+            });
     }
 
     importSave() {
         const str = prompt(t('notifications.pasteSave'));
         if (str) {
             try {
-                localStorage.setItem(CONFIG.saveKey, decodeURIComponent(escape(atob(str))));
+                const decoded = decodeURIComponent(atob(str));
+                localStorage.setItem(CONFIG.saveKey, decoded);
                 location.reload();
             } catch (e) {
                 getErrorHandler().handleImportError(e);
@@ -6359,7 +6377,7 @@ class Game {
         const saveStringEl = document.getElementById('save-string');
         if (saveStringEl) {
             try {
-                saveStringEl.value = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+                saveStringEl.value = btoa(encodeURIComponent(JSON.stringify(data)));
             } catch (e) {
                 logError(e, 'Save.exportString');
                 saveStringEl.value = '';

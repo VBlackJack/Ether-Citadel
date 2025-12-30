@@ -26,6 +26,7 @@ export const CONFIG = {
     // Save settings
     saveKey: 'defenderIdleSave_Patch81_v1',
     saveIntervalMs: 30000,
+    SAVE_VERSION: 1,
 
     // Evolution settings
     evolutionInterval: 10,

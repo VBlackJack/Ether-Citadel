@@ -146,7 +146,11 @@ export class HelpTooltipManager {
     }
 
     positionTooltip(tooltip, anchor) {
+        if (!anchor.isConnected) return;
+
         const rect = anchor.getBoundingClientRect();
+        if (rect.width === 0 || rect.height === 0) return;
+
         const tooltipRect = tooltip.getBoundingClientRect();
 
         let left = rect.left + rect.width / 2 - tooltipRect.width / 2;
@@ -160,6 +164,8 @@ export class HelpTooltipManager {
         if (top + tooltipRect.height > window.innerHeight - 10) {
             top = rect.top - tooltipRect.height - 8;
         }
+
+        top = Math.max(10, top);
 
         tooltip.style.left = `${left}px`;
         tooltip.style.top = `${top}px`;

@@ -119,7 +119,7 @@ export class ModalManager {
             : '';
 
         modal.innerHTML = `
-            <div class="${sizeClass} bg-slate-800 border border-${colors.border} rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
+            <div class="modal-inner ${sizeClass} bg-slate-800 border border-${colors.border} rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="${id}-modal-title" class="text-2xl text-${colors.text} font-bold uppercase flex items-center gap-2">
                         ${titleHtml}
@@ -133,6 +133,10 @@ export class ModalManager {
             </div>
         `;
 
+        const innerDiv = modal.querySelector('.modal-inner');
+        if (innerDiv) {
+            innerDiv.addEventListener('click', (e) => e.stopPropagation());
+        }
         modal.querySelector('.modal-close-btn').onclick = () => this.hide(id);
 
         config.element = modal;
