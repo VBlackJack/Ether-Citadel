@@ -4357,7 +4357,7 @@ class Game {
         this._intervals.push(setInterval(() => {
             if (this.isDirty || Date.now() - this.lastSaveTime > CONFIG.saveIntervalMs) {
                 this.save();
-                this.ui.showToast(t('notifications.autoSaved') || 'Game saved', 'success', { duration: 1500 });
+                this.ui?.showToast(t('notifications.autoSaved') || 'Game saved', 'success', { duration: 1500 });
             }
         }, CONFIG.saveIntervalMs || 30000));
     }
@@ -6334,7 +6334,7 @@ class Game {
             this.waveInProgress = false;
             this.wave++;
             // Repair all turrets at wave end
-            this.turrets.forEach(t => t.repair());
+            this.turrets.forEach(t => t.repair?.());
             // Auto-upgrade turrets if enabled
             if (this.settings.autoUpgradeTurrets) {
                 this.autoUpgradeTurrets();
