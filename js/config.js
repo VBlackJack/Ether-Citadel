@@ -32,9 +32,9 @@ export const CONFIG = {
     evolutionInterval: 10,
     evolutionMultiplier: 1.5,
 
-    // Offline progression
-    maxOfflineHours: 8,
-    offlineEarningsMultiplier: 0.5,
+    // Offline progression (increased cap and multiplier)
+    maxOfflineHours: 24,
+    offlineEarningsMultiplier: 0.75,
 
     // Crystal calculation
     crystalWaveDivisor: 10,

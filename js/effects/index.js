@@ -19,28 +19,79 @@ import { RUNE_TYPES } from '../data.js';
 
 /**
  * Floating text effect for damage numbers, notifications, etc.
+ * Now with collision avoidance to prevent overlap
  */
 export class FloatingText {
+    // Static tracker for recent text positions (used for collision avoidance)
+    static recentPositions = [];
+    static positionTimeout = 500; // ms before position slot is freed
+
     constructor(x, y, text, color, size = 20) {
-        this.x = x;
-        this.y = y;
+        // Apply offset to avoid overlap with other recent texts
+        const offset = FloatingText.getOffset(x, y);
+        this.x = x + offset.x;
+        this.y = y + offset.y;
         this.text = text;
         this.color = color;
         this.size = size;
         this.life = 1.0;
-        this.vy = -1;
+        this.vy = -1.5;
+        this.vx = offset.x * 0.02; // Slight horizontal drift based on offset
+
+        // Register this position
+        FloatingText.registerPosition(x, y);
+    }
+
+    static getOffset(x, y) {
+        const now = Date.now();
+        // Clean up old positions
+        FloatingText.recentPositions = FloatingText.recentPositions.filter(
+            p => now - p.time < FloatingText.positionTimeout
+        );
+
+        // Check for nearby texts and calculate offset
+        let offsetX = 0;
+        let offsetY = 0;
+        const threshold = 30;
+
+        for (const pos of FloatingText.recentPositions) {
+            const dx = x - pos.x;
+            const dy = y - pos.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < threshold) {
+                // Fan out in alternating directions
+                const index = FloatingText.recentPositions.length;
+                offsetX = ((index % 3) - 1) * 15; // -15, 0, or 15
+                offsetY = -Math.floor(index / 3) * 12; // Stack upward
+            }
+        }
+
+        return { x: offsetX, y: offsetY };
+    }
+
+    static registerPosition(x, y) {
+        FloatingText.recentPositions.push({ x, y, time: Date.now() });
+        // Limit array size
+        if (FloatingText.recentPositions.length > 20) {
+            FloatingText.recentPositions.shift();
+        }
     }
 
     update(dt) {
-        this.y += this.vy * (dt / 16);
-        this.life -= 0.02 * (dt / 16);
+        const timeScale = dt / 16;
+        this.x += this.vx * timeScale;
+        this.y += this.vy * timeScale;
+        this.life -= 0.025 * timeScale;
     }
 
     draw(ctx) {
         ctx.globalAlpha = Math.max(0, this.life);
         ctx.fillStyle = this.color;
         ctx.font = `bold ${this.size}px Rajdhani`;
+        ctx.textAlign = 'center';
         ctx.fillText(this.text, this.x, this.y);
+        ctx.textAlign = 'left';
         ctx.globalAlpha = 1.0;
     }
 }

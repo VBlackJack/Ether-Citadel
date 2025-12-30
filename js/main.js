@@ -2052,6 +2052,49 @@ class PrestigeManager {
         return Math.floor(Math.pow(baseWave / 10, 1.5) * dreadMult * prestigeCountBonus);
     }
 
+    /**
+     * Calculate prestige points for a given wave (for projection)
+     */
+    calculatePointsAtWave(wave, dreadLevel = this.game.dreadLevel) {
+        const dreadMult = 1 + (dreadLevel * 0.5);
+        const prestigeCountBonus = 1 + (this.totalPrestiges * 0.05);
+        return Math.floor(Math.pow(wave / 10, 1.5) * dreadMult * prestigeCountBonus);
+    }
+
+    /**
+     * Get prestige calculator projections
+     */
+    getPrestigeProjections() {
+        const currentWave = this.game.stats?.maxWave || this.game.wave;
+        const currentPoints = this.calculatePrestigePoints();
+        const projections = [];
+
+        // Project points at various wave milestones
+        const milestones = [50, 75, 100, 150, 200, 300, 500];
+        for (const wave of milestones) {
+            if (wave > currentWave) {
+                const points = this.calculatePointsAtWave(wave);
+                const gain = points - currentPoints;
+                projections.push({
+                    wave,
+                    points,
+                    gain,
+                    efficiency: (gain / (wave - currentWave)).toFixed(2)
+                });
+            }
+        }
+
+        return {
+            current: {
+                wave: currentWave,
+                points: currentPoints,
+                dreadLevel: this.game.dreadLevel
+            },
+            projections,
+            nextMilestone: projections[0] || null
+        };
+    }
+
     canPrestige() {
         return (this.game.stats?.maxWave || this.game.wave) >= 25;
     }
@@ -4176,7 +4219,8 @@ class Game {
         this.enemiesToSpawn = 0;
         this.currentEffects = { ice: false, poison: false };
         this.currentProps = { bounce: 0, blast: 0, leech: 0, stasis: 0, orbital: 0 };
-        this.settings = { showDamageText: true, showRange: true };
+        this.settings = { showDamageText: true, showRange: true, autoUpgradeTurrets: false };
+        this.isDirty = false;  // Track if save is needed
         this.isRushBonus = false;
         this.orbitalTimer = 0;
         this.isPaused = false;
@@ -4490,9 +4534,63 @@ class Game {
     }
 
     setDreadLevel(level) {
+        const oldLevel = this.dreadLevel;
         this.dreadLevel = Math.max(0, Math.min(10, level));
+
+        // Visual feedback for dread change
+        if (oldLevel !== this.dreadLevel) {
+            const dread = DREAD_LEVELS[this.dreadLevel];
+            const direction = this.dreadLevel > oldLevel ? '⬆️' : '⬇️';
+
+            // Show toast notification
+            if (this.ui?.showToast) {
+                this.ui.showToast(
+                    `${direction} ${t('dread.level')} ${this.dreadLevel}: ${t(dread.nameKey)}`,
+                    this.dreadLevel > 5 ? 'warning' : 'info'
+                );
+            }
+
+            // Screen flash effect
+            this.showDreadFlash(dread.color);
+
+            // Floating text at center
+            this.floatingTexts.push(new FloatingText(
+                this.width / 2,
+                this.height / 2,
+                `${t('dread.level')} ${this.dreadLevel}`,
+                dread.color,
+                32
+            ));
+        }
+
         this.updateDreadUI();
+        this.isDirty = true;
         this.save();
+    }
+
+    /**
+     * Show screen flash effect for dread level change
+     */
+    showDreadFlash(color) {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: ${color};
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        `;
+        document.body.appendChild(overlay);
+
+        requestAnimationFrame(() => {
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.remove(), 500);
+        });
     }
 
     updateDreadUI() {
@@ -5923,6 +6021,21 @@ class Game {
         }
     }
 
+    /**
+     * Automatically upgrade turrets when crystals are available
+     */
+    autoUpgradeTurrets() {
+        let upgraded = false;
+        for (const turret of this.turrets) {
+            if (turret.upgradeTier(this)) {
+                upgraded = true;
+            }
+        }
+        if (upgraded) {
+            this.updateCrystalsUI();
+        }
+    }
+
     updateTierUI() {
         const el = document.getElementById('ui-tier');
         if (el) el.innerText = this.castle.tier;
@@ -6139,6 +6252,11 @@ class Game {
             this.wave++;
             // Repair all turrets at wave end
             this.turrets.forEach(t => t.repair());
+            // Auto-upgrade turrets if enabled
+            if (this.settings.autoUpgradeTurrets) {
+                this.autoUpgradeTurrets();
+            }
+            this.isDirty = true;
             this.save();
             setTimeout(() => this.startWave(), 2000 / this.speedMultiplier);
         }
@@ -6451,9 +6569,16 @@ class Game {
             campaign: this.campaign.getSaveData(),
             leaderboards: this.leaderboards.getSaveData(),
             buildPresets: this.buildPresets.getSaveData(),
-            music: this.music.getSaveData()
+            music: this.music.getSaveData(),
+            tutorialStep: this.tutorial?.step || 0
         };
+
+        // Create rotating backups (keep 3 backups)
+        this.createSaveBackup();
+
         localStorage.setItem(CONFIG.saveKey, JSON.stringify(data));
+        this.isDirty = false;
+        this.lastSaveTime = Date.now();
         const saveStringEl = document.getElementById('save-string');
         if (saveStringEl) {
             try {
@@ -6463,6 +6588,69 @@ class Game {
                 saveStringEl.value = '';
             }
         }
+    }
+
+    /**
+     * Create rotating save backups (keeps 3 backups)
+     */
+    createSaveBackup() {
+        const currentSave = localStorage.getItem(CONFIG.saveKey);
+        if (!currentSave) return;
+
+        const backupKey = `${CONFIG.saveKey}_backup`;
+
+        // Rotate backups: 2 -> 3, 1 -> 2, current -> 1
+        const backup2 = localStorage.getItem(`${backupKey}_2`);
+        if (backup2) {
+            localStorage.setItem(`${backupKey}_3`, backup2);
+        }
+
+        const backup1 = localStorage.getItem(`${backupKey}_1`);
+        if (backup1) {
+            localStorage.setItem(`${backupKey}_2`, backup1);
+        }
+
+        localStorage.setItem(`${backupKey}_1`, currentSave);
+    }
+
+    /**
+     * Restore from backup slot (1-3)
+     */
+    restoreFromBackup(slot) {
+        const backupKey = `${CONFIG.saveKey}_backup_${slot}`;
+        const backup = localStorage.getItem(backupKey);
+        if (backup) {
+            localStorage.setItem(CONFIG.saveKey, backup);
+            this.load();
+            this.ui.showToast(t('notifications.backupRestored') || 'Backup restored!', 'success');
+            return true;
+        }
+        this.ui.showToast(t('notifications.noBackup') || 'No backup found', 'error');
+        return false;
+    }
+
+    /**
+     * Get available backups info
+     */
+    getBackupsInfo() {
+        const backups = [];
+        for (let i = 1; i <= 3; i++) {
+            const backup = localStorage.getItem(`${CONFIG.saveKey}_backup_${i}`);
+            if (backup) {
+                try {
+                    const data = JSON.parse(backup);
+                    backups.push({
+                        slot: i,
+                        wave: data.wave || 1,
+                        gold: data.gold || 0,
+                        date: new Date(data.lastSaveTime || 0).toLocaleString()
+                    });
+                } catch {
+                    backups.push({ slot: i, wave: '?', gold: '?', date: 'Unknown' });
+                }
+            }
+        }
+        return backups;
     }
 
     load() {
@@ -6512,17 +6700,28 @@ class Game {
                 }
                 this.autoRetryEnabled = data.autoRetry || false;
                 this.autoBuyEnabled = data.autoBuy || false;
-                this.settings = data.settings || { showDamageText: true, showRange: true };
+                this.settings = data.settings || { showDamageText: true, showRange: true, autoUpgradeTurrets: false };
+                // Ensure new settings have defaults
+                if (this.settings.autoUpgradeTurrets === undefined) {
+                    this.settings.autoUpgradeTurrets = false;
+                }
+
+                // Load tutorial progress
+                if (data.tutorialStep !== undefined && this.tutorial) {
+                    this.tutorial.step = data.tutorialStep;
+                }
 
                 const toggleRetry = document.getElementById('toggle-retry');
                 const toggleBuy = document.getElementById('toggle-buy');
                 const toggleDamage = document.getElementById('toggle-damage');
                 const toggleRange = document.getElementById('toggle-range');
+                const toggleAutoTurret = document.getElementById('toggle-auto-turret');
 
                 if (toggleRetry) toggleRetry.checked = this.autoRetryEnabled;
                 if (toggleBuy) toggleBuy.checked = this.autoBuyEnabled;
                 if (toggleDamage) toggleDamage.checked = this.settings.showDamageText;
                 if (toggleRange) toggleRange.checked = this.settings.showRange;
+                if (toggleAutoTurret) toggleAutoTurret.checked = this.settings.autoUpgradeTurrets;
                 if (data.locale) {
                     i18n.setLocale(data.locale);
                 }

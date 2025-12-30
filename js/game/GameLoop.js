@@ -18,6 +18,12 @@ export class GameLoopManager {
         this.targetFPS = 60;
         this.frameInterval = 1000 / this.targetFPS;
         this.then = performance.now();
+
+        // Cached grid canvas for performance
+        this.gridCanvas = null;
+        this.gridCtx = null;
+        this.lastGridWidth = 0;
+        this.lastGridHeight = 0;
     }
 
     /**
@@ -88,46 +94,36 @@ export class GameLoopManager {
             }
         }
 
-        // Update entities
-        for (let i = g.enemies.length - 1; i >= 0; i--) {
-            const enemy = g.enemies[i];
+        // Update entities - using filter instead of splice for better performance
+        // Update enemies
+        for (const enemy of g.enemies) {
             enemy.update(dt);
-            if (enemy.hp <= 0 || enemy.reachedEnd) {
-                g.enemies.splice(i, 1);
-            }
         }
+        g.enemies = g.enemies.filter(e => e.hp > 0 && !e.reachedEnd);
 
-        for (let i = g.projectiles.length - 1; i >= 0; i--) {
-            const proj = g.projectiles[i];
+        // Update projectiles
+        for (const proj of g.projectiles) {
             if (proj.update) proj.update(dt, g);
-            if (proj.dead) {
-                g.projectiles.splice(i, 1);
-            }
         }
+        g.projectiles = g.projectiles.filter(p => p.active && !p.dead);
 
-        for (let i = g.particles.length - 1; i >= 0; i--) {
-            const p = g.particles[i];
+        // Update particles
+        for (const p of g.particles) {
             p.update(dt);
-            if (p.life <= 0) {
-                g.particles.splice(i, 1);
-            }
         }
+        g.particles = g.particles.filter(p => p.life > 0);
 
-        for (let i = g.floatingTexts.length - 1; i >= 0; i--) {
-            const ft = g.floatingTexts[i];
+        // Update floating texts
+        for (const ft of g.floatingTexts) {
             ft.update(dt);
-            if (ft.life <= 0) {
-                g.floatingTexts.splice(i, 1);
-            }
         }
+        g.floatingTexts = g.floatingTexts.filter(ft => ft.life > 0);
 
-        for (let i = g.runes.length - 1; i >= 0; i--) {
-            const rune = g.runes[i];
+        // Update runes
+        for (const rune of g.runes) {
             if (rune.update) rune.update(dt);
-            if (rune.expired) {
-                g.runes.splice(i, 1);
-            }
         }
+        g.runes = g.runes.filter(r => !r.expired && r.life > 0);
 
         // Update turrets
         for (const turret of g.turrets) {
@@ -176,8 +172,8 @@ export class GameLoopManager {
             g.completeWave();
         }
 
-        // Auto-save
-        if (Date.now() - g.lastSaveTime > 30000) {
+        // Auto-save (with dirty check)
+        if (g.isDirty && Date.now() - g.lastSaveTime > 30000) {
             g.save();
         }
     }
@@ -256,7 +252,7 @@ export class GameLoopManager {
     }
 
     /**
-     * Draw background
+     * Draw background with cached grid
      */
     drawBackground(ctx) {
         const g = this.game;
@@ -264,24 +260,45 @@ export class GameLoopManager {
         ctx.fillStyle = '#0f172a';
         ctx.fillRect(0, 0, g.width, g.height);
 
-        // Draw grid
+        // Use cached grid for performance
+        if (this.lastGridWidth !== g.width || this.lastGridHeight !== g.height) {
+            this.updateGridCache(g.width, g.height);
+        }
+
+        if (this.gridCanvas) {
+            ctx.drawImage(this.gridCanvas, 0, 0);
+        }
+    }
+
+    /**
+     * Update cached grid canvas
+     */
+    updateGridCache(width, height) {
+        if (!this.gridCanvas) {
+            this.gridCanvas = document.createElement('canvas');
+        }
+
+        this.gridCanvas.width = width;
+        this.gridCanvas.height = height;
+        this.gridCtx = this.gridCanvas.getContext('2d');
+        this.lastGridWidth = width;
+        this.lastGridHeight = height;
+
+        const ctx = this.gridCtx;
         ctx.strokeStyle = 'rgba(51, 65, 85, 0.3)';
         ctx.lineWidth = 1;
 
         const gridSize = 50;
-        for (let x = 0; x < g.width; x += gridSize) {
-            ctx.beginPath();
+        ctx.beginPath();
+        for (let x = 0; x < width; x += gridSize) {
             ctx.moveTo(x, 0);
-            ctx.lineTo(x, g.height);
-            ctx.stroke();
+            ctx.lineTo(x, height);
         }
-
-        for (let y = 0; y < g.height; y += gridSize) {
-            ctx.beginPath();
+        for (let y = 0; y < height; y += gridSize) {
             ctx.moveTo(0, y);
-            ctx.lineTo(g.width, y);
-            ctx.stroke();
+            ctx.lineTo(width, y);
         }
+        ctx.stroke();
     }
 
     /**

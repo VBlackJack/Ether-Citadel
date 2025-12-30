@@ -80,20 +80,24 @@ export class Turret {
         this.rangeMult = tierData.rangeMult;
         this.fireRateMult = tierData.fireRateMult;
 
+        // Special turret balancing - aim for ~0.8-1.0x effective DPS vs NORMAL
         if (this.type === 'ARTILLERY') {
-            this.damageMultiplier = 0.8 * tierData.damageMult;
-            this.fireRateMult *= 0.3;
+            // High damage, slow fire, long range, splash damage
+            this.damageMultiplier = 2.5 * tierData.damageMult;
+            this.fireRateMult *= 0.35;
             this.rangeMult *= 1.5;
         }
         if (this.type === 'ROCKET') {
-            this.damageMultiplier = 0.5 * tierData.damageMult;
-            this.fireRateMult *= 0.5;
-            this.rangeMult *= 1.2;
+            // Medium damage, medium fire rate, good range
+            this.damageMultiplier = 1.2 * tierData.damageMult;
+            this.fireRateMult *= 0.7;
+            this.rangeMult *= 1.3;
         }
         if (this.type === 'TESLA') {
-            this.damageMultiplier = 0.2 * tierData.damageMult;
-            this.fireRateMult *= 1.5;
-            this.rangeMult *= 0.8;
+            // Low damage per hit, very fast, short range, chain lightning
+            this.damageMultiplier = 0.5 * tierData.damageMult;
+            this.fireRateMult *= 1.8;
+            this.rangeMult *= 0.9;
         }
 
         // Update max HP when tier changes

@@ -65,19 +65,20 @@ export const RUNE_TYPES = [
 
 /**
  * Dread (difficulty) level definitions
+ * Rebalanced: enemy multiplier capped at 50x, rewards scale more generously
  */
 export const DREAD_LEVELS = [
     { level: 0, nameKey: 'dread.level0', enemyMult: 1.0, rewardMult: 1.0, color: '#94a3b8' },
-    { level: 1, nameKey: 'dread.level1', enemyMult: 1.5, rewardMult: 1.3, color: '#fbbf24' },
-    { level: 2, nameKey: 'dread.level2', enemyMult: 2.5, rewardMult: 1.8, color: '#f97316' },
-    { level: 3, nameKey: 'dread.level3', enemyMult: 4.0, rewardMult: 2.5, color: '#ef4444' },
-    { level: 4, nameKey: 'dread.level4', enemyMult: 7.0, rewardMult: 4.0, color: '#dc2626' },
-    { level: 5, nameKey: 'dread.level5', enemyMult: 12.0, rewardMult: 6.0, color: '#991b1b' },
-    { level: 6, nameKey: 'dread.level6', enemyMult: 20.0, rewardMult: 10.0, color: '#7f1d1d' },
-    { level: 7, nameKey: 'dread.level7', enemyMult: 35.0, rewardMult: 18.0, color: '#a855f7' },
-    { level: 8, nameKey: 'dread.level8', enemyMult: 60.0, rewardMult: 30.0, color: '#9333ea' },
-    { level: 9, nameKey: 'dread.level9', enemyMult: 100.0, rewardMult: 50.0, color: '#6b21a8' },
-    { level: 10, nameKey: 'dread.level10', enemyMult: 200.0, rewardMult: 100.0, color: '#000' }
+    { level: 1, nameKey: 'dread.level1', enemyMult: 1.5, rewardMult: 1.5, color: '#fbbf24' },
+    { level: 2, nameKey: 'dread.level2', enemyMult: 2.0, rewardMult: 2.0, color: '#f97316' },
+    { level: 3, nameKey: 'dread.level3', enemyMult: 3.0, rewardMult: 3.0, color: '#ef4444' },
+    { level: 4, nameKey: 'dread.level4', enemyMult: 5.0, rewardMult: 5.0, color: '#dc2626' },
+    { level: 5, nameKey: 'dread.level5', enemyMult: 8.0, rewardMult: 8.0, color: '#991b1b' },
+    { level: 6, nameKey: 'dread.level6', enemyMult: 12.0, rewardMult: 12.0, color: '#7f1d1d' },
+    { level: 7, nameKey: 'dread.level7', enemyMult: 20.0, rewardMult: 20.0, color: '#a855f7' },
+    { level: 8, nameKey: 'dread.level8', enemyMult: 30.0, rewardMult: 35.0, color: '#9333ea' },
+    { level: 9, nameKey: 'dread.level9', enemyMult: 40.0, rewardMult: 50.0, color: '#6b21a8' },
+    { level: 10, nameKey: 'dread.level10', enemyMult: 50.0, rewardMult: 75.0, color: '#000' }
 ];
 
 /**

@@ -47,7 +47,13 @@ export class Enemy {
         this.isElite = Math.random() < ENEMY_BALANCE.ELITE_SPAWN_CHANCE;
         this.x = x || game.width + 50;
         this.y = y || MathUtils.randomRange(game.height * 0.2, game.height * 0.8);
-        const diffMult = 1 + (wave * 0.20);
+
+        // Improved difficulty scaling: linear for early game, logarithmic for late game
+        // Prevents infinite walls while maintaining challenge
+        const earlyMult = Math.min(wave, 50) * 0.15;  // Linear up to wave 50
+        const lateMult = wave > 50 ? Math.log2(wave - 49) * 0.8 : 0;  // Logarithmic after 50
+        const diffMult = 1 + earlyMult + lateMult;
+
         const hpMod = game.activeChallenge && game.activeChallenge.id === 'glass' ? 0.1 : 1;
         const speedMod = game.activeChallenge && game.activeChallenge.id === 'speed' ? 2 : 1;
         const dread = game.getDreadMultipliers();
@@ -56,11 +62,19 @@ export class Enemy {
             CONFIG.baseEnemyHp * diffMult * this.type.hpMult * eliteMult * hpMod * dread.enemyHp
         );
         this.hp = this.maxHp;
-        this.baseSpeed = CONFIG.baseEnemySpeed * (1 + wave * 0.03) *
+
+        // Speed scales more gently - cap at 2x base speed
+        const speedScale = Math.min(1 + wave * 0.015, 2.0);
+        this.baseSpeed = CONFIG.baseEnemySpeed * speedScale *
             this.type.speedMult * speedMod * dread.enemySpeed;
+
         const bossDmgMult = typeKey === 'BOSS' ? ENEMY_BALANCE.BOSS_DAMAGE_MULT : 1;
-        this.damage = Math.floor((5 + Math.floor(wave * 0.8)) * bossDmgMult * dread.enemyDamage);
-        const baseGold = Math.max(1, Math.floor(2 * (1 + wave * 0.18)));
+        // Damage also uses smoother scaling
+        const dmgScale = 5 + Math.floor(wave * 0.5) + (wave > 50 ? Math.log2(wave - 49) * 3 : 0);
+        this.damage = Math.floor(dmgScale * bossDmgMult * dread.enemyDamage);
+
+        // Gold scales with difficulty to keep rewards proportional
+        const baseGold = Math.max(1, Math.floor(2 * (1 + wave * 0.15 + (wave > 50 ? Math.log2(wave - 49) * 0.3 : 0))));
         const goldMult = game.metaUpgrades.getEffectValue('goldMult') * (1 + (game.relicMults.gold || 0));
         const catchupBonus = (wave > (game.stats?.maxWave || 0)) ? COMBAT_BALANCE.CATCHUP_BONUS_MULT : 1.0;
         const typeGoldMult = typeKey === 'BOSS' ? ENEMY_BALANCE.BOSS_GOLD_MULT :
