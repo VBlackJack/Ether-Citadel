@@ -4199,6 +4199,8 @@ class Game {
             }
             this.updateSynergiesHUD();
             this.updateSeasonalBanner();
+            this.updateSuggestedAction();
+            this.updateMenuUnlocks();
         }, 500);
 
         if (!this.waveInProgress && !document.getElementById('game-over-screen').classList.contains('hidden') === false) {
@@ -5380,6 +5382,165 @@ class Game {
         if (activeEvent.bonuses.dropMult) bonuses.push(`${t('relics.drop') || 'Drops'} x${activeEvent.bonuses.dropMult}`);
 
         bonusEl.textContent = bonuses.join(' | ');
+    }
+
+    // ===== UX IMPROVEMENTS =====
+
+    toggleMenuGroup(groupId) {
+        if (groupId === 'all') {
+            const menuGroups = document.getElementById('menu-groups');
+            menuGroups.classList.toggle('collapsed');
+            return;
+        }
+
+        const content = document.getElementById(`menu-${groupId}`);
+        const header = content?.previousElementSibling;
+
+        if (content) {
+            content.classList.toggle('hidden');
+            header?.classList.toggle('open');
+        }
+    }
+
+    showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const icons = {
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️'
+        };
+
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+            <span class="toast-icon">${icons[type]}</span>
+            <span class="toast-message">${message}</span>
+        `;
+        container.appendChild(toast);
+
+        setTimeout(() => toast.remove(), 3000);
+    }
+
+    showFeatureIntro(featureId) {
+        const introKey = `seen_intro_${featureId}`;
+        if (localStorage.getItem(introKey)) return;
+
+        const features = {
+            mining: { icon: '⛏️', titleKey: 'mining.title', descKey: 'help.mining.text' },
+            forge: { icon: '🔥', titleKey: 'forge.title', descKey: 'help.forge.text' },
+            research: { icon: '🔬', titleKey: 'research.title', descKey: 'help.research.text' },
+            prestige: { icon: '👑', titleKey: 'prestige.title', descKey: 'help.prestige.text' },
+            production: { icon: '🏭', titleKey: 'production.title', descKey: 'help.production.text' },
+            chips: { icon: '🔧', titleKey: 'chips.title', descKey: 'help.chips.text' },
+            town: { icon: '🏰', titleKey: 'town.title', descKey: 'help.town.text' },
+            school: { icon: '🎓', titleKey: 'school.title', descKey: 'help.school.text' },
+            office: { icon: '🏢', titleKey: 'office.title', descKey: 'help.office.text' },
+            awakening: { icon: '✨', titleKey: 'awakening.title', descKey: 'help.awakening.text' },
+            modes: { icon: '🎮', titleKey: 'modes.title', descKey: 'ux.intro.modes' },
+            campaign: { icon: '📜', titleKey: 'campaign.title', descKey: 'ux.intro.campaign' },
+            leaderboard: { icon: '🏅', titleKey: 'leaderboard.title', descKey: 'ux.intro.leaderboard' }
+        };
+
+        const feature = features[featureId];
+        if (!feature) return;
+
+        document.getElementById('feature-intro-icon').textContent = feature.icon;
+        document.getElementById('feature-intro-title').textContent = t(feature.titleKey);
+        document.getElementById('feature-intro-desc').textContent = t(feature.descKey);
+        document.getElementById('feature-intro-tips').innerHTML = '';
+        document.getElementById('feature-intro-modal').classList.remove('hidden');
+
+        localStorage.setItem(introKey, 'true');
+    }
+
+    closeFeatureIntro() {
+        document.getElementById('feature-intro-modal').classList.add('hidden');
+    }
+
+    updateSuggestedAction() {
+        const banner = document.getElementById('suggested-action');
+        const textEl = document.getElementById('suggested-action-text');
+        if (!banner || !textEl) return;
+
+        const suggestion = this.getSuggestedAction();
+        if (suggestion) {
+            banner.classList.remove('hidden');
+            textEl.textContent = suggestion.text;
+            this.currentSuggestion = suggestion;
+        } else {
+            banner.classList.add('hidden');
+            this.currentSuggestion = null;
+        }
+    }
+
+    getSuggestedAction() {
+        // Priority-based suggestions
+        if (this.gold >= 100 && this.upgrades.canAffordAny()) {
+            return { text: t('ux.suggestion.buyUpgrade') || 'Buy an upgrade', action: () => {} };
+        }
+
+        if (this.wave >= 5 && !localStorage.getItem('seen_intro_mining')) {
+            return { text: t('ux.suggestion.tryMining') || 'Try Mining', action: () => {
+                this.renderMiningUI();
+                document.getElementById('mining-modal').classList.remove('hidden');
+            }};
+        }
+
+        if (this.wave >= 10 && !localStorage.getItem('seen_intro_research')) {
+            return { text: t('ux.suggestion.checkResearch') || 'Check Research', action: () => {
+                this.renderResearchUI();
+                document.getElementById('research-modal').classList.remove('hidden');
+            }};
+        }
+
+        if (this.ether >= 100 && this.metaUpgrades.canAffordAny()) {
+            return { text: t('ux.suggestion.spendEther') || 'Spend Ether', action: () => {
+                document.getElementById('ether-modal').classList.remove('hidden');
+            }};
+        }
+
+        if (this.dailyQuests && this.dailyQuests.hasClaimableReward()) {
+            return { text: t('ux.suggestion.claimQuest') || 'Claim Quest Reward', action: () => {
+                this.renderDailyQuestsUI();
+                document.getElementById('quests-modal').classList.remove('hidden');
+            }};
+        }
+
+        return null;
+    }
+
+    executeSuggestedAction() {
+        if (this.currentSuggestion?.action) {
+            this.currentSuggestion.action();
+        }
+    }
+
+    updateMenuUnlocks() {
+        const unlocks = {
+            school: this.townLevel >= 3,
+            office: this.townLevel >= 4,
+            awakening: this.dreadLevel >= 6
+        };
+
+        Object.entries(unlocks).forEach(([feature, isUnlocked]) => {
+            const menuItem = document.querySelector(`[data-unlock="${feature}"]`);
+            if (menuItem) {
+                if (isUnlocked) {
+                    menuItem.classList.remove('menu-locked');
+                    menuItem.classList.add('menu-unlocked');
+                    if (!localStorage.getItem(`unlock_seen_${feature}`)) {
+                        menuItem.classList.add('newly-unlocked');
+                        localStorage.setItem(`unlock_seen_${feature}`, 'true');
+                    }
+                } else {
+                    menuItem.classList.add('menu-locked');
+                    menuItem.classList.remove('menu-unlocked');
+                }
+            }
+        });
     }
 
     handleSlotClick(slot) {

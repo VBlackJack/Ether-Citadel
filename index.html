@@ -27,7 +27,7 @@
     <link rel="apple-touch-icon" href="favicon.svg">
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/styles.css?v=23">
+    <link rel="stylesheet" href="css/styles.css?v=24">
 </head>
 <body class="h-screen w-screen flex flex-col md:flex-row">
 
@@ -112,142 +112,97 @@
             </div>
         </div>
 
-        <div class="absolute top-4 right-4 flex flex-col items-end gap-2 pointer-events-auto z-20">
-            <div class="flex gap-2 mb-2 flex-wrap">
-                <button onclick="document.getElementById('relic-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-yellow-500 border border-yellow-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-yellow-400 focus:outline-none"
-                    aria-label="Collection de reliques">
-                    <span class="text-xl" aria-hidden="true">🎒</span>
-                    <span class="text-xs font-bold" id="ui-relic-count">0</span>
-                </button>
-                <button onclick="document.getElementById('codex-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-blue-400 border border-blue-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                    aria-label="Codex des ennemis">
-                    <span class="text-xl" aria-hidden="true">📖</span>
-                    <span class="text-xs font-bold" data-i18n="game.codex">Codex</span>
-                </button>
-                <button onclick="game.renderMiningUI(); document.getElementById('mining-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-cyan-400 border border-cyan-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-cyan-400 focus:outline-none"
-                    aria-label="Minage de ressources">
-                    <span class="text-xl" aria-hidden="true">⛏️</span>
-                    <span class="text-xs font-bold" data-i18n="mining.title">Mining</span>
-                </button>
-                <button onclick="game.renderForgeUI(); document.getElementById('forge-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-yellow-400 border border-yellow-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-yellow-400 focus:outline-none"
-                    aria-label="Forge de reliques">
-                    <span class="text-xl" aria-hidden="true">🔥</span>
-                    <span class="text-xs font-bold" data-i18n="forge.title">Forge</span>
-                </button>
-                <button onclick="game.renderResearchUI(); document.getElementById('research-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-purple-400 border border-purple-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-purple-400 focus:outline-none"
-                    aria-label="Arbre de recherche">
-                    <span class="text-xl" aria-hidden="true">🔬</span>
-                    <span class="text-xs font-bold" data-i18n="research.title">Research</span>
-                </button>
-                <button onclick="document.getElementById('mastery-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-cyan-400 border border-cyan-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-cyan-400 focus:outline-none"
-                    aria-label="Points de maitrise">
-                    <span class="text-xl" aria-hidden="true">🎓</span>
-                    <span class="text-xs font-bold" id="ui-mastery-pts">0</span>
-                </button>
-                <button onclick="game.updateDreadUI(); document.getElementById('challenges-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-red-500 border border-red-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-red-400 focus:outline-none"
-                    aria-label="Defis et mode Dread">
-                    <span class="text-xl" aria-hidden="true">💀</span>
-                    <span class="text-xs font-bold" data-i18n="game.challenges">Challenges</span>
-                </button>
-                <button onclick="document.getElementById('achieve-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-green-400 border border-green-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-green-400 focus:outline-none"
-                    aria-label="Succes et achievements">
-                    <span class="text-xl" aria-hidden="true">🏆</span>
-                    <span class="text-xs font-bold" data-i18n="game.success">Achievements</span>
-                </button>
-                <button onclick="document.getElementById('settings-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-slate-400 border border-slate-600/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-slate-400 focus:outline-none"
-                    aria-label="Parametres du jeu">
-                    <span class="text-xl" aria-hidden="true">⚙️</span>
-                    <span class="text-xs font-bold" data-i18n="game.options">Options</span>
-                </button>
+        <!-- Suggested Action Banner -->
+        <div id="suggested-action" class="hidden absolute top-4 right-4 z-30 pointer-events-auto">
+            <div class="bg-gradient-to-r from-amber-900/90 to-orange-900/90 border border-amber-500 rounded-lg px-4 py-2 flex items-center gap-3 backdrop-blur-sm cursor-pointer hover:border-amber-400 transition" onclick="game.executeSuggestedAction()">
+                <span class="text-amber-400 text-xl animate-pulse">💡</span>
+                <div>
+                    <div class="text-xs text-amber-300 uppercase tracking-wider" data-i18n="ux.suggestion">Suggested</div>
+                    <div id="suggested-action-text" class="text-white font-bold text-sm"></div>
+                </div>
+                <span class="text-amber-400">→</span>
             </div>
-            <div class="flex gap-2 flex-wrap">
-                <button onclick="game.renderProductionUI(); document.getElementById('production-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-orange-400 border border-orange-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-orange-400 focus:outline-none"
-                    aria-label="Production passive">
-                    <span class="text-xl" aria-hidden="true">🏭</span>
-                    <span class="text-xs font-bold" data-i18n="production.title">Production</span>
+        </div>
+
+        <div class="absolute top-4 right-4 flex flex-col items-end gap-2 pointer-events-auto z-20" id="menu-container">
+            <!-- Quick Access Bar -->
+            <div class="flex gap-2 items-center">
+                <button onclick="document.getElementById('settings-modal').classList.remove('hidden')" class="menu-btn-sm" aria-label="Settings">⚙️</button>
+                <button onclick="document.getElementById('achieve-modal').classList.remove('hidden')" class="menu-btn-sm" aria-label="Achievements">🏆</button>
+                <button id="btn-quests" onclick="game.renderDailyQuestsUI(); document.getElementById('quests-modal').classList.remove('hidden')" class="menu-btn-sm relative" aria-label="Quests">
+                    📋<span id="quest-badge" class="hidden absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs font-bold flex items-center justify-center">!</span>
                 </button>
-                <button id="btn-quests" onclick="game.renderDailyQuestsUI(); document.getElementById('quests-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-emerald-400 border border-emerald-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-emerald-400 focus:outline-none relative"
-                    aria-label="Quetes quotidiennes">
-                    <span class="text-xl" aria-hidden="true">📋</span>
-                    <span class="text-xs font-bold" data-i18n="quests.title">Quests</span>
-                    <span id="quest-badge" class="hidden absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-white text-xs font-bold flex items-center justify-center border-2 border-slate-800">!</span>
-                </button>
-                <button id="btn-prestige-menu" onclick="game.renderPrestigeUI(); document.getElementById('prestige-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-amber-400 border border-amber-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-amber-400 focus:outline-none"
-                    aria-label="Prestige et renaissance">
-                    <span class="text-xl" aria-hidden="true">👑</span>
-                    <span class="text-xs font-bold" data-i18n="prestige.title">Prestige</span>
-                </button>
-                <button onclick="game.renderChipsUI(); document.getElementById('chips-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-pink-400 border border-pink-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-pink-400 focus:outline-none"
-                    aria-label="Modules et puces">
-                    <span class="text-xl" aria-hidden="true">🔧</span>
-                    <span class="text-xs font-bold" data-i18n="chips.title">Chips</span>
-                </button>
-                <button onclick="game.renderTownUI(); document.getElementById('town-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-teal-400 border border-teal-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-teal-400 focus:outline-none"
-                    aria-label="Town level">
-                    <span class="text-xl" aria-hidden="true">🏰</span>
-                    <span class="text-xs font-bold" data-i18n="town.title">Town</span>
-                </button>
+                <div class="w-px h-6 bg-slate-600"></div>
+                <button onclick="game.toggleMenuGroup('all')" class="menu-btn-sm text-cyan-400" aria-label="Toggle Menu" id="btn-toggle-menu">☰</button>
             </div>
-            <div class="flex gap-2 flex-wrap">
-                <button id="btn-school" onclick="game.renderSchoolUI(); document.getElementById('school-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-indigo-400 border border-indigo-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-indigo-400 focus:outline-none hidden"
-                    aria-label="School turrets">
-                    <span class="text-xl" aria-hidden="true">🎓</span>
-                    <span class="text-xs font-bold" data-i18n="school.title">School</span>
-                </button>
-                <button id="btn-office" onclick="game.renderOfficeUI(); document.getElementById('office-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-lime-400 border border-lime-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-lime-400 focus:outline-none hidden"
-                    aria-label="Office boosts">
-                    <span class="text-xl" aria-hidden="true">🏢</span>
-                    <span class="text-xs font-bold" data-i18n="office.title">Office</span>
-                </button>
-                <button id="btn-awakening" onclick="game.renderAwakeningUI(); document.getElementById('awakening-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-fuchsia-400 border border-fuchsia-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-fuchsia-400 focus:outline-none hidden"
-                    aria-label="Awakening">
-                    <span class="text-xl" aria-hidden="true">✨</span>
-                    <span class="text-xs font-bold" data-i18n="awakening.title">Awaken</span>
-                </button>
+
+            <!-- Grouped Menu System -->
+            <div id="menu-groups" class="flex flex-col gap-2 transition-all duration-300">
+                <!-- Combat Group -->
+                <div class="menu-group" data-group="combat">
+                    <button onclick="game.toggleMenuGroup('combat')" class="menu-group-header bg-red-900/80 border-red-700 text-red-400">
+                        <span>⚔️</span><span data-i18n="ux.menu.combat">Combat</span><span class="menu-arrow">▼</span>
+                    </button>
+                    <div class="menu-group-content hidden" id="menu-combat">
+                        <button onclick="game.renderChipsUI(); document.getElementById('chips-modal').classList.remove('hidden')" class="menu-item">🔧 <span data-i18n="chips.title">Chips</span></button>
+                        <button onclick="game.renderPresetsUI(); document.getElementById('presets-modal').classList.remove('hidden')" class="menu-item">💾 <span data-i18n="presets.title">Presets</span></button>
+                        <button id="btn-school" onclick="game.renderSchoolUI(); document.getElementById('school-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="school">🎓 <span data-i18n="school.title">School</span></button>
+                    </div>
+                </div>
+
+                <!-- Economy Group -->
+                <div class="menu-group" data-group="economy">
+                    <button onclick="game.toggleMenuGroup('economy')" class="menu-group-header bg-amber-900/80 border-amber-700 text-amber-400">
+                        <span>💰</span><span data-i18n="ux.menu.economy">Economy</span><span class="menu-arrow">▼</span>
+                    </button>
+                    <div class="menu-group-content hidden" id="menu-economy">
+                        <button onclick="game.renderMiningUI(); document.getElementById('mining-modal').classList.remove('hidden')" class="menu-item">⛏️ <span data-i18n="mining.title">Mining</span></button>
+                        <button onclick="game.renderForgeUI(); document.getElementById('forge-modal').classList.remove('hidden')" class="menu-item">🔥 <span data-i18n="forge.title">Forge</span></button>
+                        <button onclick="game.renderProductionUI(); document.getElementById('production-modal').classList.remove('hidden')" class="menu-item">🏭 <span data-i18n="production.title">Production</span></button>
+                        <button id="btn-office" onclick="game.renderOfficeUI(); document.getElementById('office-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="office">🏢 <span data-i18n="office.title">Office</span></button>
+                    </div>
+                </div>
+
+                <!-- Progression Group -->
+                <div class="menu-group" data-group="progression">
+                    <button onclick="game.toggleMenuGroup('progression')" class="menu-group-header bg-purple-900/80 border-purple-700 text-purple-400">
+                        <span>📈</span><span data-i18n="ux.menu.progression">Progression</span><span class="menu-arrow">▼</span>
+                    </button>
+                    <div class="menu-group-content hidden" id="menu-progression">
+                        <button onclick="game.renderResearchUI(); document.getElementById('research-modal').classList.remove('hidden')" class="menu-item">🔬 <span data-i18n="research.title">Research</span></button>
+                        <button id="btn-prestige-menu" onclick="game.renderPrestigeUI(); document.getElementById('prestige-modal').classList.remove('hidden')" class="menu-item">👑 <span data-i18n="prestige.title">Prestige</span></button>
+                        <button onclick="game.renderTownUI(); document.getElementById('town-modal').classList.remove('hidden')" class="menu-item">🏰 <span data-i18n="town.title">Town</span></button>
+                        <button onclick="document.getElementById('mastery-modal').classList.remove('hidden')" class="menu-item">🎓 <span data-i18n="modals.mastery.title">Mastery</span> <span id="ui-mastery-pts" class="text-cyan-400 ml-1">0</span></button>
+                        <button id="btn-awakening" onclick="game.renderAwakeningUI(); document.getElementById('awakening-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="awakening">✨ <span data-i18n="awakening.title">Awaken</span></button>
+                    </div>
+                </div>
+
+                <!-- Meta/Modes Group -->
+                <div class="menu-group" data-group="meta">
+                    <button onclick="game.toggleMenuGroup('meta')" class="menu-group-header bg-violet-900/80 border-violet-700 text-violet-400">
+                        <span>🎮</span><span data-i18n="ux.menu.meta">Modes</span><span class="menu-arrow">▼</span>
+                    </button>
+                    <div class="menu-group-content hidden" id="menu-meta">
+                        <button onclick="game.renderGameModesUI(); document.getElementById('modes-modal').classList.remove('hidden')" class="menu-item">🎮 <span data-i18n="modes.title">Game Modes</span></button>
+                        <button onclick="game.renderCampaignUI(); document.getElementById('campaign-modal').classList.remove('hidden')" class="menu-item">📜 <span data-i18n="campaign.title">Campaign</span></button>
+                        <button onclick="game.updateDreadUI(); document.getElementById('challenges-modal').classList.remove('hidden')" class="menu-item">💀 <span data-i18n="game.challenges">Challenges</span></button>
+                        <button onclick="game.renderLeaderboardUI(); document.getElementById('leaderboard-modal').classList.remove('hidden')" class="menu-item">🏅 <span data-i18n="leaderboard.title">Leaderboard</span></button>
+                    </div>
+                </div>
+
+                <!-- Info Group -->
+                <div class="menu-group" data-group="info">
+                    <button onclick="game.toggleMenuGroup('info')" class="menu-group-header bg-slate-700/80 border-slate-600 text-slate-300">
+                        <span>📚</span><span data-i18n="ux.menu.info">Info</span><span class="menu-arrow">▼</span>
+                    </button>
+                    <div class="menu-group-content hidden" id="menu-info">
+                        <button onclick="document.getElementById('relic-modal').classList.remove('hidden')" class="menu-item">🎒 <span data-i18n="modals.collection.title">Collection</span> <span id="ui-relic-count" class="text-yellow-400 ml-1">0</span></button>
+                        <button onclick="document.getElementById('codex-modal').classList.remove('hidden')" class="menu-item">📖 <span data-i18n="game.codex">Codex</span></button>
+                        <button onclick="game.renderStatisticsUI(); document.getElementById('statistics-modal').classList.remove('hidden')" class="menu-item">📊 <span data-i18n="statistics.title">Statistics</span></button>
+                    </div>
+                </div>
             </div>
-            <div class="flex gap-2 flex-wrap">
-                <button onclick="game.renderGameModesUI(); document.getElementById('modes-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-violet-400 border border-violet-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-violet-400 focus:outline-none"
-                    aria-label="Game Modes">
-                    <span class="text-xl" aria-hidden="true">🎮</span>
-                    <span class="text-xs font-bold" data-i18n="modes.title">Modes</span>
-                </button>
-                <button onclick="game.renderCampaignUI(); document.getElementById('campaign-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-rose-400 border border-rose-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-rose-400 focus:outline-none"
-                    aria-label="Campaign">
-                    <span class="text-xl" aria-hidden="true">📜</span>
-                    <span class="text-xs font-bold" data-i18n="campaign.title">Campaign</span>
-                </button>
-                <button onclick="game.renderLeaderboardUI(); document.getElementById('leaderboard-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-sky-400 border border-sky-700/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-sky-400 focus:outline-none"
-                    aria-label="Leaderboards">
-                    <span class="text-xl" aria-hidden="true">🏅</span>
-                    <span class="text-xs font-bold" data-i18n="leaderboard.title">Ranks</span>
-                </button>
-                <button onclick="game.renderPresetsUI(); document.getElementById('presets-modal').classList.remove('hidden')"
-                    class="menu-btn bg-slate-800/80 hover:bg-slate-700 text-stone-400 border border-stone-600/50 rounded-lg p-2 backdrop-blur-sm transition flex flex-col items-center min-w-[50px] focus:ring-2 focus:ring-stone-400 focus:outline-none"
-                    aria-label="Build Presets">
-                    <span class="text-xl" aria-hidden="true">💾</span>
-                    <span class="text-xs font-bold" data-i18n="presets.title">Presets</span>
-                </button>
-            </div>
+
             <div id="auto-controls" class="hidden bg-slate-900/80 p-3 rounded-lg border border-slate-700 backdrop-blur-sm w-full">
                 <div class="flex items-center justify-between gap-3 mb-2">
                     <span class="text-xs font-bold text-slate-400 tracking-wider" data-i18n="hud.autoRetry">AUTO RETRY</span>
@@ -277,28 +232,28 @@
         <div class="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-6 pointer-events-auto z-20">
             <div id="skill-overdrive" onclick="game.activateSkill('overdrive')" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-blue-500 transition shadow-lg group overflow-hidden" data-skill="overdrive">
                 <div class="absolute inset-0 flex items-center justify-center text-3xl">⚡</div>
-                <div class="absolute top-1 right-1 text-xs font-bold text-slate-500">Q</div>
+                <div class="skill-hotkey absolute top-0 left-0 bg-blue-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-br-lg">Q</div>
                 <div id="cd-overdrive" class="cooldown-overlay absolute bottom-0 left-0 w-full bg-black/80 h-0"></div>
                 <div class="skill-tooltip absolute bottom-full mb-2 hidden group-hover:block w-48 bg-black/90 text-xs p-2 rounded border border-blue-500 pointer-events-none whitespace-nowrap left-1/2 -translate-x-1/2">
-                    <strong class="text-blue-400" data-i18n="skills.overdrive.name">Overdrive</strong><br>
+                    <strong class="text-blue-400" data-i18n="skills.overdrive.name">Overdrive</strong> <span class="text-slate-400">[Q]</span><br>
                     <span data-i18n="skills.overdrive.desc">Speed x3 for 5s.</span>
                 </div>
             </div>
             <div id="skill-nuke" onclick="game.activateSkill('nuke')" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-red-500 transition shadow-lg group overflow-hidden" data-skill="nuke">
                 <div class="absolute inset-0 flex items-center justify-center text-3xl">☄️</div>
-                <div class="absolute top-1 right-1 text-xs font-bold text-slate-500">W</div>
+                <div class="skill-hotkey absolute top-0 left-0 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-br-lg">W</div>
                 <div id="cd-nuke" class="cooldown-overlay absolute bottom-0 left-0 w-full bg-black/80 h-0"></div>
                 <div class="skill-tooltip absolute bottom-full mb-2 hidden group-hover:block w-48 bg-black/90 text-xs p-2 rounded border border-red-500 pointer-events-none whitespace-nowrap left-1/2 -translate-x-1/2">
-                    <strong class="text-red-400" data-i18n="skills.nuke.name">Meteor</strong><br>
+                    <strong class="text-red-400" data-i18n="skills.nuke.name">Meteor</strong> <span class="text-slate-400">[W]</span><br>
                     <span data-i18n="skills.nuke.desc">Massive area damage.</span>
                 </div>
             </div>
             <div id="skill-blackhole" onclick="game.activateSkill('blackhole')" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-purple-500 transition shadow-lg group overflow-hidden" data-skill="blackhole">
                 <div class="absolute inset-0 flex items-center justify-center text-3xl">🌀</div>
-                <div class="absolute top-1 right-1 text-xs font-bold text-slate-500">E</div>
+                <div class="skill-hotkey absolute top-0 left-0 bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-br-lg">E</div>
                 <div id="cd-blackhole" class="cooldown-overlay absolute bottom-0 left-0 w-full bg-black/80 h-0"></div>
                 <div class="skill-tooltip absolute bottom-full mb-2 hidden group-hover:block w-48 bg-black/90 text-xs p-2 rounded border border-purple-500 pointer-events-none whitespace-nowrap left-1/2 -translate-x-1/2">
-                    <strong class="text-purple-400" data-i18n="skills.blackhole.name">Black Hole</strong><br>
+                    <strong class="text-purple-400" data-i18n="skills.blackhole.name">Black Hole</strong> <span class="text-slate-400">[E]</span><br>
                     <span data-i18n="skills.blackhole.desc">Pulls and crushes enemies.</span>
                 </div>
             </div>
@@ -938,6 +893,20 @@
         <div id="lab-footer" onclick="game.triggerDevSecret()" class="p-2 text-center text-xs text-slate-500 bg-slate-900 cursor-pointer select-none" data-i18n="lab.footer">Click on Runes on the ground for bonuses!</div>
     </div>
 
-<script type="module" src="js/main.js?v=23"></script>
+<!-- Toast Notification Container -->
+        <div id="toast-container" class="fixed bottom-20 left-1/2 -translate-x-1/2 flex flex-col gap-2 z-50 pointer-events-none"></div>
+
+        <!-- Feature Introduction Modal -->
+        <div id="feature-intro-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) game.closeFeatureIntro()">
+            <div class="w-full max-w-md bg-slate-800 border border-cyan-600 rounded-2xl shadow-2xl p-6 text-center" onclick="event.stopPropagation()">
+                <div id="feature-intro-icon" class="text-6xl mb-4"></div>
+                <h2 id="feature-intro-title" class="text-2xl text-cyan-400 font-bold mb-2"></h2>
+                <p id="feature-intro-desc" class="text-slate-300 mb-4"></p>
+                <div id="feature-intro-tips" class="bg-slate-900 rounded p-3 text-sm text-slate-400 mb-4 text-left"></div>
+                <button onclick="game.closeFeatureIntro()" class="px-6 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded" data-i18n="tutorial.understood">Got it!</button>
+            </div>
+        </div>
+
+<script type="module" src="js/main.js?v=24"></script>
 </body>
 </html>

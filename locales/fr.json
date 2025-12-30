@@ -1146,5 +1146,27 @@
     "screenShake": "Tremblement",
     "particles": "Particules",
     "trails": "Traînées"
+  },
+  "ux": {
+    "suggestion": "Suggéré",
+    "menu": {
+      "combat": "Combat",
+      "economy": "Économie",
+      "progression": "Progression",
+      "meta": "Modes",
+      "info": "Info"
+    },
+    "suggestion": {
+      "buyUpgrade": "Acheter une amélioration",
+      "tryMining": "Essayer le Minage",
+      "checkResearch": "Voir la Recherche",
+      "spendEther": "Dépenser l'Éther",
+      "claimQuest": "Réclamer la récompense"
+    },
+    "intro": {
+      "modes": "Choisissez différents modes de jeu. Le mode Sans Fin a un scaling infini, Rush Boss n'a que des boss, et Speedrun est chronométré !",
+      "campaign": "Complétez des missions pour gagner des récompenses. Les missions sont organisées par chapitres avec une difficulté croissante.",
+      "leaderboard": "Suivez vos meilleurs scores dans différentes catégories. Rivalisez avec vos propres records !"
+    }
   }
 }

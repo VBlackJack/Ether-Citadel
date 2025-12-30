@@ -1141,5 +1141,27 @@
       "name": "Sun Stone",
       "desc": "+30% speed, +20% cooldown reduction (Summer exclusive)"
     }
+  },
+  "ux": {
+    "suggestion": "Suggested",
+    "menu": {
+      "combat": "Combat",
+      "economy": "Economy",
+      "progression": "Progression",
+      "meta": "Modes",
+      "info": "Info"
+    },
+    "suggestion": {
+      "buyUpgrade": "Buy an upgrade",
+      "tryMining": "Try Mining",
+      "checkResearch": "Check Research",
+      "spendEther": "Spend Ether",
+      "claimQuest": "Claim Quest Reward"
+    },
+    "intro": {
+      "modes": "Choose different game modes for varied challenges. Endless mode has infinite scaling, Boss Rush is boss-only, and Speedrun is timed!",
+      "campaign": "Complete missions to earn rewards. Missions are organized by chapters with increasing difficulty.",
+      "leaderboard": "Track your best scores across different categories. Compete against your own records!"
+    }
   }
 }
