@@ -3534,6 +3534,10 @@ class SeasonalEventManager {
         ctx.restore();
     }
 
+    getActiveEvent() {
+        return this.activeEvent;
+    }
+
     getSaveData() { return { collected: this.collectedRelics }; }
     loadSaveData(data) { if (data) this.collectedRelics = data.collected || []; }
 }
