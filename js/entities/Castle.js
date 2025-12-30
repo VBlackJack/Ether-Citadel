@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { CONFIG } from '../config.js';
+
 /**
  * Castle entity - The player's main base
  */
@@ -22,17 +24,17 @@ export class Castle {
         this.game = game;
         this.x = 100;
         this.y = 0;
-        this.baseMaxHp = 100;
-        this.maxHp = 100;
-        this.hp = 100;
+        this.baseMaxHp = CONFIG.castle.baseMaxHp;
+        this.maxHp = CONFIG.castle.baseMaxHp;
+        this.hp = CONFIG.castle.baseMaxHp;
         this.regen = 0;
         this.tier = 1;
         this.shield = 0;
         this.maxShield = 0;
         this.shieldRegenTimer = 0;
-        this.width = 80;
-        this.height = 100;
-        this.radius = 60;
+        this.width = CONFIG.castle.width;
+        this.height = CONFIG.castle.height;
+        this.radius = CONFIG.castle.radius;
         this.armor = 0;
     }
 
@@ -70,8 +72,11 @@ export class Castle {
         }
         if (amount > 0) {
             this.hp -= amount;
-            document.getElementById('damage-overlay').classList.add('damage-effect');
-            setTimeout(() => document.getElementById('damage-overlay').classList.remove('damage-effect'), 200);
+            const overlay = document.getElementById('damage-overlay');
+            if (overlay) {
+                overlay.classList.add('damage-effect');
+                setTimeout(() => overlay.classList.remove('damage-effect'), CONFIG.ui.damageOverlayDuration);
+            }
             if (this.hp <= 0) {
                 this.hp = 0;
                 this.game.gameOver();

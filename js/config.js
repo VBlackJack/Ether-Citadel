@@ -18,12 +18,64 @@
  * Game configuration constants
  */
 export const CONFIG = {
+    // Enemy settings
     baseEnemySpeed: 0.8,
     baseEnemyHp: 10,
     enemySpawnRate: 1500,
+
+    // Save settings
     saveKey: 'defenderIdleSave_Patch81_v1',
+    saveIntervalMs: 30000,
+
+    // Evolution settings
     evolutionInterval: 10,
-    evolutionMultiplier: 1.5
+    evolutionMultiplier: 1.5,
+
+    // Offline progression
+    maxOfflineHours: 8,
+    offlineEarningsMultiplier: 0.5,
+
+    // Crystal calculation
+    crystalWaveDivisor: 10,
+    dreadBonusPerLevel: 0.25,
+
+    // Castle defaults
+    castle: {
+        baseMaxHp: 100,
+        width: 80,
+        height: 100,
+        radius: 60
+    },
+
+    // Turret settings
+    turret: {
+        baseDamageMultiplier: 0.25,
+        orbitSpeed: 0.001,
+        orbitRadius: 100,
+        projectileSpeed: 15
+    },
+
+    // Particle counts
+    particles: {
+        explosion: 20,
+        death: 6,
+        impact: 3,
+        levelUp: 30,
+        prestige: 5
+    },
+
+    // UI settings
+    ui: {
+        toastDuration: 3000,
+        floatingTextSize: 20,
+        damageOverlayDuration: 200
+    },
+
+    // Dread system
+    dread: {
+        maxUnlockedLevels: 10,
+        wavesPerUnlock: 10
+    }
 };
 
 /**

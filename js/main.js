@@ -61,6 +61,8 @@ import {
     getName,
     getDesc
 } from './data.js';
+import { getEventDelegation } from './ui/EventDelegation.js';
+import { getErrorHandler, logError } from './utils/ErrorHandler.js';
 
 class SoundManager {
     constructor() {
@@ -1116,13 +1118,16 @@ class UpgradeManager {
         container.innerHTML = '';
         const filtered = this.upgrades.filter(u => u.category === activeTab);
 
-        [0, 1, 2].forEach(catId => {
+        // Cache tab buttons and update notification states
+        const tabButtons = [
+            document.getElementById('tab-0'),
+            document.getElementById('tab-1'),
+            document.getElementById('tab-2')
+        ];
+        tabButtons.forEach((tabBtn, catId) => {
+            if (!tabBtn) return;
             const hasAffordable = this.upgrades.some(u => u.category === catId && game.gold >= this.getCost(u) && (!u.maxLevel || u.level < u.maxLevel));
-            const tabBtn = document.getElementById(`tab-${catId}`);
-            if (tabBtn) {
-                if (hasAffordable) tabBtn.classList.add('tab-notify');
-                else tabBtn.classList.remove('tab-notify');
-            }
+            tabBtn.classList.toggle('tab-notify', hasAffordable);
         });
 
         document.getElementById('btn-bulk-buy').innerHTML = `<span>${t('lab.bulkBuy')}</span>: ${game.buyMode}`;
@@ -1351,7 +1356,7 @@ class ChallengeManager {
         this.challenges.forEach(c => {
             const div = document.createElement('div');
             div.className = `bg-slate-700 p-2 rounded border border-red-900 flex justify-between items-center ${game.activeChallenge?.id === c.id ? 'border-yellow-400 bg-red-900/40' : ''}`;
-            div.innerHTML = `<div><div class="font-bold text-red-300">${t(c.nameKey)}</div><div class="text-xs text-slate-400">${t(c.descKey)}</div></div><button onclick="game.challenges.startChallenge('${c.id}')" class="px-2 py-1 bg-red-600 text-xs font-bold rounded hover:bg-red-500">${t('modals.challenges.go')}</button>`;
+            div.innerHTML = `<div><div class="font-bold text-red-300">${t(c.nameKey)}</div><div class="text-xs text-slate-400">${t(c.descKey)}</div></div><button data-action="challenge.start" data-id="${c.id}" class="px-2 py-1 bg-red-600 text-xs font-bold rounded hover:bg-red-500">${t('modals.challenges.go')}</button>`;
             list.appendChild(div);
         });
 
@@ -2098,7 +2103,8 @@ class PrestigeManager {
         ));
 
         // Restart game if was game over
-        if (document.getElementById('game-over-screen') && !document.getElementById('game-over-screen').classList.contains('hidden')) {
+        const gameOverScreen = document.getElementById('game-over-screen');
+        if (gameOverScreen && !gameOverScreen.classList.contains('hidden')) {
             this.game.restart();
         }
 
@@ -4220,6 +4226,9 @@ class Game {
             this.renderMiningUI();
         });
 
+        // Initialize event delegation for UI buttons
+        this.eventDelegation = getEventDelegation(this);
+
         setInterval(() => {
             const miningModal = document.getElementById('mining-modal');
             if (miningModal && !miningModal.classList.contains('hidden')) {
@@ -4337,8 +4346,7 @@ class Game {
         const now = Date.now();
         const diffMs = now - this.lastSaveTime;
         const diffSec = diffMs / 1000;
-        const maxOfflineHours = 8; // Maximum 8 hours of offline earnings
-        const cappedDiffSec = Math.min(diffSec, maxOfflineHours * 3600);
+        const cappedDiffSec = Math.min(diffSec, CONFIG.maxOfflineHours * 3600);
 
         if (cappedDiffSec > 60) {
             // Base gold from wave progress
@@ -4405,8 +4413,8 @@ class Game {
     }
 
     onBossKill() {
-        const baseCrystals = Math.floor(this.wave / 10) + 1;
-        const dreadBonus = 1 + (this.dreadLevel * 0.25);
+        const baseCrystals = Math.floor(this.wave / CONFIG.crystalWaveDivisor) + 1;
+        const dreadBonus = 1 + (this.dreadLevel * CONFIG.dreadBonusPerLevel);
         const crystalAffinity = 1 + (this.researchEffects.crystalGain || 0);
         const crystalsEarned = Math.floor(baseCrystals * dreadBonus * crystalAffinity);
         this.crystals += crystalsEarned;
@@ -4446,7 +4454,7 @@ class Game {
         const container = document.getElementById('dread-selector');
         if (!container) return;
 
-        const maxUnlocked = Math.min(10, Math.floor(this.stats.maxWave / 10));
+        const maxUnlocked = Math.min(CONFIG.dread.maxUnlockedLevels, Math.floor(this.stats.maxWave / CONFIG.dread.wavesPerUnlock));
 
         container.innerHTML = '';
         DREAD_LEVELS.forEach(dread => {
@@ -5069,13 +5077,13 @@ class Game {
                 </div>
                 <div class="text-xs text-slate-400 mb-2">${t(turret.descKey)}</div>
                 ${!unlocked ? `
-                    <button onclick="game.school.unlock('${turret.id}'); game.renderSchoolUI()" class="w-full px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded ${this.crystals >= turret.unlockCost ? '' : 'opacity-50 cursor-not-allowed'}">
+                    <button data-action="school.unlock" data-id="${turret.id}" class="w-full px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded ${this.crystals >= turret.unlockCost ? '' : 'opacity-50 cursor-not-allowed'}">
                         ${t('school.unlock')} (${turret.unlockCost} 💎)
                     </button>
                 ` : maxed ? `
                     <div class="text-center text-xs text-yellow-400">${t('school.maxed')}</div>
                 ` : `
-                    <button onclick="game.school.levelUp('${turret.id}'); game.renderSchoolUI()" class="w-full px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded ${this.crystals >= this.school.getLevelUpCost(turret.id) ? '' : 'opacity-50 cursor-not-allowed'}">
+                    <button data-action="school.levelUp" data-id="${turret.id}" class="w-full px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded ${this.crystals >= this.school.getLevelUpCost(turret.id) ? '' : 'opacity-50 cursor-not-allowed'}">
                         ${t('school.upgrade')} (${this.school.getLevelUpCost(turret.id)} 💎)
                     </button>
                 `}
@@ -5125,7 +5133,7 @@ class Game {
                     </div>
                 </div>
                 <div class="text-xs text-slate-400 mb-2">${t(boost.descKey)}</div>
-                <button onclick="game.office.activateBoost('${boost.id}'); game.renderOfficeUI()"
+                <button data-action="office.activate" data-id="${boost.id}"
                     class="w-full px-3 py-1 bg-lime-600 hover:bg-lime-500 text-white text-sm rounded ${canAfford && !active ? '' : 'opacity-50 cursor-not-allowed'}"
                     ${active || !canAfford ? 'disabled' : ''}>
                     ${active ? t('office.active') : `${t('office.activate')} (${boost.baseCost} 💠)`}
@@ -5201,7 +5209,7 @@ class Game {
                 </div>
                 <div class="text-xs text-slate-300 mb-3">${t(mode.descKey)}</div>
                 ${isUnlocked ? `
-                    <button onclick="game.gameModes.setMode('${mode.id}'); game.renderGameModesUI()"
+                    <button data-action="gameMode.set" data-id="${mode.id}"
                         class="w-full px-3 py-2 ${isActive ? 'bg-violet-600' : 'bg-slate-600 hover:bg-violet-600'} text-white text-sm rounded font-bold transition"
                         ${isActive ? 'disabled' : ''}>
                         ${isActive ? t('status.active') : t('modes.select') || 'Select'}
@@ -5260,7 +5268,7 @@ class Game {
                         ${t('currency.crystals')}: +${mission.reward.crystals}
                     </div>
                     ${!isCompleted && canAttempt ? `
-                        <button onclick="game.campaign.startMission('${mission.id}'); document.getElementById('campaign-modal').classList.add('hidden')"
+                        <button data-action="campaign.start" data-id="${mission.id}"
                             class="mt-2 w-full px-3 py-1 bg-rose-600 hover:bg-rose-500 text-white text-sm rounded">
                             ${t('modes.select') || 'Start'}
                         </button>
@@ -5375,16 +5383,16 @@ class Game {
                     ${hasData ? `<span class="text-xs text-green-400">${preset.turrets.length} ${t('chips.turret') || 'turrets'}</span>` : `<span class="text-xs text-slate-500">${t('presets.empty')}</span>`}
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="game.buildPresets.savePreset(${slot.id}); game.renderPresetsUI()"
+                    <button data-action="preset.save" data-id="${slot.id}"
                         class="flex-1 px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm rounded font-bold">
                         ${t('presets.save')}
                     </button>
                     ${hasData ? `
-                        <button onclick="game.buildPresets.loadPreset(${slot.id}); game.renderPresetsUI()"
+                        <button data-action="preset.load" data-id="${slot.id}"
                             class="flex-1 px-3 py-2 bg-green-600 hover:bg-green-500 text-white text-sm rounded font-bold">
                             ${t('presets.load')}
                         </button>
-                        <button onclick="game.buildPresets.deletePreset(${slot.id}); game.renderPresetsUI()"
+                        <button data-action="preset.delete" data-id="${slot.id}"
                             class="px-3 py-2 bg-red-600 hover:bg-red-500 text-white text-sm rounded">
                             🗑️
                         </button>
@@ -5676,7 +5684,7 @@ class Game {
                         <div class="text-xs text-slate-400">${t('school.level')} ${this.school.getLevel(selectedSlot.turretId)}</div>
                     </div>
                 </div>
-                <button onclick="game.turretSlots.removeTurret(${selectedSlot.id}); game.renderTurretSlotsUI()"
+                <button data-action="turretSlot.remove" data-id="${selectedSlot.id}"
                     class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded text-sm">
                     ${t('slots.remove')}
                 </button>
@@ -6272,7 +6280,7 @@ class Game {
                 localStorage.setItem(CONFIG.saveKey, decodeURIComponent(escape(atob(str))));
                 location.reload();
             } catch (e) {
-                alert(t('notifications.invalidSave'));
+                getErrorHandler().handleImportError(e);
             }
         }
     }
@@ -6336,11 +6344,13 @@ class Game {
             music: this.music.getSaveData()
         };
         localStorage.setItem(CONFIG.saveKey, JSON.stringify(data));
-        if (document.getElementById('save-string')) {
+        const saveStringEl = document.getElementById('save-string');
+        if (saveStringEl) {
             try {
-                document.getElementById('save-string').value = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+                saveStringEl.value = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
             } catch (e) {
-                document.getElementById('save-string').value = '';
+                logError(e, 'Save.exportString');
+                saveStringEl.value = '';
             }
         }
     }
@@ -6393,10 +6403,16 @@ class Game {
                 this.autoRetryEnabled = data.autoRetry || false;
                 this.autoBuyEnabled = data.autoBuy || false;
                 this.settings = data.settings || { showDamageText: true, showRange: true };
-                document.getElementById('toggle-retry').checked = this.autoRetryEnabled;
-                document.getElementById('toggle-buy').checked = this.autoBuyEnabled;
-                if (document.getElementById('toggle-damage')) document.getElementById('toggle-damage').checked = this.settings.showDamageText;
-                if (document.getElementById('toggle-range')) document.getElementById('toggle-range').checked = this.settings.showRange;
+
+                const toggleRetry = document.getElementById('toggle-retry');
+                const toggleBuy = document.getElementById('toggle-buy');
+                const toggleDamage = document.getElementById('toggle-damage');
+                const toggleRange = document.getElementById('toggle-range');
+
+                if (toggleRetry) toggleRetry.checked = this.autoRetryEnabled;
+                if (toggleBuy) toggleBuy.checked = this.autoBuyEnabled;
+                if (toggleDamage) toggleDamage.checked = this.settings.showDamageText;
+                if (toggleRange) toggleRange.checked = this.settings.showRange;
                 if (data.locale) {
                     i18n.setLocale(data.locale);
                 }
@@ -6474,7 +6490,7 @@ class Game {
                     this.music.loadSaveData(data.music);
                 }
             } catch (e) {
-                console.error("Save error", e);
+                getErrorHandler().handleLoadError(e);
             }
         }
         this.dailyQuests.generateQuests();

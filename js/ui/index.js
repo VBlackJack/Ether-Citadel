@@ -25,9 +25,16 @@ export {
     cleanupHelpTooltips
 } from './HelpTooltip.js';
 
+export {
+    EventDelegationManager,
+    getEventDelegation,
+    cleanupEventDelegation
+} from './EventDelegation.js';
+
 import { cleanupModals } from './Modal.js';
 import { cleanupToasts } from './Toast.js';
 import { cleanupHelpTooltips } from './HelpTooltip.js';
+import { cleanupEventDelegation } from './EventDelegation.js';
 
 /**
  * Cleanup all UI resources
@@ -36,4 +43,5 @@ export function cleanupAllUI() {
     cleanupModals();
     cleanupToasts();
     cleanupHelpTooltips();
+    cleanupEventDelegation();
 }

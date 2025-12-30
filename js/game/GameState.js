@@ -4,6 +4,7 @@
  */
 
 import { CONFIG } from '../config.js';
+import { getErrorHandler } from '../utils/ErrorHandler.js';
 
 /**
  * Initial game state values
@@ -106,8 +107,7 @@ export class GameStateManager {
             this.game.lastSaveTime = Date.now();
             return true;
         } catch (e) {
-            console.error('Save failed:', e);
-            return false;
+            return getErrorHandler().handleSaveError(e);
         }
     }
 
@@ -125,8 +125,7 @@ export class GameStateManager {
             this.applyLoadedData(data);
             return true;
         } catch (e) {
-            console.error('Load failed:', e);
-            return false;
+            return getErrorHandler().handleLoadError(e);
         }
     }
 

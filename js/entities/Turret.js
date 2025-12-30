@@ -15,6 +15,7 @@
  */
 
 import { TURRET_TIERS } from '../data.js';
+import { CONFIG } from '../config.js';
 import { Projectile } from './Projectile.js';
 
 /**
@@ -35,7 +36,7 @@ export class Turret {
 
     updateTierStats() {
         const tierData = TURRET_TIERS[this.tier] || TURRET_TIERS[1];
-        this.damageMultiplier = 0.25 * tierData.damageMult;
+        this.damageMultiplier = CONFIG.turret.baseDamageMultiplier * tierData.damageMult;
         this.rangeMult = tierData.rangeMult;
         this.fireRateMult = tierData.fireRateMult;
 
@@ -70,11 +71,9 @@ export class Turret {
                 this.x = game.castle.x + pos.x;
                 this.y = game.castle.y + pos.y;
             } else {
-                const orbitSpeed = 0.001;
-                const angle = (gameTime * orbitSpeed) + (this.id * (Math.PI / 2));
-                const orbitRadius = 100;
-                this.x = game.castle.x + Math.cos(angle) * orbitRadius;
-                this.y = game.castle.y + Math.sin(angle) * orbitRadius;
+                const angle = (gameTime * CONFIG.turret.orbitSpeed) + (this.id * (Math.PI / 2));
+                this.x = game.castle.x + Math.cos(angle) * CONFIG.turret.orbitRadius;
+                this.y = game.castle.y + Math.sin(angle) * CONFIG.turret.orbitRadius;
             }
         }
 
@@ -92,7 +91,7 @@ export class Turret {
 
     shoot(target, game) {
         const dmg = Math.max(1, Math.floor(game.currentDamage * this.damageMultiplier));
-        let speed = 15;
+        let speed = CONFIG.turret.projectileSpeed;
         const tierData = TURRET_TIERS[this.tier] || TURRET_TIERS[1];
         let color = tierData.color || '#a5b4fc';
         let props = { ...game.currentProps };
