@@ -4110,6 +4110,7 @@ class Game {
         this.selectedForgeRelic = null;
         this.autoRetryEnabled = false;
         this.autoBuyEnabled = false;
+        this.isGameOver = false;
         this.retryTimeoutId = null;
         this.gold = 0;
         this.wave = 1;
@@ -4230,7 +4231,7 @@ class Game {
             this.updateMenuUnlocks();
         }, 500);
 
-        if (!this.waveInProgress && !document.getElementById('game-over-screen').classList.contains('hidden') === false) {
+        if (!this.waveInProgress && document.getElementById('game-over-screen').classList.contains('hidden')) {
             this.startWave();
         }
         requestAnimationFrame((t) => this.loop(t));
@@ -5314,6 +5315,44 @@ class Game {
         });
     }
 
+    renderStatisticsUI() {
+        const grid = document.getElementById('statistics-grid');
+        if (!grid) return;
+
+        const stats = this.statistics.stats;
+        const formatTime = (seconds) => {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            return h > 0 ? `${h}h ${m}m` : `${m}m`;
+        };
+
+        const statsList = [
+            { key: 'totalPlayTime', i18n: 'totalPlayTime', icon: '⏱️', format: v => formatTime(v) },
+            { key: 'totalKills', i18n: 'totalKills', icon: '💀', format: v => formatNumber(v) },
+            { key: 'totalBosses', i18n: 'totalBosses', icon: '👑', format: v => formatNumber(v) },
+            { key: 'totalGoldEarned', i18n: 'totalGold', icon: '💰', format: v => formatNumber(v) },
+            { key: 'totalDamageDealt', i18n: 'totalDamage', icon: '⚔️', format: v => formatNumber(v) },
+            { key: 'highestWave', i18n: 'highestWave', icon: '🌊', format: v => v },
+            { key: 'highestCombo', i18n: 'highestCombo', icon: '🔥', format: v => v },
+            { key: 'totalPrestiges', i18n: 'totalPrestiges', icon: '👑', format: v => v },
+            { key: 'totalAscensions', i18n: 'totalAscensions', icon: '✨', format: v => v },
+            { key: 'criticalHits', i18n: 'criticalHits', icon: '💥', format: v => formatNumber(v) },
+            { key: 'projectilesFired', i18n: 'projectilesFired', icon: '🎯', format: v => formatNumber(v) },
+            { key: 'skillsUsed', i18n: 'skillsUsed', icon: '⚡', format: v => formatNumber(v) },
+            { key: 'relicsFound', i18n: 'relicsFound', icon: '🎒', format: v => v }
+        ];
+
+        grid.innerHTML = statsList.map(stat => `
+            <div class="flex items-center justify-between p-3 bg-slate-700/50 rounded border border-slate-600">
+                <span class="flex items-center gap-2">
+                    <span class="text-xl">${stat.icon}</span>
+                    <span class="text-slate-300">${t('statistics.' + stat.i18n)}</span>
+                </span>
+                <span class="font-bold text-white">${stat.format(stats[stat.key] || 0)}</span>
+            </div>
+        `).join('');
+    }
+
     renderPresetsUI() {
         const grid = document.getElementById('presets-grid');
         if (!grid) return;
@@ -5550,7 +5589,7 @@ class Game {
             }};
         }
 
-        if (this.crystals >= 50 && this.townLevel >= 3 && !localStorage.getItem('seen_intro_school')) {
+        if (this.crystals >= 50 && this.town.level >= 3 && !localStorage.getItem('seen_intro_school')) {
             return { text: t('ux.suggestion.trySchool') || 'Try School', action: () => {
                 this.renderSchoolUI();
                 document.getElementById('school-modal').classList.remove('hidden');
@@ -5568,8 +5607,8 @@ class Game {
 
     updateMenuUnlocks() {
         const unlocks = {
-            school: this.townLevel >= 3,
-            office: this.townLevel >= 4,
+            school: this.town.level >= 3,
+            office: this.town.level >= 4,
             awakening: this.dreadLevel >= 6
         };
 
@@ -5677,10 +5716,6 @@ class Game {
 
             grid.appendChild(div);
         });
-    }
-
-    t(key) {
-        return t(key);
     }
 
     renderRelicGrid() {

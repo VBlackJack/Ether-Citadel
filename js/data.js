@@ -726,7 +726,13 @@ export const SOUND_EFFECTS = [
 /**
  * Build presets structure
  */
-export const BUILD_PRESET_SLOTS = 5;
+export const BUILD_PRESET_SLOTS = [
+    { id: 0, name: 'Preset 1', icon: '1️⃣' },
+    { id: 1, name: 'Preset 2', icon: '2️⃣' },
+    { id: 2, name: 'Preset 3', icon: '3️⃣' },
+    { id: 3, name: 'Preset 4', icon: '4️⃣' },
+    { id: 4, name: 'Preset 5', icon: '5️⃣' }
+];
 
 /**
  * Leaderboard categories

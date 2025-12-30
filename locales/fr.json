@@ -957,6 +957,18 @@
     "town": {
       "title": "Ville",
       "text": "Votre ville grandit au fil du jeu. Montez de niveau en gagnant de l'XP. Des niveaux de ville plus eleves debloquent de nouvelles fonctionnalites : quetes, ecole, bureau, eveil. Les deblocages actuels sont affiches dans le panneau ville."
+    },
+    "modes": {
+      "title": "Modes de Jeu",
+      "text": "Choisissez differents modes de jeu pour des defis varies. Standard : gameplay normal. Sans Fin : scaling infini. Rush Boss : boss uniquement. Speedrun : mode chronometre. Chaque mode a des regles et recompenses uniques."
+    },
+    "campaign": {
+      "title": "Campagne",
+      "text": "Completez des missions pour gagner des recompenses. Les missions sont organisees par chapitres avec une difficulte croissante. Chaque mission a des objectifs specifiques comme atteindre des vagues, tuer des boss ou gagner de l'or."
+    },
+    "leaderboard": {
+      "title": "Classements",
+      "text": "Suivez vos meilleurs scores dans differentes categories. Comparez votre vague max, DPS max, runs les plus rapides et plus. Rivalisez avec vos propres records pour ameliorer votre gameplay."
     }
   },
   "boss": {

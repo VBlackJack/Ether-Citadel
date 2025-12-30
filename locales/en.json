@@ -957,6 +957,18 @@
     "town": {
       "title": "Town",
       "text": "Your town grows as you play. Level up by gaining XP through gameplay. Higher town levels unlock new features: quests, school, office, awakening. Current unlocks are shown in the town panel."
+    },
+    "modes": {
+      "title": "Game Modes",
+      "text": "Choose different game modes for varied challenges. Standard: normal gameplay. Endless: infinite scaling. Boss Rush: bosses only. Speedrun: timed mode. Each mode has unique rules and rewards."
+    },
+    "campaign": {
+      "title": "Campaign",
+      "text": "Complete missions to earn rewards. Missions are organized by chapters with increasing difficulty. Each mission has specific objectives like reaching waves, killing bosses, or earning gold."
+    },
+    "leaderboard": {
+      "title": "Leaderboards",
+      "text": "Track your best scores across different categories. Compare your highest wave, max DPS, fastest runs, and more. Compete against your own records to improve your gameplay."
     }
   },
   "boss": {
