@@ -380,14 +380,14 @@ export const AWAKENING_BONUSES = [
  * Angles spread evenly to avoid overlap
  */
 export const TURRET_SLOTS = [
-    { id: 0, angle: -45, distance: 75, free: true },
-    { id: 1, angle: 0, distance: 90, free: true },
-    { id: 2, angle: 45, distance: 75, free: true },
-    { id: 3, angle: -90, distance: 85, free: false, cost: 500 },
-    { id: 4, angle: 90, distance: 85, free: false, cost: 1000 },
-    { id: 5, angle: -135, distance: 80, free: false, cost: 2500 },
-    { id: 6, angle: 135, distance: 80, free: false, cost: 5000 },
-    { id: 7, angle: 180, distance: 95, free: false, cost: 10000 }
+    { id: 0, angle: -25, distance: 85, free: true },
+    { id: 1, angle: 0, distance: 115, free: true },
+    { id: 2, angle: 25, distance: 85, free: true },
+    { id: 3, angle: -55, distance: 120, free: false, cost: 500 },
+    { id: 4, angle: 55, distance: 120, free: false, cost: 1000 },
+    { id: 5, angle: -115, distance: 115, free: false, cost: 2500 },
+    { id: 6, angle: 115, distance: 115, free: false, cost: 5000 },
+    { id: 7, angle: 180, distance: 125, free: false, cost: 10000 }
 ];
 
 /**
