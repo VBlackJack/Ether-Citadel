@@ -96,13 +96,16 @@ export class ErrorHandler {
     /**
      * Handle import errors
      */
-    handleImportError(error, showAlert = true) {
+    handleImportError(error, showNotification = true) {
         this.log(error, 'Import', ErrorSeverity.WARNING);
 
-        if (showAlert) {
-            // Use localized message if available
+        if (showNotification) {
             const message = t('notifications.invalidSave') || 'Invalid save data';
-            alert(message);
+            if (window.game?.ui?.showToast) {
+                window.game.ui.showToast(message, 'error');
+            } else {
+                console.warn('[Import Error]', message);
+            }
         }
 
         return false;

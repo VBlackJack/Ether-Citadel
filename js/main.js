@@ -5698,12 +5698,15 @@ class Game {
 
     handleSlotClick(slot) {
         if (!slot.purchased) {
+            const pos = this.turretSlots.getSlotPosition(slot.id);
+            if (!pos) return;
+
             if (this.turretSlots.canPurchaseSlot(slot.id)) {
-                if (confirm(t('slots.confirmBuy').replace('{{cost}}', formatNumber(slot.cost)))) {
+                const costText = t('slots.confirmBuy') || 'Buy slot for {{cost}}?';
+                if (confirm(costText.replace('{{cost}}', formatNumber(slot.cost)))) {
                     this.turretSlots.purchaseSlot(slot.id);
                     this.floatingTexts.push(new FloatingText(
-                        this.turretSlots.getSlotPosition(slot.id).x,
-                        this.turretSlots.getSlotPosition(slot.id).y,
+                        pos.x, pos.y,
                         t('slots.purchased'),
                         '#22d3ee',
                         24
@@ -5711,8 +5714,7 @@ class Game {
                 }
             } else {
                 this.floatingTexts.push(new FloatingText(
-                    this.turretSlots.getSlotPosition(slot.id).x,
-                    this.turretSlots.getSlotPosition(slot.id).y,
+                    pos.x, pos.y,
                     t('slots.notEnoughGold'),
                     '#ef4444',
                     18
@@ -5721,16 +5723,20 @@ class Game {
         } else {
             this.turretSlots.selectedSlot = slot.id;
             this.renderTurretSlotsUI();
-            document.getElementById('slots-modal').classList.remove('hidden');
+            document.getElementById('slots-modal')?.classList.remove('hidden');
         }
     }
 
     renderTurretSlotsUI() {
-        const selectedSlot = this.turretSlots.slots[this.turretSlots.selectedSlot];
         const grid = document.getElementById('slots-turrets-grid');
         const currentEl = document.getElementById('slots-current-turret');
+        if (!grid || !currentEl) return;
 
-        if (!grid || !selectedSlot) return;
+        const slotIndex = this.turretSlots.selectedSlot;
+        if (slotIndex < 0 || slotIndex >= this.turretSlots.slots.length) return;
+
+        const selectedSlot = this.turretSlots.slots[slotIndex];
+        if (!selectedSlot) return;
 
         if (selectedSlot.turretId) {
             const turret = SCHOOL_TURRETS.find(t => t.id === selectedSlot.turretId);
@@ -6319,7 +6325,8 @@ class Game {
     }
 
     confirmReset() {
-        if (confirm(t('modals.settings.confirmReset'))) {
+        const message = t('modals.settings.confirmReset') || 'Are you sure you want to reset all progress?';
+        if (confirm(message)) {
             localStorage.removeItem(CONFIG.saveKey);
             location.reload();
         }
@@ -6334,7 +6341,9 @@ class Game {
         const str = btoa(encodeURIComponent(saved));
         document.getElementById('save-string').value = str;
         navigator.clipboard.writeText(str)
-            .then(() => alert(t('notifications.saveCopied')))
+            .then(() => {
+                this.ui.showToast(t('notifications.saveCopied') || 'Save copied to clipboard', 'success');
+            })
             .catch(err => {
                 logError(err, 'Clipboard.write');
                 this.ui.showToast(t('notifications.clipboardError') || 'Copy failed', 'error');
@@ -6343,14 +6352,30 @@ class Game {
 
     importSave() {
         const str = prompt(t('notifications.pasteSave'));
-        if (str) {
-            try {
-                const decoded = decodeURIComponent(atob(str));
-                localStorage.setItem(CONFIG.saveKey, decoded);
-                location.reload();
-            } catch (e) {
-                getErrorHandler().handleImportError(e);
+        if (!str || typeof str !== 'string' || str.trim().length === 0) return;
+
+        try {
+            // Validate base64 format
+            const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
+            if (!base64Regex.test(str.trim())) {
+                this.ui.showToast(t('notifications.invalidSaveFormat') || 'Invalid save format', 'error');
+                return;
             }
+
+            const decoded = decodeURIComponent(atob(str.trim()));
+
+            // Validate it's valid JSON before saving
+            const parsed = JSON.parse(decoded);
+            if (!parsed || typeof parsed !== 'object') {
+                this.ui.showToast(t('notifications.invalidSaveData') || 'Invalid save data', 'error');
+                return;
+            }
+
+            localStorage.setItem(CONFIG.saveKey, decoded);
+            location.reload();
+        } catch (e) {
+            getErrorHandler().handleImportError(e);
+            this.ui.showToast(t('notifications.importFailed') || 'Import failed', 'error');
         }
     }
 
