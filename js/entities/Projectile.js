@@ -190,10 +190,29 @@ export class Projectile {
         }
     }
 
+    /**
+     * Get projectile size based on crit status
+     */
+    getSize() {
+        if (this.isSuperCrit) return 10;
+        if (this.isCrit) return 8;
+        if (this.isMulti) return 3;
+        return 5;
+    }
+
+    /**
+     * Get shadow blur based on crit status
+     */
+    getShadowBlur() {
+        if (this.isSuperCrit) return 20;
+        if (this.isCrit) return 15;
+        return 10;
+    }
+
     draw(ctx) {
         ctx.fillStyle = this.color;
         ctx.beginPath();
-        const size = this.isSuperCrit ? 10 : (this.isCrit ? 8 : (this.isMulti ? 3 : 5));
+        const size = this.getSize();
         if (this.tier >= 3) {
             ctx.moveTo(this.x, this.y - size);
             ctx.lineTo(this.x + size, this.y);
@@ -204,7 +223,7 @@ export class Projectile {
         }
         ctx.closePath();
         ctx.fill();
-        ctx.shadowBlur = this.isSuperCrit ? 20 : (this.isCrit ? 15 : 10);
+        ctx.shadowBlur = this.getShadowBlur();
         ctx.shadowColor = this.color;
         ctx.fill();
         ctx.shadowBlur = 0;

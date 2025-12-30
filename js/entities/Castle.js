@@ -40,9 +40,8 @@ export class Castle {
 
     update(dt) {
         const game = this.game;
-        if (game.activeChallenge && game.activeChallenge.id === 'noregen') {
-            // No regen
-        } else if (this.hp < this.maxHp && this.hp > 0) {
+        const noRegenActive = game.activeChallenge && game.activeChallenge.id === 'noregen';
+        if (!noRegenActive && this.hp < this.maxHp && this.hp > 0) {
             this.hp += (this.regen / 60) * (dt / 16);
             if (this.hp > this.maxHp) this.hp = this.maxHp;
         }

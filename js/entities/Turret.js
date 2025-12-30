@@ -40,9 +40,21 @@ export class Turret {
         this.rangeMult = tierData.rangeMult;
         this.fireRateMult = tierData.fireRateMult;
 
-        if (this.type === 'ARTILLERY') { this.damageMultiplier = 0.8 * tierData.damageMult; this.fireRateMult *= 0.3; this.rangeMult *= 1.5; }
-        if (this.type === 'ROCKET') { this.damageMultiplier = 0.5 * tierData.damageMult; this.fireRateMult *= 0.5; this.rangeMult *= 1.2; }
-        if (this.type === 'TESLA') { this.damageMultiplier = 0.2 * tierData.damageMult; this.fireRateMult *= 1.5; this.rangeMult *= 0.8; }
+        if (this.type === 'ARTILLERY') {
+            this.damageMultiplier = 0.8 * tierData.damageMult;
+            this.fireRateMult *= 0.3;
+            this.rangeMult *= 1.5;
+        }
+        if (this.type === 'ROCKET') {
+            this.damageMultiplier = 0.5 * tierData.damageMult;
+            this.fireRateMult *= 0.5;
+            this.rangeMult *= 1.2;
+        }
+        if (this.type === 'TESLA') {
+            this.damageMultiplier = 0.2 * tierData.damageMult;
+            this.fireRateMult *= 1.5;
+            this.rangeMult *= 0.8;
+        }
     }
 
     upgradeTier(game) {
@@ -62,9 +74,16 @@ export class Turret {
 
     update(dt, gameTime, game) {
         const slots = [{ x: -40, y: -60 }, { x: 40, y: -60 }, { x: -40, y: 60 }, { x: 40, y: 60 }];
-        if (this.type === 'ARTILLERY') { this.x = game.castle.x; this.y = game.castle.y - 70; }
-        else if (this.type === 'ROCKET') { this.x = game.castle.x - 50; this.y = game.castle.y; }
-        else if (this.type === 'TESLA') { this.x = game.castle.x + 50; this.y = game.castle.y; }
+        if (this.type === 'ARTILLERY') {
+            this.x = game.castle.x;
+            this.y = game.castle.y - 70;
+        } else if (this.type === 'ROCKET') {
+            this.x = game.castle.x - 50;
+            this.y = game.castle.y;
+        } else if (this.type === 'TESLA') {
+            this.x = game.castle.x + 50;
+            this.y = game.castle.y;
+        }
         else {
             if (this.id < 4) {
                 const pos = slots[this.id];
@@ -77,7 +96,8 @@ export class Turret {
             }
         }
 
-        const baseFireRate = game.skills.isActive('overdrive') || game.activeBuffs['rage'] > 0 ? game.currentFireRate / 3 : game.currentFireRate;
+        const isRapidFire = game.skills.isActive('overdrive') || game.activeBuffs['rage'] > 0;
+        const baseFireRate = isRapidFire ? game.currentFireRate / 3 : game.currentFireRate;
         const fireInterval = baseFireRate / this.fireRateMult;
         if (gameTime - this.lastShotTime > fireInterval) {
             const range = game.currentRange * this.rangeMult;
@@ -96,9 +116,20 @@ export class Turret {
         let color = tierData.color || '#a5b4fc';
         let props = { ...game.currentProps };
 
-        if (this.type === 'ARTILLERY') { speed = 8; color = '#fca5a5'; props.blast = 100; }
-        if (this.type === 'ROCKET') { speed = 12; color = '#fdba74'; }
-        if (this.type === 'TESLA') { speed = 25; color = '#67e8f9'; props.bounce = (props.bounce || 0) + 3; }
+        if (this.type === 'ARTILLERY') {
+            speed = 8;
+            color = '#fca5a5';
+            props.blast = 100;
+        }
+        if (this.type === 'ROCKET') {
+            speed = 12;
+            color = '#fdba74';
+        }
+        if (this.type === 'TESLA') {
+            speed = 25;
+            color = '#67e8f9';
+            props.bounce = (props.bounce || 0) + 3;
+        }
 
         game.projectiles.push(Projectile.create(
             this.x, this.y, target,
@@ -118,8 +149,13 @@ export class Turret {
         ctx.shadowColor = tierData.color;
         ctx.shadowBlur = this.tier > 1 ? 5 + this.tier * 2 : 0;
 
-        if (this.type === 'ARTILLERY') { ctx.fillStyle = '#7f1d1d'; ctx.fillRect(0, -8, 24, 16); }
-        else if (this.type === 'ROCKET') { ctx.fillStyle = '#c2410c'; ctx.fillRect(0, -6, 20, 12); }
+        if (this.type === 'ARTILLERY') {
+            ctx.fillStyle = '#7f1d1d';
+            ctx.fillRect(0, -8, 24, 16);
+        } else if (this.type === 'ROCKET') {
+            ctx.fillStyle = '#c2410c';
+            ctx.fillRect(0, -6, 20, 12);
+        }
         else if (this.type === 'TESLA') {
             ctx.fillStyle = '#0e7490';
             ctx.fillRect(0, -4, 15, 8);

@@ -85,7 +85,13 @@ export class PrestigeManager {
             const nextEffect = u.effect(level + 1);
 
             const div = document.createElement('div');
-            div.className = `p-3 rounded-lg border-2 transition-all ${isMaxed ? 'bg-slate-700 border-yellow-500/50' : canAfford ? 'bg-cyan-900/30 border-cyan-500 hover:bg-cyan-800/40 cursor-pointer' : 'bg-slate-800 border-slate-600 opacity-60'}`;
+            let stateClass = 'bg-slate-800 border-slate-600 opacity-60';
+            if (isMaxed) {
+                stateClass = 'bg-slate-700 border-yellow-500/50';
+            } else if (canAfford) {
+                stateClass = 'bg-cyan-900/30 border-cyan-500 hover:bg-cyan-800/40 cursor-pointer';
+            }
+            div.className = `p-3 rounded-lg border-2 transition-all ${stateClass}`;
 
             if (canAfford) {
                 div.onclick = () => this.buy(u.id);

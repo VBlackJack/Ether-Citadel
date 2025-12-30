@@ -37,14 +37,24 @@ export class Enemy {
         const hpMod = game.activeChallenge && game.activeChallenge.id === 'glass' ? 0.1 : 1;
         const speedMod = game.activeChallenge && game.activeChallenge.id === 'speed' ? 2 : 1;
         const dread = game.getDreadMultipliers();
-        this.maxHp = Math.floor(CONFIG.baseEnemyHp * diffMult * this.type.hpMult * (this.isElite ? ENEMY_BALANCE.ELITE_HP_MULTIPLIER : 1) * hpMod * dread.enemyHp);
+        const eliteMult = this.isElite ? ENEMY_BALANCE.ELITE_HP_MULTIPLIER : 1;
+        this.maxHp = Math.floor(
+            CONFIG.baseEnemyHp * diffMult * this.type.hpMult * eliteMult * hpMod * dread.enemyHp
+        );
         this.hp = this.maxHp;
-        this.baseSpeed = CONFIG.baseEnemySpeed * (1 + wave * 0.03) * this.type.speedMult * speedMod * dread.enemySpeed;
-        this.damage = Math.floor((5 + Math.floor(wave * 0.8)) * (typeKey === 'BOSS' ? ENEMY_BALANCE.BOSS_DAMAGE_MULT : 1) * dread.enemyDamage);
+        this.baseSpeed = CONFIG.baseEnemySpeed * (1 + wave * 0.03) *
+            this.type.speedMult * speedMod * dread.enemySpeed;
+        const bossDmgMult = typeKey === 'BOSS' ? ENEMY_BALANCE.BOSS_DAMAGE_MULT : 1;
+        this.damage = Math.floor((5 + Math.floor(wave * 0.8)) * bossDmgMult * dread.enemyDamage);
         const baseGold = Math.max(1, Math.floor(2 * (1 + wave * 0.18)));
         const goldMult = game.metaUpgrades.getEffectValue('goldMult') * (1 + (game.relicMults.gold || 0));
         const catchupBonus = (wave > (game.stats?.maxWave || 0)) ? COMBAT_BALANCE.CATCHUP_BONUS_MULT : 1.0;
-        this.goldValue = Math.floor(baseGold * goldMult * catchupBonus * (typeKey === 'BOSS' ? ENEMY_BALANCE.BOSS_GOLD_MULT : (typeKey === 'TANK' ? 2 : 1)) * (this.isElite ? ENEMY_BALANCE.ELITE_GOLD_MULTIPLIER : 1) * dread.crystalBonus);
+        const typeGoldMult = typeKey === 'BOSS' ? ENEMY_BALANCE.BOSS_GOLD_MULT :
+            (typeKey === 'TANK' ? 2 : 1);
+        const eliteGoldMult = this.isElite ? ENEMY_BALANCE.ELITE_GOLD_MULTIPLIER : 1;
+        this.goldValue = Math.floor(
+            baseGold * goldMult * catchupBonus * typeGoldMult * eliteGoldMult * dread.crystalBonus
+        );
         if (game.activeBuffs['midas'] > 0) this.goldValue *= COMBAT_BALANCE.MIDAS_GOLD_MULT;
         this.color = typeKey === 'NORMAL' ? `hsl(${(wave * 15) % 360}, 70%, 60%)` : this.type.color;
         this.status = { iceTimer: 0, poisonTimer: 0, poisonDmg: 0, stasisTimer: 0 };
@@ -55,7 +65,10 @@ export class Enemy {
 
     applyStatus(type, power, duration) {
         if (type === 'ice') this.status.iceTimer = duration;
-        if (type === 'poison') { this.status.poisonTimer = duration; this.status.poisonDmg = power; }
+        if (type === 'poison') {
+            this.status.poisonTimer = duration;
+            this.status.poisonDmg = power;
+        }
         if (type === 'stasis') this.status.stasisTimer = duration;
     }
 
@@ -72,15 +85,23 @@ export class Enemy {
             this.takeDamage(game.currentDamage * 0.1 * (dt / 16), false, false, true);
             return;
         }
-        if (this.status.stasisTimer > 0) { this.status.stasisTimer -= dt * 16; return; }
+        if (this.status.stasisTimer > 0) {
+            this.status.stasisTimer -= dt * 16;
+            return;
+        }
         if (this.status.iceTimer > 0 && this.status.poisonTimer > 0 && this.thermalShockCooldown <= 0) {
             this.takeDamage(game.currentDamage * ENEMY_BALANCE.THERMAL_SHOCK_DAMAGE_MULT, true, false, false);
-            game.floatingTexts.push(new FloatingText(this.x, this.y - 40, t('notifications.thermalShock'), COLORS.STATUS_THERMAL, 24));
+            game.floatingTexts.push(new FloatingText(
+                this.x, this.y - 40, t('notifications.thermalShock'), COLORS.STATUS_THERMAL, 24
+            ));
             this.thermalShockCooldown = ENEMY_BALANCE.THERMAL_SHOCK_COOLDOWN;
         }
         if (this.thermalShockCooldown > 0) this.thermalShockCooldown -= dt;
         let currentSpeed = this.baseSpeed;
-        if (this.status.iceTimer > 0) { this.status.iceTimer -= dt * 16; currentSpeed *= ENEMY_BALANCE.ICE_SLOW_MULTIPLIER; }
+        if (this.status.iceTimer > 0) {
+            this.status.iceTimer -= dt * 16;
+            currentSpeed *= ENEMY_BALANCE.ICE_SLOW_MULTIPLIER;
+        }
         if (this.status.poisonTimer > 0) {
             this.status.poisonTimer -= dt * 16;
             const tickDmg = (this.status.poisonDmg / 60) * (dt / 16);
@@ -102,7 +123,8 @@ export class Enemy {
             this.teleportTimer += dt;
             if (this.teleportTimer > ENEMY_BALANCE.PHANTOM_TELEPORT_INTERVAL) {
                 this.x -= ENEMY_BALANCE.PHANTOM_TELEPORT_DISTANCE;
-                game.particles.push(new Particle(this.x + ENEMY_BALANCE.PHANTOM_TELEPORT_DISTANCE, this.y, COLORS.ENEMY_PHANTOM));
+                const afterTeleportX = this.x + ENEMY_BALANCE.PHANTOM_TELEPORT_DISTANCE;
+                game.particles.push(new Particle(afterTeleportX, this.y, COLORS.ENEMY_PHANTOM));
                 this.teleportTimer = 0;
             }
         }
@@ -112,7 +134,9 @@ export class Enemy {
                     this.state = 'FLEE';
                     const stolen = Math.floor(game.gold * ENEMY_BALANCE.THIEF_STEAL_PERCENTAGE);
                     game.gold -= stolen;
-                    game.floatingTexts.push(new FloatingText(this.x, this.y - 30, `-${stolen} 💰`, COLORS.DAMAGE_RED, 20));
+                    game.floatingTexts.push(new FloatingText(
+                        this.x, this.y - 30, `-${stolen} 💰`, COLORS.DAMAGE_RED, 20
+                    ));
                 }
             } else if (this.state === 'FLEE') {
                 this.x += currentSpeed * ENEMY_BALANCE.THIEF_FLEE_SPEED_MULT * (dt / 16);
@@ -227,7 +251,8 @@ export class Enemy {
         game.town.addXP(this.typeKey === 'BOSS' ? ENEMY_BALANCE.BOSS_XP_VALUE : ENEMY_BALANCE.NORMAL_XP_VALUE);
 
         // Dark matter drop chance
-        if (game.challenges.dmTech['siphon'] && this.typeKey !== 'BOSS' && Math.random() < ENEMY_BALANCE.DARK_MATTER_DROP_CHANCE) {
+        const canDropDarkMatter = game.challenges.dmTech['siphon'] && this.typeKey !== 'BOSS';
+        if (canDropDarkMatter && Math.random() < ENEMY_BALANCE.DARK_MATTER_DROP_CHANCE) {
             game.ether++;
         }
 
@@ -244,7 +269,8 @@ export class Enemy {
 
         // Gold floating text
         if (!silent && game.settings.showDamageText) {
-            game.floatingTexts.push(new FloatingText(this.x, this.y - 40, `+${formatNumber(this.goldValue)}`, COLORS.GOLD_TEXT, 16));
+            const goldText = `+${formatNumber(this.goldValue)}`;
+            game.floatingTexts.push(new FloatingText(this.x, this.y - 40, goldText, COLORS.GOLD_TEXT, 16));
         }
 
         game.sound.play('coin');
