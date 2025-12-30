@@ -1143,7 +1143,7 @@
     }
   },
   "ux": {
-    "suggestion": "Suggested",
+    "suggestionLabel": "Suggested",
     "menu": {
       "combat": "Combat",
       "economy": "Economy",
@@ -1155,8 +1155,8 @@
       "buyUpgrade": "Buy an upgrade",
       "tryMining": "Try Mining",
       "checkResearch": "Check Research",
-      "spendEther": "Spend Ether",
-      "claimQuest": "Claim Quest Reward"
+      "checkQuests": "Check Daily Quests",
+      "trySchool": "Try School"
     },
     "intro": {
       "modes": "Choose different game modes for varied challenges. Endless mode has infinite scaling, Boss Rush is boss-only, and Speedrun is timed!",

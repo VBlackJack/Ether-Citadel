@@ -1502,6 +1502,11 @@ select:focus-visible {
     transform: rotate(180deg);
 }
 
+.menu-group-header.open {
+    filter: brightness(1.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
 .menu-group-content {
     display: flex;
     flex-direction: column;
@@ -1536,6 +1541,8 @@ select:focus-visible {
 .menu-item.menu-locked {
     opacity: 0.5;
     position: relative;
+    pointer-events: none;
+    cursor: not-allowed;
 }
 
 .menu-item.menu-locked::after {
@@ -1546,6 +1553,8 @@ select:focus-visible {
 
 .menu-item.menu-unlocked {
     opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
 }
 
 .menu-item.menu-unlocked::after {
@@ -1562,8 +1571,7 @@ select:focus-visible {
     border-radius: 10px;
     border: 1px solid;
     backdrop-filter: blur(8px);
-    animation: toast-in 0.3s ease-out, toast-out 0.3s ease-in forwards;
-    animation-delay: 0s, 2.7s;
+    animation: toast-in 0.3s ease-out, toast-out 0.3s ease-in 2.7s forwards;
     pointer-events: auto;
     max-width: 400px;
 }

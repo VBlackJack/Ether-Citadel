@@ -1148,7 +1148,7 @@
     "trails": "Traînées"
   },
   "ux": {
-    "suggestion": "Suggéré",
+    "suggestionLabel": "Suggéré",
     "menu": {
       "combat": "Combat",
       "economy": "Économie",
@@ -1160,8 +1160,8 @@
       "buyUpgrade": "Acheter une amélioration",
       "tryMining": "Essayer le Minage",
       "checkResearch": "Voir la Recherche",
-      "spendEther": "Dépenser l'Éther",
-      "claimQuest": "Réclamer la récompense"
+      "checkQuests": "Voir les Quêtes",
+      "trySchool": "Essayer l'École"
     },
     "intro": {
       "modes": "Choisissez différents modes de jeu. Le mode Sans Fin a un scaling infini, Rush Boss n'a que des boss, et Speedrun est chronométré !",

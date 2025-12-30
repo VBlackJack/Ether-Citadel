@@ -113,14 +113,13 @@
         </div>
 
         <!-- Suggested Action Banner -->
-        <div id="suggested-action" class="hidden absolute top-4 right-4 z-30 pointer-events-auto">
-            <div class="bg-gradient-to-r from-amber-900/90 to-orange-900/90 border border-amber-500 rounded-lg px-4 py-2 flex items-center gap-3 backdrop-blur-sm cursor-pointer hover:border-amber-400 transition" onclick="game.executeSuggestedAction()">
-                <span class="text-amber-400 text-xl animate-pulse">💡</span>
-                <div>
-                    <div class="text-xs text-amber-300 uppercase tracking-wider" data-i18n="ux.suggestion">Suggested</div>
-                    <div id="suggested-action-text" class="text-white font-bold text-sm"></div>
+        <div id="suggested-action" class="hidden absolute top-16 right-4 z-30 pointer-events-auto">
+            <div class="bg-gradient-to-r from-amber-900/90 to-orange-900/90 border border-amber-500 rounded-lg px-3 py-2 flex items-center gap-2 backdrop-blur-sm cursor-pointer hover:border-amber-400 transition max-w-[200px]" onclick="game.executeSuggestedAction()">
+                <span class="text-amber-400 text-lg animate-pulse">💡</span>
+                <div class="flex-1 min-w-0">
+                    <div id="suggested-action-text" class="text-white font-bold text-xs truncate"></div>
                 </div>
-                <span class="text-amber-400">→</span>
+                <span class="text-amber-400 text-sm">→</span>
             </div>
         </div>
 

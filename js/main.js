@@ -1022,6 +1022,14 @@ class MetaUpgradeManager {
             container.appendChild(div);
         });
     }
+
+    canAffordAny() {
+        if (!window.game) return false;
+        return this.upgrades.some(u =>
+            (!u.maxLevel || u.level < u.maxLevel) &&
+            game.ether >= this.getCost(u)
+        );
+    }
 }
 
 class UpgradeManager {
@@ -1092,6 +1100,14 @@ class UpgradeManager {
             return val ? `<span class="text-green-400">${t('status.active')}</span>` : `<span class="text-red-400">${t('status.inactive')}</span>`;
         }
         return formatNumber(val);
+    }
+
+    canAffordAny() {
+        if (!window.game) return false;
+        return this.upgrades.some(u =>
+            (!u.maxLevel || u.level < u.maxLevel) &&
+            game.gold >= this.getCost(u)
+        );
     }
 
     render(activeTab) {
@@ -1954,6 +1970,17 @@ class DailyQuestManager {
         const now = new Date();
         const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
         return tomorrow.getTime() - now.getTime();
+    }
+
+    hasClaimableReward() {
+        return this.quests.some(q =>
+            !q.completed &&
+            (this.progress[q.id] || 0) >= q.target
+        );
+    }
+
+    hasIncompleteQuests() {
+        return this.quests.some(q => !q.completed);
     }
 
     getSaveData() {
@@ -5389,7 +5416,9 @@ class Game {
     toggleMenuGroup(groupId) {
         if (groupId === 'all') {
             const menuGroups = document.getElementById('menu-groups');
-            menuGroups.classList.toggle('collapsed');
+            const toggleBtn = document.getElementById('btn-toggle-menu');
+            const isCollapsed = menuGroups.classList.toggle('collapsed');
+            if (toggleBtn) toggleBtn.textContent = isCollapsed ? '☰' : '✕';
             return;
         }
 
@@ -5397,6 +5426,16 @@ class Game {
         const header = content?.previousElementSibling;
 
         if (content) {
+            const isOpening = content.classList.contains('hidden');
+
+            // Accordion: close all other groups first
+            document.querySelectorAll('.menu-group-content').forEach(c => {
+                if (c.id !== `menu-${groupId}`) {
+                    c.classList.add('hidden');
+                    c.previousElementSibling?.classList.remove('open');
+                }
+            });
+
             content.classList.toggle('hidden');
             header?.classList.toggle('open');
         }
@@ -5477,9 +5516,24 @@ class Game {
     }
 
     getSuggestedAction() {
+        // Don't show suggestions if a modal is open
+        const anyModalOpen = document.querySelector('.modal-backdrop:not(.hidden)');
+        if (anyModalOpen) return null;
+
         // Priority-based suggestions
+        if (this.dailyQuests && this.dailyQuests.hasIncompleteQuests() && !localStorage.getItem('seen_quests_today_' + new Date().toDateString())) {
+            return { text: t('ux.suggestion.checkQuests') || 'Check Daily Quests', action: () => {
+                this.renderDailyQuestsUI();
+                document.getElementById('quests-modal').classList.remove('hidden');
+                localStorage.setItem('seen_quests_today_' + new Date().toDateString(), 'true');
+            }};
+        }
+
         if (this.gold >= 100 && this.upgrades.canAffordAny()) {
-            return { text: t('ux.suggestion.buyUpgrade') || 'Buy an upgrade', action: () => {} };
+            return { text: t('ux.suggestion.buyUpgrade') || 'Buy an upgrade', action: () => {
+                const labPanel = document.getElementById('lab-panel');
+                if (labPanel) labPanel.scrollTop = 0;
+            }};
         }
 
         if (this.wave >= 5 && !localStorage.getItem('seen_intro_mining')) {
@@ -5496,16 +5550,10 @@ class Game {
             }};
         }
 
-        if (this.ether >= 100 && this.metaUpgrades.canAffordAny()) {
-            return { text: t('ux.suggestion.spendEther') || 'Spend Ether', action: () => {
-                document.getElementById('ether-modal').classList.remove('hidden');
-            }};
-        }
-
-        if (this.dailyQuests && this.dailyQuests.hasClaimableReward()) {
-            return { text: t('ux.suggestion.claimQuest') || 'Claim Quest Reward', action: () => {
-                this.renderDailyQuestsUI();
-                document.getElementById('quests-modal').classList.remove('hidden');
+        if (this.crystals >= 50 && this.townLevel >= 3 && !localStorage.getItem('seen_intro_school')) {
+            return { text: t('ux.suggestion.trySchool') || 'Try School', action: () => {
+                this.renderSchoolUI();
+                document.getElementById('school-modal').classList.remove('hidden');
             }};
         }
 
