@@ -7,6 +7,18 @@ import { CONFIG } from '../config.js';
 import { getErrorHandler } from '../utils/ErrorHandler.js';
 
 /**
+ * Validate base64 string format
+ */
+function isValidBase64(str) {
+    if (typeof str !== 'string' || str.length === 0) return false;
+    try {
+        return btoa(atob(str)) === str;
+    } catch {
+        return false;
+    }
+}
+
+/**
  * Initial game state values
  */
 export const INITIAL_STATE = {
@@ -119,8 +131,19 @@ export class GameStateManager {
             const encoded = localStorage.getItem(this.saveKey);
             if (!encoded) return false;
 
+            if (!isValidBase64(encoded)) {
+                console.warn('Invalid save data format, clearing corrupted save');
+                localStorage.removeItem(this.saveKey);
+                return false;
+            }
+
             const json = atob(encoded);
             const data = JSON.parse(json);
+
+            if (!data || typeof data !== 'object') {
+                console.warn('Invalid save data structure');
+                return false;
+            }
 
             this.applyLoadedData(data);
             return true;
@@ -132,19 +155,26 @@ export class GameStateManager {
     /**
      * Apply loaded data to game
      */
+    /**
+     * Safely get numeric value with fallback
+     */
+    safeNumber(value, fallback) {
+        return Number.isFinite(value) ? value : fallback;
+    }
+
     applyLoadedData(data) {
         const g = this.game;
 
-        g.gold = data.gold ?? INITIAL_STATE.gold;
-        g.wave = data.wave ?? INITIAL_STATE.wave;
-        g.ether = data.ether ?? INITIAL_STATE.ether;
-        g.crystals = data.crystals ?? INITIAL_STATE.crystals;
-        g.dreadLevel = data.dreadLevel ?? INITIAL_STATE.dreadLevel;
-        g.speedIndex = data.speedIndex ?? INITIAL_STATE.speedIndex;
-        g.settings = { ...INITIAL_STATE.settings, ...data.settings };
-        g.relics = data.relics || [];
-        g.miningResources = data.miningResources || {};
-        g.lastSaveTime = data.timestamp || Date.now();
+        g.gold = this.safeNumber(data.gold, INITIAL_STATE.gold);
+        g.wave = this.safeNumber(data.wave, INITIAL_STATE.wave);
+        g.ether = this.safeNumber(data.ether, INITIAL_STATE.ether);
+        g.crystals = this.safeNumber(data.crystals, INITIAL_STATE.crystals);
+        g.dreadLevel = this.safeNumber(data.dreadLevel, INITIAL_STATE.dreadLevel);
+        g.speedIndex = this.safeNumber(data.speedIndex, INITIAL_STATE.speedIndex);
+        g.settings = { ...INITIAL_STATE.settings, ...(typeof data.settings === 'object' ? data.settings : {}) };
+        g.relics = Array.isArray(data.relics) ? data.relics : [];
+        g.miningResources = (data.miningResources && typeof data.miningResources === 'object') ? data.miningResources : {};
+        g.lastSaveTime = this.safeNumber(data.timestamp, Date.now());
 
         if (data.stats && g.stats?.loadSaveData) g.stats.loadSaveData(data.stats);
         if (data.upgrades && g.upgrades?.loadSaveData) g.upgrades.loadSaveData(data.upgrades);
@@ -175,12 +205,12 @@ export class GameStateManager {
         if (data.campaign && g.campaign?.loadSaveData) g.campaign.loadSaveData(data.campaign);
         if (data.buildPresets && g.buildPresets?.loadSaveData) g.buildPresets.loadSaveData(data.buildPresets);
 
-        if (data.castle && g.castle) {
-            g.castle.hp = data.castle.hp ?? 100;
-            g.castle.maxHp = data.castle.maxHp ?? 100;
-            g.castle.shield = data.castle.shield ?? 0;
-            g.castle.maxShield = data.castle.maxShield ?? 0;
-            g.castle.tier = data.castle.tier ?? 1;
+        if (data.castle && typeof data.castle === 'object' && g.castle) {
+            g.castle.hp = Number.isFinite(data.castle.hp) ? data.castle.hp : 100;
+            g.castle.maxHp = Number.isFinite(data.castle.maxHp) ? data.castle.maxHp : 100;
+            g.castle.shield = Number.isFinite(data.castle.shield) ? data.castle.shield : 0;
+            g.castle.maxShield = Number.isFinite(data.castle.maxShield) ? data.castle.maxShield : 0;
+            g.castle.tier = Number.isFinite(data.castle.tier) ? data.castle.tier : 1;
         }
     }
 
@@ -197,14 +227,24 @@ export class GameStateManager {
      */
     importSave(saveString) {
         try {
+            if (!isValidBase64(saveString)) {
+                console.error('Import failed: Invalid base64 format');
+                return false;
+            }
+
             const json = atob(saveString);
             const data = JSON.parse(json);
+
+            if (!data || typeof data !== 'object') {
+                console.error('Import failed: Invalid data structure');
+                return false;
+            }
+
             this.applyLoadedData(data);
             this.save();
             return true;
         } catch (e) {
-            console.error('Import failed:', e);
-            return false;
+            return getErrorHandler().handleLoadError(e);
         }
     }
 

@@ -48,8 +48,6 @@ export class GameLoopManager {
     loop() {
         if (!this.isRunning) return;
 
-        this.animationFrameId = requestAnimationFrame(() => this.loop());
-
         const now = performance.now();
         const delta = now - this.then;
 
@@ -66,6 +64,10 @@ export class GameLoopManager {
             }
 
             this.render();
+        }
+
+        if (this.isRunning) {
+            this.animationFrameId = requestAnimationFrame(() => this.loop());
         }
     }
 

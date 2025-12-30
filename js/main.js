@@ -1164,14 +1164,14 @@ class UpgradeManager {
                 let count = 0;
                 let totalCost = 0;
                 let currentLvl = u.level;
-                while (true) {
-                    let nextCost = Math.floor(u.baseCost * Math.pow(u.costMult, currentLvl + count));
+                const safeCostMult = Math.max(1.01, u.costMult || 1.15);
+                for (let iter = 0; iter < 1000; iter++) {
+                    let nextCost = Math.floor(u.baseCost * Math.pow(safeCostMult, currentLvl + count));
                     if (game.gold < totalCost + nextCost && count > 0) break;
                     if (game.gold < nextCost && count === 0) { totalCost = nextCost; break; }
                     if (u.maxLevel && currentLvl + count >= u.maxLevel) break;
                     totalCost += nextCost;
                     count++;
-                    if (count > 1000) break;
                 }
                 cost = totalCost;
             }
@@ -4187,15 +4187,17 @@ class Game {
         };
 
         this.resize();
-        window.addEventListener('resize', () => this.resize());
-        window.addEventListener('keydown', (e) => {
+        this._boundResize = () => this.resize();
+        this._boundKeydown = (e) => {
             if (e.key.toLowerCase() === 'q') this.activateSkill('overdrive');
             if (e.key.toLowerCase() === 'w') this.activateSkill('nuke');
             if (e.key.toLowerCase() === 'e') this.activateSkill('blackhole');
             if (e.key.toLowerCase() === 'p') this.togglePause();
-        });
+        };
+        window.addEventListener('resize', this._boundResize);
+        window.addEventListener('keydown', this._boundKeydown);
 
-        this.canvas.addEventListener('mousedown', (e) => {
+        this._boundCanvasMousedown = (e) => {
             if (this.isPaused) return;
             const rect = this.canvas.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
@@ -4209,13 +4211,15 @@ class Game {
                 }
             }
 
-            this.runes.forEach((r, i) => {
+            this.runes = this.runes.filter(r => {
                 if (MathUtils.dist(clickX, clickY, r.x, r.y) < 30) {
                     this.activateRune(r);
-                    this.runes.splice(i, 1);
+                    return false;
                 }
+                return true;
             });
-        });
+        };
+        this.canvas.addEventListener('mousedown', this._boundCanvasMousedown);
 
         const dmgToggle = document.getElementById('toggle-damage');
         if (dmgToggle) {
@@ -4294,6 +4298,19 @@ class Game {
     cleanup() {
         this._intervals.forEach(id => clearInterval(id));
         this._intervals = [];
+
+        if (this._boundResize) {
+            window.removeEventListener('resize', this._boundResize);
+            this._boundResize = null;
+        }
+        if (this._boundKeydown) {
+            window.removeEventListener('keydown', this._boundKeydown);
+            this._boundKeydown = null;
+        }
+        if (this._boundCanvasMousedown && this.canvas) {
+            this.canvas.removeEventListener('mousedown', this._boundCanvasMousedown);
+            this._boundCanvasMousedown = null;
+        }
     }
 
     async changeLanguage(locale) {

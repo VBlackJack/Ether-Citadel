@@ -22,6 +22,20 @@ import { COLORS, getEnemyDisplayColor } from '../constants/colors.js';
 import { ENEMY_BALANCE, COMBAT_BALANCE, PARTICLE_COUNTS } from '../constants/balance.js';
 
 /**
+ * Sanitize color values to prevent CSS injection
+ */
+function sanitizeColor(color) {
+    if (typeof color !== 'string') return '#888';
+    const hexPattern = /^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$/;
+    const rgbPattern = /^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*[\d.]+)?\s*\)$/;
+    const hslPattern = /^hsla?\(\s*-?\d{1,3}\s*,\s*\d{1,3}%\s*,\s*\d{1,3}%\s*(,\s*[\d.]+)?\s*\)$/;
+    const namedColors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink', 'white', 'black', 'gray', 'grey', 'cyan', 'magenta'];
+    if (hexPattern.test(color) || rgbPattern.test(color) || hslPattern.test(color)) return color;
+    if (namedColors.includes(color.toLowerCase())) return color;
+    return '#888';
+}
+
+/**
  * Enemy entity
  */
 export class Enemy {
@@ -56,7 +70,9 @@ export class Enemy {
             baseGold * goldMult * catchupBonus * typeGoldMult * eliteGoldMult * dread.crystalBonus
         );
         if (game.activeBuffs['midas'] > 0) this.goldValue *= COMBAT_BALANCE.MIDAS_GOLD_MULT;
-        this.color = typeKey === 'NORMAL' ? `hsl(${(wave * 15) % 360}, 70%, 60%)` : this.type.color;
+        const safeWave = Math.max(0, Math.floor(wave) || 0);
+        const hue = (safeWave * 15) % 360;
+        this.color = typeKey === 'NORMAL' ? `hsl(${hue}, 70%, 60%)` : sanitizeColor(this.type.color);
         this.status = { iceTimer: 0, poisonTimer: 0, poisonDmg: 0, stasisTimer: 0 };
         this.state = 'APPROACH';
         this.teleportTimer = 0;
