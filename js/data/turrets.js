@@ -25,7 +25,7 @@ export const SCHOOL_TURRETS = [
     { id: 'laser', nameKey: 'school.laser.name', descKey: 'school.laser.desc', icon: '⚡', unlockCost: 75, baseDamage: 5, baseRange: 200, baseFireRate: 50, color: '#fbbf24', beam: true },
     { id: 'rocket', nameKey: 'school.rocket.name', descKey: 'school.rocket.desc', icon: '🚀', unlockCost: 100, baseDamage: 50, baseRange: 175, baseFireRate: 1500, color: '#f97316', splash: 50 },
     { id: 'swamper', nameKey: 'school.swamper.name', descKey: 'school.swamper.desc', icon: '🧊', unlockCost: 150, baseDamage: 5, baseRange: 125, baseFireRate: 300, color: '#38bdf8', slow: 0.5 },
-    { id: 'inferno', nameKey: 'school.inferno.name', descKey: 'school.inferno.desc', icon: '🔥', unlockCost: 200, baseDamage: 15, baseRange: 100, baseFireRate: 100, color: '#dc2626', dot: true },
+    { id: 'inferno', nameKey: 'school.inferno.name', descKey: 'school.inferno.desc', icon: '🌋', unlockCost: 200, baseDamage: 15, baseRange: 100, baseFireRate: 100, color: '#dc2626', dot: true },
     { id: 'solidifier', nameKey: 'school.solidifier.name', descKey: 'school.solidifier.desc', icon: '❄️', unlockCost: 250, baseDamage: 20, baseRange: 150, baseFireRate: 1000, color: '#06b6d4', freeze: 0.1 }
 ];
 
@@ -59,7 +59,7 @@ export const TURRET_SYNERGIES = [
  */
 export const AURA_TYPES = [
     { id: 'damage_aura', nameKey: 'auras.damage.name', descKey: 'auras.damage.desc', icon: '⚔️', color: '#ef4444', effect: 'damage', baseValue: 0.1, range: 150, cost: 50 },
-    { id: 'speed_aura', nameKey: 'auras.speed.name', descKey: 'auras.speed.desc', icon: '⚡', color: '#fbbf24', effect: 'fireRate', baseValue: 0.15, range: 150, cost: 75 },
+    { id: 'speed_aura', nameKey: 'auras.speed.name', descKey: 'auras.speed.desc', icon: '💨', color: '#fbbf24', effect: 'fireRate', baseValue: 0.15, range: 150, cost: 75 },
     { id: 'range_aura', nameKey: 'auras.range.name', descKey: 'auras.range.desc', icon: '🎯', color: '#3b82f6', effect: 'range', baseValue: 0.2, range: 200, cost: 60 },
     { id: 'crit_aura', nameKey: 'auras.crit.name', descKey: 'auras.crit.desc', icon: '💥', color: '#a855f7', effect: 'crit', baseValue: 10, range: 100, cost: 100 },
     { id: 'regen_aura', nameKey: 'auras.regen.name', descKey: 'auras.regen.desc', icon: '💚', color: '#22c55e', effect: 'regen', baseValue: 5, range: 250, cost: 150 }

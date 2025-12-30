@@ -2912,7 +2912,7 @@ class WeatherManager {
     }
 
     update(dt) {
-        this.timeRemaining -= dt / 1000;
+        this.timeRemaining -= dt;
         if (this.timeRemaining <= 0) {
             this.changeWeather();
         }
@@ -3066,21 +3066,20 @@ class EventManager {
         this.game = game;
         this.activeEvent = null;
         this.eventTimer = 0;
-        this.nextEventIn = 60 + Math.random() * 60;
+        this.nextEventIn = 60000 + Math.random() * 60000;
     }
 
     update(dt) {
-        const seconds = dt / 1000;
         if (this.activeEvent) {
-            this.eventTimer -= seconds;
+            this.eventTimer -= dt;
             if (this.eventTimer <= 0) {
                 this.activeEvent = null;
             }
         } else {
-            this.nextEventIn -= seconds;
+            this.nextEventIn -= dt;
             if (this.nextEventIn <= 0) {
                 this.triggerRandomEvent();
-                this.nextEventIn = 90 + Math.random() * 90;
+                this.nextEventIn = 90000 + Math.random() * 90000;
             }
         }
     }
@@ -3119,7 +3118,7 @@ class EventManager {
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 14px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText(`${this.activeEvent.icon} ${t(this.activeEvent.nameKey)} (${Math.ceil(this.eventTimer)}s)`, this.game.width / 2, 30);
+        ctx.fillText(`${this.activeEvent.icon} ${t(this.activeEvent.nameKey)} (${Math.ceil(this.eventTimer / 1000)}s)`, this.game.width / 2, 30);
         ctx.restore();
     }
 
@@ -3128,7 +3127,7 @@ class EventManager {
     }
 
     loadSaveData(data) {
-        if (data) this.nextEventIn = data.nextEventIn || 60;
+        if (data) this.nextEventIn = data.nextEventIn || 60000;
     }
 }
 

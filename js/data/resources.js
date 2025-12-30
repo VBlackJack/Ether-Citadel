@@ -69,7 +69,7 @@ export const PRODUCTION_BUILDINGS = [
 export const OFFICE_BOOSTS = [
     { id: 'damage_boost', nameKey: 'office.damage.name', descKey: 'office.damage.desc', icon: '⚔️', mult: 2.0, duration: 300, baseCost: 10, effect: 'damage' },
     { id: 'gold_boost', nameKey: 'office.gold.name', descKey: 'office.gold.desc', icon: '💰', mult: 3.0, duration: 300, baseCost: 15, effect: 'gold' },
-    { id: 'speed_boost', nameKey: 'office.speed.name', descKey: 'office.speed.desc', icon: '⚡', mult: 1.5, duration: 300, baseCost: 20, effect: 'attackSpeed' },
+    { id: 'speed_boost', nameKey: 'office.speed.name', descKey: 'office.speed.desc', icon: '🚀', mult: 1.5, duration: 300, baseCost: 20, effect: 'attackSpeed' },
     { id: 'xp_boost', nameKey: 'office.xp.name', descKey: 'office.xp.desc', icon: '📈', mult: 2.0, duration: 300, baseCost: 25, effect: 'xp' },
-    { id: 'crit_boost', nameKey: 'office.crit.name', descKey: 'office.crit.desc', icon: '💥', mult: 2.0, duration: 180, baseCost: 30, effect: 'critChance' }
+    { id: 'crit_boost', nameKey: 'office.crit.name', descKey: 'office.crit.desc', icon: '💥', mult: 2.0, duration: 300, baseCost: 30, effect: 'critChance' }
 ];

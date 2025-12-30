@@ -108,30 +108,32 @@ export const SEASONAL_EVENTS = [
 
 /**
  * Random events system
+ * Note: duration is in milliseconds for consistency with other game systems
  */
 export const RANDOM_EVENTS = [
-    { id: 'gold_rush', nameKey: 'events.goldRush.name', descKey: 'events.goldRush.desc', icon: '💰', duration: 30, effects: { goldMult: 3 }, weight: 15 },
-    { id: 'power_surge', nameKey: 'events.powerSurge.name', descKey: 'events.powerSurge.desc', icon: '⚡', duration: 20, effects: { damageMult: 2 }, weight: 15 },
-    { id: 'slow_motion', nameKey: 'events.slowMotion.name', descKey: 'events.slowMotion.desc', icon: '🐌', duration: 15, effects: { enemySpeedMult: 0.5 }, weight: 12 },
-    { id: 'critical_frenzy', nameKey: 'events.critFrenzy.name', descKey: 'events.critFrenzy.desc', icon: '💥', duration: 25, effects: { critChance: 50 }, weight: 12 },
-    { id: 'meteor_shower', nameKey: 'events.meteorShower.name', descKey: 'events.meteorShower.desc', icon: '☄️', duration: 15, effects: { meteorDamage: true }, weight: 8 },
-    { id: 'healing_aura', nameKey: 'events.healingAura.name', descKey: 'events.healingAura.desc', icon: '💚', duration: 30, effects: { regenMult: 5 }, weight: 10 },
-    { id: 'xp_boost', nameKey: 'events.xpBoost.name', descKey: 'events.xpBoost.desc', icon: '📈', duration: 45, effects: { xpMult: 2 }, weight: 15 },
-    { id: 'invasion', nameKey: 'events.invasion.name', descKey: 'events.invasion.desc', icon: '👾', duration: 20, effects: { enemySpawn: 2, goldMult: 2 }, weight: 8, negative: true },
+    { id: 'gold_rush', nameKey: 'events.goldRush.name', descKey: 'events.goldRush.desc', icon: '💰', duration: 30000, effects: { goldMult: 3 }, weight: 15 },
+    { id: 'power_surge', nameKey: 'events.powerSurge.name', descKey: 'events.powerSurge.desc', icon: '⚡', duration: 20000, effects: { damageMult: 2 }, weight: 15 },
+    { id: 'slow_motion', nameKey: 'events.slowMotion.name', descKey: 'events.slowMotion.desc', icon: '🐌', duration: 15000, effects: { enemySpeedMult: 0.5 }, weight: 12 },
+    { id: 'critical_frenzy', nameKey: 'events.critFrenzy.name', descKey: 'events.critFrenzy.desc', icon: '💥', duration: 25000, effects: { critChance: 50 }, weight: 12 },
+    { id: 'meteor_shower', nameKey: 'events.meteorShower.name', descKey: 'events.meteorShower.desc', icon: '☄️', duration: 15000, effects: { meteorDamage: true }, weight: 8 },
+    { id: 'healing_aura', nameKey: 'events.healingAura.name', descKey: 'events.healingAura.desc', icon: '💚', duration: 30000, effects: { regenMult: 5 }, weight: 10 },
+    { id: 'xp_boost', nameKey: 'events.xpBoost.name', descKey: 'events.xpBoost.desc', icon: '📈', duration: 45000, effects: { xpMult: 2 }, weight: 15 },
+    { id: 'invasion', nameKey: 'events.invasion.name', descKey: 'events.invasion.desc', icon: '👾', duration: 20000, effects: { enemySpawn: 2, goldMult: 2 }, weight: 8, negative: true },
     { id: 'elite_wave', nameKey: 'events.eliteWave.name', descKey: 'events.eliteWave.desc', icon: '👑', duration: 0, effects: { eliteSpawn: true }, weight: 5, negative: true },
     { id: 'treasure_goblin', nameKey: 'events.treasureGoblin.name', descKey: 'events.treasureGoblin.desc', icon: '🧌', duration: 0, effects: { spawnGoblin: true }, weight: 5 }
 ];
 
 /**
  * Weather system - Dynamic conditions affecting gameplay
+ * Note: duration is in milliseconds for consistency with other game systems
  */
 export const WEATHER_TYPES = [
-    { id: 'clear', nameKey: 'weather.clear.name', icon: '☀️', color: '#fbbf24', effects: {}, duration: 120, weight: 40 },
-    { id: 'rain', nameKey: 'weather.rain.name', icon: '🌧️', color: '#3b82f6', effects: { enemySpeed: -0.15, goldMult: 1.1 }, duration: 90, weight: 20 },
-    { id: 'storm', nameKey: 'weather.storm.name', icon: '⛈️', color: '#6366f1', effects: { enemySpeed: -0.2, damage: 1.2, critChance: 10 }, duration: 60, weight: 10 },
-    { id: 'fog', nameKey: 'weather.fog.name', icon: '🌫️', color: '#94a3b8', effects: { range: -0.3, enemySpeed: -0.1 }, duration: 90, weight: 15 },
-    { id: 'wind', nameKey: 'weather.wind.name', icon: '💨', color: '#22d3ee', effects: { projectileSpeed: 1.3, enemySpeed: 0.1 }, duration: 75, weight: 15 },
-    { id: 'blood_moon', nameKey: 'weather.bloodMoon.name', icon: '🌑', color: '#dc2626', effects: { enemyHp: 1.5, enemySpeed: 0.2, goldMult: 2.0, xpMult: 1.5 }, duration: 45, weight: 5 },
-    { id: 'aurora', nameKey: 'weather.aurora.name', icon: '🌌', color: '#a855f7', effects: { xpMult: 2.0, critDamage: 0.5 }, duration: 60, weight: 5 },
-    { id: 'solar_flare', nameKey: 'weather.solarFlare.name', icon: '🔥', color: '#f97316', effects: { damage: 1.5, regenMult: -0.5 }, duration: 45, weight: 5 }
+    { id: 'clear', nameKey: 'weather.clear.name', icon: '☀️', color: '#fbbf24', effects: {}, duration: 120000, weight: 40 },
+    { id: 'rain', nameKey: 'weather.rain.name', icon: '🌧️', color: '#3b82f6', effects: { enemySpeed: -0.15, goldMult: 1.1 }, duration: 90000, weight: 20 },
+    { id: 'storm', nameKey: 'weather.storm.name', icon: '⛈️', color: '#6366f1', effects: { enemySpeed: -0.2, damage: 1.2, critChance: 10 }, duration: 60000, weight: 10 },
+    { id: 'fog', nameKey: 'weather.fog.name', icon: '🌫️', color: '#94a3b8', effects: { range: -0.3, enemySpeed: -0.1 }, duration: 90000, weight: 15 },
+    { id: 'wind', nameKey: 'weather.wind.name', icon: '💨', color: '#22d3ee', effects: { projectileSpeed: 1.3, enemySpeed: 0.1 }, duration: 75000, weight: 15 },
+    { id: 'blood_moon', nameKey: 'weather.bloodMoon.name', icon: '🌑', color: '#dc2626', effects: { enemyHp: 1.5, enemySpeed: 0.2, goldMult: 2.0, xpMult: 1.5 }, duration: 45000, weight: 5 },
+    { id: 'aurora', nameKey: 'weather.aurora.name', icon: '🌌', color: '#a855f7', effects: { xpMult: 2.0, critDamage: 0.5 }, duration: 60000, weight: 5 },
+    { id: 'solar_flare', nameKey: 'weather.solarFlare.name', icon: '🔥', color: '#f97316', effects: { damage: 1.5, regenMult: -0.5 }, duration: 45000, weight: 5 }
 ];
