@@ -16,28 +16,90 @@
 
 import { MathUtils } from '../config.js';
 import { Particle } from '../effects/index.js';
+import { COLORS } from '../constants/colors.js';
+import { PARTICLE_COUNTS } from '../constants/balance.js';
+
+/**
+ * Projectile configuration object
+ * @typedef {Object} ProjectileConfig
+ * @property {number} damage - Damage amount
+ * @property {number} speed - Movement speed
+ * @property {string} color - CSS color
+ * @property {number} tier - Turret tier
+ * @property {boolean} [isMulti=false] - Multi-shot projectile
+ * @property {boolean} [isCrit=false] - Critical hit
+ * @property {boolean} [isSuperCrit=false] - Super critical hit
+ */
+
+/**
+ * Projectile effects object
+ * @typedef {Object} ProjectileEffects
+ * @property {boolean} [ice=false] - Ice effect
+ * @property {boolean} [poison=false] - Poison effect
+ */
+
+/**
+ * Projectile properties object
+ * @typedef {Object} ProjectileProps
+ * @property {number} [bounce=0] - Bounce count
+ * @property {number} [blast=0] - Blast radius
+ * @property {number} [leech=0] - Life leech amount
+ * @property {number} [stasis=0] - Stasis chance
+ */
 
 /**
  * Projectile entity for turret shots
  */
 export class Projectile {
-    constructor(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props) {
+    /**
+     * Create a projectile
+     * @param {number} x - Start X position
+     * @param {number} y - Start Y position
+     * @param {Object} target - Target enemy
+     * @param {ProjectileConfig} config - Projectile configuration
+     * @param {ProjectileEffects} [effects={}] - Status effects to apply
+     * @param {ProjectileProps} [props={}] - Additional properties
+     */
+    constructor(x, y, target, config, effects = {}, props = {}) {
+        // Position
         this.x = x;
         this.y = y;
         this.target = target;
-        this.damage = damage;
-        this.speed = speed;
-        this.color = color;
         this.active = true;
-        this.tier = tier;
-        this.isMulti = isMulti;
-        this.isCrit = isCrit;
-        this.isSuperCrit = isSuperCrit;
-        this.effects = effects || {};
-        this.bounceCount = (props && props.bounce) || 0;
-        this.blastRadius = (props && props.blast) || 0;
-        this.leech = (props && props.leech) || 0;
-        this.stasisChance = (props && props.stasis) || 0;
+
+        // Config
+        this.damage = config.damage;
+        this.speed = config.speed;
+        this.color = config.color;
+        this.tier = config.tier;
+        this.isMulti = config.isMulti || false;
+        this.isCrit = config.isCrit || false;
+        this.isSuperCrit = config.isSuperCrit || false;
+
+        // Effects
+        this.effects = effects;
+
+        // Props
+        this.bounceCount = props.bounce || 0;
+        this.blastRadius = props.blast || 0;
+        this.leech = props.leech || 0;
+        this.stasisChance = props.stasis || 0;
+    }
+
+    /**
+     * Factory method for creating projectiles (maintains backward compatibility)
+     * @deprecated Use constructor with config object instead
+     */
+    static create(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props) {
+        return new Projectile(x, y, target, {
+            damage,
+            speed,
+            color,
+            tier,
+            isMulti,
+            isCrit,
+            isSuperCrit
+        }, effects, props);
     }
 
     update(dt, game) {
@@ -70,8 +132,10 @@ export class Projectile {
         if (this.bounceCount > 0) this.bounce(target, game);
         else if (this.blastRadius <= 0) this.active = false;
         if (this.bounceCount <= 0) this.active = false;
-        if (game.particles.length < 50) {
-            for (let i = 0; i < 3; i++) game.particles.push(new Particle(this.x, this.y, this.color));
+        if (game.particles.length < PARTICLE_COUNTS.MAX_PARTICLES) {
+            for (let i = 0; i < PARTICLE_COUNTS.ENEMY_DEATH; i++) {
+                game.particles.push(new Particle(this.x, this.y, this.color));
+            }
         }
     }
 
@@ -81,7 +145,7 @@ export class Projectile {
                 e.takeDamage(this.damage * 0.5, false, false, true);
             }
         });
-        const ripple = new Particle(this.x, this.y, 'rgba(255,200,0,0.5)');
+        const ripple = new Particle(this.x, this.y, COLORS.BLAST_ORANGE);
         ripple.draw = function(ctx) {
             ctx.strokeStyle = this.color;
             ctx.lineWidth = 2;

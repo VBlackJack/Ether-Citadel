@@ -95,10 +95,17 @@ export class Turret {
         const tierData = TURRET_TIERS[this.tier] || TURRET_TIERS[1];
         let color = tierData.color || '#a5b4fc';
         let props = { ...game.currentProps };
+
         if (this.type === 'ARTILLERY') { speed = 8; color = '#fca5a5'; props.blast = 100; }
         if (this.type === 'ROCKET') { speed = 12; color = '#fdba74'; }
         if (this.type === 'TESLA') { speed = 25; color = '#67e8f9'; props.bounce = (props.bounce || 0) + 3; }
-        game.projectiles.push(new Projectile(this.x, this.y, target, dmg, speed, color, this.tier, false, false, false, game.currentEffects, props));
+
+        game.projectiles.push(Projectile.create(
+            this.x, this.y, target,
+            dmg, speed, color, this.tier,
+            false, false, false,
+            game.currentEffects, props
+        ));
     }
 
     draw(ctx, game) {

@@ -453,7 +453,7 @@ class Turret {
         if (this.type === 'ARTILLERY') { speed = 8; color = '#fca5a5'; props.blast = 100; }
         if (this.type === 'ROCKET') { speed = 12; color = '#fdba74'; }
         if (this.type === 'TESLA') { speed = 25; color = '#67e8f9'; props.bounce = (props.bounce || 0) + 3; }
-        game.projectiles.push(new Projectile(this.x, this.y, target, dmg, speed, color, this.tier, false, false, false, game.currentEffects, props));
+        game.projectiles.push(Projectile.create(this.x, this.y, target, dmg, speed, color, this.tier, false, false, false, game.currentEffects, props));
     }
 
     draw(ctx) {
@@ -508,7 +508,7 @@ class Drone {
             const target = game.findTarget(this.x, this.y, 400);
             if (target) {
                 const dmg = Math.max(1, Math.floor(game.currentDamage * 0.1));
-                game.projectiles.push(new Projectile(this.x, this.y, target, dmg, 20, '#06b6d4', 1));
+                game.projectiles.push(Projectile.create(this.x, this.y, target, dmg, 20, '#06b6d4', 1, false, false, false, {}, {}));
                 game.sound.play('shoot');
                 this.lastShotTime = gameTime;
             }
@@ -2599,7 +2599,7 @@ class TurretSlotManager {
 
                 const props = { blast: stats.aoe || 0 };
 
-                this.game.projectiles.push(new Projectile(
+                this.game.projectiles.push(Projectile.create(
                     pos.x, pos.y, target, damage, 8, color,
                     1, false, false, false, effects, props
                 ));
@@ -5963,12 +5963,12 @@ class Game {
             }
         }
         const finalColor = isSuperCrit ? '#d946ef' : (isCrit ? '#fbbf24' : color);
-        this.projectiles.push(new Projectile(100, this.height / 2, target, dmg, 15, finalColor, this.castle.tier, false, isCrit, isSuperCrit, this.currentEffects, this.currentProps));
+        this.projectiles.push(Projectile.create(100, this.height / 2, target, dmg, 15, finalColor, this.castle.tier, false, isCrit, isSuperCrit, this.currentEffects, this.currentProps));
         this.sound.play('shoot');
         if (Math.random() * 100 < this.multiShotChance) {
             setTimeout(() => {
                 if (target && target.hp > 0) {
-                    this.projectiles.push(new Projectile(100, this.height / 2, target, Math.floor(dmg * 0.5), 15, '#fff', this.castle.tier, true, isCrit, isSuperCrit, this.currentEffects, this.currentProps));
+                    this.projectiles.push(Projectile.create(100, this.height / 2, target, Math.floor(dmg * 0.5), 15, '#fff', this.castle.tier, true, isCrit, isSuperCrit, this.currentEffects, this.currentProps));
                 }
             }, 100 / this.speedMultiplier);
         }
