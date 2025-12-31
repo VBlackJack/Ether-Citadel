@@ -204,7 +204,7 @@
                     </button>
                     <div class="menu-group-content hidden" id="menu-info">
                         <button onclick="game.renderQuestsUI && game.renderQuestsUI(); document.getElementById('quests-modal').classList.remove('hidden')" class="menu-item">📋 <span data-i18n="quests.title">Quests</span> <span id="ui-quests-count" class="menu-count ml-auto">0</span></button>
-                        <button onclick="game.renderAchievementsUI && game.renderAchievementsUI(); document.getElementById('achievements-modal').classList.remove('hidden')" class="menu-item">🏆 <span data-i18n="game.success">Achievements</span></button>
+                        <button onclick="game.stats.render(); document.getElementById('achieve-modal').classList.remove('hidden')" class="menu-item">🏆 <span data-i18n="game.success">Achievements</span></button>
                         <button onclick="document.getElementById('relic-modal').classList.remove('hidden')" class="menu-item">🎒 <span data-i18n="modals.collection.title">Collection</span> <span id="ui-relic-count" class="text-yellow-400 ml-1">0</span></button>
                         <button onclick="document.getElementById('codex-modal').classList.remove('hidden')" class="menu-item">📖 <span data-i18n="game.codex">Codex</span> <span id="ui-codex-count" class="menu-count ml-auto">0</span></button>
                         <button onclick="game.renderStatisticsUI(); document.getElementById('statistics-modal').classList.remove('hidden')" class="menu-item">📊 <span data-i18n="statistics.title">Statistics</span></button>
