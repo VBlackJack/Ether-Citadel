@@ -227,7 +227,14 @@ export class UpgradeManager {
         div.className = this.getUpgradeClassName(isMaxed, canAfford);
 
         if (!isMaxed) {
-            div.onclick = () => { if (canAfford) this.buy(u.id); };
+            div.onclick = () => {
+                if (canAfford) {
+                    this.buy(u.id);
+                } else {
+                    // Feedback for insufficient resources
+                    this.game.ui?.showToast(t('feedback.notEnoughGold'), 'warning');
+                }
+            };
         }
 
         div.innerHTML = this.getUpgradeHTML(u, cost, isMaxed, val, next);

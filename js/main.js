@@ -2298,12 +2298,17 @@ class Game {
             document.querySelectorAll('.menu-group-content').forEach(c => {
                 if (c.id !== `menu-${groupId}`) {
                     c.classList.add('hidden');
-                    c.previousElementSibling?.classList.remove('open');
+                    const otherHeader = c.previousElementSibling;
+                    if (otherHeader) {
+                        otherHeader.classList.remove('open');
+                        otherHeader.setAttribute('aria-expanded', 'false');
+                    }
                 }
             });
 
             content.classList.toggle('hidden');
             header?.classList.toggle('open');
+            header?.setAttribute('aria-expanded', isOpening ? 'true' : 'false');
         }
     }
 
@@ -3577,15 +3582,6 @@ async function init() {
         } else if (!document.hidden && window.game.isPaused && window.game._wasPausedBeforeBlur === false) {
             window.game.togglePause();
             delete window.game._wasPausedBeforeBlur;
-        }
-    });
-
-    // Escape key to close modals
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            document.querySelectorAll('.modal-backdrop:not(.hidden)').forEach(modal => {
-                modal.classList.add('hidden');
-            });
         }
     });
 

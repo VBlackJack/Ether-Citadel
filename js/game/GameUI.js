@@ -110,6 +110,11 @@ export class GameUIManager {
             const maxHp = this.game.castle.maxHp || 1;
             const percent = Math.max(0, Math.min(100, (this.game.castle.hp / maxHp) * 100));
             el.style.width = `${percent}%`;
+            // Toggle critical state when HP < 30%
+            const container = el.parentElement;
+            if (container) {
+                container.classList.toggle('hp-critical', percent < 30);
+            }
         }
     }
 

@@ -17,7 +17,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=yes">
     <meta name="description" content="Ether Citadel - Browser-based idle tower defense with deep progression systems">
     <meta name="theme-color" content="#0f172a">
     <meta name="mobile-web-app-capable" content="yes">
@@ -33,10 +33,13 @@
 </head>
 <body class="h-screen w-screen flex flex-col md:flex-row">
 
+    <!-- Skip Link for Accessibility -->
+    <a href="#game-container" class="skip-link" data-i18n="a11y.skipToMain">Skip to main content</a>
+
     <!-- Loading Screen -->
     <div id="loading-screen" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center">
         <div class="text-4xl font-bold text-cyan-400 mb-6">Ether Citadel</div>
-        <div class="loading-spinner mb-4"></div>
+        <div class="loading-spinner mb-4" role="status" aria-label="Loading game"></div>
         <div class="text-slate-400 text-sm" data-i18n="ui.loading">Loading...</div>
     </div>
 
@@ -51,7 +54,7 @@
         <div id="stars-bg" class="absolute inset-0 z-0 opacity-50 pointer-events-none"></div>
         <div id="damage-overlay" class="absolute inset-0 pointer-events-none z-10"></div>
         <div id="fx-container" class="absolute inset-0 pointer-events-none z-10"></div>
-        <canvas id="gameCanvas" class="block w-full h-full cursor-crosshair z-10 relative"></canvas>
+        <canvas id="gameCanvas" class="block w-full h-full cursor-crosshair z-10 relative" role="img" aria-label="Game canvas - Tower defense gameplay area"></canvas>
 
         <div class="absolute top-4 left-4 flex flex-col gap-1 pointer-events-none select-none z-20">
             <div class="text-xs text-cyan-400 font-bold uppercase tracking-widest">
@@ -152,7 +155,7 @@
             <div id="menu-groups" class="flex flex-col gap-2 transition-all duration-300">
                 <!-- Combat Group -->
                 <div class="menu-group" data-group="combat">
-                    <button onclick="game.toggleMenuGroup('combat')" class="menu-group-header bg-red-900/80 border-red-700 text-red-400">
+                    <button onclick="game.toggleMenuGroup('combat')" class="menu-group-header bg-red-900/80 border-red-700 text-red-400" aria-expanded="false">
                         <span>⚔️</span><span data-i18n="ux.menu.combat">Combat</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-combat">
@@ -163,7 +166,7 @@
 
                 <!-- Economy Group -->
                 <div class="menu-group" data-group="economy">
-                    <button onclick="game.toggleMenuGroup('economy')" class="menu-group-header bg-amber-900/80 border-amber-700 text-amber-400">
+                    <button onclick="game.toggleMenuGroup('economy')" class="menu-group-header bg-amber-900/80 border-amber-700 text-amber-400" aria-expanded="false">
                         <span>💰</span><span data-i18n="ux.menu.economy">Economy</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-economy">
@@ -176,7 +179,7 @@
 
                 <!-- Progression Group -->
                 <div class="menu-group" data-group="progression">
-                    <button onclick="game.toggleMenuGroup('progression')" class="menu-group-header bg-purple-900/80 border-purple-700 text-purple-400">
+                    <button onclick="game.toggleMenuGroup('progression')" class="menu-group-header bg-purple-900/80 border-purple-700 text-purple-400" aria-expanded="false">
                         <span>📈</span><span data-i18n="ux.menu.progression">Progression</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-progression">
@@ -191,7 +194,7 @@
 
                 <!-- Meta/Modes Group -->
                 <div class="menu-group" data-group="meta">
-                    <button onclick="game.toggleMenuGroup('meta')" class="menu-group-header bg-violet-900/80 border-violet-700 text-violet-400">
+                    <button onclick="game.toggleMenuGroup('meta')" class="menu-group-header bg-violet-900/80 border-violet-700 text-violet-400" aria-expanded="false">
                         <span>🎮</span><span data-i18n="ux.menu.meta">Modes</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-meta">
@@ -204,7 +207,7 @@
 
                 <!-- Info Group -->
                 <div class="menu-group" data-group="info">
-                    <button onclick="game.toggleMenuGroup('info')" class="menu-group-header bg-slate-700/80 border-slate-600 text-slate-300">
+                    <button onclick="game.toggleMenuGroup('info')" class="menu-group-header bg-slate-700/80 border-slate-600 text-slate-300" aria-expanded="false">
                         <span>📚</span><span data-i18n="ux.menu.info">Info</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-info">
