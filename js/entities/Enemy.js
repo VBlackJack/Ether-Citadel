@@ -91,8 +91,8 @@ export class Enemy {
 
         const targetX = game.castle.x;
         const targetY = game.height / 2;
-        const dist = MathUtils.dist(this.x, this.y, targetX, targetY);
-        if (dist > 80) {
+        const distSq = MathUtils.distSq(this.x, this.y, targetX, targetY);
+        if (distSq > 6400) { // 80² = 6400, avoid Math.sqrt()
             const angle = Math.atan2(targetY - this.y, targetX - this.x);
             const moveStep = currentSpeed * (dt / 16);
             this.x += Math.cos(angle) * moveStep;
@@ -110,7 +110,7 @@ export class Enemy {
         }
         if (this.typeKey === 'THIEF') {
             if (this.state === 'APPROACH') {
-                if (dist <= 90) {
+                if (distSq <= 8100) { // 90² = 8100
                     this.state = 'FLEE';
                     const stolen = Math.floor(game.gold * 0.1);
                     game.gold -= stolen;

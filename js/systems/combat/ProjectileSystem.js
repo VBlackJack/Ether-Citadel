@@ -424,7 +424,9 @@ export class ProjectileSystem {
      * @param {number} deltaTime
      */
     update(deltaTime) {
-        for (let i = this.projectiles.length - 1; i >= 0; i--) {
+        // Use in-place compaction instead of splice() for O(n) vs O(n²) performance
+        let writeIdx = 0;
+        for (let i = 0; i < this.projectiles.length; i++) {
             const projectile = this.projectiles[i];
 
             projectile.update(deltaTime);
@@ -445,11 +447,12 @@ export class ProjectileSystem {
                 }
             }
 
-            // Remove dead projectiles
-            if (projectile.dead) {
-                this.projectiles.splice(i, 1);
+            // Keep alive projectiles via compaction
+            if (!projectile.dead) {
+                this.projectiles[writeIdx++] = projectile;
             }
         }
+        this.projectiles.length = writeIdx;
     }
 
     /**

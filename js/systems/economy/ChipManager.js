@@ -32,6 +32,16 @@ export class ChipManager {
     }
 
     /**
+     * Generate a cryptographically unique ID
+     * @returns {string}
+     */
+    generateUid() {
+        const array = new Uint32Array(2);
+        crypto.getRandomValues(array);
+        return `${array[0].toString(36)}${array[1].toString(36)}`;
+    }
+
+    /**
      * Generate a random chip with rarity
      * @returns {object}
      */
@@ -44,7 +54,7 @@ export class ChipManager {
 
         const available = CHIP_TYPES.filter(c => c.rarity <= maxRarity);
         const chip = available[Math.floor(Math.random() * available.length)];
-        return { ...chip, uid: Date.now() + Math.random() };
+        return { ...chip, uid: this.generateUid() };
     }
 
     /**

@@ -1165,9 +1165,9 @@
       "name": "Noël",
       "desc": "Cadeaux, or bonus"
     },
-    "lunar_new_year": {
+    "lunarNewYear": {
       "name": "Nouvel An Lunaire",
-      "desc": "Dragons, bonus de chance"
+      "desc": "Dragons et fortunes dorées !"
     },
     "summer": {
       "name": "Festival d'Été",
@@ -1197,7 +1197,50 @@
     "chapter": "Chapitre",
     "mission": "Mission",
     "complete": "Terminé",
+    "completed": "Mission Terminée",
+    "kills": "Kills",
+    "time": "Temps",
     "locked": "Verrouillé",
+    "tutorial": {
+      "name": "Premiers Pas",
+      "desc": "Atteindre la vague 5"
+    },
+    "firstBoss": {
+      "name": "Premier Boss",
+      "desc": "Vaincre votre premier boss"
+    },
+    "speedChallenge": {
+      "name": "Défi Vitesse",
+      "desc": "Atteindre la vague 10 en moins de 5 minutes"
+    },
+    "tankBuster": {
+      "name": "Brise-Tank",
+      "desc": "Vaincre 10 ennemis Tank"
+    },
+    "noDamage": {
+      "name": "Intouchable",
+      "desc": "Terminer une vague sans subir de dégâts"
+    },
+    "megaBoss": {
+      "name": "Méga Boss",
+      "desc": "Vaincre un Méga Boss"
+    },
+    "endless50": {
+      "name": "Sans Fin 50",
+      "desc": "Atteindre la vague 50 en mode Sans Fin"
+    },
+    "bossRush10": {
+      "name": "Rush Boss 10",
+      "desc": "Vaincre 10 boss en mode Rush Boss"
+    },
+    "dreadMaster": {
+      "name": "Maître de la Terreur",
+      "desc": "Terminer au niveau de Terreur 5+"
+    },
+    "ultimate": {
+      "name": "Ultime",
+      "desc": "Terminer tous les défis de campagne"
+    },
     "objectives": {
       "wave": "Atteindre la vague",
       "kills": "Tuer des ennemis",
@@ -1226,6 +1269,14 @@
   },
   "leaderboard": {
     "title": "Classements",
+    "highestWave": "Vague la Plus Haute",
+    "maxDps": "DPS Maximum",
+    "fastestWave50": "Vague 50 la Plus Rapide",
+    "totalKills": "Kills Totaux",
+    "bossesDefeated": "Boss Vaincus",
+    "highestCombo": "Combo le Plus Haut",
+    "endlessRecord": "Record Sans Fin",
+    "bossRushRecord": "Record Rush Boss",
     "categories": {
       "highest_wave": "Vague la Plus Haute",
       "total_kills": "Kills Totaux",
@@ -1249,6 +1300,7 @@
     "load": "Charger",
     "delete": "Supprimer",
     "empty": "Emplacement Vide",
+    "slot": "Emplacement",
     "slots": {
       "1": "Préréglage 1",
       "2": "Préréglage 2",
@@ -1262,6 +1314,11 @@
   },
   "music": {
     "title": "Musique",
+    "menu": "Thème du Menu",
+    "gameplay": "Thème de Gameplay",
+    "boss": "Thème du Boss",
+    "victory": "Thème de Victoire",
+    "defeat": "Thème de Défaite",
     "tracks": {
       "ambient": "Ambiance",
       "battle": "Bataille",

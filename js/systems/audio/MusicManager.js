@@ -13,6 +13,7 @@ export class MusicManager {
         this.volume = 0.3;
         this.enabled = false;
         this.oscillators = [];
+        this.beatTimeout = null;
     }
 
     init() {
@@ -52,13 +53,17 @@ export class MusicManager {
             osc.start();
             osc.stop(this.ctx.currentTime + 0.3);
 
-            setTimeout(playBeat, beatInterval);
+            this.beatTimeout = setTimeout(playBeat, beatInterval);
         };
 
         if (this.enabled) playBeat();
     }
 
     stopTrack() {
+        if (this.beatTimeout) {
+            clearTimeout(this.beatTimeout);
+            this.beatTimeout = null;
+        }
         this.currentTrack = null;
         this.oscillators.forEach(o => o.stop());
         this.oscillators = [];

@@ -47,9 +47,18 @@ export class FloatingText {
         this.y = y;
         this.text = text;
         this.color = color;
-        this.size = size;
+        this._size = size;
+        this._cachedFont = `bold ${size}px Rajdhani`;
         this.life = 1.0;
         this.vy = -1;
+    }
+
+    get size() { return this._size; }
+    set size(val) {
+        if (this._size !== val) {
+            this._size = val;
+            this._cachedFont = `bold ${val}px Rajdhani`;
+        }
     }
 
     /**
@@ -94,7 +103,7 @@ export class FloatingText {
     draw(ctx) {
         ctx.globalAlpha = Math.max(0, this.life);
         ctx.fillStyle = this.color;
-        ctx.font = `bold ${this.size}px Rajdhani`;
+        ctx.font = this._cachedFont;
         ctx.fillText(this.text, this.x, this.y);
         ctx.globalAlpha = 1.0;
     }
