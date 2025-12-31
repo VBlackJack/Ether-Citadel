@@ -4290,7 +4290,10 @@ class Game {
             rangeToggle.addEventListener('change', (e) => { this.settings.showRange = e.target.checked; });
         }
 
-        document.getElementById('toggle-buy').addEventListener('change', (e) => { this.autoBuyEnabled = e.target.checked; });
+        const buyToggle = document.getElementById('toggle-buy');
+        if (buyToggle) {
+            buyToggle.addEventListener('change', (e) => { this.autoBuyEnabled = e.target.checked; });
+        }
 
         this.load();
         this.recalcRelicBonuses();
