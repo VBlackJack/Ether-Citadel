@@ -297,10 +297,10 @@
         </div>
 
         <!-- Codex Modal -->
-        <div id="codex-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="codex-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="codex-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-blue-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-blue-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="codex-modal-title" class="text-2xl text-blue-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="modals.codex.title">Codex</span>
                         <span class="help-icon" data-help="codex">?</span>
                     </h2>
@@ -317,10 +317,10 @@
         </div>
 
         <!-- Statistics Modal -->
-        <div id="statistics-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="statistics-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="statistics-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-emerald-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-emerald-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="statistics-modal-title" class="text-2xl text-emerald-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="statistics.title">Statistics</span>
                         <span class="help-icon" data-help="statistics">?</span>
                     </h2>
@@ -331,10 +331,10 @@
         </div>
 
         <!-- Mining Modal -->
-        <div id="mining-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="mining-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="mining-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-cyan-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-cyan-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="mining-modal-title" class="text-2xl text-cyan-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="mining.title">Mining</span>
                         <span class="help-icon" data-help="mining">?</span>
                     </h2>
@@ -351,10 +351,10 @@
         </div>
 
         <!-- Forge Modal -->
-        <div id="forge-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="forge-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="forge-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-yellow-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-yellow-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="forge-modal-title" class="text-2xl text-yellow-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="forge.title">Relic Forge</span>
                         <span class="help-icon" data-help="forge">?</span>
                     </h2>
@@ -368,10 +368,10 @@
         </div>
 
         <!-- Research Modal -->
-        <div id="research-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="research-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="research-modal-title">
             <div class="w-full max-w-4xl bg-slate-800 border border-purple-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-purple-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="research-modal-title" class="text-2xl text-purple-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="research.title">Research Tree</span>
                         <span class="help-icon" data-help="research">?</span>
                     </h2>
@@ -391,10 +391,10 @@
         </div>
 
         <!-- Challenges Modal -->
-        <div id="challenges-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="challenges-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="challenges-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-red-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-red-500 font-bold uppercase flex items-center gap-1">
+                    <h2 id="challenges-modal-title" class="text-2xl text-red-500 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="modals.challenges.title">Hardcore Mode</span>
                         <span class="help-icon" data-help="challenges">?</span>
                     </h2>
@@ -431,10 +431,10 @@
         </div>
 
         <!-- Mastery Modal -->
-        <div id="mastery-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="mastery-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="mastery-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-cyan-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-cyan-400 font-bold uppercase" data-i18n="modals.mastery.title">Mastery</h2>
+                    <h2 id="mastery-modal-title" class="text-2xl text-cyan-400 font-bold uppercase" data-i18n="modals.mastery.title">Mastery</h2>
                     <button onclick="document.getElementById('mastery-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4">
@@ -447,10 +447,10 @@
         </div>
 
         <!-- Achievements Modal -->
-        <div id="achieve-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="achieve-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="achieve-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-green-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-green-400 font-bold uppercase" data-i18n="modals.achievements.title">Achievements</h2>
+                    <h2 id="achieve-modal-title" class="text-2xl text-green-400 font-bold uppercase" data-i18n="modals.achievements.title">Achievements</h2>
                     <button onclick="document.getElementById('achieve-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
@@ -466,17 +466,17 @@
         </div>
 
         <!-- Settings Modal -->
-        <div id="settings-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="settings-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
             <div class="bg-slate-800 border border-slate-500 p-8 rounded-2xl max-w-md w-full shadow-2xl" onclick="event.stopPropagation()">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl text-white font-bold" data-i18n="modals.settings.title">Settings</h2>
+                    <h2 id="settings-modal-title" class="text-2xl text-white font-bold" data-i18n="modals.settings.title">Settings</h2>
                     <button onclick="document.getElementById('settings-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="space-y-4">
                     <!-- Language Selector -->
                     <div class="flex items-center justify-between bg-slate-900 p-3 rounded">
                         <span class="text-sm font-bold text-slate-300" data-i18n="modals.settings.language">Language</span>
-                        <select id="language-select" onchange="game.changeLanguage(this.value)" class="bg-slate-700 text-white border border-slate-600 rounded px-2 py-1 text-sm">
+                        <select id="language-select" onchange="game.changeLanguage(this.value)" class="bg-slate-700 text-white border border-slate-600 rounded px-2 py-1 text-sm" aria-label="Language selector">
                             <option value="en">English</option>
                             <option value="fr">Français</option>
                         </select>
@@ -484,7 +484,7 @@
                     <div class="flex items-center justify-between bg-slate-900 p-3 rounded">
                         <span class="text-sm font-bold text-slate-300" data-i18n="modals.settings.showDamage">Show Damage</span>
                         <label class="relative inline-block w-12 h-6">
-                            <input type="checkbox" id="toggle-damage" class="sr-only peer">
+                            <input type="checkbox" id="toggle-damage" class="sr-only peer" aria-label="Show damage numbers">
                             <div class="w-12 h-6 bg-slate-600 rounded-full peer peer-checked:bg-cyan-500 transition"></div>
                             <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-6"></div>
                         </label>
@@ -492,14 +492,14 @@
                     <div class="flex items-center justify-between bg-slate-900 p-3 rounded">
                         <span class="text-sm font-bold text-slate-300" data-i18n="modals.settings.showRange">Show Range</span>
                         <label class="relative inline-block w-12 h-6">
-                            <input type="checkbox" id="toggle-range" class="sr-only peer">
+                            <input type="checkbox" id="toggle-range" class="sr-only peer" aria-label="Show turret range">
                             <div class="w-12 h-6 bg-slate-600 rounded-full peer peer-checked:bg-cyan-500 transition"></div>
                             <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-6"></div>
                         </label>
                     </div>
                     <div>
                         <label class="block text-xs text-slate-400 mb-1" data-i18n="modals.settings.save">Save</label>
-                        <textarea id="save-string" class="w-full h-24 bg-black/50 border border-slate-600 rounded p-2 text-xs text-slate-300 break-all" readonly></textarea>
+                        <textarea id="save-string" class="w-full h-24 bg-black/50 border border-slate-600 rounded p-2 text-xs text-slate-300 break-all" readonly aria-readonly="true" aria-label="Save data"></textarea>
                     </div>
                     <div class="flex gap-2">
                         <button onclick="game.exportSave()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-sm font-bold" data-i18n="modals.settings.copy">COPY</button>
@@ -543,10 +543,10 @@
         </div>
 
         <!-- Production Modal -->
-        <div id="production-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="production-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="production-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-orange-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-orange-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="production-modal-title" class="text-2xl text-orange-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="production.title">Production</span>
                         <span class="help-icon" data-help="production">?</span>
                     </h2>
@@ -564,10 +564,10 @@
         </div>
 
         <!-- Daily Quests Modal -->
-        <div id="quests-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="quests-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="quests-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-emerald-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-emerald-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="quests-modal-title" class="text-2xl text-emerald-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="quests.title">Daily Quests</span>
                         <span class="help-icon" data-help="quests">?</span>
                     </h2>
@@ -584,10 +584,10 @@
         </div>
 
         <!-- Prestige Modal -->
-        <div id="prestige-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="prestige-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="prestige-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-amber-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-amber-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="prestige-modal-title" class="text-2xl text-amber-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="prestige.title">Prestige</span>
                         <span class="help-icon" data-help="prestige">?</span>
                     </h2>
@@ -626,14 +626,14 @@
                             <div class="flex items-center gap-3">
                                 <span class="text-sm text-slate-300" data-i18n="prestige.autoEnable">Enable Auto-Prestige</span>
                                 <label class="relative inline-block w-12 h-6">
-                                    <input type="checkbox" id="toggle-auto-prestige" class="sr-only peer">
+                                    <input type="checkbox" id="toggle-auto-prestige" class="sr-only peer" aria-label="Enable auto-prestige">
                                     <div class="w-12 h-6 bg-slate-600 rounded-full peer peer-checked:bg-cyan-500 transition"></div>
                                     <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-6"></div>
                                 </label>
                             </div>
                             <div class="flex items-center gap-3">
                                 <span class="text-sm text-slate-300" data-i18n="prestige.autoWave">Prestige at Wave</span>
-                                <input type="number" id="auto-prestige-wave" min="25" max="1000" value="30" class="w-20 px-2 py-1 bg-slate-800 border border-slate-600 rounded text-center text-cyan-400 font-bold">
+                                <input type="number" id="auto-prestige-wave" min="25" max="1000" value="30" class="w-20 px-2 py-1 bg-slate-800 border border-slate-600 rounded text-center text-cyan-400 font-bold" aria-label="Auto-prestige wave threshold">
                             </div>
                         </div>
                         <div class="text-xs text-slate-400 mt-2" data-i18n="prestige.autoDesc">When enabled, prestige will trigger automatically on game over if wave threshold is reached.</div>
@@ -646,10 +646,10 @@
         </div>
 
         <!-- Chips Modal -->
-        <div id="chips-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="chips-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="chips-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-pink-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-pink-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="chips-modal-title" class="text-2xl text-pink-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="chips.title">Turret Chips</span>
                         <span class="help-icon" data-help="chips">?</span>
                     </h2>
@@ -682,10 +682,10 @@
         </div>
 
         <!-- Town Modal -->
-        <div id="town-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="town-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="town-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-teal-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-teal-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="town-modal-title" class="text-2xl text-teal-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="town.title">Town</span>
                         <span class="help-icon" data-help="town">?</span>
                     </h2>
@@ -724,10 +724,10 @@
         </div>
 
         <!-- School Modal -->
-        <div id="school-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="school-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="school-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-indigo-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-indigo-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="school-modal-title" class="text-2xl text-indigo-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="school.title">School</span>
                         <span class="help-icon" data-help="school">?</span>
                     </h2>
@@ -744,10 +744,10 @@
         </div>
 
         <!-- Office Modal -->
-        <div id="office-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="office-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="office-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-lime-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-lime-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="office-modal-title" class="text-2xl text-lime-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="office.title">Office</span>
                         <span class="help-icon" data-help="office">?</span>
                     </h2>
@@ -770,10 +770,10 @@
         </div>
 
         <!-- Awakening Modal -->
-        <div id="awakening-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="awakening-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="awakening-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-fuchsia-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-fuchsia-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="awakening-modal-title" class="text-2xl text-fuchsia-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="awakening.title">Awakening</span>
                         <span class="help-icon" data-help="awakening">?</span>
                     </h2>
@@ -797,10 +797,10 @@
         </div>
 
         <!-- Turret Slots Modal -->
-        <div id="slots-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="slots-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="slots-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-cyan-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-cyan-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="slots-modal-title" class="text-2xl text-cyan-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="slots.title">Turret Slot</span>
                         <span class="help-icon" data-help="turrets">?</span>
                     </h2>
@@ -819,10 +819,10 @@
         </div>
 
         <!-- Game Modes Modal -->
-        <div id="modes-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="modes-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="modes-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-violet-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-violet-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="modes-modal-title" class="text-2xl text-violet-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="modes.title">Game Modes</span>
                         <span class="help-icon" data-help="modes">?</span>
                     </h2>
@@ -839,10 +839,10 @@
         </div>
 
         <!-- Campaign Modal -->
-        <div id="campaign-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="campaign-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="campaign-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-rose-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-rose-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="campaign-modal-title" class="text-2xl text-rose-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="campaign.title">Campaign</span>
                         <span class="help-icon" data-help="campaign">?</span>
                     </h2>
@@ -861,10 +861,10 @@
         </div>
 
         <!-- Leaderboard Modal -->
-        <div id="leaderboard-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="leaderboard-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="leaderboard-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-sky-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-sky-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="leaderboard-modal-title" class="text-2xl text-sky-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="leaderboard.title">Leaderboards</span>
                         <span class="help-icon" data-help="leaderboard">?</span>
                     </h2>
@@ -872,7 +872,7 @@
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="flex gap-2 mb-4 flex-wrap justify-center">
-                        <select id="leaderboard-category" onchange="game.renderLeaderboardUI()" class="bg-slate-700 text-white border border-slate-600 rounded px-3 py-2 text-sm"></select>
+                        <select id="leaderboard-category" onchange="game.renderLeaderboardUI()" class="bg-slate-700 text-white border border-slate-600 rounded px-3 py-2 text-sm" aria-label="Leaderboard category"></select>
                     </div>
                     <div id="leaderboard-list" class="space-y-2">
                         <div class="empty-state text-center py-8 text-slate-400">
@@ -886,10 +886,10 @@
         </div>
 
         <!-- Presets Modal -->
-        <div id="presets-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="presets-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="presets-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-stone-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
-                    <h2 class="text-2xl text-stone-400 font-bold uppercase flex items-center gap-1">
+                    <h2 id="presets-modal-title" class="text-2xl text-stone-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="presets.title">Build Presets</span>
                     </h2>
                     <button onclick="document.getElementById('presets-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
@@ -920,9 +920,9 @@
         </div>
 
         <!-- Dev Modal -->
-        <div id="dev-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="dev-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="dev-modal-title">
             <div class="bg-red-950 border border-red-600 p-8 rounded-2xl max-w-md text-center shadow-2xl" onclick="event.stopPropagation()">
-                <h2 class="text-3xl text-red-500 font-bold mb-4" data-i18n="modals.dev.title">DEVELOPER MODE</h2>
+                <h2 id="dev-modal-title" class="text-3xl text-red-500 font-bold mb-4" data-i18n="modals.dev.title">DEVELOPER MODE</h2>
                 <div class="grid grid-cols-2 gap-4">
                     <button onclick="game.dev.addGold(1000000)" class="px-4 py-3 bg-yellow-600 hover:bg-yellow-500 text-white font-bold rounded shadow" data-i18n="modals.dev.addGold">+1M GOLD 💰</button>
                     <button onclick="game.dev.addEther(10000)" class="px-4 py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded shadow" data-i18n="modals.dev.addEther">+10k ETHER 🔮</button>
@@ -1006,11 +1006,11 @@
             </div>
             <div class="flex gap-3 text-xs">
                 <label class="flex items-center gap-1 text-slate-400 hover:text-white cursor-pointer" data-i18n-title="hud.tooltips.autoAdvance">
-                    <input type="checkbox" id="lab-auto-advance" class="w-3 h-3 accent-cyan-500" onchange="game.toggleAutoAdvance && game.toggleAutoAdvance()">
+                    <input type="checkbox" id="lab-auto-advance" class="w-3 h-3 accent-cyan-500" onchange="game.toggleAutoAdvance && game.toggleAutoAdvance()" aria-label="Auto-advance to next wave">
                     <span data-i18n="hud.autoAdvance">Auto</span>
                 </label>
                 <label class="flex items-center gap-1 text-slate-400 hover:text-white cursor-pointer" data-i18n-title="hud.tooltips.autoRetry">
-                    <input type="checkbox" id="lab-auto-retry" class="w-3 h-3 accent-cyan-500" onchange="game.toggleAutoRetry && game.toggleAutoRetry()">
+                    <input type="checkbox" id="lab-auto-retry" class="w-3 h-3 accent-cyan-500" onchange="game.toggleAutoRetry && game.toggleAutoRetry()" aria-label="Auto-retry after defeat">
                     <span data-i18n="hud.autoRetry">Retry</span>
                 </label>
             </div>

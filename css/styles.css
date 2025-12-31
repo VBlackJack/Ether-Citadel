@@ -905,22 +905,6 @@ body {
     }
 }
 
-/* Close Button Improvements */
-.modal-backdrop button[onclick*="classList.add('hidden')"] {
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.15s;
-}
-
-.modal-backdrop button[onclick*="classList.add('hidden')"]:hover {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-}
-
 /* HP Bar Text Contrast Fix */
 #ui-health-bar + div,
 .absolute.inset-0.flex.items-center.justify-center {
