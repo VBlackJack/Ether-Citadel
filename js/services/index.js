@@ -15,23 +15,29 @@
  */
 
 /**
- * Systems Module Index
- * Exports all game system managers
+ * Services barrel export
  */
 
-// Audio Systems
-export { SoundManager } from './audio/SoundManager.js';
+export {
+    BigNum,
+    BigNumService,
+    NotationType,
+    formatNumber,
+    formatCurrency,
+    formatPercent,
+    formatMultiplier
+} from './BigNumService.js';
 
-// Combat Systems
-export { SkillManager } from './combat/SkillManager.js';
+export {
+    SaveService,
+    SAVE_VERSION,
+    MIGRATIONS,
+    computeChecksum,
+    verifyChecksum
+} from './SaveService.js';
 
-// Economy Systems
-export { MiningManager } from './economy/MiningManager.js';
-export { UpgradeManager } from './economy/UpgradeManager.js';
-
-// Progression Systems
-export { PrestigeManager } from './progression/PrestigeManager.js';
-export { PassiveManager } from './progression/PassiveManager.js';
-
-// UI Systems
-export { TutorialManager } from './ui/TutorialManager.js';
+export {
+    ConfigLoader,
+    SCHEMAS,
+    ConfigValidationError
+} from './ConfigLoader.js';

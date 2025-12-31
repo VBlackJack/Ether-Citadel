@@ -35,6 +35,10 @@
       "crystals": "Cristaux - Utilis\u00e9s pour l'\u00e9cole et la ma\u00eetrise des tourelles",
       "autoAdvance": "Avancer automatiquement \u00e0 la prochaine vague",
       "autoRetry": "R\u00e9essayer automatiquement apr\u00e8s une d\u00e9faite"
+    },
+    "buttons": {
+      "pause": "Basculer la pause",
+      "sound": "Basculer le son"
     }
   },
   "sideHud": {

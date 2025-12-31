@@ -35,6 +35,10 @@
       "crystals": "Crystals - Used for school upgrades and turret mastery",
       "autoAdvance": "Auto-advance to next wave",
       "autoRetry": "Auto-retry after defeat"
+    },
+    "buttons": {
+      "pause": "Toggle pause",
+      "sound": "Toggle sound"
     }
   },
   "sideHud": {

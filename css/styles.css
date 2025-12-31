@@ -342,7 +342,7 @@ body {
 }
 
 .research-node.locked {
-    opacity: 0.4;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -638,11 +638,11 @@ body {
 }
 
 .dread-level.locked {
-    opacity: 0.3;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
-.dread-level.selected {
+.dread-level.active {
     border-color: #a855f7;
     box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
     background: rgba(168, 85, 247, 0.2);
@@ -813,7 +813,7 @@ body {
     border-color: #3b82f6;
 }
 
-.relic-select-item.selected {
+.relic-select-item.active {
     border-color: #f97316;
     box-shadow: 0 0 10px rgba(249, 115, 22, 0.5);
 }
@@ -1211,7 +1211,7 @@ select:focus-visible {
 .prestige-btn:disabled {
     background: #475569;
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.5;
 }
 
 /* Chip System Styles */
@@ -1636,7 +1636,7 @@ select:focus-visible {
 }
 
 .auto-btn.locked {
-    opacity: 0.6;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -1819,7 +1819,7 @@ select:focus-visible {
 .passive-btn:disabled {
     background: #334155;
     cursor: not-allowed;
-    opacity: 0.4;
+    opacity: 0.5;
 }
 
 .passive-locked {
@@ -1926,7 +1926,7 @@ select:focus-visible {
 }
 
 .tech-stage-node.locked {
-    opacity: 0.4;
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
@@ -2310,11 +2310,12 @@ select:focus-visible {
 }
 
 .menu-locked {
-    opacity: 0.6;
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .menu-locked:hover {
-    opacity: 0.8;
+    opacity: 0.5;
 }
 
 /* Resource Display Enhancement */

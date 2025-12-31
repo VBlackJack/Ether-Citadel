@@ -15,7 +15,7 @@
  */
 
 import { i18n, t } from './i18n.js';
-import { CONFIG, SOUND_DB, MathUtils, formatNumber } from './config.js';
+import { CONFIG, SOUND_DB, MathUtils, formatNumber, BigNumService } from './config.js';
 import {
     CHALLENGES,
     DARK_MATTER_UPGRADES,
@@ -4801,7 +4801,7 @@ class Game {
             const isSelected = dread.level === this.dreadLevel;
 
             const btn = document.createElement('button');
-            btn.className = `dread-level ${isUnlocked ? '' : 'locked'} ${isSelected ? 'selected' : ''}`;
+            btn.className = `dread-level ${isUnlocked ? '' : 'locked'} ${isSelected ? 'active' : ''}`;
             btn.dataset.level = dread.level;
             btn.innerHTML = `${dread.level}`;
             btn.style.color = dread.color;
@@ -7488,6 +7488,9 @@ class Game {
 }
 
 async function init() {
+    // Initialize services
+    BigNumService.init();
+
     await i18n.init();
     i18n.translatePage();
     new Game();

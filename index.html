@@ -60,13 +60,13 @@
                 <div class="resource-display text-4xl font-bold text-yellow-400 drop-shadow-lg flex items-center gap-2 cursor-help" data-i18n-title="hud.tooltips.gold">
                     <span class="text-3xl">🪙</span> <span id="ui-gold">0</span>
                 </div>
-                <button id="btn-pause" onclick="game.togglePause()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-3 rounded border border-slate-500 backdrop-blur-sm transition text-sm">⏸️</button>
-                <button id="btn-sound" onclick="game.sound.toggle()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-2 rounded border border-slate-500 backdrop-blur-sm transition text-sm">🔊</button>
+                <button id="btn-pause" onclick="game.togglePause()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-3 rounded border border-slate-500 backdrop-blur-sm transition text-sm" aria-label="Toggle pause" data-i18n-title="hud.buttons.pause">⏸️</button>
+                <button id="btn-sound" onclick="game.sound.toggle()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-2 rounded border border-slate-500 backdrop-blur-sm transition text-sm" aria-label="Toggle sound" data-i18n-title="hud.buttons.sound">🔊</button>
                 <div id="speed-controls-hud" class="pointer-events-auto flex gap-1 ml-2">
-                    <button onclick="game.setSpeed(1)" class="speed-btn-mini active" data-speed="1">1x</button>
-                    <button onclick="game.setSpeed(3)" class="speed-btn-mini" data-speed="3">3x</button>
-                    <button onclick="game.setSpeed(6)" class="speed-btn-mini" data-speed="6">6x</button>
-                    <button onclick="game.setSpeed(10)" class="speed-btn-mini" data-speed="10">10x</button>
+                    <button onclick="game.setSpeed(1)" class="speed-btn-mini active" data-speed="1" aria-label="Speed 1x">1x</button>
+                    <button onclick="game.setSpeed(3)" class="speed-btn-mini" data-speed="3" aria-label="Speed 3x">3x</button>
+                    <button onclick="game.setSpeed(6)" class="speed-btn-mini" data-speed="6" aria-label="Speed 6x">6x</button>
+                    <button onclick="game.setSpeed(10)" class="speed-btn-mini" data-speed="10" aria-label="Speed 10x">10x</button>
                 </div>
             </div>
             <div class="flex items-center gap-2 text-2xl font-bold drop-shadow-lg">
@@ -1119,6 +1119,8 @@
             </div>
         </div>
 
-<script type="module" src="js/main.js?v=24"></script>
+<!-- BigNum support for numbers > 1e308 -->
+<script src="https://cdn.jsdelivr.net/npm/break_infinity.js@2.0.0/break_infinity.min.js"></script>
+<script type="module" src="js/main.js?v=25"></script>
 </body>
 </html>

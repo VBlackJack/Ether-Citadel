@@ -99,17 +99,24 @@ export const MathUtils = {
     randomRange: (min, max) => Math.random() * (max - min) + min
 };
 
-/**
- * Format large numbers with suffixes
- * @param {number} num
- * @returns {string}
- */
-export function formatNumber(num) {
-    if (num >= 1e18) return (num / 1e18).toFixed(2) + 'Qi';
-    if (num >= 1e15) return (num / 1e15).toFixed(2) + 'Qa';
-    if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
-    if (num >= 1e9) return (num / 1e9).toFixed(2) + 'B';
-    if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
-    if (num >= 1e3) return (num / 1e3).toFixed(1) + 'k';
-    return Math.floor(num).toString();
-}
+// Re-export from services for backward compatibility
+export {
+    formatNumber,
+    formatCurrency,
+    formatPercent,
+    formatMultiplier,
+    BigNum,
+    BigNumService,
+    NotationType
+} from './services/BigNumService.js';
+
+export {
+    SaveService,
+    SAVE_VERSION
+} from './services/SaveService.js';
+
+export {
+    ConfigLoader,
+    SCHEMAS,
+    ConfigValidationError
+} from './services/ConfigLoader.js';
