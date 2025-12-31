@@ -8,6 +8,7 @@
     "level": "Level",
     "gold": "Gold",
     "wave": "Wave",
+    "nextWave": "Next Wave",
     "enemies": "Enemies",
     "hp": "HP",
     "rush": "RUSH",
@@ -15,7 +16,8 @@
     "codex": "Codex",
     "challenges": "Challenges",
     "options": "Opt.",
-    "success": "Achievements"
+    "success": "Achievements",
+    "boss": "BOSS"
   },
   "hud": {
     "evolutionTier": "Evolution Tier",
@@ -93,6 +95,8 @@
     "offline": {
       "title": "Welcome Back",
       "subtitle": "Offline Earnings",
+      "timeAway": "Time away",
+      "bonusApplied": "Bonus applied",
       "collect": "Collect"
     },
     "gameOver": {
@@ -473,6 +477,23 @@
     "pasteSave": "Paste your save:",
     "autoSaved": "Game saved",
     "importFailed": "Import failed"
+  },
+  "feedback": {
+    "noStatPoints": "No stat points available",
+    "maxLevel": "Already at max level",
+    "notEnoughGold": "Not enough Gold",
+    "notEnoughEther": "Not enough Ether",
+    "notEnoughCrystals": "Not enough Crystals",
+    "notEnoughResources": "Not enough resources",
+    "purchased": "Purchased!",
+    "upgraded": "Upgraded!",
+    "unlocked": "Unlocked!",
+    "crafted": "Crafted!",
+    "equipped": "Equipped!",
+    "unequipped": "Unequipped!",
+    "challengeStarted": "Challenge started!",
+    "featureUnlocked": "New feature unlocked!",
+    "cannotAfford": "Cannot afford this"
   },
   "status": {
     "active": "ACTIVE",

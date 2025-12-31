@@ -8,6 +8,7 @@
     "level": "Niveau",
     "gold": "Or",
     "wave": "Vague",
+    "nextWave": "Prochaine Vague",
     "enemies": "Ennemis",
     "hp": "PV",
     "rush": "RUSH",
@@ -15,7 +16,8 @@
     "codex": "Codex",
     "challenges": "D\u00e9fis",
     "options": "Opt.",
-    "success": "Succ\u00e8s"
+    "success": "Succ\u00e8s",
+    "boss": "BOSS"
   },
   "hud": {
     "evolutionTier": "\u00c9volution Tier",
@@ -93,6 +95,8 @@
     "offline": {
       "title": "Retour",
       "subtitle": "Gain Hors-Ligne",
+      "timeAway": "Temps d'absence",
+      "bonusApplied": "Bonus appliqu\u00e9",
       "collect": "R\u00e9cup\u00e9rer"
     },
     "gameOver": {
@@ -473,6 +477,23 @@
     "pasteSave": "Collez votre sauvegarde:",
     "autoSaved": "Partie sauvegard\u00e9e",
     "importFailed": "\u00c9chec de l'import"
+  },
+  "feedback": {
+    "noStatPoints": "Pas de points de stat disponibles",
+    "maxLevel": "Niveau maximum atteint",
+    "notEnoughGold": "Pas assez d'Or",
+    "notEnoughEther": "Pas assez d'\u00c9ther",
+    "notEnoughCrystals": "Pas assez de Cristaux",
+    "notEnoughResources": "Ressources insuffisantes",
+    "purchased": "Achet\u00e9 !",
+    "upgraded": "Am\u00e9lior\u00e9 !",
+    "unlocked": "D\u00e9bloqu\u00e9 !",
+    "crafted": "Fabriqu\u00e9 !",
+    "equipped": "\u00c9quip\u00e9 !",
+    "unequipped": "D\u00e9s\u00e9quip\u00e9 !",
+    "challengeStarted": "D\u00e9fi lanc\u00e9 !",
+    "featureUnlocked": "Nouvelle fonctionnalit\u00e9 d\u00e9bloqu\u00e9e !",
+    "cannotAfford": "Impossible d'acheter"
   },
   "status": {
     "active": "ACTIF",

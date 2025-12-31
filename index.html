@@ -34,11 +34,9 @@
 
     <!-- Loading Screen -->
     <div id="loading-screen" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center">
-        <div class="text-4xl font-bold text-cyan-400 mb-4">Ether Citadel</div>
-        <div class="w-48 h-2 bg-slate-700 rounded-full overflow-hidden">
-            <div class="h-full bg-cyan-500 rounded-full animate-loading-bar"></div>
-        </div>
-        <div class="text-slate-400 mt-4 text-sm">Loading...</div>
+        <div class="text-4xl font-bold text-cyan-400 mb-6">Ether Citadel</div>
+        <div class="loading-spinner mb-4"></div>
+        <div class="text-slate-400 text-sm" data-i18n="ui.loading">Loading...</div>
     </div>
 
     <div class="fixed top-0 left-0 w-full h-1 bg-slate-900 z-50 pointer-events-none">
@@ -63,10 +61,14 @@
                 <button id="btn-sound" onclick="game.sound.toggle()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-2 rounded border border-slate-500 backdrop-blur-sm transition text-sm">🔊</button>
             </div>
             <div class="flex items-center gap-2 text-2xl font-bold drop-shadow-lg">
-                <span class="text-blue-400">
+                <span class="text-blue-400 group relative cursor-help">
                     <span data-i18n="game.wave">Wave</span>: <span id="ui-wave">1</span>
+                    <div id="wave-preview" class="hidden group-hover:block absolute top-full left-0 mt-1 bg-slate-900/95 border border-blue-500 rounded-lg p-2 text-xs text-left whitespace-nowrap z-50 pointer-events-none min-w-48">
+                        <div class="text-blue-400 font-bold mb-1" data-i18n="game.nextWave">Next Wave</div>
+                        <div id="wave-preview-content" class="text-slate-300 space-y-1"></div>
+                    </div>
                 </span>
-                <button onclick="game.rushWave()" class="pointer-events-auto bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold py-1 px-2 rounded border border-red-400 backdrop-blur-sm transition flex items-center gap-1" data-i18n-title="game.rushTooltip">
+                <button onclick="game.rushWave()" class="pointer-events-auto bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold py-1 px-2 rounded border border-red-400 backdrop-blur-sm transition flex items-center gap-1" data-i18n-title="game.rushTooltip" aria-label="Rush next wave for +25% gold bonus">
                     <span>🔥</span> <span data-i18n="game.rush">RUSH</span>
                 </button>
                 <button id="btn-surrender" onclick="if(game.canSurrender() && confirm(game.t('surrender.confirm'))) game.strategicSurrender()" class="hidden pointer-events-auto bg-amber-600/80 hover:bg-amber-500 text-white text-xs font-bold py-1 px-2 rounded border border-amber-400 backdrop-blur-sm transition flex items-center gap-1">
@@ -145,14 +147,7 @@
                     </label>
                 </div>
             </div>
-            <!-- Resources Display (Main resources only) -->
-            <div class="p-2 bg-black/30 border-b border-amber-800 grid grid-cols-2 gap-1 text-xs">
-                <div class="res-item res-gold"><span class="res-icon">💰</span> <span id="side-gold">0</span></div>
-                <div class="res-item res-ether"><span class="res-icon">🔮</span> <span id="side-ether">0</span></div>
-                <div class="res-item res-crystals"><span class="res-icon">💎</span> <span id="side-gems">0</span></div>
-                <div class="res-item res-dm"><span class="res-icon">🌑</span> <span id="side-dm">0</span></div>
-            </div>
-            <!-- Level & XP -->
+            <!-- Level & XP (Resources shown in main HUD) -->
             <div class="p-2 bg-black/30 border-b border-amber-800">
                 <div class="flex items-center gap-2">
                     <div class="w-12 h-12 bg-slate-800 border-2 border-slate-600 rounded-lg flex items-center justify-center">
@@ -298,33 +293,33 @@
         </div>
 
         <div class="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-6 pointer-events-auto z-20">
-            <div id="skill-overdrive" onclick="game.activateSkill('overdrive')" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-blue-500 transition shadow-lg group overflow-hidden" data-skill="overdrive">
-                <div class="absolute inset-0 flex items-center justify-center text-3xl">⚡</div>
-                <div class="skill-hotkey absolute top-0 left-0 bg-blue-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-br-lg">Q</div>
-                <div id="cd-overdrive" class="cooldown-overlay absolute bottom-0 left-0 w-full bg-black/80 h-0"></div>
-                <div class="skill-tooltip absolute bottom-full mb-2 hidden group-hover:block w-48 bg-black/90 text-xs p-2 rounded border border-blue-500 pointer-events-none whitespace-nowrap left-1/2 -translate-x-1/2">
+            <button id="skill-overdrive" onclick="game.activateSkill('overdrive')" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-blue-500 transition shadow-lg group overflow-hidden" data-skill="overdrive" aria-label="Overdrive skill (Press Q) - Speed x3 for 5 seconds" role="button">
+                <div class="absolute inset-0 flex items-center justify-center text-3xl" aria-hidden="true">⚡</div>
+                <div class="skill-hotkey absolute top-0 left-0 bg-blue-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-br-lg" aria-hidden="true">Q</div>
+                <div id="cd-overdrive" class="cooldown-overlay absolute bottom-0 left-0 w-full bg-black/80 h-0" aria-hidden="true"></div>
+                <div class="skill-tooltip absolute bottom-full mb-2 hidden group-hover:block w-48 bg-black/90 text-xs p-2 rounded border border-blue-500 pointer-events-none whitespace-nowrap left-1/2 -translate-x-1/2" role="tooltip">
                     <strong class="text-blue-400" data-i18n="skills.overdrive.name">Overdrive</strong> <span class="text-slate-400">[Q]</span><br>
                     <span data-i18n="skills.overdrive.desc">Speed x3 for 5s.</span>
                 </div>
-            </div>
-            <div id="skill-nuke" onclick="game.activateSkill('nuke')" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-red-500 transition shadow-lg group overflow-hidden" data-skill="nuke">
-                <div class="absolute inset-0 flex items-center justify-center text-3xl">☄️</div>
-                <div class="skill-hotkey absolute top-0 left-0 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-br-lg">W</div>
-                <div id="cd-nuke" class="cooldown-overlay absolute bottom-0 left-0 w-full bg-black/80 h-0"></div>
-                <div class="skill-tooltip absolute bottom-full mb-2 hidden group-hover:block w-48 bg-black/90 text-xs p-2 rounded border border-red-500 pointer-events-none whitespace-nowrap left-1/2 -translate-x-1/2">
+            </button>
+            <button id="skill-nuke" onclick="game.activateSkill('nuke')" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-red-500 transition shadow-lg group overflow-hidden" data-skill="nuke" aria-label="Meteor skill (Press W) - Massive area damage" role="button">
+                <div class="absolute inset-0 flex items-center justify-center text-3xl" aria-hidden="true">☄️</div>
+                <div class="skill-hotkey absolute top-0 left-0 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-br-lg" aria-hidden="true">W</div>
+                <div id="cd-nuke" class="cooldown-overlay absolute bottom-0 left-0 w-full bg-black/80 h-0" aria-hidden="true"></div>
+                <div class="skill-tooltip absolute bottom-full mb-2 hidden group-hover:block w-48 bg-black/90 text-xs p-2 rounded border border-red-500 pointer-events-none whitespace-nowrap left-1/2 -translate-x-1/2" role="tooltip">
                     <strong class="text-red-400" data-i18n="skills.nuke.name">Meteor</strong> <span class="text-slate-400">[W]</span><br>
                     <span data-i18n="skills.nuke.desc">Massive area damage.</span>
                 </div>
-            </div>
-            <div id="skill-blackhole" onclick="game.activateSkill('blackhole')" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-purple-500 transition shadow-lg group overflow-hidden" data-skill="blackhole">
-                <div class="absolute inset-0 flex items-center justify-center text-3xl">🌀</div>
-                <div class="skill-hotkey absolute top-0 left-0 bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-br-lg">E</div>
-                <div id="cd-blackhole" class="cooldown-overlay absolute bottom-0 left-0 w-full bg-black/80 h-0"></div>
-                <div class="skill-tooltip absolute bottom-full mb-2 hidden group-hover:block w-48 bg-black/90 text-xs p-2 rounded border border-purple-500 pointer-events-none whitespace-nowrap left-1/2 -translate-x-1/2">
+            </button>
+            <button id="skill-blackhole" onclick="game.activateSkill('blackhole')" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-purple-500 transition shadow-lg group overflow-hidden" data-skill="blackhole" aria-label="Black Hole skill (Press E) - Pulls and crushes enemies" role="button">
+                <div class="absolute inset-0 flex items-center justify-center text-3xl" aria-hidden="true">🌀</div>
+                <div class="skill-hotkey absolute top-0 left-0 bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-br-lg" aria-hidden="true">E</div>
+                <div id="cd-blackhole" class="cooldown-overlay absolute bottom-0 left-0 w-full bg-black/80 h-0" aria-hidden="true"></div>
+                <div class="skill-tooltip absolute bottom-full mb-2 hidden group-hover:block w-48 bg-black/90 text-xs p-2 rounded border border-purple-500 pointer-events-none whitespace-nowrap left-1/2 -translate-x-1/2" role="tooltip">
                     <strong class="text-purple-400" data-i18n="skills.blackhole.name">Black Hole</strong> <span class="text-slate-400">[E]</span><br>
                     <span data-i18n="skills.blackhole.desc">Pulls and crushes enemies.</span>
                 </div>
-            </div>
+            </button>
         </div>
 
         <div class="absolute bottom-4 left-4 right-4 md:left-auto md:right-auto md:w-1/2 md:translate-x-1/2 md:left-1/4 flex flex-col gap-1 pointer-events-none z-20">
@@ -975,12 +970,17 @@
         </div>
 
         <!-- Offline Modal -->
-        <div id="offline-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
+        <div id="offline-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="offline-modal-title">
             <div class="bg-slate-800 border border-yellow-500 p-8 rounded-2xl max-w-md text-center shadow-2xl" onclick="event.stopPropagation()">
-                <h2 class="text-3xl text-yellow-400 font-bold mb-4" data-i18n="modals.offline.title">Welcome Back</h2>
-                <p class="text-slate-300 mb-6" data-i18n="modals.offline.subtitle">Offline Earnings</p>
-                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 mb-6">
-                    <div class="text-4xl font-bold text-white">+<span id="offline-gold">0</span> 💰</div>
+                <h2 id="offline-modal-title" class="text-3xl text-yellow-400 font-bold mb-4" data-i18n="modals.offline.title">Welcome Back</h2>
+                <p class="text-slate-300 mb-2" data-i18n="modals.offline.subtitle">Offline Earnings</p>
+                <p class="text-slate-400 text-sm mb-4"><span data-i18n="modals.offline.timeAway">Time away</span>: <span id="offline-time" class="text-white">0m</span></p>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 mb-4">
+                    <div class="text-4xl font-bold text-yellow-400">+<span id="offline-gold">0</span> 💰</div>
+                    <div class="text-sm text-slate-400 mt-2">(<span id="offline-rate">0</span>/min)</div>
+                </div>
+                <div id="offline-bonus" class="hidden bg-purple-900/30 p-3 rounded-lg border border-purple-500/50 mb-4">
+                    <div class="text-sm text-purple-300"><span data-i18n="modals.offline.bonusApplied">Bonus applied</span>: <span id="offline-bonus-value" class="text-white font-bold">+0%</span></div>
                 </div>
                 <button onclick="document.getElementById('offline-modal').classList.add('hidden')" class="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded shadow-lg transition" data-i18n="modals.offline.collect">Collect</button>
             </div>

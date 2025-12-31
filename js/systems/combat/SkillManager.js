@@ -133,7 +133,17 @@ export class SkillManager {
             }
             const btn = this.getElement(`cd-${key}`);
             const maxCd = s.cooldown * (1 - (game.relicMults?.cooldown || 0));
-            if (btn) btn.style.height = `${Math.max(0, s.cdTime / maxCd) * 100}%`;
+            if (btn) {
+                const cdPercent = Math.max(0, s.cdTime / maxCd) * 100;
+                btn.style.height = `${cdPercent}%`;
+                // Show cooldown percentage for better UX
+                if (cdPercent > 0) {
+                    const secondsLeft = Math.ceil(s.cdTime / 1000);
+                    btn.dataset.cooldown = `${secondsLeft}s`;
+                } else {
+                    btn.dataset.cooldown = '';
+                }
+            }
 
             if (this.autoSkills[key] && s.cdTime <= 0 && game.enemies.length > 0 && !game.isGameOver) {
                 const canAuto = (key === 'overdrive' && game.metaUpgrades?.getEffectValue?.('autoSkillQ')) ||

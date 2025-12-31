@@ -4563,12 +4563,30 @@ class Game {
                 this.stats.registerGold(earned);
                 document.getElementById('offline-gold').innerText = formatNumber(earned);
 
-                // Show offline time
+                // Show offline time and rate
                 const hours = Math.floor(cappedDiffSec / 3600);
                 const mins = Math.floor((cappedDiffSec % 3600) / 60);
                 const timeStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
-                const subtitleEl = document.getElementById('offline-modal').querySelector('[data-i18n="modals.offline.subtitle"]');
-                if (subtitleEl) subtitleEl.innerText = `${t('modals.offline.subtitle')} (${timeStr})`;
+
+                const offlineTimeEl = document.getElementById('offline-time');
+                if (offlineTimeEl) offlineTimeEl.innerText = timeStr;
+
+                const offlineRateEl = document.getElementById('offline-rate');
+                if (offlineRateEl) {
+                    const ratePerMin = Math.floor(earned / (cappedDiffSec / 60));
+                    offlineRateEl.innerText = formatNumber(ratePerMin);
+                }
+
+                // Show bonus if applicable
+                const bonusPercent = Math.round((totalMult - 1) * 100);
+                const offlineBonusEl = document.getElementById('offline-bonus');
+                const offlineBonusValueEl = document.getElementById('offline-bonus-value');
+                if (offlineBonusEl && offlineBonusValueEl && bonusPercent > 0) {
+                    offlineBonusValueEl.innerText = `+${bonusPercent}%`;
+                    offlineBonusEl.classList.remove('hidden');
+                } else if (offlineBonusEl) {
+                    offlineBonusEl.classList.add('hidden');
+                }
 
                 document.getElementById('offline-modal').classList.remove('hidden');
             }
@@ -4774,6 +4792,33 @@ class Game {
                 btn.classList.add('hidden');
             }
         }
+    }
+
+    updateWavePreview() {
+        const previewContent = document.getElementById('wave-preview-content');
+        if (!previewContent) return;
+
+        const nextWave = this.wave + 1;
+        const isBoss = nextWave % 10 === 0;
+
+        let html = '';
+        if (isBoss) {
+            html = `<div class="text-red-400 font-bold">⚠️ ${t('game.boss')} ⚠️</div>`;
+        } else {
+            // Calculate approximate enemies for next wave
+            const baseCount = Math.ceil(nextWave * 1.5) + 3;
+            const enemyTypes = [];
+
+            if (nextWave >= 1) enemyTypes.push({ icon: '👾', name: 'Basic' });
+            if (nextWave >= 5) enemyTypes.push({ icon: '🏃', name: 'Fast' });
+            if (nextWave >= 10) enemyTypes.push({ icon: '🛡️', name: 'Tank' });
+            if (nextWave >= 15) enemyTypes.push({ icon: '✨', name: 'Shielded' });
+            if (nextWave >= 20) enemyTypes.push({ icon: '💀', name: 'Elite' });
+
+            html = `<div>~${baseCount} ${t('game.enemies').toLowerCase()}</div>`;
+            html += `<div class="flex gap-1 mt-1">${enemyTypes.map(e => `<span title="${e.name}">${e.icon}</span>`).join('')}</div>`;
+        }
+        previewContent.innerHTML = html;
     }
 
     t(key) {
@@ -5486,14 +5531,22 @@ class Game {
         const usedPoints = this.statPointsUsed || 0;
         const availablePoints = statPoints - usedPoints;
 
-        if (availablePoints <= 0) return;
+        if (availablePoints <= 0) {
+            this.ui?.showToast(t('feedback.noStatPoints') || 'No stat points available', 'warning');
+            return false;
+        }
         if (!this.statLevels) this.statLevels = {};
         if (!this.statLevels[statId]) this.statLevels[statId] = 0;
-        if (this.statLevels[statId] >= 100) return;
+        if (this.statLevels[statId] >= 100) {
+            this.ui?.showToast(t('feedback.maxLevel') || 'Already at max level', 'warning');
+            return false;
+        }
 
         this.statLevels[statId]++;
         this.statPointsUsed = (this.statPointsUsed || 0) + 1;
+        this.sound?.play('click');
         this.renderStatsUI();
+        return true;
     }
 
     /** Defender Idle 2 Style - Passives Panel with 4 tabs */
@@ -6743,6 +6796,7 @@ class Game {
         if (elGold) elGold.innerText = formatNumber(this.gold);
         const elWave = document.getElementById('ui-wave');
         if (elWave) elWave.innerText = this.wave;
+        this.updateWavePreview();
         this.updateSurrenderButton();
         const elEnemies = document.getElementById('ui-enemies');
         if (elEnemies) elEnemies.innerText = this.enemies.length + this.enemiesToSpawn;
@@ -7348,6 +7402,16 @@ async function init() {
     // Initialize help tooltips
     initHelpTooltips();
 
+    // Auto-expand first menu group (Economy) for better discoverability
+    setTimeout(() => {
+        const firstMenuContent = document.getElementById('menu-economy');
+        const firstMenuHeader = firstMenuContent?.previousElementSibling;
+        if (firstMenuContent && firstMenuHeader) {
+            firstMenuContent.classList.remove('hidden');
+            firstMenuHeader.classList.add('open');
+        }
+    }, 100);
+
     // Hide loading screen when game is ready
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) {
@@ -7417,5 +7481,52 @@ function initHelpTooltips() {
         }
     }, true);
 }
+
+// Modal Focus Management for Accessibility
+(function initModalFocusManagement() {
+    let previousActiveElement = null;
+
+    // Observer to detect when modals are shown
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                const target = mutation.target;
+                if (target.classList.contains('modal-backdrop')) {
+                    if (!target.classList.contains('hidden')) {
+                        // Modal opened - store previous focus and focus first focusable element
+                        previousActiveElement = document.activeElement;
+                        const focusable = target.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                        if (focusable) {
+                            setTimeout(() => focusable.focus(), 100);
+                        }
+                    } else if (previousActiveElement) {
+                        // Modal closed - restore focus
+                        previousActiveElement.focus();
+                        previousActiveElement = null;
+                    }
+                }
+            }
+        });
+    });
+
+    // Observe all existing modals
+    document.querySelectorAll('.modal-backdrop').forEach(modal => {
+        observer.observe(modal, { attributes: true });
+    });
+
+    // Handle Escape key to close modals
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const openModal = document.querySelector('.modal-backdrop:not(.hidden)');
+            if (openModal) {
+                openModal.classList.add('hidden');
+                if (previousActiveElement) {
+                    previousActiveElement.focus();
+                    previousActiveElement = null;
+                }
+            }
+        }
+    });
+})();
 
 init();
