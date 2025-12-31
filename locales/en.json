@@ -539,7 +539,9 @@
     "noBackup": "No backup found",
     "saveFailed": "Save failed",
     "loadFailed": "Load failed",
-    "networkError": "Network error"
+    "networkError": "Network error",
+    "saveCorrupted": "Save data may be corrupted",
+    "gameError": "Game error - please reload"
   },
   "feedback": {
     "noStatPoints": "No stat points available",

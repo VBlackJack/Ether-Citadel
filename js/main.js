@@ -3343,7 +3343,7 @@ class Game {
                     if (!verifyChecksum(jsonData, parsed.checksum)) {
                         logError('Save data checksum mismatch - data may be corrupted', 'Game.load');
                         // Continue loading anyway, but warn the user
-                        this.ui?.showToast('Save data may be corrupted', 'warning');
+                        this.ui?.showToast(t('notifications.saveCorrupted') || 'Save data may be corrupted', 'warning');
                     }
                     data = parsed.data;
                 } else {

@@ -5,6 +5,7 @@
 
 import { MathUtils } from '../config.js';
 import { logError, ErrorSeverity } from '../utils/ErrorHandler.js';
+import { t } from '../i18n.js';
 
 /**
  * Game Loop Manager
@@ -131,7 +132,7 @@ export class GameLoopManager {
                 logError('Too many errors, stopping game loop', 'GameLoop.loop', ErrorSeverity.CRITICAL);
                 this.stop();
                 if (this.game.ui) {
-                    this.game.ui.showToast('Game error - please reload', 'error');
+                    this.game.ui.showToast(t('notifications.gameError') || 'Game error - please reload', 'error');
                 }
                 return;
             }

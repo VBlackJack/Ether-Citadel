@@ -539,7 +539,9 @@
     "noBackup": "Aucune sauvegarde de secours",
     "saveFailed": "Échec de la sauvegarde",
     "loadFailed": "Échec du chargement",
-    "networkError": "Erreur réseau"
+    "networkError": "Erreur réseau",
+    "saveCorrupted": "Sauvegarde potentiellement corrompue",
+    "gameError": "Erreur de jeu - veuillez recharger"
   },
   "feedback": {
     "noStatPoints": "Pas de points de stat disponibles",
