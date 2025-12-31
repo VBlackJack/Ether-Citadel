@@ -515,6 +515,10 @@
       "desc": "+25% HP"
     }
   },
+  "common": {
+    "unknown": "Unknown",
+    "failed": "Failed"
+  },
   "notifications": {
     "evolution": "EVOLUTION!",
     "evolutionSub": "Higher Tier Reached",

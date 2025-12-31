@@ -33,6 +33,7 @@ export class Turret {
 
     upgradeTier() {
         if (this.tier >= 6) return false;
+        if (!window.game) return false;
         const nextTier = TURRET_TIERS[this.tier + 1];
         if (!nextTier) return false;
         if (game.wave < nextTier.unlockWave) return false;
@@ -41,12 +42,13 @@ export class Turret {
         game.crystals -= nextTier.cost;
         this.tier++;
         this.updateTierStats();
-        game.updateCrystalsUI();
-        game.save();
+        game.updateCrystalsUI?.();
+        game.save?.();
         return true;
     }
 
     update(dt, gameTime) {
+        if (!window.game?.castle) return;
         const slots = [{ x: -40, y: -60 }, { x: 40, y: -60 }, { x: -40, y: 60 }, { x: 40, y: 60 }];
         if (this.type === 'ARTILLERY') { this.x = game.castle.x; this.y = game.castle.y - 70; }
         else if (this.type === 'ROCKET') { this.x = game.castle.x - 50; this.y = game.castle.y; }
@@ -65,11 +67,11 @@ export class Turret {
             }
         }
 
-        const baseFireRate = game.skills.isActive('overdrive') || game.activeBuffs['rage'] > 0 ? game.currentFireRate / 3 : game.currentFireRate;
+        const baseFireRate = (game.skills?.isActive('overdrive') || game.activeBuffs?.['rage'] > 0) ? game.currentFireRate / 3 : game.currentFireRate;
         const fireInterval = baseFireRate / this.fireRateMult;
         if (gameTime - this.lastShotTime > fireInterval) {
             const range = game.currentRange * this.rangeMult;
-            const target = game.findTarget(this.x, this.y, range);
+            const target = game.findTarget?.(this.x, this.y, range);
             if (target) {
                 this.shoot(target);
                 this.lastShotTime = gameTime;
@@ -78,22 +80,23 @@ export class Turret {
     }
 
     shoot(target) {
-        const dmg = Math.max(1, Math.floor(game.currentDamage * this.damageMultiplier));
+        if (!window.game) return;
+        const dmg = Math.max(1, Math.floor((game.currentDamage || 1) * this.damageMultiplier));
         let speed = 15;
         const tierData = TURRET_TIERS[this.tier] || TURRET_TIERS[1];
         let color = tierData.color || '#a5b4fc';
-        let props = { ...game.currentProps };
+        let props = { ...(game.currentProps || {}) };
         if (this.type === 'ARTILLERY') { speed = 8; color = '#fca5a5'; props.blast = 100; }
         if (this.type === 'ROCKET') { speed = 12; color = '#fdba74'; }
         if (this.type === 'TESLA') { speed = 25; color = '#67e8f9'; props.bounce = (props.bounce || 0) + 3; }
-        game.projectiles.push(Projectile.create(this.x, this.y, target, dmg, speed, color, this.tier, false, false, false, game.currentEffects, props));
+        game.projectiles?.push(Projectile.create(this.x, this.y, target, dmg, speed, color, this.tier, false, false, false, game.currentEffects || {}, props));
     }
 
     draw(ctx) {
         const tierData = TURRET_TIERS[this.tier] || TURRET_TIERS[1];
         ctx.save();
         ctx.translate(this.x, this.y);
-        const target = game.findTarget(this.x, this.y, game.currentRange * this.rangeMult);
+        const target = window.game?.findTarget?.(this.x, this.y, (game?.currentRange || 150) * this.rangeMult);
         if (target) ctx.rotate(Math.atan2(target.y - this.y, target.x - this.x));
 
         ctx.shadowColor = tierData.color;

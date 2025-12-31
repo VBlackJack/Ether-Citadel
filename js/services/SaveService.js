@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { t } from '../i18n.js';
+
 /**
  * SaveService - Centralized save/load management with versioning and migrations
  */
@@ -345,7 +347,7 @@ class SaveServiceClass {
                         date: new Date(data.timestamp || data.lastSaveTime || 0).toLocaleString()
                     });
                 } catch {
-                    backups.push({ slot: i, wave: 0, gold: 0, timestamp: 0, date: 'Unknown' });
+                    backups.push({ slot: i, wave: 0, gold: 0, timestamp: 0, date: t('common.unknown') });
                 }
             }
         }

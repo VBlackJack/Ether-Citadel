@@ -95,7 +95,7 @@ export class CampaignManager {
         };
 
         const color = '#22c55e';
-        this.game.floatingTexts.push(new FloatingText(
+        this.game.floatingTexts.push(FloatingText.create(
             this.game.width / 2, this.game.height / 2,
             `${t('campaign.completed')}!`, color, 36
         ));

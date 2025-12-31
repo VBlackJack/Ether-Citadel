@@ -515,6 +515,10 @@
       "desc": "+25% PV"
     }
   },
+  "common": {
+    "unknown": "Inconnu",
+    "failed": "Échec"
+  },
   "notifications": {
     "evolution": "ÉVOLUTION !",
     "evolutionSub": "Tier Supérieur Atteint",
@@ -1068,45 +1072,46 @@
     }
   },
   "boss": {
-    "phase1": "Phase 1 - Éveil",
-    "phase2": "Phase 2 - Rage",
-    "phase3": "Phase 3 - Désespoir",
-    "abilities": {
-      "summon_minions": "Invoque des sbires",
-      "enrage": "Enragé",
-      "shield_burst": "Explosion de bouclier",
-      "death_spiral": "Spirale mortelle",
-      "heal": "Régénération",
-      "speed_boost": "Accélération",
-      "armor_up": "Blindage",
-      "teleport": "Téléportation"
-    }
+    "phase1": "Phase 1",
+    "phase2": "Phase 2",
+    "phase3": "Phase 3",
+    "phase4": "Phase Finale"
+  },
+  "bossAbility": {
+    "summonMinions": "Invocation de Sbires",
+    "summonElites": "Invocation d'Élites",
+    "enrage": "Enragé",
+    "shieldBurst": "Explosion de Bouclier",
+    "barrier": "Barrière",
+    "deathSpiral": "Spirale Mortelle",
+    "heal": "Régénération",
+    "meteorStorm": "Tempête de Météores"
   },
   "synergy": {
     "active": "Synergies Actives",
     "fireCombo": {
       "name": "Combo de Feu",
-      "desc": "+25% Dégâts, +20 Zone d'effet"
+      "desc": "Blaster + Inferno : +25% dégâts, +20 Zone"
     },
-    "frostBurn": {
-      "name": "Brûlure Givrée",
-      "desc": "Dégâts de brûlure sur les ennemis ralentis"
+    "frostCombo": {
+      "name": "Combo de Givre",
+      "desc": "Solidifieur + Marécageur : +30% ralentissement, +15% portée"
     },
-    "overcharge": {
-      "name": "Surcharge",
-      "desc": "+40% Dégâts Tesla avec Laser"
+    "precisionCombo": {
+      "name": "Combo de Précision",
+      "desc": "Laser + Sniper : +15% chance crit, +50% dégâts crit"
     },
-    "siegeMode": {
-      "name": "Mode Siège",
-      "desc": "+50% Dégâts de zone, +30 Rayon"
+    "artilleryCombo": {
+      "name": "Combo d'Artillerie",
+      "desc": "Roquette + Marécageur : +40 Zone, +15% dégâts"
     },
-    "precisionStrike": {
-      "name": "Frappe de Précision",
-      "desc": "+30% Crit, +100% Dégâts crit"
+    "fullDefense": {
+      "name": "Défense Totale",
+      "desc": "Sentinelle + Blaster + Laser : +20% cadence, +10% dégâts"
     },
-    "elementalMastery": {
-      "name": "Maîtrise Élémentaire",
-      "desc": "+35% tous dégâts, +20% effets"
+    "elementalMaster": {
+      "name": "Maître Élémentaire",
+      "desc": "Solidifieur + Inferno + Marécageur : +30% dégâts, +20% ralentissement, +30 Zone"
     }
   },
   "modes": {
@@ -1132,7 +1137,8 @@
     "speedrun": {
       "name": "Speedrun",
       "desc": "Chronométré, or bonus pour vagues rapides"
-    }
+    },
+    "bossKills": "Boss"
   },
   "seasonal": {
     "halloween": {

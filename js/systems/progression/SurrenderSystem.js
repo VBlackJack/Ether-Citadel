@@ -107,7 +107,7 @@ export class SurrenderSystem {
 
         // Show notification
         if (this.game.floatingTexts && typeof FloatingText !== 'undefined') {
-            this.game.floatingTexts.push(new FloatingText(
+            this.game.floatingTexts.push(FloatingText.create(
                 this.game.width / 2,
                 this.game.height / 2 - 50,
                 t('surrender.bonus') || 'Strategic Bonus!',

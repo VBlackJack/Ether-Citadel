@@ -36,6 +36,83 @@ export class DamageSystem {
      */
     constructor(game) {
         this.game = game;
+        this._cachedStaticMult = null;
+        this._cachedStaticMultipliers = [];
+        this._cacheVersion = 0;
+    }
+
+    /**
+     * Invalidate the cached multipliers (call when upgrades change)
+     */
+    invalidateCache() {
+        this._cacheVersion++;
+        this._cachedStaticMult = null;
+        this._cachedStaticMultipliers = [];
+    }
+
+    /**
+     * Get cached static multipliers (tier, meta, relics, research, passives, prestige)
+     * These only change on upgrade purchase, not per-hit
+     */
+    getStaticMultipliers() {
+        const currentVersion = (this.game.castle?.tier || 1) +
+            (this.game.metaUpgrades?.totalPurchased || 0) +
+            (this.game.prestige?.totalPurchased || 0);
+
+        if (this._cachedStaticMult !== null && this._cacheVersion === currentVersion) {
+            return { mult: this._cachedStaticMult, multipliers: this._cachedStaticMultipliers };
+        }
+
+        const multipliers = [];
+        let mult = 1;
+
+        // 1. Tier multiplier
+        const tierMult = this.getTierMultiplier();
+        if (tierMult !== 1) {
+            multipliers.push({ source: 'tier', mult: tierMult, label: 'Evolution Tier' });
+            mult *= tierMult;
+        }
+
+        // 2. Meta upgrade multiplier
+        const metaDamageMult = this.game.metaUpgrades?.getEffectValue('damageMult') || 1;
+        if (metaDamageMult !== 1) {
+            multipliers.push({ source: 'meta', mult: metaDamageMult, label: 'Meta Upgrades' });
+            mult *= metaDamageMult;
+        }
+
+        // 3. Relic multiplier
+        const relicDamageMult = 1 + (this.game.relicMults?.damage || 0);
+        if (relicDamageMult !== 1) {
+            multipliers.push({ source: 'relics', mult: relicDamageMult, label: 'Relics' });
+            mult *= relicDamageMult;
+        }
+
+        // 4. Research multiplier
+        const researchDamageMult = 1 + (this.game.researchEffects?.damageMult || 0);
+        if (researchDamageMult !== 1) {
+            multipliers.push({ source: 'research', mult: researchDamageMult, label: 'Research' });
+            mult *= researchDamageMult;
+        }
+
+        // 5. Passive multiplier
+        const passiveDamageMult = this.game.passives?.getEffect('damageMult') || 1;
+        if (passiveDamageMult !== 1) {
+            multipliers.push({ source: 'passives', mult: passiveDamageMult, label: 'Passives' });
+            mult *= passiveDamageMult;
+        }
+
+        // 6. Prestige multiplier
+        const prestigeDamageMult = this.game.prestige?.getEffect('damageMult') || 1;
+        if (prestigeDamageMult !== 1) {
+            multipliers.push({ source: 'prestige', mult: prestigeDamageMult, label: 'Prestige' });
+            mult *= prestigeDamageMult;
+        }
+
+        this._cachedStaticMult = mult;
+        this._cachedStaticMultipliers = multipliers;
+        this._cacheVersion = currentVersion;
+
+        return { mult, multipliers };
     }
 
     /**
@@ -50,51 +127,13 @@ export class DamageSystem {
     calculate(options) {
         const { baseDamage, source, target, canCrit = true } = options;
 
-        const multipliers = [];
         const flatBonuses = [];
         let damage = baseDamage;
 
-        // 1. Tier multiplier
-        const tierMult = this.getTierMultiplier();
-        if (tierMult !== 1) {
-            multipliers.push({ source: 'tier', mult: tierMult, label: 'Evolution Tier' });
-            damage *= tierMult;
-        }
-
-        // 2. Meta upgrade multiplier
-        const metaDamageMult = this.game.metaUpgrades?.getEffectValue('damageMult') || 1;
-        if (metaDamageMult !== 1) {
-            multipliers.push({ source: 'meta', mult: metaDamageMult, label: 'Meta Upgrades' });
-            damage *= metaDamageMult;
-        }
-
-        // 3. Relic multiplier
-        const relicDamageMult = 1 + (this.game.relicMults?.damage || 0);
-        if (relicDamageMult !== 1) {
-            multipliers.push({ source: 'relics', mult: relicDamageMult, label: 'Relics' });
-            damage *= relicDamageMult;
-        }
-
-        // 4. Research multiplier
-        const researchDamageMult = 1 + (this.game.researchEffects?.damageMult || 0);
-        if (researchDamageMult !== 1) {
-            multipliers.push({ source: 'research', mult: researchDamageMult, label: 'Research' });
-            damage *= researchDamageMult;
-        }
-
-        // 5. Passive multiplier
-        const passiveDamageMult = this.game.passives?.getEffect('damageMult') || 1;
-        if (passiveDamageMult !== 1) {
-            multipliers.push({ source: 'passives', mult: passiveDamageMult, label: 'Passives' });
-            damage *= passiveDamageMult;
-        }
-
-        // 6. Prestige multiplier
-        const prestigeDamageMult = this.game.prestige?.getEffect('damageMult') || 1;
-        if (prestigeDamageMult !== 1) {
-            multipliers.push({ source: 'prestige', mult: prestigeDamageMult, label: 'Prestige' });
-            damage *= prestigeDamageMult;
-        }
+        // Apply cached static multipliers (tier, meta, relics, research, passives, prestige)
+        const staticCache = this.getStaticMultipliers();
+        const multipliers = [...staticCache.multipliers];
+        damage *= staticCache.mult;
 
         // 7. Aura multiplier (from nearby auras)
         const auraDamageMult = this.getAuraMultiplier(source, 'damage');

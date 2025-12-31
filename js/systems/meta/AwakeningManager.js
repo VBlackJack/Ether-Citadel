@@ -43,7 +43,7 @@ export class AwakeningManager {
             this.unlockedBonuses.push(b.id);
         });
 
-        this.game.floatingTexts.push(new FloatingText(
+        this.game.floatingTexts.push(FloatingText.create(
             this.game.width / 2,
             this.game.height / 2,
             t('awakening.unlocked'),

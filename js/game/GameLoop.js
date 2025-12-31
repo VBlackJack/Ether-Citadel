@@ -189,6 +189,8 @@ export class GameLoopManager {
         for (const ft of g.floatingTexts) {
             ft.update(dt);
         }
+        // Release dead floating texts back to pool before filtering
+        g.floatingTexts.filter(ft => ft.life <= 0).forEach(ft => ft.release?.());
         g.floatingTexts = g.floatingTexts.filter(ft => ft.life > 0);
 
         // Update runes

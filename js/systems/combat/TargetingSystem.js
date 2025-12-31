@@ -85,10 +85,11 @@ export class TargetingSystem {
     getEnemiesInRange(x, y, range) {
         if (!this.game.enemies) return [];
 
+        const rangeSquared = range * range;
         return this.game.enemies.filter(enemy => {
             if (enemy.dead) return false;
-            const dist = this.distance(x, y, enemy.x, enemy.y);
-            return dist <= range;
+            const distSq = this.distanceSquared(x, y, enemy.x, enemy.y);
+            return distSq <= rangeSquared;
         });
     }
 
@@ -100,12 +101,12 @@ export class TargetingSystem {
      */
     findNearest(turret, enemies) {
         let nearest = null;
-        let minDist = Infinity;
+        let minDistSq = Infinity;
 
         for (const enemy of enemies) {
-            const dist = this.distance(turret.x, turret.y, enemy.x, enemy.y);
-            if (dist < minDist) {
-                minDist = dist;
+            const distSq = this.distanceSquared(turret.x, turret.y, enemy.x, enemy.y);
+            if (distSq < minDistSq) {
+                minDistSq = distSq;
                 nearest = enemy;
             }
         }
@@ -293,6 +294,14 @@ export class TargetingSystem {
      */
     distance(x1, y1, x2, y2) {
         return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    }
+
+    /**
+     * Calculate squared distance (faster, avoids sqrt)
+     * Use for comparisons where actual distance value is not needed
+     */
+    distanceSquared(x1, y1, x2, y2) {
+        return (x2 - x1) ** 2 + (y2 - y1) ** 2;
     }
 
     /**

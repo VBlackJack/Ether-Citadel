@@ -32,7 +32,7 @@ export class StatsManager {
             this.xp -= this.getNextLevelXp();
             this.level++;
             this.masteryPoints++;
-            game.floatingTexts.push(new FloatingText(100, game.height / 2 - 50, t('notifications.levelUp'), "#22d3ee", 30));
+            game.floatingTexts.push(FloatingText.create(100, game.height / 2 - 50, t('notifications.levelUp'), "#22d3ee", 30));
         }
         this.checkAchievements();
 

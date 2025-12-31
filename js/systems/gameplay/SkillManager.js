@@ -21,7 +21,7 @@
 export class SkillManager {
     constructor(game) {
         this.game = game;
-this.skills = {
+        this.skills = {
             overdrive: { duration: 5000, cooldown: 30000, activeTime: 0, cdTime: 0 },
             nuke: { duration: 0, cooldown: 60000, activeTime: 0, cdTime: 0 },
             blackhole: { duration: 4000, cooldown: 45000, activeTime: 0, cdTime: 0 }
@@ -31,6 +31,15 @@ this.skills = {
             nuke: false,
             blackhole: false
         };
+        this.pendingTimers = [];
+    }
+
+    /**
+     * Clear all pending timers (call on game reset/cleanup)
+     */
+    cleanup() {
+        this.pendingTimers.forEach(id => clearTimeout(id));
+        this.pendingTimers = [];
     }
 
     toggleAutoSkill(id) {
@@ -70,7 +79,11 @@ this.skills = {
                     else e.takeDamage(game.currentDamage * 50, false, false, true);
                 });
                 document.body.classList.add('shake');
-                setTimeout(() => document.body.classList.remove('shake'), 500);
+                const timerId = setTimeout(() => {
+                    document.body.classList.remove('shake');
+                    this.pendingTimers = this.pendingTimers.filter(id => id !== timerId);
+                }, 500);
+                this.pendingTimers.push(timerId);
             }
             if (game.dailyQuests) {
                 game.dailyQuests.updateProgress('use_skills', 1);
@@ -99,7 +112,11 @@ this.skills = {
                 if (s.cdTime <= 0) {
                     if (skillEl) {
                         skillEl.classList.add('skill-ready-anim');
-                        setTimeout(() => skillEl.classList.remove('skill-ready-anim'), 500);
+                        const timerId = setTimeout(() => {
+                            skillEl.classList.remove('skill-ready-anim');
+                            this.pendingTimers = this.pendingTimers.filter(id => id !== timerId);
+                        }, 500);
+                        this.pendingTimers.push(timerId);
                     }
                 }
             }

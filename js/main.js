@@ -345,7 +345,7 @@ class Game {
             this.devClickCount = 0;
             const btn = document.getElementById('btn-dev-menu');
             btn.classList.remove('hidden');
-            this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2, t('notifications.devModeActivated'), "#ef4444", 40));
+            this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('notifications.devModeActivated'), "#ef4444", 40));
         }
     }
 
@@ -486,7 +486,7 @@ class Game {
     }
 
     createFloatingText(x, y, text, color, size = 20) {
-        return new FloatingText(x, y, text, color, size);
+        return FloatingText.create(x, y, text, color, size);
     }
 
     createRune(x, y) {
@@ -614,7 +614,7 @@ class Game {
         } else {
             this.activeBuffs[rune.type.id] = rune.type.duration;
         }
-        this.floatingTexts.push(new FloatingText(rune.x, rune.y - 20, t(rune.type.nameKey) + '!', rune.type.color, 24));
+        this.floatingTexts.push(FloatingText.create(rune.x, rune.y - 20, t(rune.type.nameKey) + '!', rune.type.color, 24));
         this.sound.play('coin');
     }
 
@@ -713,12 +713,12 @@ class Game {
         const crystalsEarned = Math.floor(baseCrystals * dreadBonus * crystalAffinity);
         this.crystals += crystalsEarned;
         this.updateCrystalsUI();
-        this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 3, `+${crystalsEarned} ${t('currency.crystals')}`, '#22d3ee', 28));
+        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 3, `+${crystalsEarned} ${t('currency.crystals')}`, '#22d3ee', 28));
 
         if (this.town.hasUnlock('office') && Math.random() < 0.3) {
             const gemsEarned = Math.floor((this.wave / 20) + 1);
             this.office.addGems(gemsEarned);
-            this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 3 + 40, `+${gemsEarned} 💠`, '#e879f9', 24));
+            this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 3 + 40, `+${gemsEarned} 💠`, '#e879f9', 24));
         }
     }
 
@@ -743,7 +743,7 @@ class Game {
             this.showDreadFlash(dread.color);
 
             // Floating text at center
-            this.floatingTexts.push(new FloatingText(
+            this.floatingTexts.push(FloatingText.create(
                 this.width / 2,
                 this.height / 2,
                 `${t('dread.level')} ${this.dreadLevel}`,
@@ -864,9 +864,9 @@ class Game {
         this.ether += bonusEther;
         this.gold += bonusGold;
 
-        this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2 - 50, t('surrender.bonus'), '#22c55e', 32));
-        this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2, `+${bonusEther} 🔮`, '#a855f7', 28));
-        this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2 + 40, `+${formatNumber(bonusGold)} ${t('game.gold')}`, '#fbbf24', 24));
+        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2 - 50, t('surrender.bonus'), '#22c55e', 32));
+        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, `+${bonusEther} 🔮`, '#a855f7', 28));
+        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2 + 40, `+${formatNumber(bonusGold)} ${t('game.gold')}`, '#fbbf24', 24));
 
         this.sound.play('levelup');
         this.gameOver();
@@ -1025,7 +1025,7 @@ class Game {
                     const select = grid.querySelector(`.forge-relic-select[data-recipe="${recipeId}"]`);
                     relicId = select?.value;
                     if (!relicId) {
-                        this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2, t('forge.selectRelic'), '#ef4444', 24));
+                        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('forge.selectRelic'), '#ef4444', 24));
                         return;
                     }
                 }
@@ -1033,16 +1033,16 @@ class Game {
                 const result = this.forge.execute(recipeId, relicId);
 
                 if (result.success) {
-                    this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2, t('forge.success'), '#22c55e', 32));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('forge.success'), '#22c55e', 32));
                     if (result.result) {
                         this.showLootPopup(result.result);
                     }
                     this.sound.play('levelup');
                 } else if (result.reason === 'failed') {
-                    this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2, t('forge.failed'), '#ef4444', 32));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('forge.failed'), '#ef4444', 32));
                     this.sound.play('gameover');
                 } else if (result.reason === 'cost') {
-                    this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2, t('forge.notEnough'), '#ef4444', 24));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('forge.notEnough'), '#ef4444', 24));
                 }
 
                 this.renderForgeUI();
@@ -1102,10 +1102,10 @@ class Game {
                 const result = this.research.purchase(nodeId);
 
                 if (result.success) {
-                    this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2, t('research.unlocked'), '#22c55e', 32));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('research.unlocked'), '#22c55e', 32));
                     this.sound.play('levelup');
                 } else {
-                    this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2, t('research.cannotPurchase'), '#ef4444', 24));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('research.cannotPurchase'), '#ef4444', 24));
                 }
 
                 this.renderResearchUI();
@@ -1184,7 +1184,7 @@ class Game {
             btn.addEventListener('click', (e) => {
                 const buildingId = e.target.dataset.building;
                 if (this.production.upgrade(buildingId)) {
-                    this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2, t('production.upgraded'), '#22c55e', 24));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('production.upgraded'), '#22c55e', 24));
                     this.sound.play('levelup');
                 }
                 this.renderProductionUI();
@@ -1327,7 +1327,7 @@ class Game {
             btn.addEventListener('click', (e) => {
                 const upgradeId = e.target.dataset.upgrade;
                 if (this.prestige.buyUpgrade(upgradeId)) {
-                    this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2, t('prestige.upgraded'), '#fbbf24', 24));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('prestige.upgraded'), '#fbbf24', 24));
                     this.sound.play('levelup');
                 }
                 this.renderPrestigeUI();
@@ -1826,7 +1826,7 @@ class Game {
                 <div class="flex items-center gap-2">
                     <span class="text-sm font-bold text-white">${stat.format(value)}</span>
                     <span class="text-xs text-amber-400">${level}/100</span>
-                    <button onclick="game.upgradeStat('${stat.id}')" class="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded" ${availablePoints <= 0 || level >= 100 ? 'disabled style="opacity:0.5"' : ''}>+</button>
+                    <button data-upgrade-stat="${stat.id}" class="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded stat-upgrade-btn" ${availablePoints <= 0 || level >= 100 ? 'disabled style="opacity:0.5"' : ''}>+</button>
                 </div>
             `;
             grid.appendChild(div);
@@ -2450,7 +2450,7 @@ class Game {
                 const costText = t('slots.confirmBuy') || 'Buy slot for {{cost}}?';
                 gameConfirm(costText.replace('{{cost}}', formatNumber(slot.cost)), () => {
                     this.turretSlots.purchaseSlot(slot.id);
-                    this.floatingTexts.push(new FloatingText(
+                    this.floatingTexts.push(FloatingText.create(
                         pos.x, pos.y,
                         t('slots.purchased'),
                         '#22d3ee',
@@ -2458,7 +2458,7 @@ class Game {
                     ));
                 });
             } else {
-                this.floatingTexts.push(new FloatingText(
+                this.floatingTexts.push(FloatingText.create(
                     pos.x, pos.y,
                     t('slots.notEnoughGold'),
                     '#ef4444',
@@ -2693,12 +2693,12 @@ class Game {
         if (this.isBossWave) return;
         this.isRushBonus = true;
         for (let i = 0; i < 5; i++) this.spawnEnemy();
-        this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2 - 100, t('notifications.waveRush'), "#ef4444", 40));
+        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2 - 100, t('notifications.waveRush'), "#ef4444", 40));
         this.enemiesToSpawn = 0;
         this.waveInProgress = false;
         this.wave++;
         this.enemiesToSpawn += (5 + Math.floor(this.wave * 3));
-        this.floatingTexts.push(new FloatingText(this.width / 2, this.height / 2, `${t('game.wave')} ${this.wave}`, '#fff', 40));
+        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, `${t('game.wave')} ${this.wave}`, '#fff', 40));
         this.checkEvolution();
         this.save();
     }
@@ -2717,7 +2717,7 @@ class Game {
             setTimeout(() => notif.classList.add('hidden'), 3000);
         }
         this.checkEvolution();
-        this.floatingTexts.push(new FloatingText(
+        this.floatingTexts.push(FloatingText.create(
             this.width / 2,
             this.height / 2,
             this.isBossWave ? `${t('notifications.bossWarning')} - ${t('game.wave')} ${this.wave}` : `${t('game.wave')} ${this.wave}`,
@@ -2839,7 +2839,7 @@ class Game {
             div.style.height = (target.y) + 'px';
             document.getElementById('fx-container').appendChild(div);
             setTimeout(() => div.remove(), 500);
-            this.floatingTexts.push(new FloatingText(target.x, target.y - 60, t('notifications.orbital'), "#3b82f6", 36));
+            this.floatingTexts.push(FloatingText.create(target.x, target.y - 60, t('notifications.orbital'), "#3b82f6", 36));
         }
     }
 
@@ -2955,6 +2955,8 @@ class Game {
         this.enemies = this.enemies.filter(e => e.hp > 0);
         this.projectiles = this.projectiles.filter(p => p.active);
         this.particles = this.particles.filter(p => p.life > 0);
+        // Release dead floating texts back to pool before filtering
+        this.floatingTexts.filter(t => t.life <= 0).forEach(t => t.release?.());
         this.floatingTexts = this.floatingTexts.filter(t => t.life > 0);
 
         const elGold = document.getElementById('ui-gold');
@@ -3323,7 +3325,7 @@ class Game {
                         date: new Date(data.lastSaveTime || 0).toLocaleString()
                     });
                 } catch {
-                    backups.push({ slot: i, wave: '?', gold: '?', date: 'Unknown' });
+                    backups.push({ slot: i, wave: '?', gold: '?', date: t('common.unknown') });
                 }
             }
         }
@@ -3707,6 +3709,20 @@ function initHelpTooltips() {
 // Global action handler for data-action buttons with visual feedback
 (function initActionHandler() {
     document.addEventListener('click', (e) => {
+        // Handle stat upgrade buttons (data-upgrade-stat)
+        const statBtn = e.target.closest('[data-upgrade-stat]');
+        if (statBtn && !statBtn.disabled && window.game) {
+            const statId = statBtn.dataset.upgradeStat;
+            if (game.upgradeStat(statId)) {
+                const card = statBtn.closest('.lab-stat-card');
+                if (card) {
+                    card.classList.add('upgrade-success-anim');
+                    setTimeout(() => card.classList.remove('upgrade-success-anim'), 400);
+                }
+            }
+            return;
+        }
+
         const btn = e.target.closest('[data-action]');
         if (!btn || btn.disabled) return;
 

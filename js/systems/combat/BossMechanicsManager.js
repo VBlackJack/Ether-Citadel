@@ -61,7 +61,7 @@ export class BossMechanicsManager {
 
         // Visual feedback
         this.game.visualEffects?.triggerScreenShake(10);
-        this.game.floatingTexts.push(new FloatingText(
+        this.game.floatingTexts.push(FloatingText.create(
             this.activeBoss.x, this.activeBoss.y - 50,
             t(mechanics.phases[phaseIndex].nameKey),
             mechanics.phases[phaseIndex].color, 28

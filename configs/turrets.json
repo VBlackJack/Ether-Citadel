@@ -63,32 +63,80 @@
       "nameKey": "school.sentry.name",
       "descKey": "school.sentry.desc",
       "icon": "🔫",
-      "targeting": "nearest",
-      "projectileType": "bullet"
+      "unlockCost": 0,
+      "maxLevel": 10,
+      "levelCost": 5,
+      "stats": { "damage": 1.0, "speed": 1.0, "range": 1.0 }
+    },
+    "blaster": {
+      "id": "blaster",
+      "nameKey": "school.blaster.name",
+      "descKey": "school.blaster.desc",
+      "icon": "🧨",
+      "unlockCost": 50,
+      "maxLevel": 10,
+      "levelCost": 10,
+      "stats": { "damage": 1.5, "speed": 1.2, "range": 0.8 }
     },
     "laser": {
       "id": "laser",
       "nameKey": "school.laser.name",
       "descKey": "school.laser.desc",
-      "icon": "💫",
-      "targeting": "strongest",
-      "projectileType": "beam"
+      "icon": "📡",
+      "unlockCost": 200,
+      "maxLevel": 15,
+      "levelCost": 25,
+      "stats": { "damage": 2.0, "speed": 2.0, "range": 1.0 }
+    },
+    "solidifier": {
+      "id": "solidifier",
+      "nameKey": "school.solidifier.name",
+      "descKey": "school.solidifier.desc",
+      "icon": "❄️",
+      "unlockCost": 300,
+      "maxLevel": 10,
+      "levelCost": 20,
+      "stats": { "damage": 0.5, "speed": 0.8, "range": 1.2, "slow": 0.5 }
+    },
+    "swamper": {
+      "id": "swamper",
+      "nameKey": "school.swamper.name",
+      "descKey": "school.swamper.desc",
+      "icon": "💧",
+      "unlockCost": 500,
+      "maxLevel": 15,
+      "levelCost": 40,
+      "stats": { "damage": 0.8, "speed": 0.5, "range": 2.0, "aoe": 100 }
     },
     "rocket": {
       "id": "rocket",
       "nameKey": "school.rocket.name",
       "descKey": "school.rocket.desc",
       "icon": "🚀",
-      "targeting": "cluster",
-      "projectileType": "explosive"
+      "unlockCost": 1000,
+      "maxLevel": 10,
+      "levelCost": 75,
+      "stats": { "damage": 3.0, "speed": 0.3, "range": 1.5, "aoe": 60 }
     },
-    "hallow": {
-      "id": "hallow",
-      "nameKey": "school.hallow.name",
-      "descKey": "school.hallow.desc",
-      "icon": "✨",
-      "targeting": "weakest",
-      "projectileType": "magic"
+    "sniper": {
+      "id": "sniper",
+      "nameKey": "school.sniper.name",
+      "descKey": "school.sniper.desc",
+      "icon": "🔭",
+      "unlockCost": 1500,
+      "maxLevel": 10,
+      "levelCost": 100,
+      "stats": { "damage": 5.0, "speed": 0.2, "range": 3.0 }
+    },
+    "inferno": {
+      "id": "inferno",
+      "nameKey": "school.inferno.name",
+      "descKey": "school.inferno.desc",
+      "icon": "🌋",
+      "unlockCost": 5000,
+      "maxLevel": 20,
+      "levelCost": 200,
+      "stats": { "damage": 4.0, "speed": 1.0, "range": 1.0, "aoe": 80, "dot": true }
     }
   },
   "slots": [
