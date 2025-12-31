@@ -6,6 +6,7 @@
 import { escapeHtml } from '../utils/HtmlSanitizer.js';
 import { logError, ErrorSeverity } from '../utils/ErrorHandler.js';
 import { t } from '../i18n.js';
+import { createFocusTrap } from '../utils/UIHelpers.js';
 
 /**
  * Default i18n keys for dialog buttons
@@ -83,7 +84,8 @@ export class ModalManager {
             onShow: config.onShow || null,
             onHide: config.onHide || null,
             render: config.render || null,
-            element: null
+            element: null,
+            focusTrap: null
         });
     }
 
@@ -202,10 +204,11 @@ export class ModalManager {
         config.element.classList.remove('hidden');
         this.activeModal = id;
 
-        const focusable = config.element.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-        if (focusable) {
-            focusable.focus();
+        // Activate focus trap for accessibility
+        if (!config.focusTrap) {
+            config.focusTrap = createFocusTrap(config.element);
         }
+        config.focusTrap.activate();
     }
 
     /**
@@ -214,6 +217,11 @@ export class ModalManager {
     hide(id) {
         const config = this.modals.get(id);
         if (!config || !config.element) return;
+
+        // Deactivate focus trap
+        if (config.focusTrap) {
+            config.focusTrap.deactivate();
+        }
 
         config.element.classList.add('hidden');
 

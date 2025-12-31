@@ -122,7 +122,15 @@ export class SkillManager {
             }
             const btn = document.getElementById(`cd-${key}`);
             const maxCd = s.cooldown * (1 - (this.game.relicMults?.cooldown || 0));
-            if (btn) btn.style.height = `${Math.max(0, s.cdTime / maxCd) * 100}%`;
+            if (btn) {
+                btn.style.height = `${Math.max(0, s.cdTime / maxCd) * 100}%`;
+                // Show remaining cooldown time in seconds
+                if (s.cdTime > 0) {
+                    btn.setAttribute('data-cooldown', Math.ceil(s.cdTime / 1000) + 's');
+                } else {
+                    btn.removeAttribute('data-cooldown');
+                }
+            }
 
             if (this.autoSkills[key] && s.cdTime <= 0 && this.game.enemies?.length > 0 && !this.game.isGameOver) {
                 const canAuto = (key === 'overdrive' && this.game.metaUpgrades?.getEffectValue('autoSkillQ')) ||

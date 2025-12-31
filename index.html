@@ -40,9 +40,9 @@
         <div class="text-slate-400 text-sm" data-i18n="ui.loading">Loading...</div>
     </div>
 
-    <div class="fixed top-0 left-0 w-full h-1 bg-slate-900 z-50 pointer-events-auto cursor-help group" data-i18n-title="hud.tooltips.xp">
+    <div class="fixed top-0 left-0 w-full h-1 bg-slate-900 z-50 pointer-events-auto cursor-help group touch-tooltip-trigger" tabindex="0" role="button" aria-label="Experience bar" data-i18n-title="hud.tooltips.xp">
         <div id="ui-xp-bar" class="h-full bg-cyan-500 shadow-[0_0_10px_#06b6d4] transition-all duration-300" style="width: 0%"></div>
-        <div class="hidden group-hover:block absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-slate-900/95 border border-cyan-500 rounded px-2 py-1 text-xs text-cyan-400 whitespace-nowrap z-50">
+        <div class="xp-tooltip hidden group-hover:block absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-slate-900/95 border border-cyan-500 rounded px-2 py-1 text-xs text-cyan-400 whitespace-nowrap z-50" role="tooltip">
             <span data-i18n="hud.xpBar">Experience</span> - <span data-i18n="hud.xpBarHint">Level up for Stat Points</span>
         </div>
     </div>
@@ -71,9 +71,9 @@
                 </div>
             </div>
             <div class="flex items-center gap-2 text-2xl font-bold drop-shadow-lg">
-                <span class="text-blue-400 group relative cursor-help">
+                <span class="text-blue-400 group relative cursor-help touch-tooltip-trigger pointer-events-auto" tabindex="0" role="button" aria-label="Wave info">
                     <span data-i18n="game.wave">Wave</span>: <span id="ui-wave">1</span>
-                    <div id="wave-preview" class="hidden group-hover:block absolute top-full left-0 mt-1 bg-slate-900/95 border border-blue-500 rounded-lg p-2 text-xs text-left whitespace-nowrap z-50 pointer-events-none min-w-48">
+                    <div id="wave-preview" class="wave-tooltip hidden group-hover:block absolute top-full left-0 mt-1 bg-slate-900/95 border border-blue-500 rounded-lg p-2 text-xs text-left whitespace-nowrap z-50 min-w-48" role="tooltip">
                         <div class="text-blue-400 font-bold mb-1" data-i18n="game.nextWave">Next Wave</div>
                         <div id="wave-preview-content" class="text-slate-300 space-y-1"></div>
                     </div>
@@ -127,13 +127,13 @@
 
         <!-- Suggested Action Banner -->
         <div id="suggested-action" class="hidden absolute top-4 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
-            <div class="bg-gradient-to-r from-amber-900/90 to-orange-900/90 border border-amber-500 rounded-lg px-3 py-2 flex items-center gap-2 backdrop-blur-sm cursor-pointer hover:border-amber-400 transition max-w-[200px]" onclick="game.executeSuggestedAction()">
-                <span class="text-amber-400 text-lg animate-pulse">💡</span>
+            <button type="button" class="bg-gradient-to-r from-amber-900/90 to-orange-900/90 border border-amber-500 rounded-lg px-3 py-2 flex items-center gap-2 backdrop-blur-sm cursor-pointer hover:border-amber-400 transition max-w-[200px]" onclick="game.executeSuggestedAction()" aria-label="Execute suggested action">
+                <span class="text-amber-400 text-lg animate-pulse" aria-hidden="true">💡</span>
                 <div class="flex-1 min-w-0">
                     <div id="suggested-action-text" class="text-white font-bold text-xs truncate"></div>
                 </div>
-                <span class="text-amber-400 text-sm">→</span>
-            </div>
+                <span class="text-amber-400 text-sm" aria-hidden="true">→</span>
+            </button>
         </div>
 
         <div class="fixed top-4 right-4 flex flex-col items-end gap-2 pointer-events-auto z-30" id="menu-container">

@@ -1382,7 +1382,7 @@ select:focus-visible {
 
 .help-tooltip {
     position: fixed;
-    z-index: 10000;
+    z-index: 55; /* Between modal (50) and toast (60) */
     max-width: 320px;
     background: linear-gradient(135deg, #1e293b, #0f172a);
     border: 2px solid #3b82f6;

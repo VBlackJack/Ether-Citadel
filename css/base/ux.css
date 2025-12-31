@@ -21,13 +21,55 @@
     }
 }
 
-/* Improved Contrast */
+/* Improved Contrast - WCAG AA compliant (4.5:1 minimum) */
 .text-slate-500 {
-    color: #94a3b8 !important;
+    color: #cbd5e1 !important; /* Upgraded from #94a3b8 for better contrast */
 }
 
 .text-slate-400 {
-    color: #cbd5e1 !important;
+    color: #e2e8f0 !important; /* Upgraded from #cbd5e1 for better contrast */
+}
+
+/* Focus visible for all interactive elements */
+[role="button"]:focus-visible,
+[onclick]:focus-visible,
+.menu-item:focus-visible,
+.menu-btn-sm:focus-visible,
+.skill-btn:focus-visible {
+    outline: 2px solid #60a5fa;
+    outline-offset: 2px;
+}
+
+/* Touch-friendly tooltip support */
+.touch-tooltip-trigger {
+    cursor: pointer;
+}
+
+.touch-tooltip-trigger .touch-tooltip {
+    display: none;
+    position: absolute;
+    z-index: 100;
+}
+
+.touch-tooltip-trigger.tooltip-active .touch-tooltip,
+.touch-tooltip-trigger:focus .touch-tooltip {
+    display: block;
+}
+
+/* XP bar and Wave preview tooltips - show on focus/touch */
+.touch-tooltip-trigger:focus .xp-tooltip,
+.touch-tooltip-trigger:focus .wave-tooltip,
+.touch-tooltip-trigger.tooltip-active .xp-tooltip,
+.touch-tooltip-trigger.tooltip-active .wave-tooltip {
+    display: block !important;
+}
+
+/* Touch device: show tooltip on active state */
+@media (hover: none) and (pointer: coarse) {
+    .touch-tooltip-trigger:active .xp-tooltip,
+    .touch-tooltip-trigger:active .wave-tooltip {
+        display: block !important;
+    }
 }
 
 /* Focus Visible for Keyboard Navigation */

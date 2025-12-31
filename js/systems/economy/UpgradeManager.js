@@ -70,7 +70,10 @@ export class UpgradeManager {
                 this.game.gold -= totalCost;
                 u.level += count;
                 this.game.updateStats();
-                if (!silent) this.render(this.game.activeTab);
+                if (!silent) {
+                    this.render(this.game.activeTab);
+                    this.game.ui?.showToast(`${t(u.nameKey)} +${count}`, 'success');
+                }
                 this.game.save();
                 this.game.tutorial.check(this.game.gold);
                 return true;
@@ -81,7 +84,10 @@ export class UpgradeManager {
                 this.game.gold -= cost;
                 u.level++;
                 this.game.updateStats();
-                if (!silent) this.render(this.game.activeTab);
+                if (!silent) {
+                    this.render(this.game.activeTab);
+                    this.game.ui?.showToast(`${t(u.nameKey)} +1`, 'success');
+                }
                 this.game.save();
                 this.game.tutorial.check(this.game.gold);
                 return true;

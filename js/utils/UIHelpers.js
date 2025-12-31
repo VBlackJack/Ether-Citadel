@@ -213,3 +213,107 @@ export function throttle(fn, limit) {
         }
     };
 }
+
+/**
+ * Create a focus trap within an element (for modals)
+ * @param {HTMLElement} element - Container element to trap focus within
+ * @returns {Object} - { activate, deactivate } methods
+ */
+export function createFocusTrap(element) {
+    const focusableSelectors = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    let previousActiveElement = null;
+
+    function getFocusableElements() {
+        return Array.from(element.querySelectorAll(focusableSelectors))
+            .filter(el => !el.disabled && el.offsetParent !== null);
+    }
+
+    function handleKeyDown(e) {
+        if (e.key !== 'Tab') return;
+
+        const focusable = getFocusableElements();
+        if (focusable.length === 0) return;
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    }
+
+    return {
+        activate() {
+            previousActiveElement = document.activeElement;
+            element.addEventListener('keydown', handleKeyDown);
+            const focusable = getFocusableElements();
+            if (focusable.length > 0) {
+                focusable[0].focus();
+            }
+        },
+        deactivate() {
+            element.removeEventListener('keydown', handleKeyDown);
+            if (previousActiveElement && previousActiveElement.focus) {
+                previousActiveElement.focus();
+            }
+        }
+    };
+}
+
+/**
+ * Initialize touch-friendly tooltips
+ * Converts hover-only tooltips to work on touch devices
+ */
+export function initTouchTooltips() {
+    let activeTooltip = null;
+
+    function closeActiveTooltip() {
+        if (activeTooltip) {
+            activeTooltip.classList.remove('tooltip-active');
+            activeTooltip = null;
+        }
+    }
+
+    // Close tooltip when clicking outside
+    document.addEventListener('click', (e) => {
+        if (activeTooltip && !activeTooltip.contains(e.target)) {
+            closeActiveTooltip();
+        }
+    });
+
+    // Close tooltip on escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeActiveTooltip();
+        }
+    });
+
+    // Handle touch/click on tooltip triggers
+    document.addEventListener('click', (e) => {
+        const trigger = e.target.closest('.touch-tooltip-trigger');
+        if (trigger) {
+            e.stopPropagation();
+            if (activeTooltip === trigger) {
+                closeActiveTooltip();
+            } else {
+                closeActiveTooltip();
+                trigger.classList.add('tooltip-active');
+                activeTooltip = trigger;
+            }
+        }
+    });
+}
+
+/**
+ * Show a purchase success animation on an element
+ * @param {HTMLElement} element - Element to animate
+ */
+export function showPurchaseAnimation(element) {
+    if (!element) return;
+    element.classList.add('purchase-success');
+    setTimeout(() => element.classList.remove('purchase-success'), 300);
+}

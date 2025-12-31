@@ -255,8 +255,23 @@ class Game {
         if (this.wave === 1 && this.gold === 0) this.gold = this.metaUpgrades.getEffectValue('startGold');
         if (this.wave === 1) this.tutorial.check(this.gold);
 
+        // Restore UI state from localStorage
+        try {
+            const savedTab = localStorage.getItem('aegis_ui_tab');
+            if (savedTab !== null) {
+                const tabId = parseInt(savedTab, 10);
+                if (!isNaN(tabId) && tabId >= 0 && tabId <= 2) {
+                    this.activeTab = tabId;
+                }
+            }
+            const savedBuyMode = localStorage.getItem('aegis_ui_buyMode');
+            if (savedBuyMode === '1' || savedBuyMode === 'MAX') {
+                this.buyMode = savedBuyMode;
+            }
+        } catch (e) { /* localStorage disabled */ }
+
         this.updateStats();
-        this.upgrades.render(this.activeTab);
+        this.switchTab(this.activeTab);
         this.updateTierUI();
         this.updateEtherUI();
         this.updateCrystalsUI();
@@ -352,6 +367,10 @@ class Game {
     toggleBulk() {
         this.buyMode = this.buyMode === '1' ? 'MAX' : '1';
         this.upgrades.render(this.activeTab);
+        // Persist UI state
+        try {
+            localStorage.setItem('aegis_ui_buyMode', this.buyMode);
+        } catch (e) { /* Storage quota exceeded or disabled */ }
     }
 
     togglePause() {
@@ -552,6 +571,10 @@ class Game {
             else btn.classList.remove('active');
         });
         this.upgrades.render(this.activeTab);
+        // Persist UI state
+        try {
+            localStorage.setItem('aegis_ui_tab', String(id));
+        } catch (e) { /* Storage quota exceeded or disabled */ }
     }
 
     switchLabTab(tabId) {
