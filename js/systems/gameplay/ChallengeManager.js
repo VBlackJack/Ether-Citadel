@@ -30,15 +30,16 @@ export class ChallengeManager {
 
     startChallenge(id) {
         if (!window.game) return;
-        game.activeChallenge = this.challenges.find(c => c.id === id);
-        game.restart(false);
-        game.updateChallengeUI();
+        window.game.activeChallenge = this.challenges.find(c => c.id === id);
+        window.game.restart(false);
+        window.game.updateChallengeUI();
     }
 
     cancelChallenge() {
-        game.activeChallenge = null;
-        game.restart(false);
-        game.updateChallengeUI();
+        if (!window.game) return;
+        window.game.activeChallenge = null;
+        window.game.restart(false);
+        window.game.updateChallengeUI();
     }
 
     buyTech(id) {
@@ -47,7 +48,7 @@ export class ChallengeManager {
         if (lvl < tech.max && this.darkMatter >= tech.cost) {
             this.darkMatter -= tech.cost;
             this.dmTech[id] = lvl + 1;
-            game.save();
+            window.game?.save();
             this.render();
         }
     }
@@ -57,7 +58,7 @@ export class ChallengeManager {
         list.innerHTML = '';
         this.challenges.forEach(c => {
             const div = document.createElement('div');
-            div.className = `bg-slate-700 p-2 rounded border border-red-900 flex justify-between items-center ${game.activeChallenge?.id === c.id ? 'border-yellow-400 bg-red-900/40' : ''}`;
+            div.className = `bg-slate-700 p-2 rounded border border-red-900 flex justify-between items-center ${window.game?.activeChallenge?.id === c.id ? 'border-yellow-400 bg-red-900/40' : ''}`;
             div.innerHTML = `<div><div class="font-bold text-red-300">${t(c.nameKey)}</div><div class="text-xs text-slate-400">${t(c.descKey)}</div></div><button data-action="challenge.start" data-id="${c.id}" class="px-2 py-1 bg-red-600 text-xs font-bold rounded hover:bg-red-500">${t('modals.challenges.go')}</button>`;
             list.appendChild(div);
         });
@@ -76,9 +77,9 @@ export class ChallengeManager {
 
         const hud = document.getElementById('active-challenge-hud');
         const hudName = document.getElementById('challenge-name-hud');
-        if (game.activeChallenge) {
+        if (window.game?.activeChallenge) {
             hud.classList.remove('hidden');
-            hudName.innerText = t(game.activeChallenge.nameKey);
+            hudName.innerText = t(window.game.activeChallenge.nameKey);
             document.getElementById('btn-cancel-challenge').classList.remove('hidden');
         } else {
             hud.classList.add('hidden');

@@ -1162,6 +1162,12 @@
     "completed": "Mission Complete",
     "kills": "Kills",
     "time": "Time",
+    "chapters": {
+      "1": "Beginnings",
+      "2": "Rising Power",
+      "3": "Trials",
+      "4": "Mastery"
+    },
     "tutorial": {
       "name": "First Steps",
       "desc": "Reach wave 5"

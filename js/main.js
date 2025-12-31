@@ -81,7 +81,7 @@ import { getEventDelegation } from './ui/EventDelegation.js';
 import { getErrorHandler, logError } from './utils/ErrorHandler.js';
 import { ConfigRegistry } from './services/ConfigRegistry.js';
 import { StatsBreakdown } from './ui/StatsBreakdown.js';
-import { sanitizeColor, calculateChecksum, verifyChecksum } from './utils/HtmlSanitizer.js';
+import { sanitizeColor, calculateChecksum, verifyChecksum, sanitizeJsonObject } from './utils/HtmlSanitizer.js';
 import { Enemy, Castle, FloatingText, Particle, Rune, Projectile, Turret, Drone } from './entities/index.js';
 import { SkillManager, ChallengeManager, GameModeManager, CampaignManager, StatsManager, DailyQuestManager, TurretSlotManager, WeatherManager, EventManager, SeasonalEventManager, BuildPresetManager } from './systems/gameplay/index.js';
 import { TownManager, SchoolManager, OfficeManager } from './systems/town/index.js';
@@ -2955,9 +2955,14 @@ class Game {
         this.enemies = this.enemies.filter(e => e.hp > 0);
         this.projectiles = this.projectiles.filter(p => p.active);
         this.particles = this.particles.filter(p => p.life > 0);
-        // Release dead floating texts back to pool before filtering
-        this.floatingTexts.filter(t => t.life <= 0).forEach(t => t.release?.());
-        this.floatingTexts = this.floatingTexts.filter(t => t.life > 0);
+        // Release dead floating texts back to pool and filter in single pass
+        this.floatingTexts = this.floatingTexts.filter(t => {
+            if (t.life <= 0) {
+                t.release?.();
+                return false;
+            }
+            return true;
+        });
 
         const elGold = document.getElementById('ui-gold');
         if (elGold) elGold.innerText = formatNumber(this.gold);
@@ -3179,7 +3184,11 @@ class Game {
                 return;
             }
 
-            localStorage.setItem(CONFIG.saveKey, decoded);
+            // Sanitize to prevent prototype pollution attacks
+            const sanitized = sanitizeJsonObject(parsed);
+            const sanitizedJson = JSON.stringify(sanitized);
+
+            localStorage.setItem(CONFIG.saveKey, sanitizedJson);
             location.reload();
         } catch (e) {
             getErrorHandler().handleImportError(e);

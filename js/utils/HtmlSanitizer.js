@@ -138,3 +138,51 @@ export function calculateChecksum(str) {
 export function verifyChecksum(data, checksum) {
     return calculateChecksum(data) === checksum;
 }
+
+/**
+ * Dangerous keys that can cause prototype pollution
+ * @type {Set<string>}
+ */
+const DANGEROUS_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+
+/**
+ * Sanitize a JSON object to prevent prototype pollution attacks
+ * Recursively removes dangerous keys like __proto__, constructor, prototype
+ * @param {any} obj - Object to sanitize
+ * @param {number} depth - Current recursion depth (default 0)
+ * @param {number} maxDepth - Maximum recursion depth (default 50)
+ * @returns {any} Sanitized object safe from prototype pollution
+ */
+export function sanitizeJsonObject(obj, depth = 0, maxDepth = 50) {
+    // Prevent infinite recursion
+    if (depth > maxDepth) {
+        return null;
+    }
+
+    // Handle primitives
+    if (obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+
+    // Handle arrays
+    if (Array.isArray(obj)) {
+        return obj.map(item => sanitizeJsonObject(item, depth + 1, maxDepth));
+    }
+
+    // Handle objects - create a clean object without prototype pollution
+    const result = Object.create(null);
+
+    for (const key of Object.keys(obj)) {
+        // Skip dangerous keys
+        if (DANGEROUS_KEYS.has(key)) {
+            continue;
+        }
+
+        // Only copy own properties, not inherited ones
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            result[key] = sanitizeJsonObject(obj[key], depth + 1, maxDepth);
+        }
+    }
+
+    return result;
+}

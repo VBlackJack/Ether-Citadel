@@ -51,18 +51,18 @@ export class Projectile {
         if (this.effects.ice) target.applyStatus('ice', 0.6, 2000);
         if (this.effects.poison) target.applyStatus('poison', this.damage * 0.2, 3000);
         if (this.stasisChance > 0 && Math.random() < this.stasisChance) target.applyStatus('stasis', 0, 2000);
-        if (this.leech > 0 && target.hp <= 0) game.castle.heal(this.leech);
+        if (this.leech > 0 && target.hp <= 0) window.game?.castle?.heal(this.leech);
         if (this.blastRadius > 0) this.explode();
         if (this.bounceCount > 0) this.bounce(target);
         else if (this.blastRadius <= 0) this.active = false;
         if (this.bounceCount <= 0) this.active = false;
-        if (game.particles.length < 50) {
-            for (let i = 0; i < 3; i++) game.particles.push(new Particle(this.x, this.y, this.color));
+        if (window.game?.particles?.length < 50) {
+            for (let i = 0; i < 3; i++) window.game.particles.push(new Particle(this.x, this.y, this.color));
         }
     }
 
     explode() {
-        game.enemies.forEach(e => {
+        window.game?.enemies?.forEach(e => {
             if (e.hp > 0 && MathUtils.dist(this.x, this.y, e.x, e.y) < this.blastRadius) {
                 e.takeDamage(this.damage * 0.5, false, false, true);
             }
@@ -75,13 +75,14 @@ export class Projectile {
             ctx.arc(this.x, this.y, (1 - this.life) * 50, 0, Math.PI * 2);
             ctx.stroke();
         };
-        game.particles.push(ripple);
+        window.game?.particles?.push(ripple);
     }
 
     bounce(lastTarget) {
         let nearest = null;
         let minDist = 250;
-        for (const e of game.enemies) {
+        const enemies = window.game?.enemies || [];
+        for (const e of enemies) {
             if (e !== lastTarget && e.hp > 0) {
                 const d = MathUtils.dist(this.x, this.y, e.x, e.y);
                 if (d < minDist) {
@@ -106,7 +107,7 @@ export class Projectile {
                 ctx.lineTo(this.tx, this.ty);
                 ctx.stroke();
             };
-            game.particles.push(line);
+            window.game?.particles?.push(line);
         } else {
             this.bounceCount = 0;
         }

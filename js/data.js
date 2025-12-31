@@ -49,17 +49,17 @@ export const TURRET_TIERS = {
  * Higher dread = harder enemies but better rewards
  */
 export const DREAD_LEVELS = [
-    { level: 0, nameKey: 'dread.level0', enemyMult: 1.0, rewardMult: 1.0, color: '#94a3b8' },
-    { level: 1, nameKey: 'dread.level1', enemyMult: 1.5, rewardMult: 1.5, color: '#fbbf24' },
-    { level: 2, nameKey: 'dread.level2', enemyMult: 2.0, rewardMult: 2.0, color: '#f97316' },
-    { level: 3, nameKey: 'dread.level3', enemyMult: 3.0, rewardMult: 3.0, color: '#ef4444' },
-    { level: 4, nameKey: 'dread.level4', enemyMult: 5.0, rewardMult: 5.0, color: '#dc2626' },
-    { level: 5, nameKey: 'dread.level5', enemyMult: 8.0, rewardMult: 8.0, color: '#991b1b' },
-    { level: 6, nameKey: 'dread.level6', enemyMult: 12.0, rewardMult: 12.0, color: '#7f1d1d' },
-    { level: 7, nameKey: 'dread.level7', enemyMult: 20.0, rewardMult: 20.0, color: '#a855f7' },
-    { level: 8, nameKey: 'dread.level8', enemyMult: 30.0, rewardMult: 33.0, color: '#9333ea' },
-    { level: 9, nameKey: 'dread.level9', enemyMult: 40.0, rewardMult: 48.0, color: '#6b21a8' },
-    { level: 10, nameKey: 'dread.level10', enemyMult: 50.0, rewardMult: 65.0, color: '#000' }
+    { level: 0, nameKey: 'dread.level0', enemyMult: 1.0, rewardMult: 1.0, color: '#94a3b8', unlockWave: 0 },
+    { level: 1, nameKey: 'dread.level1', enemyMult: 1.5, rewardMult: 1.5, color: '#fbbf24', unlockWave: 10 },
+    { level: 2, nameKey: 'dread.level2', enemyMult: 2.0, rewardMult: 2.0, color: '#f97316', unlockWave: 20 },
+    { level: 3, nameKey: 'dread.level3', enemyMult: 3.0, rewardMult: 3.0, color: '#ef4444', unlockWave: 30 },
+    { level: 4, nameKey: 'dread.level4', enemyMult: 5.0, rewardMult: 5.0, color: '#dc2626', unlockWave: 40 },
+    { level: 5, nameKey: 'dread.level5', enemyMult: 8.0, rewardMult: 8.0, color: '#991b1b', unlockWave: 50 },
+    { level: 6, nameKey: 'dread.level6', enemyMult: 12.0, rewardMult: 12.0, color: '#7f1d1d', unlockWave: 60 },
+    { level: 7, nameKey: 'dread.level7', enemyMult: 20.0, rewardMult: 20.0, color: '#a855f7', unlockWave: 70 },
+    { level: 8, nameKey: 'dread.level8', enemyMult: 30.0, rewardMult: 33.0, color: '#9333ea', unlockWave: 80 },
+    { level: 9, nameKey: 'dread.level9', enemyMult: 40.0, rewardMult: 48.0, color: '#6b21a8', unlockWave: 90 },
+    { level: 10, nameKey: 'dread.level10', enemyMult: 50.0, rewardMult: 65.0, color: '#000000', unlockWave: 100 }
 ];
 
 /**
@@ -229,21 +229,21 @@ export const ACHIEVEMENTS_DB = [
  * @type {Object<string, {color: string, hpMult: number, speedMult: number, scale: number, nameKey: string, descKey: string}>}
  */
 export const ENEMY_TYPES = {
-    NORMAL: { color: '#d94949', hpMult: 1, speedMult: 1, scale: 1, nameKey: 'enemies.NORMAL.name', descKey: 'enemies.NORMAL.desc' },
-    SPEEDY: { color: '#fbbf24', hpMult: 0.6, speedMult: 1.8, scale: 0.8, nameKey: 'enemies.SPEEDY.name', descKey: 'enemies.SPEEDY.desc' },
-    TANK: { color: '#64748b', hpMult: 2.5, speedMult: 0.6, scale: 1.4, nameKey: 'enemies.TANK.name', descKey: 'enemies.TANK.desc' },
-    BOSS: { color: '#ef4444', hpMult: 12, speedMult: 0.4, scale: 2.5, nameKey: 'enemies.BOSS.name', descKey: 'enemies.BOSS.desc' },
-    HEALER: { color: '#4ade80', hpMult: 1.5, speedMult: 0.7, scale: 1.1, nameKey: 'enemies.HEALER.name', descKey: 'enemies.HEALER.desc' },
-    SPLITTER: { color: '#a855f7', hpMult: 1.2, speedMult: 0.8, scale: 1.3, nameKey: 'enemies.SPLITTER.name', descKey: 'enemies.SPLITTER.desc' },
-    MINI: { color: '#d8b4fe', hpMult: 0.4, speedMult: 1.2, scale: 0.6, nameKey: 'enemies.MINI.name', descKey: 'enemies.MINI.desc' },
-    THIEF: { color: '#94a3b8', hpMult: 0.8, speedMult: 2.5, scale: 0.9, nameKey: 'enemies.THIEF.name', descKey: 'enemies.THIEF.desc' },
-    PHANTOM: { color: '#ffffff', hpMult: 0.8, speedMult: 1.0, scale: 1.0, nameKey: 'enemies.PHANTOM.name', descKey: 'enemies.PHANTOM.desc' },
-    FLYING: { color: '#38bdf8', hpMult: 0.7, speedMult: 1.4, scale: 0.9, nameKey: 'enemies.FLYING.name', descKey: 'enemies.FLYING.desc', flying: true },
-    ARMORED: { color: '#78716c', hpMult: 3.0, speedMult: 0.5, scale: 1.5, nameKey: 'enemies.ARMORED.name', descKey: 'enemies.ARMORED.desc', armor: 0.5 },
-    SHIELDED: { color: '#06b6d4', hpMult: 1.0, speedMult: 0.9, scale: 1.2, nameKey: 'enemies.SHIELDED.name', descKey: 'enemies.SHIELDED.desc', shield: true },
-    NECRO: { color: '#581c87', hpMult: 2.0, speedMult: 0.6, scale: 1.3, nameKey: 'enemies.NECRO.name', descKey: 'enemies.NECRO.desc', summon: true },
-    BERSERKER: { color: '#dc2626', hpMult: 1.8, speedMult: 1.0, scale: 1.2, nameKey: 'enemies.BERSERKER.name', descKey: 'enemies.BERSERKER.desc', enrage: true },
-    MEGA_BOSS: { color: '#7c3aed', hpMult: 50, speedMult: 0.3, scale: 3.5, nameKey: 'enemies.MEGA_BOSS.name', descKey: 'enemies.MEGA_BOSS.desc', phases: 3 }
+    NORMAL: { color: '#d94949', hpMult: 1, speedMult: 1, scale: 1, goldMult: 1.0, xpMult: 1.0, nameKey: 'enemies.NORMAL.name', descKey: 'enemies.NORMAL.desc' },
+    SPEEDY: { color: '#fbbf24', hpMult: 0.6, speedMult: 1.8, scale: 0.8, goldMult: 1.2, xpMult: 1.0, nameKey: 'enemies.SPEEDY.name', descKey: 'enemies.SPEEDY.desc' },
+    TANK: { color: '#64748b', hpMult: 2.5, speedMult: 0.6, scale: 1.4, goldMult: 1.5, xpMult: 1.5, nameKey: 'enemies.TANK.name', descKey: 'enemies.TANK.desc' },
+    BOSS: { color: '#ef4444', hpMult: 12, speedMult: 0.4, scale: 2.5, goldMult: 5.0, xpMult: 10.0, isBoss: true, nameKey: 'enemies.BOSS.name', descKey: 'enemies.BOSS.desc' },
+    HEALER: { color: '#4ade80', hpMult: 1.5, speedMult: 0.7, scale: 1.1, goldMult: 1.3, xpMult: 1.2, abilities: ['heal_allies'], nameKey: 'enemies.HEALER.name', descKey: 'enemies.HEALER.desc' },
+    SPLITTER: { color: '#a855f7', hpMult: 1.2, speedMult: 0.8, scale: 1.3, goldMult: 1.5, xpMult: 1.5, abilities: ['split_on_death'], nameKey: 'enemies.SPLITTER.name', descKey: 'enemies.SPLITTER.desc' },
+    MINI: { color: '#d8b4fe', hpMult: 0.4, speedMult: 1.2, scale: 0.6, goldMult: 0.5, xpMult: 0.5, nameKey: 'enemies.MINI.name', descKey: 'enemies.MINI.desc' },
+    THIEF: { color: '#94a3b8', hpMult: 0.8, speedMult: 2.5, scale: 0.9, goldMult: 2.0, xpMult: 1.0, abilities: ['steal_gold'], nameKey: 'enemies.THIEF.name', descKey: 'enemies.THIEF.desc' },
+    PHANTOM: { color: '#ffffff', hpMult: 0.8, speedMult: 1.0, scale: 1.0, goldMult: 1.5, xpMult: 1.2, abilities: ['phase_through'], nameKey: 'enemies.PHANTOM.name', descKey: 'enemies.PHANTOM.desc' },
+    FLYING: { color: '#38bdf8', hpMult: 0.7, speedMult: 1.4, scale: 0.9, goldMult: 1.3, xpMult: 1.0, flying: true, nameKey: 'enemies.FLYING.name', descKey: 'enemies.FLYING.desc' },
+    ARMORED: { color: '#78716c', hpMult: 3.0, speedMult: 0.5, scale: 1.5, goldMult: 2.0, xpMult: 2.0, armor: 0.5, nameKey: 'enemies.ARMORED.name', descKey: 'enemies.ARMORED.desc' },
+    SHIELDED: { color: '#06b6d4', hpMult: 1.0, speedMult: 0.9, scale: 1.2, goldMult: 1.5, xpMult: 1.3, shield: true, nameKey: 'enemies.SHIELDED.name', descKey: 'enemies.SHIELDED.desc' },
+    NECRO: { color: '#581c87', hpMult: 2.0, speedMult: 0.6, scale: 1.3, goldMult: 2.0, xpMult: 2.0, abilities: ['summon_minions'], nameKey: 'enemies.NECRO.name', descKey: 'enemies.NECRO.desc' },
+    BERSERKER: { color: '#dc2626', hpMult: 1.8, speedMult: 1.0, scale: 1.2, goldMult: 1.5, xpMult: 1.5, abilities: ['enrage_on_damage'], nameKey: 'enemies.BERSERKER.name', descKey: 'enemies.BERSERKER.desc' },
+    MEGA_BOSS: { color: '#7c3aed', hpMult: 50, speedMult: 0.3, scale: 3.5, goldMult: 20.0, xpMult: 50.0, isBoss: true, phases: 3, nameKey: 'enemies.MEGA_BOSS.name', descKey: 'enemies.MEGA_BOSS.desc' }
 };
 
 /**
