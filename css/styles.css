@@ -2580,6 +2580,16 @@ select:focus-visible {
     #menu-container {
         right: calc(25% + 16px) !important;
     }
+
+    /* Hide menu toggle button on desktop (menus are hidden anyway) */
+    #btn-toggle-menu {
+        display: none;
+    }
+
+    /* Hide redundant auto-controls on desktop (Lab has them) */
+    #auto-controls {
+        display: none !important;
+    }
 }
 
 /* Show menu groups on mobile */

@@ -1114,7 +1114,14 @@
             </div>
         </div>
         <div class="flex-grow overflow-y-auto p-2 space-y-2" id="upgrade-list"></div>
-        <div id="lab-footer" onclick="game.triggerDevSecret()" class="p-2 text-center text-xs text-slate-500 bg-slate-900 cursor-pointer select-none" data-i18n="lab.footer">Click on Runes on the ground for bonuses!</div>
+        <!-- Lab Footer with quick actions -->
+        <div class="p-2 bg-slate-900 border-t border-slate-700">
+            <div class="flex gap-2">
+                <button onclick="game.renderStatsUI(); document.getElementById('stats-modal').classList.remove('hidden')" class="flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded border border-slate-600 transition" data-i18n="stats.title">STATS</button>
+                <button onclick="game.renderPassivesUI && game.renderPassivesUI(); document.getElementById('passives-modal').classList.remove('hidden')" class="flex-1 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded border border-slate-600 transition" data-i18n="passives.title">PASSIVES</button>
+            </div>
+            <div id="lab-footer" onclick="game.triggerDevSecret()" class="mt-2 text-center text-xs text-slate-500 cursor-pointer select-none" data-i18n="lab.footer">Click on Runes for bonuses!</div>
+        </div>
     </div>
 
 <!-- Toast Notification Container -->
