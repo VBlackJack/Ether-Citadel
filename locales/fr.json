@@ -20,14 +20,22 @@
     "boss": "BOSS"
   },
   "hud": {
-    "evolutionTier": "Évolution Tier",
-    "activeChallenge": "DÉFI ACTIF :",
+    "evolutionTier": "\u00c9volution Tier",
+    "activeChallenge": "D\u00c9FI ACTIF :",
     "autoAdvance": "Auto",
     "autoRetry": "Relance",
     "autoBuy": "AUTO BUY",
     "aiActive": "IA ACTIVE",
-    "xpBar": "Expérience",
-    "xpBarHint": "Montez de niveau pour des Points"
+    "xpBar": "Exp\u00e9rience",
+    "xpBarHint": "Montez de niveau pour des Points",
+    "tooltips": {
+      "xp": "Exp\u00e9rience - Montez de niveau pour gagner des Points de Stat",
+      "gold": "Or - Devise principale pour les am\u00e9liorations et les tours",
+      "ether": "\u00c9ther - Utilis\u00e9 pour les am\u00e9liorations permanentes et l'\u00e9veil",
+      "crystals": "Cristaux - Utilis\u00e9s pour l'\u00e9cole et la ma\u00eetrise des tourelles",
+      "autoAdvance": "Avancer automatiquement \u00e0 la prochaine vague",
+      "autoRetry": "R\u00e9essayer automatiquement apr\u00e8s une d\u00e9faite"
+    }
   },
   "sideHud": {
     "spendPoints": "Dépenser les Points",
@@ -1294,11 +1302,12 @@
   },
   "tech": {
     "title": "TECHNOLOGIE",
-    "sentrySpecial": "SPÉCIAL SENTINELLE",
-    "rocketSpecial": "SPÉCIAL ROQUETTE",
-    "laserSpecial": "SPÉCIAL LASER",
-    "hallowSpecial": "SPÉCIAL HALLOW",
-    "hint": "POUR DÉBLOQUER LA SPÉCIALE DE LA TOURELLE, MAXIMISEZ D'ABORD SA MAÎTRISE"
+    "sentrySpecial": "SP\u00c9CIAL SENTINELLE",
+    "rocketSpecial": "SP\u00c9CIAL ROQUETTE",
+    "laserSpecial": "SP\u00c9CIAL LASER",
+    "hallowSpecial": "SP\u00c9CIAL HALLOW",
+    "hint": "Ma\u00eetrise max pour d\u00e9bloquer les sp\u00e9ciaux",
+    "unlockHint": "D\u00e9bloquer \u00e0 ma\u00eetrise max de tourelle"
   },
   "ui": {
     "close": "FERMER"
@@ -1327,8 +1336,10 @@
       "hint": "Combattez pour remplir votre codex !"
     },
     "chips": {
-      "inventory": "Aucune puce collectée. Les puces tombent des boss.",
-      "equipped": "Aucune puce équipée. Sélectionnez une puce pour l'équiper."
+      "title": "Aucune puce",
+      "inventory": "Les puces tombent des boss",
+      "equippedTitle": "Aucune puce \u00e9quip\u00e9e",
+      "equipped": "S\u00e9lectionnez une puce pour l'\u00e9quiper"
     },
     "campaign": {
       "title": "Campagne en chargement...",

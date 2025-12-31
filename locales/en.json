@@ -27,7 +27,15 @@
     "autoBuy": "AUTO BUY",
     "aiActive": "AI ACTIVE",
     "xpBar": "Experience",
-    "xpBarHint": "Level up for Stat Points"
+    "xpBarHint": "Level up for Stat Points",
+    "tooltips": {
+      "xp": "Experience - Level up to earn Stat Points",
+      "gold": "Gold - Primary currency for upgrades and towers",
+      "ether": "Ether - Used for permanent upgrades and awakening",
+      "crystals": "Crystals - Used for school upgrades and turret mastery",
+      "autoAdvance": "Auto-advance to next wave",
+      "autoRetry": "Auto-retry after defeat"
+    }
   },
   "sideHud": {
     "spendPoints": "Spend Stat Points",
@@ -1293,7 +1301,8 @@
     "rocketSpecial": "ROCKET SPECIAL",
     "laserSpecial": "LASER SPECIAL",
     "hallowSpecial": "HALLOW SPECIAL",
-    "hint": "IN ORDER TO UNLOCK TURRET SPECIAL YOU NEED TO MAX ITS MASTERY FIRST"
+    "hint": "Max mastery to unlock specials",
+    "unlockHint": "Unlock at max turret mastery"
   },
   "ui": {
     "close": "CLOSE"
@@ -1322,8 +1331,10 @@
       "hint": "Start fighting to fill your codex!"
     },
     "chips": {
-      "inventory": "No chips collected. Chips drop from bosses.",
-      "equipped": "No chips equipped. Select a chip from inventory to equip."
+      "title": "No chips yet",
+      "inventory": "Chips drop from bosses",
+      "equippedTitle": "No chips equipped",
+      "equipped": "Select a chip from inventory to equip"
     },
     "campaign": {
       "title": "Campaign loading...",
