@@ -5,6 +5,7 @@
 
 import { DAILY_QUEST_TYPES } from '../../data.js';
 import { t } from '../../i18n.js';
+import { FloatingText } from '../../entities/FloatingText.js';
 
 export class DailyQuestManager {
     constructor(game) {

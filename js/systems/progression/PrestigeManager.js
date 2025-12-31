@@ -22,6 +22,7 @@
 import { PRESTIGE_UPGRADES } from '../../data.js';
 import { t } from '../../i18n.js';
 import { formatNumber } from '../../config.js';
+import { FloatingText } from '../../entities/FloatingText.js';
 
 export class PrestigeManager {
     /**

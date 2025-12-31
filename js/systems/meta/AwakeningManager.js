@@ -20,6 +20,7 @@
 
 import { AWAKENING_BONUSES } from '../../data.js';
 import { t } from '../../i18n.js';
+import { FloatingText } from '../../entities/FloatingText.js';
 
 export class AwakeningManager {
     constructor(game) {

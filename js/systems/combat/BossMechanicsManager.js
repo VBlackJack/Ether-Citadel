@@ -5,6 +5,7 @@
 
 import { BOSS_MECHANICS, BOSS_ABILITIES } from '../../data.js';
 import { t } from '../../i18n.js';
+import { FloatingText } from '../../entities/FloatingText.js';
 
 export class BossMechanicsManager {
     constructor(game) {
