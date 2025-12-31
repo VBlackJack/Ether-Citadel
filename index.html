@@ -124,8 +124,8 @@
             </div>
         </div>
 
-        <!-- Side HUD Panel (Defender Idle 2 style) -->
-        <div id="side-hud" class="absolute top-0 right-0 w-56 h-full bg-gradient-to-b from-amber-900/95 to-amber-950/95 border-l-4 border-amber-700 z-15 flex flex-col pointer-events-auto overflow-hidden">
+        <!-- Side HUD Panel (Defender Idle 2 style) - MOVED OUTSIDE game-container -->
+        <div id="side-hud" class="fixed top-0 right-0 w-56 h-full bg-gradient-to-b from-amber-900/95 to-amber-950/95 border-l-4 border-amber-700 z-40 flex flex-col pointer-events-auto overflow-hidden">
             <!-- Speed Controls -->
             <div class="p-2 bg-amber-950 border-b-2 border-amber-800 flex items-center justify-between">
                 <div class="flex gap-1">
@@ -218,7 +218,7 @@
             </div>
         </div>
 
-        <div class="absolute top-4 right-60 flex flex-col items-end gap-2 pointer-events-auto z-20" id="menu-container">
+        <div class="fixed top-4 right-[240px] flex flex-col items-end gap-2 pointer-events-auto z-30" id="menu-container">
             <!-- Quick Access Bar -->
             <div class="flex gap-2 items-center">
                 <button onclick="document.getElementById('settings-modal').classList.remove('hidden')" class="menu-btn-sm" aria-label="Settings">⚙️</button>
