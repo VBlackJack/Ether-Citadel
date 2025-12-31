@@ -429,7 +429,7 @@ this.autoSkills = { Q: false, W: false, E: false };
     baseCost: 15, costMult: 100, level: 0, maxLevel: 1,
     getEffect: (lvl) => lvl > 0,
     format: (v) => v ? t('status.on') : t('status.off'),
-    icon: '🔴'
+    icon: '🤖'
 },
 // Same for W and E
 
