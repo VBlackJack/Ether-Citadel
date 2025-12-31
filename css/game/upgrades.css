@@ -46,14 +46,14 @@
 .upgrade-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.75rem;
 }
 
 .upgrade-item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem;
+    padding: 0.875rem;
     background: var(--color-bg-card);
     border-radius: var(--border-radius);
     cursor: pointer;

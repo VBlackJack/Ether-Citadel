@@ -201,6 +201,13 @@ class Game {
             if (e.key.toLowerCase() === 'w') this.activateSkill('nuke');
             if (e.key.toLowerCase() === 'e') this.activateSkill('blackhole');
             if (e.key.toLowerCase() === 'p') this.togglePause();
+            // Speed shortcuts 1-6
+            if (e.key === '1') this.setSpeed(1);
+            if (e.key === '2') this.setSpeed(2);
+            if (e.key === '3') this.setSpeed(3);
+            if (e.key === '4') this.setSpeed(5);
+            if (e.key === '5') this.setSpeed(10);
+            if (e.key === '6') this.setSpeed(20);
             if (e.key === 'F3') {
                 e.preventDefault();
                 this.toggleDebugPanel();
@@ -351,7 +358,16 @@ class Game {
     }
 
     async changeLanguage(locale) {
-        await i18n.setLocale(locale);
+        // Show loading state
+        const select = document.getElementById('language-select');
+        if (select) select.disabled = true;
+        document.body.style.cursor = 'wait';
+        try {
+            await i18n.setLocale(locale);
+        } finally {
+            if (select) select.disabled = false;
+            document.body.style.cursor = '';
+        }
     }
 
     triggerDevSecret() {

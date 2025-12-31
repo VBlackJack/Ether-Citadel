@@ -59,8 +59,10 @@ body {
 
 /* Modal close button standardization */
 .modal-close-btn {
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -71,7 +73,7 @@ body {
     font-size: 1.5rem;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: var(--transition-fast);
 }
 
 .modal-close-btn:hover {
@@ -1715,8 +1717,10 @@ select:focus-visible {
 }
 
 .stat-btn {
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     background: #d97706;
     border: 2px solid #f59e0b;
     border-radius: 6px;
@@ -1724,7 +1728,7 @@ select:focus-visible {
     font-weight: 700;
     font-size: 1.2rem;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: var(--transition-fast);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1796,16 +1800,18 @@ select:focus-visible {
 }
 
 .passive-btn {
-    width: 24px;
-    height: 24px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     background: #475569;
     border: 2px solid #64748b;
     border-radius: 50%;
     color: white;
     font-weight: 700;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: var(--transition-fast);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2838,8 +2844,10 @@ select:focus-visible {
 }
 
 .stats-breakdown-close {
-    width: 28px;
-    height: 28px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2850,7 +2858,7 @@ select:focus-visible {
     font-size: 1.25rem;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: var(--transition-fast);
 }
 
 .stats-breakdown-close:hover {

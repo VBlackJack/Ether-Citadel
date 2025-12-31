@@ -5,8 +5,10 @@
 
 /* Grouped Menu System */
 .menu-btn-sm {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -15,7 +17,7 @@
     border-radius: 8px;
     font-size: 1.25rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--transition-fast);
     backdrop-filter: blur(4px);
 }
 
@@ -39,7 +41,7 @@
     font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: var(--transition-fast);
     backdrop-filter: blur(4px);
 }
 
@@ -50,7 +52,7 @@
 .menu-arrow {
     margin-left: auto;
     font-size: 0.75rem;
-    transition: transform 0.2s;
+    transition: transform var(--transition-fast);
 }
 
 .menu-group-header.open .menu-arrow {
@@ -81,10 +83,10 @@
     background: transparent;
     border: none;
     border-radius: 6px;
-    color: #e2e8f0;
+    color: var(--color-text);
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: var(--transition-fast);
     text-align: left;
     min-height: 44px;
 }
@@ -137,7 +139,7 @@
 
 /* Button Feedback Animation */
 .menu-btn {
-    transition: all 0.15s ease-out;
+    transition: var(--transition-fast);
 }
 
 .menu-btn:active {

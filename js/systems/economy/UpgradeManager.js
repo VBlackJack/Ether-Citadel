@@ -227,8 +227,12 @@ export class UpgradeManager {
         div.className = this.getUpgradeClassName(isMaxed, canAfford);
 
         if (!isMaxed) {
-            div.onclick = () => {
+            div.onclick = (e) => {
                 if (canAfford) {
+                    // Visual feedback animation
+                    const target = e.currentTarget;
+                    target.classList.add('purchase-success');
+                    setTimeout(() => target.classList.remove('purchase-success'), 300);
                     this.buy(u.id);
                 } else {
                     // Feedback for insufficient resources
