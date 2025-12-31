@@ -836,10 +836,6 @@
     "productionX3": { "name": "Industrial Revolution", "desc": "3x Production building output." },
     "startGold": { "name": "Golden Start", "desc": "Start each run with 10,000 gold." }
   },
-  "dread": {
-    "title": "Dread Mode",
-    "level": "Dread Level"
-  },
   "slots": {
     "title": "Turret Slot",
     "desc": "Select a turret to place in this slot.",
@@ -1281,13 +1277,6 @@
       "campaign": "Complete missions to earn rewards. Missions are organized by chapters with increasing difficulty.",
       "leaderboard": "Track your best scores across different categories. Compete against your own records!"
     }
-  },
-  "presets": {
-    "slot1": { "name": "Preset 1" },
-    "slot2": { "name": "Preset 2" },
-    "slot3": { "name": "Preset 3" },
-    "slot4": { "name": "Preset 4" },
-    "slot5": { "name": "Preset 5" }
   },
   "stats": {
     "damage": "DAMAGE",

@@ -4,6 +4,7 @@
  */
 
 import { t } from '../../i18n.js';
+import { sanitizeJsonObject } from '../../utils/HtmlSanitizer.js';
 
 export class StatisticsManager {
     constructor(game) {
@@ -59,6 +60,6 @@ export class StatisticsManager {
 
     loadSaveData(data) {
         if (!data) return;
-        Object.assign(this.stats, data);
+        Object.assign(this.stats, sanitizeJsonObject(data));
     }
 }

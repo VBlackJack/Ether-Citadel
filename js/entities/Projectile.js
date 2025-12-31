@@ -15,6 +15,7 @@ export class Projectile {
         this.speed = speed;
         this.color = color;
         this.active = true;
+        this.dead = false;
         this.tier = tier;
         this.isMulti = isMulti;
         this.isCrit = isCrit;
@@ -38,7 +39,8 @@ export class Projectile {
             const moveStep = this.speed * (dt / 16);
             this.x += Math.cos(angle) * moveStep;
             this.y += Math.sin(angle) * moveStep;
-            if (MathUtils.dist(this.x, this.y, this.target.x, this.target.y) < this.target.radius + 15) {
+            const hitRadius = this.target.radius + 15;
+            if (MathUtils.distSq(this.x, this.y, this.target.x, this.target.y) < hitRadius * hitRadius) {
                 this.hit(this.target);
             }
         } else {
@@ -62,8 +64,9 @@ export class Projectile {
     }
 
     explode() {
+        const blastRadiusSq = this.blastRadius * this.blastRadius;
         window.game?.enemies?.forEach(e => {
-            if (e.hp > 0 && MathUtils.dist(this.x, this.y, e.x, e.y) < this.blastRadius) {
+            if (e.hp > 0 && MathUtils.distSq(this.x, this.y, e.x, e.y) < blastRadiusSq) {
                 e.takeDamage(this.damage * 0.5, false, false, true);
             }
         });
@@ -80,13 +83,13 @@ export class Projectile {
 
     bounce(lastTarget) {
         let nearest = null;
-        let minDist = 250;
+        let minDistSq = 250 * 250;
         const enemies = window.game?.enemies || [];
         for (const e of enemies) {
             if (e !== lastTarget && e.hp > 0) {
-                const d = MathUtils.dist(this.x, this.y, e.x, e.y);
-                if (d < minDist) {
-                    minDist = d;
+                const dSq = MathUtils.distSq(this.x, this.y, e.x, e.y);
+                if (dSq < minDistSq) {
+                    minDistSq = dSq;
                     nearest = e;
                 }
             }

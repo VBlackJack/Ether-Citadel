@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { sanitizeJsonObject } from '../../utils/HtmlSanitizer.js';
+
 /**
  * AutoSkillManager - Handles automatic skill casting
  * Skills auto-cast when off cooldown if enabled
@@ -197,7 +199,7 @@ export class AutoSkillManager {
      */
     loadSaveData(data) {
         if (data?.autoEnabled) {
-            Object.assign(this.autoEnabled, data.autoEnabled);
+            Object.assign(this.autoEnabled, sanitizeJsonObject(data.autoEnabled));
         }
         this.updateAllUI();
     }

@@ -81,7 +81,7 @@ import { getEventDelegation } from './ui/EventDelegation.js';
 import { getErrorHandler, logError } from './utils/ErrorHandler.js';
 import { ConfigRegistry } from './services/ConfigRegistry.js';
 import { StatsBreakdown } from './ui/StatsBreakdown.js';
-import { sanitizeColor, calculateChecksum, verifyChecksum, sanitizeJsonObject } from './utils/HtmlSanitizer.js';
+import { escapeHtml, sanitizeColor, calculateChecksum, verifyChecksum, sanitizeJsonObject } from './utils/HtmlSanitizer.js';
 import { Enemy, Castle, FloatingText, Particle, Rune, Projectile, Turret, Drone } from './entities/index.js';
 import { SkillManager, ChallengeManager, GameModeManager, CampaignManager, StatsManager, DailyQuestManager, TurretSlotManager, WeatherManager, EventManager, SeasonalEventManager, BuildPresetManager } from './systems/gameplay/index.js';
 import { TownManager, SchoolManager, OfficeManager } from './systems/town/index.js';
@@ -490,7 +490,7 @@ class Game {
     }
 
     createRune(x, y) {
-        return new Rune(x, y);
+        return new Rune(x, y, this);
     }
 
     createParticle(x, y, color) {
@@ -603,7 +603,7 @@ class Game {
 
     updateDroneStatus() {
         if (this.metaUpgrades.getEffectValue('unlockDrone') && !this.drone) {
-            this.drone = new Drone();
+            this.drone = new Drone(this);
             this.drone.canCollect = true;
         }
     }
@@ -936,7 +936,7 @@ class Game {
             div.innerHTML = `
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <span class="text-2xl">${resource.icon}</span>
+                        <span class="text-2xl">${escapeHtml(resource.icon)}</span>
                         <span class="font-bold" style="color: ${sanitizeColor(resource.color)}">${t(resource.nameKey)}</span>
                     </div>
                     <span class="text-white font-mono">${formatNumber(amount)}</span>
@@ -1116,7 +1116,7 @@ class Game {
     showLootPopup(relic) {
         const div = document.createElement('div');
         div.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-500 text-black font-bold p-4 rounded-xl border-4 border-white shadow-2xl z-40 loot-popup';
-        div.innerHTML = `<div>🏆 ${t('notifications.relicObtained')}</div><div class="text-2xl mt-1">${relic.icon} ${t(relic.nameKey)}</div><div class="text-xs font-normal">${t(relic.descKey)}</div>`;
+        div.innerHTML = `<div>🏆 ${t('notifications.relicObtained')}</div><div class="text-2xl mt-1">${escapeHtml(relic.icon)} ${t(relic.nameKey)}</div><div class="text-xs font-normal">${t(relic.descKey)}</div>`;
         document.getElementById('loot-container').appendChild(div);
         setTimeout(() => div.remove(), 2000);
     }
@@ -1444,7 +1444,7 @@ class Game {
             div.className = `p-3 rounded border ${unlocked ? 'border-indigo-500 bg-indigo-900/30' : 'border-slate-600 bg-slate-800'}`;
             div.innerHTML = `
                 <div class="flex items-center gap-2 mb-2">
-                    <span class="text-2xl">${turret.icon}</span>
+                    <span class="text-2xl">${escapeHtml(turret.icon)}</span>
                     <div>
                         <div class="font-bold ${unlocked ? 'text-indigo-400' : 'text-slate-400'}">${t(turret.nameKey)}</div>
                         ${unlocked ? `<div class="text-xs text-slate-300">${t('school.level')} ${level}/${turret.maxLevel}</div>` : ''}
@@ -1722,7 +1722,7 @@ class Game {
                 // Turret icon header
                 const iconHeader = document.createElement('div');
                 iconHeader.className = `tech-turret-icon ${unlocked ? 'unlocked' : 'locked'}`;
-                iconHeader.innerHTML = `<span class="text-2xl">${info.icon}</span>`;
+                iconHeader.innerHTML = `<span class="text-2xl">${escapeHtml(info.icon)}</span>`;
                 turretColumn.appendChild(iconHeader);
 
                 // Stages
@@ -2516,7 +2516,7 @@ class Game {
             }`;
             div.innerHTML = `
                 <div class="flex items-center gap-2">
-                    <span class="text-2xl">${turret.icon}</span>
+                    <span class="text-2xl">${escapeHtml(turret.icon)}</span>
                     <div>
                         <div class="font-bold ${unlocked ? 'text-white' : 'text-slate-500'}">${t(turret.nameKey)}</div>
                         ${unlocked ? `<div class="text-xs text-slate-400">${t('school.level')} ${level}</div>` : `<div class="text-xs text-red-400">${t('slots.locked')}</div>`}
@@ -2551,7 +2551,7 @@ class Game {
             if (r) {
                 const div = document.createElement('div');
                 div.className = 'bg-slate-700 p-2 rounded border border-yellow-700 flex flex-col items-center text-center';
-                div.innerHTML = `<div class="text-3xl mb-1">${r.icon}</div><div class="font-bold text-sm text-yellow-400 leading-tight">${t(r.nameKey)}</div><div class="text-[10px] text-slate-300 mt-1">${t(r.descKey)}</div>`;
+                div.innerHTML = `<div class="text-3xl mb-1">${escapeHtml(r.icon)}</div><div class="font-bold text-sm text-yellow-400 leading-tight">${t(r.nameKey)}</div><div class="text-[10px] text-slate-300 mt-1">${t(r.descKey)}</div>`;
                 grid.appendChild(div);
             }
         });
@@ -2953,7 +2953,7 @@ class Game {
         this.particles.forEach(p => p.update(dt));
         this.floatingTexts.forEach(t => t.update(dt));
         this.enemies = this.enemies.filter(e => e.hp > 0);
-        this.projectiles = this.projectiles.filter(p => p.active);
+        this.projectiles = this.projectiles.filter(p => p.active && !p.dead);
         this.particles = this.particles.filter(p => p.life > 0);
         // Release dead floating texts back to pool and filter in single pass
         this.floatingTexts = this.floatingTexts.filter(t => {

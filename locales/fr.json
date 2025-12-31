@@ -836,10 +836,6 @@
     "productionX3": { "name": "R\u00e9volution industrielle", "desc": "3x production des b\u00e2timents." },
     "startGold": { "name": "D\u00e9part dor\u00e9", "desc": "Commencez chaque partie avec 10 000 or." }
   },
-  "dread": {
-    "title": "Mode Terreur",
-    "level": "Niveau Terreur"
-  },
   "slots": {
     "title": "Emplacement de tourelle",
     "desc": "Selectionnez une tourelle a placer dans cet emplacement.",
@@ -1282,13 +1278,6 @@
       "campaign": "Complétez des missions pour gagner des récompenses. Les missions sont organisées par chapitres avec une difficulté croissante.",
       "leaderboard": "Suivez vos meilleurs scores dans différentes catégories. Rivalisez avec vos propres records !"
     }
-  },
-  "presets": {
-    "slot1": { "name": "Preset 1" },
-    "slot2": { "name": "Preset 2" },
-    "slot3": { "name": "Preset 3" },
-    "slot4": { "name": "Preset 4" },
-    "slot5": { "name": "Preset 5" }
   },
   "stats": {
     "damage": "DÉGÂTS",

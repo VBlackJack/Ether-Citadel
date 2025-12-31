@@ -87,8 +87,9 @@ export class AuraManager {
         const buffs = { damage: 0, fireRate: 0, range: 0, crit: 0, regen: 0 };
 
         for (const aura of this.placedAuras) {
-            const dist = MathUtils.dist(turretX, turretY, aura.x, aura.y);
-            if (dist <= aura.type.range) {
+            const rangeSq = aura.type.range * aura.type.range;
+            const distSq = MathUtils.distSq(turretX, turretY, aura.x, aura.y);
+            if (distSq <= rangeSq) {
                 buffs[aura.type.effect] = (buffs[aura.type.effect] || 0) + aura.type.baseValue;
             }
         }

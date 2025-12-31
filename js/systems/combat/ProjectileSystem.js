@@ -148,6 +148,7 @@ export class Projectile {
         }
 
         this.dead = false;
+        this.active = true;
         this.hitTargets = new Set();
         this.trailPoints = [];
     }
@@ -202,10 +203,10 @@ export class Projectile {
 
         const dx = this.x - enemy.x;
         const dy = this.y - enemy.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        const distSq = dx * dx + dy * dy;
         const hitRadius = this.size + (enemy.size || 15);
 
-        return distance < hitRadius;
+        return distSq < hitRadius * hitRadius;
     }
 
     /**
@@ -252,6 +253,7 @@ export class Projectile {
         // Check if projectile should die
         if (this.pierce <= 0) {
             this.dead = true;
+            this.active = false;
         } else {
             this.pierce--;
         }
@@ -430,6 +432,7 @@ export class ProjectileSystem {
             // Check out of bounds
             if (projectile.isOutOfBounds(this.game.width, this.game.height)) {
                 projectile.dead = true;
+                projectile.active = false;
             }
 
             // Check collision with enemies

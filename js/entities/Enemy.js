@@ -121,8 +121,9 @@ export class Enemy {
         }
         if (this.typeKey === 'HEALER') {
             if (Math.random() < 0.05) {
+                const healRangeSq = 150 * 150;
                 game.enemies.forEach(e => {
-                    if (e !== this && e.hp < e.maxHp && MathUtils.dist(this.x, this.y, e.x, e.y) < 150) {
+                    if (e !== this && e.hp < e.maxHp && MathUtils.distSq(this.x, this.y, e.x, e.y) < healRangeSq) {
                         e.hp = Math.min(e.maxHp, e.hp + (e.maxHp * 0.05));
                         const beam = game.createParticle(this.x, this.y, '#4ade80');
                         beam.tx = e.x;

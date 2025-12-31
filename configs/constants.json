@@ -9,7 +9,7 @@
     "evolutionMultiplier": 1.5
   },
   "save": {
-    "saveKey": "defenderIdleSave_v2",
+    "saveKey": "ether_citadel_save_v2",
     "saveIntervalMs": 30000,
     "saveVersion": 2
   },

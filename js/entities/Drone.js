@@ -7,7 +7,8 @@ import { MathUtils } from '../config.js';
 import { Projectile } from './Projectile.js';
 
 export class Drone {
-    constructor() {
+    constructor(game) {
+        this.game = game;
         this.angle = 0;
         this.radius = 60;
         this.x = 0;
@@ -19,17 +20,19 @@ export class Drone {
     }
 
     update(dt, gameTime) {
+        const game = this.game;
+        if (!game) return;
         this.angle += 0.02 * (dt / 16);
         this.x = 100 + Math.cos(this.angle) * this.radius;
         this.y = game.height / 2 + Math.sin(this.angle) * this.radius;
-        const speedBoost = game.stats.mastery['drone_spd'] ? (1 + game.stats.mastery['drone_spd'] * 0.1) : 1;
-        const overlord = game.challenges.dmTech['overlord'] ? 2 : 1;
+        const speedBoost = game.stats?.mastery?.['drone_spd'] ? (1 + game.stats.mastery['drone_spd'] * 0.1) : 1;
+        const overlord = game.challenges?.dmTech?.['overlord'] ? 2 : 1;
         if (gameTime - this.lastShotTime > (this.fireRate / (speedBoost * overlord))) {
-            const target = game.findTarget(this.x, this.y, 400);
+            const target = game.findTarget?.(this.x, this.y, 400);
             if (target) {
-                const dmg = Math.max(1, Math.floor(game.currentDamage * 0.1));
-                game.projectiles.push(Projectile.create(this.x, this.y, target, dmg, 20, '#06b6d4', 1, false, false, false, {}, {}));
-                game.sound.play('shoot');
+                const dmg = Math.max(1, Math.floor((game.currentDamage || 10) * 0.1));
+                game.projectiles?.push(Projectile.create(this.x, this.y, target, dmg, 20, '#06b6d4', 1, false, false, false, {}, {}));
+                game.sound?.play('shoot');
                 this.lastShotTime = gameTime;
             }
         }

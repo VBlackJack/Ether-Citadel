@@ -24,9 +24,9 @@ export const CONFIG = {
     enemySpawnRate: 1500,
 
     // Save settings
-    saveKey: 'defenderIdleSave_Patch81_v1',
+    saveKey: 'ether_citadel_save_v2',
     saveIntervalMs: 30000,
-    SAVE_VERSION: 1,
+    SAVE_VERSION: 2,
 
     // Evolution settings
     evolutionInterval: 10,
@@ -96,6 +96,7 @@ export const SOUND_DB = {
 export const MathUtils = {
     lerp: (a, b, t) => a + (b - a) * t,
     dist: (x1, y1, x2, y2) => Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2),
+    distSq: (x1, y1, x2, y2) => (x2 - x1) ** 2 + (y2 - y1) ** 2,
     randomRange: (min, max) => Math.random() * (max - min) + min
 };
 

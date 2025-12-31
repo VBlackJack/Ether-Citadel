@@ -17,6 +17,7 @@
 import { PASSIVES, getAllPassives, getPassiveById } from '../../data.js';
 import { t } from '../../i18n.js';
 import { formatNumber } from '../../config.js';
+import { sanitizeJsonObject } from '../../utils/HtmlSanitizer.js';
 
 /**
  * Passive Manager - Handles Defender Idle 2 style passive upgrades
@@ -180,6 +181,6 @@ export class PassiveManager {
      */
     loadSaveData(data) {
         if (!data) return;
-        Object.assign(this.levels, data);
+        Object.assign(this.levels, sanitizeJsonObject(data));
     }
 }
