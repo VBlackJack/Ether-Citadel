@@ -661,7 +661,8 @@
     "units": "Units",
     "bounces": "Bounces",
     "perSecond": "/s",
-    "second": "s"
+    "second": "s",
+    "xp": "XP"
   },
   "production": {
     "title": "Production",

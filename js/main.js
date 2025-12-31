@@ -1412,7 +1412,7 @@ class Game {
                     <span class="text-2xl">${lvl.icon}</span>
                     <span class="font-bold ${unlocked ? 'text-teal-400' : 'text-slate-500'}">${t(lvl.nameKey)}</span>
                 </div>
-                <div class="text-xs text-slate-400">${t('town.requires')} ${formatNumber(lvl.xpRequired)} XP</div>
+                <div class="text-xs text-slate-400">${t('town.requires')} ${formatNumber(lvl.xpRequired)} ${t('units.xp')}</div>
                 <div class="text-xs text-slate-300 mt-1">${lvl.unlocks.map(u => t(`town.unlock.${u}`)).join(', ')}</div>
             `;
             unlocksGrid.appendChild(div);
@@ -1751,7 +1751,7 @@ class Game {
                 if (unlocked) {
                     const levelIndicator = document.createElement('div');
                     levelIndicator.className = 'tech-level-indicator';
-                    levelIndicator.innerHTML = `<span>Lv ${level}/${maxLevel}</span>`;
+                    levelIndicator.innerHTML = `<span>${t('lab.level')} ${level}/${maxLevel}</span>`;
                     turretColumn.appendChild(levelIndicator);
                 }
 
@@ -1901,7 +1901,7 @@ class Game {
                                 ${!canAfford ? 'disabled style="opacity:0.5"' : ''}>
                                 ${formatNumber(cost)}💎
                             </button>
-                        ` : '<span class="text-xs text-yellow-400">MAX</span>'}
+                        ` : `<span class="text-xs text-yellow-400">${t('lab.max')}</span>`}
                     </div>
                 `;
             }
