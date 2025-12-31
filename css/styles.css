@@ -2577,11 +2577,6 @@ select:focus-visible {
         right: calc(25% + 16px) !important;
     }
 
-    /* Hide redundant auto-controls on desktop (Lab has them) */
-    #auto-controls {
-        display: none !important;
-    }
-
     /* Hide menu toggle on desktop - menus always visible */
     #btn-toggle-menu {
         display: none !important;

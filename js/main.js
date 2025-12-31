@@ -4309,8 +4309,6 @@ class Game {
         this.stats.render();
         this.challenges.render();
 
-        document.getElementById('toggle-retry').addEventListener('change', (e) => this.autoRetryEnabled = e.target.checked);
-
         const langSelect = document.getElementById('language-select');
         if (langSelect) {
             langSelect.value = i18n.getLocale();
@@ -4514,11 +4512,8 @@ class Game {
 
     toggleAutoRetry() {
         this.autoRetryEnabled = !this.autoRetryEnabled;
-        // Sync all checkboxes
         const labCheck = document.getElementById('lab-auto-retry');
-        const hudCheck = document.getElementById('toggle-retry');
         if (labCheck) labCheck.checked = this.autoRetryEnabled;
-        if (hudCheck) hudCheck.checked = this.autoRetryEnabled;
     }
 
     activateSkill(id) {
@@ -6769,14 +6764,7 @@ class Game {
     }
 
     updateAutomationUI() {
-        if (this.metaUpgrades.getEffectValue('unlockAuto')) {
-            document.getElementById('auto-controls').classList.remove('hidden');
-            if (this.metaUpgrades.getEffectValue('unlockAI')) {
-                document.getElementById('auto-buy-container').classList.remove('hidden');
-                document.getElementById('toggle-buy').disabled = false;
-                document.getElementById('auto-buy-container').classList.remove('opacity-50');
-            }
-        }
+        // Auto controls now integrated in Lab panel header
     }
 
     rushWave() {
@@ -7489,17 +7477,15 @@ class Game {
                     this.tutorial.step = data.tutorialStep;
                 }
 
-                const toggleRetry = document.getElementById('toggle-retry');
-                const toggleBuy = document.getElementById('toggle-buy');
                 const toggleDamage = document.getElementById('toggle-damage');
                 const toggleRange = document.getElementById('toggle-range');
                 const toggleAutoTurret = document.getElementById('toggle-auto-turret');
+                const labAutoRetry = document.getElementById('lab-auto-retry');
 
-                if (toggleRetry) toggleRetry.checked = this.autoRetryEnabled;
-                if (toggleBuy) toggleBuy.checked = this.autoBuyEnabled;
                 if (toggleDamage) toggleDamage.checked = this.settings.showDamageText;
                 if (toggleRange) toggleRange.checked = this.settings.showRange;
                 if (toggleAutoTurret) toggleAutoTurret.checked = this.settings.autoUpgradeTurrets;
+                if (labAutoRetry) labAutoRetry.checked = this.autoRetryEnabled;
                 if (data.locale) {
                     i18n.setLocale(data.locale);
                 }

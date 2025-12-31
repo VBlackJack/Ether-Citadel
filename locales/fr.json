@@ -25,7 +25,9 @@
     "autoAdvance": "Auto",
     "autoRetry": "Relance",
     "autoBuy": "AUTO BUY",
-    "aiActive": "IA ACTIVE"
+    "aiActive": "IA ACTIVE",
+    "xpBar": "Expérience",
+    "xpBarHint": "Montez de niveau pour des Points"
   },
   "sideHud": {
     "spendPoints": "Dépenser les Points",

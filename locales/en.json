@@ -25,7 +25,9 @@
     "autoAdvance": "Auto",
     "autoRetry": "Retry",
     "autoBuy": "AUTO BUY",
-    "aiActive": "AI ACTIVE"
+    "aiActive": "AI ACTIVE",
+    "xpBar": "Experience",
+    "xpBarHint": "Level up for Stat Points"
   },
   "sideHud": {
     "spendPoints": "Spend Stat Points",

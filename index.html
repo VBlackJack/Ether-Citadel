@@ -39,8 +39,11 @@
         <div class="text-slate-400 text-sm" data-i18n="ui.loading">Loading...</div>
     </div>
 
-    <div class="fixed top-0 left-0 w-full h-1 bg-slate-900 z-50 pointer-events-none">
+    <div class="fixed top-0 left-0 w-full h-1 bg-slate-900 z-50 pointer-events-auto cursor-help group" title="Experience - Level up to earn Stat Points">
         <div id="ui-xp-bar" class="h-full bg-cyan-500 shadow-[0_0_10px_#06b6d4] transition-all duration-300" style="width: 0%"></div>
+        <div class="hidden group-hover:block absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-slate-900/95 border border-cyan-500 rounded px-2 py-1 text-xs text-cyan-400 whitespace-nowrap z-50">
+            <span data-i18n="hud.xpBar">Experience</span> - <span data-i18n="hud.xpBarHint">Level up for Stat Points</span>
+        </div>
     </div>
 
     <div class="relative flex-grow h-2/3 md:h-full md:w-3/4 bg-slate-900 overflow-hidden" id="game-container">
@@ -208,24 +211,6 @@
                         <button onclick="document.getElementById('settings-modal').classList.remove('hidden')" class="menu-item">⚙️ <span data-i18n="game.options">Options</span></button>
                     </div>
                 </div>
-            </div>
-
-            <div id="auto-controls" class="hidden bg-slate-900/80 p-3 rounded-lg border border-slate-700 backdrop-blur-sm w-full">
-                <div class="flex items-center justify-between gap-3 mb-2">
-                    <span class="text-xs font-bold text-slate-400 tracking-wider" data-i18n="hud.autoRetry">AUTO RETRY</span>
-                    <div class="relative inline-block w-8 align-middle select-none">
-                        <input type="checkbox" name="toggle" id="toggle-retry" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer left-0 top-0 transition-all duration-300"/>
-                        <label for="toggle-retry" class="toggle-label block overflow-hidden h-4 rounded-full bg-gray-600 cursor-pointer"></label>
-                    </div>
-                </div>
-                <div id="auto-buy-container" class="hidden flex items-center justify-between gap-3 opacity-50">
-                    <span class="text-xs font-bold text-slate-400 tracking-wider" data-i18n="hud.autoBuy">AUTO BUY</span>
-                    <div class="relative inline-block w-8 align-middle select-none">
-                        <input type="checkbox" name="toggle" id="toggle-buy" class="toggle-checkbox absolute block w-4 h-4 rounded-full bg-white border-4 appearance-none cursor-pointer left-0 top-0 transition-all duration-300" disabled/>
-                        <label for="toggle-buy" class="toggle-label block overflow-hidden h-4 rounded-full bg-gray-600 cursor-pointer"></label>
-                    </div>
-                </div>
-                <div id="auto-status" class="text-xs text-green-400 font-mono text-center mt-1 hidden" data-i18n="hud.aiActive">AI ACTIVE</div>
             </div>
         </div>
 
@@ -1045,18 +1030,14 @@
         <div id="lab-content-upgrades" class="lab-content flex-grow flex flex-col overflow-hidden">
             <div class="p-2 bg-slate-900/30 border-b border-slate-700">
                 <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-sm font-bold text-blue-400 uppercase tracking-wider flex items-center gap-2">
-                        <span data-i18n="lab.title">Laboratory</span>
-                        <span class="help-icon text-xs" data-help="lab">?</span>
-                    </h3>
+                    <div class="flex gap-1">
+                        <button id="tab-0" onclick="game.switchTab(0)" class="tab-btn active" data-i18n="lab.tabs.attack">Attack</button>
+                        <button id="tab-1" onclick="game.switchTab(1)" class="tab-btn" data-i18n="lab.tabs.defense">Defense</button>
+                        <button id="tab-2" onclick="game.switchTab(2)" class="tab-btn" data-i18n="lab.tabs.tech">Tech</button>
+                    </div>
                     <button id="btn-bulk-buy" onclick="game.toggleBulk()" class="text-xs font-bold bg-slate-700 px-2 py-1 rounded border border-slate-600 hover:border-cyan-400 transition">
                         <span data-i18n="lab.bulkBuy">BUY</span>: x1
                     </button>
-                </div>
-                <div class="flex gap-1">
-                    <button id="tab-0" onclick="game.switchTab(0)" class="tab-btn active" data-i18n="lab.tabs.attack">Attack</button>
-                    <button id="tab-1" onclick="game.switchTab(1)" class="tab-btn" data-i18n="lab.tabs.defense">Defense</button>
-                    <button id="tab-2" onclick="game.switchTab(2)" class="tab-btn" data-i18n="lab.tabs.tech">Tech</button>
                 </div>
             </div>
             <div class="flex-grow overflow-y-auto p-2 space-y-2" id="upgrade-list"></div>
@@ -1082,10 +1063,10 @@
         <!-- PASSIVES CONTENT -->
         <div id="lab-content-passives" class="lab-content hidden flex-grow flex flex-col overflow-hidden">
             <div class="lab-passives-tabs">
-                <button onclick="game.switchLabPassiveTab('offense')" class="lab-passive-tab active" data-tab="offense" data-i18n="passives.offense">OFF</button>
-                <button onclick="game.switchLabPassiveTab('defense')" class="lab-passive-tab" data-tab="defense" data-i18n="passives.defense">DEF</button>
-                <button onclick="game.switchLabPassiveTab('utility')" class="lab-passive-tab" data-tab="utility" data-i18n="passives.utility">UTIL</button>
-                <button onclick="game.switchLabPassiveTab('resources')" class="lab-passive-tab" data-tab="resources" data-i18n="passives.resources">RES</button>
+                <button onclick="game.switchLabPassiveTab('offense')" class="lab-passive-tab active" data-tab="offense" title="Offense - Damage bonuses">⚔️</button>
+                <button onclick="game.switchLabPassiveTab('defense')" class="lab-passive-tab" data-tab="defense" title="Defense - Health & armor">🛡️</button>
+                <button onclick="game.switchLabPassiveTab('utility')" class="lab-passive-tab" data-tab="utility" title="Utility - XP & skills">⚡</button>
+                <button onclick="game.switchLabPassiveTab('resources')" class="lab-passive-tab" data-tab="resources" title="Resources - Gold & production">💰</button>
             </div>
             <div class="flex-grow overflow-y-auto">
                 <div class="p-2 text-center">
@@ -1102,10 +1083,10 @@
         <!-- TECH CONTENT -->
         <div id="lab-content-tech" class="lab-content hidden flex-grow flex flex-col overflow-hidden">
             <div class="p-2 bg-slate-900/50 border-b border-slate-700 flex flex-wrap gap-1 justify-center">
-                <button id="lab-tech-sentry" onclick="game.selectTechSpecial('sentry')" class="text-xs px-2 py-1 bg-cyan-900/50 border border-cyan-700 rounded text-cyan-400 hover:bg-cyan-800/50">SENTRY</button>
-                <button id="lab-tech-rocket" onclick="game.selectTechSpecial('rocket')" class="text-xs px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-slate-400 opacity-50">ROCKET</button>
-                <button id="lab-tech-laser" onclick="game.selectTechSpecial('laser')" class="text-xs px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-slate-400 opacity-50">LASER</button>
-                <button id="lab-tech-hallow" onclick="game.selectTechSpecial('hallow')" class="text-xs px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-slate-400 opacity-50">HALLOW</button>
+                <button id="lab-tech-sentry" onclick="game.selectTechSpecial('sentry')" class="text-xs px-2 py-1 bg-cyan-900/50 border border-cyan-700 rounded text-cyan-400 hover:bg-cyan-800/50" title="Sentry Special - Unlock at max mastery">🔫 SENTRY</button>
+                <button id="lab-tech-rocket" onclick="game.selectTechSpecial('rocket')" class="text-xs px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-slate-400 opacity-50" title="Rocket Special - Unlock at max mastery">🚀 ROCKET</button>
+                <button id="lab-tech-laser" onclick="game.selectTechSpecial('laser')" class="text-xs px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-slate-400 opacity-50" title="Laser Special - Unlock at max mastery">📍 LASER</button>
+                <button id="lab-tech-hallow" onclick="game.selectTechSpecial('hallow')" class="text-xs px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-slate-400 opacity-50" title="Hallow Special - Unlock at max mastery">✨ HALLOW</button>
             </div>
             <div class="flex-grow overflow-y-auto p-2">
                 <div id="lab-tech-tree" class="lab-tech-tree"></div>
