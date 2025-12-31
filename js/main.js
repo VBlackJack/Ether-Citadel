@@ -5425,6 +5425,347 @@ class Game {
         });
     }
 
+    /** Defender Idle 2 Style - Stats Panel */
+    renderStatsUI() {
+        const grid = document.getElementById('stats-grid');
+        const summary = document.getElementById('stats-summary');
+        const spEl = document.getElementById('stats-sp');
+        const tierEl = document.getElementById('stats-tier');
+        if (!grid) return;
+
+        // Calculate stat points available (5 per level)
+        const statPoints = (this.level || 1) * 5;
+        const usedPoints = this.statPointsUsed || 0;
+        const availablePoints = Math.max(0, statPoints - usedPoints);
+
+        if (spEl) spEl.innerText = availablePoints;
+        if (tierEl) tierEl.innerText = this.castle?.tier || 1;
+
+        // Stats to display (Defender Idle 2 style)
+        const stats = [
+            { id: 'damage', name: t('stats.damage') || 'DAMAGE', icon: '⚔️', getValue: () => Math.floor(this.getDamage()), format: (v) => `${v}` },
+            { id: 'critDamage', name: t('stats.critDamage') || 'CRITICAL DAMAGE', icon: '💥', getValue: () => this.getCritMult().toFixed(2), format: (v) => `x${v}` },
+            { id: 'fireRate', name: t('stats.fireRate') || 'FIRE RATE', icon: '🔥', getValue: () => (1000 / this.getFireRate()).toFixed(1), format: (v) => `${v}/s` },
+            { id: 'range', name: t('stats.range') || 'RANGE', icon: '🎯', getValue: () => Math.floor(this.getRange()), format: (v) => `${v}` },
+            { id: 'aoe', name: t('stats.aoe') || 'AREA OF EFFECT', icon: '💫', getValue: () => this.getBlastRadius(), format: (v) => `${v}` },
+            { id: 'mining', name: t('stats.mining') || 'MINING', icon: '⛏️', getValue: () => ((this.getMiningSpeedMult() - 1) * 100).toFixed(0), format: (v) => `+${v}%` },
+            { id: 'totalHealth', name: t('stats.totalHealth') || 'TOTAL HEALTH', icon: '❤️', getValue: () => Math.floor(this.getMaxHealth()), format: (v) => `${v}` }
+        ];
+
+        grid.innerHTML = '';
+        stats.forEach(stat => {
+            const level = this.statLevels?.[stat.id] || 0;
+            const maxLevel = 100;
+            const value = stat.getValue();
+
+            const div = document.createElement('div');
+            div.className = 'stat-row';
+            div.innerHTML = `
+                <span class="text-xl">${stat.icon}</span>
+                <span class="stat-name">${stat.name}</span>
+                <div class="stat-bar">${stat.format(value)}</div>
+                <span class="text-amber-300 font-bold text-sm">${level}/${maxLevel}</span>
+                <button data-action="stat.upgrade" data-id="${stat.id}" class="stat-btn" ${availablePoints <= 0 || level >= maxLevel ? 'disabled' : ''}>+</button>
+            `;
+            grid.appendChild(div);
+        });
+
+        // Summary
+        if (summary) {
+            summary.innerHTML = `
+                <div class="stat-summary-item"><span>DPS:</span> <span class="stat-summary-value">${formatNumber(this.getCurrentDPS())}</span></div>
+                <div class="stat-summary-item"><span>${t('stats.crit') || 'Crit'}:</span> <span class="stat-summary-value">${this.getCritChance()}%</span></div>
+                <div class="stat-summary-item"><span>${t('stats.armor') || 'Armor'}:</span> <span class="stat-summary-value">${(this.getArmor() * 100).toFixed(0)}%</span></div>
+                <div class="stat-summary-item"><span>${t('stats.regen') || 'Regen'}:</span> <span class="stat-summary-value">${this.getRegen()}/s</span></div>
+            `;
+        }
+    }
+
+    upgradeStat(statId) {
+        const statPoints = (this.level || 1) * 5;
+        const usedPoints = this.statPointsUsed || 0;
+        const availablePoints = statPoints - usedPoints;
+
+        if (availablePoints <= 0) return;
+        if (!this.statLevels) this.statLevels = {};
+        if (!this.statLevels[statId]) this.statLevels[statId] = 0;
+        if (this.statLevels[statId] >= 100) return;
+
+        this.statLevels[statId]++;
+        this.statPointsUsed = (this.statPointsUsed || 0) + 1;
+        this.renderStatsUI();
+    }
+
+    /** Defender Idle 2 Style - Passives Panel with 4 tabs */
+    renderPassivesUI(tab = 'offense') {
+        const grid = document.getElementById('passives-grid');
+        const aurasGrid = document.getElementById('passives-auras');
+        if (!grid) return;
+
+        // Update active tab
+        document.querySelectorAll('.passive-tab').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tab);
+        });
+
+        // Passives organized by category like Defender Idle 2
+        const passivesByTab = {
+            offense: [
+                { id: 'damage', name: t('passives.damage') || 'DAMAGE', desc: '+5% damage per level', getValue: () => this.getPrestigeUpgradeLevel('prestige_damage'), max: 100 },
+                { id: 'critChance', name: t('passives.critChance') || 'CRITICAL CHC', desc: '+2% crit chance per level', getValue: () => this.getPrestigeUpgradeLevel('prestige_crit') || 0, max: 50 },
+                { id: 'magicDamage', name: t('passives.magicDamage') || 'MAGIC DAMAGE', desc: '+10% skill damage', getValue: () => 0, max: 25, locked: true },
+                { id: 'armorIgnore', name: t('passives.armorIgnore') || 'ARMOR IGNORE', desc: 'Ignore % enemy armor', getValue: () => 0, max: 20, locked: true },
+                { id: 'splash', name: t('passives.splash') || 'SPLASH', desc: '+5 splash radius', getValue: () => 0, max: 30 },
+                { id: 'firstStrike', name: t('passives.firstStrike') || 'FIRST STRIKE', desc: '+25% damage to full HP', getValue: () => 0, max: 10, locked: true }
+            ],
+            defense: [
+                { id: 'health', name: t('passives.health') || 'TOTAL HEALTH', desc: '+5% max health', getValue: () => this.getPrestigeUpgradeLevel('prestige_health'), max: 100 },
+                { id: 'block', name: t('passives.block') || 'BLOCK', desc: '+2% block chance', getValue: () => 0, max: 25, locked: true },
+                { id: 'armor', name: t('passives.armor') || 'ARMOR', desc: '+1% damage reduction', getValue: () => 0, max: 50 },
+                { id: 'negate', name: t('passives.negate') || 'NEGATE', desc: '+5% chance to negate', getValue: () => 0, max: 10, locked: true },
+                { id: 'lastStand', name: t('passives.lastStand') || 'LAST STAND', desc: '+20% dmg at low HP', getValue: () => 0, max: 5, locked: true },
+                { id: 'barrier', name: t('passives.barrier') || 'BARRIER', desc: '+10% shield strength', getValue: () => 0, max: 20 }
+            ],
+            utility: [
+                { id: 'expGain', name: t('passives.expGain') || 'EXP GAIN', desc: '+5% experience', getValue: () => 0, max: 50 },
+                { id: 'statPointGain', name: t('passives.statPointGain') || 'STAT POINT GAIN', desc: '+1 SP per level', getValue: () => 0, max: 20, locked: true },
+                { id: 'researchReduction', name: t('passives.researchReduction') || 'RESEARCH REDUCTION', desc: '-5% research cost', getValue: () => 0, max: 25 },
+                { id: 'energy', name: t('passives.energy') || 'ENERGY', desc: '+10% energy gain', getValue: () => 0, max: 30 },
+                { id: 'skillCd', name: t('passives.skillCd') || 'SKILL COOLDOWN', desc: '-5% skill cooldown', getValue: () => this.getPrestigeUpgradeLevel('prestige_skill_cd') || 0, max: 10 },
+                { id: 'timely', name: t('passives.timely') || 'TIMELY BLESSING', desc: '+X% after idle', getValue: () => 0, max: 15, locked: true }
+            ],
+            resources: [
+                { id: 'startGold', name: t('passives.startGold') || 'STARTING GOLD', desc: '+100 start gold', getValue: () => this.getPrestigeUpgradeLevel('prestige_start_gold') || 0, max: 50 },
+                { id: 'goldGain', name: t('passives.goldGain') || 'GOLD GAIN', desc: '+10% gold', getValue: () => this.getPrestigeUpgradeLevel('prestige_gold'), max: 50 },
+                { id: 'production', name: t('passives.production') || 'PRODUCTION', desc: '+20% production', getValue: () => this.getPrestigeUpgradeLevel('prestige_production'), max: 20 },
+                { id: 'dropChance', name: t('passives.dropChance') || 'DROP CHANCE', desc: '+5% drop rate', getValue: () => 0, max: 30, locked: true },
+                { id: 'crystalGain', name: t('passives.crystalGain') || 'CRYSTAL GAIN', desc: '+15% crystals', getValue: () => this.getPrestigeUpgradeLevel('prestige_crystals') || 0, max: 25 },
+                { id: 'offlineGains', name: t('passives.offlineGains') || 'OFFLINE GAINS', desc: '+10% offline earnings', getValue: () => 0, max: 20 }
+            ]
+        };
+
+        const passives = passivesByTab[tab] || passivesByTab.offense;
+        grid.innerHTML = '';
+
+        passives.forEach(passive => {
+            const level = passive.getValue();
+            const div = document.createElement('div');
+
+            if (passive.locked) {
+                div.className = 'passive-item passive-locked';
+                div.innerHTML = `<span class="lock-icon">🔒</span><span class="text-sm">${passive.name}</span>`;
+            } else {
+                div.className = 'passive-item';
+                div.innerHTML = `
+                    <span class="passive-name">${passive.name}</span>
+                    <span class="passive-value">${level}</span>
+                    <span class="text-amber-400 text-xs">/${passive.max}</span>
+                    <button class="passive-btn" ${level >= passive.max ? 'disabled' : ''}>-</button>
+                    <button class="passive-btn" data-action="passive.upgrade" data-id="${passive.id}" ${level >= passive.max ? 'disabled' : ''}>+</button>
+                `;
+            }
+            grid.appendChild(div);
+        });
+
+        // Auras (permanent buffs)
+        if (aurasGrid) {
+            const auras = [
+                { id: 'damageAura', name: 'DAMAGE AURA', value: '+10%', active: true, color: '#ef4444' },
+                { id: 'speedAura', name: 'SPEED AURA', value: '+15%', active: false, color: '#fbbf24' },
+                { id: 'rangeAura', name: 'RANGE AURA', value: '+20%', active: false, color: '#3b82f6' }
+            ];
+
+            aurasGrid.innerHTML = '';
+            auras.forEach(aura => {
+                const div = document.createElement('div');
+                div.className = `passive-item ${aura.active ? '' : 'opacity-50'}`;
+                div.style.borderColor = aura.active ? aura.color : '';
+                div.innerHTML = `
+                    <span class="passive-name">${aura.name}</span>
+                    <span class="passive-value" style="color: ${aura.color}">${aura.value}</span>
+                `;
+                aurasGrid.appendChild(div);
+            });
+        }
+    }
+
+    switchPassiveTab(tab) {
+        this.renderPassivesUI(tab);
+    }
+
+    refundPassives() {
+        // Refund all passive points
+        this.statPointsUsed = 0;
+        this.statLevels = {};
+        this.renderPassivesUI();
+        this.renderStatsUI();
+    }
+
+    /** Defender Idle 2 Style - Technology Tree Visual by Tier */
+    renderTechTreeUI() {
+        const container = document.getElementById('tech-tree-container');
+        if (!container) return;
+
+        // Get unlock status from school
+        const isUnlocked = (id) => this.school?.isUnlocked(id) || id === 'sentry';
+        const getLevel = (id) => this.school?.getLevel(id) || 0;
+        const getMaxLevel = (id) => {
+            const turret = SCHOOL_TURRETS.find(t => t.id === id);
+            return turret?.maxLevel || 10;
+        };
+        const isMastered = (id) => getLevel(id) >= getMaxLevel(id);
+
+        // Turrets organized by tiers (like Defender Idle 2)
+        const turretTiers = [
+            { tier: 1, label: 'TIER I', turrets: ['sentry', 'blaster'] },
+            { tier: 2, label: 'TIER II', turrets: ['laser', 'solidifier', 'swamper'] },
+            { tier: 3, label: 'TIER III', turrets: ['rocket', 'sniper'] },
+            { tier: 4, label: 'TIER IV', turrets: ['inferno'] }
+        ];
+
+        // Turret display names and icons
+        const turretInfo = {
+            sentry: { name: 'SENTRY', icon: '🔫' },
+            blaster: { name: 'BLASTER', icon: '🧨' },
+            laser: { name: 'LASER', icon: '📍' },
+            solidifier: { name: 'SOLIDIFIER', icon: '❄️' },
+            swamper: { name: 'SWAMPER', icon: '💧' },
+            rocket: { name: 'ROCKET', icon: '🚀' },
+            sniper: { name: 'SNIPER', icon: '🔭' },
+            inferno: { name: 'INFERNO', icon: '🌋' }
+        };
+
+        container.innerHTML = '';
+
+        turretTiers.forEach((tierData, tierIndex) => {
+            // Tier header
+            const tierHeader = document.createElement('div');
+            tierHeader.className = 'tech-tier-header';
+            tierHeader.innerHTML = `<span class="tech-tier-label">${tierData.label}</span>`;
+            container.appendChild(tierHeader);
+
+            // Turret columns for this tier
+            const tierRow = document.createElement('div');
+            tierRow.className = 'tech-tier-row';
+
+            tierData.turrets.forEach(turretId => {
+                const info = turretInfo[turretId];
+                const unlocked = isUnlocked(turretId);
+                const level = getLevel(turretId);
+                const maxLevel = getMaxLevel(turretId);
+                const mastered = isMastered(turretId);
+
+                // Calculate progression stages
+                const stages = [
+                    { id: `${turretId}_unlock`, name: info.name, type: 'unlock', done: unlocked },
+                    { id: `${turretId}_adv1`, name: 'ADV I', type: 'advancement', done: unlocked && level >= 3, requires: unlocked },
+                    { id: `${turretId}_mastery`, name: 'MASTERY', type: 'mastery', done: mastered, requires: unlocked && level >= 3 },
+                    { id: `${turretId}_adv2`, name: 'ADV II', type: 'advancement', done: mastered && level >= maxLevel, requires: mastered },
+                    { id: `${turretId}_special`, name: 'SPECIAL', type: 'special', done: false, requires: mastered }
+                ];
+
+                const turretColumn = document.createElement('div');
+                turretColumn.className = 'tech-turret-column';
+
+                // Turret icon header
+                const iconHeader = document.createElement('div');
+                iconHeader.className = `tech-turret-icon ${unlocked ? 'unlocked' : 'locked'}`;
+                iconHeader.innerHTML = `<span class="text-2xl">${info.icon}</span>`;
+                turretColumn.appendChild(iconHeader);
+
+                // Stages
+                stages.forEach((stage, stageIndex) => {
+                    // Arrow between stages
+                    if (stageIndex > 0) {
+                        const arrow = document.createElement('div');
+                        arrow.className = `tech-stage-arrow ${stage.done ? 'active' : ''}`;
+                        arrow.innerHTML = '↓';
+                        turretColumn.appendChild(arrow);
+                    }
+
+                    const stageNode = document.createElement('div');
+                    const canUnlock = stage.requires !== false && stage.requires !== undefined ? stage.requires : true;
+                    stageNode.className = `tech-stage-node ${stage.done ? 'done' : canUnlock && !stage.done ? 'available' : 'locked'}`;
+                    stageNode.innerHTML = `
+                        <span class="tech-stage-name">${stage.name}</span>
+                        ${!stage.done && !canUnlock ? '<span class="tech-stage-lock">🔒</span>' : ''}
+                        ${stage.done ? '<span class="tech-stage-check">✓</span>' : ''}
+                    `;
+                    stageNode.onclick = () => this.onTechStageClick(turretId, stage);
+                    turretColumn.appendChild(stageNode);
+                });
+
+                // Level indicator
+                if (unlocked) {
+                    const levelIndicator = document.createElement('div');
+                    levelIndicator.className = 'tech-level-indicator';
+                    levelIndicator.innerHTML = `<span>Lv ${level}/${maxLevel}</span>`;
+                    turretColumn.appendChild(levelIndicator);
+                }
+
+                tierRow.appendChild(turretColumn);
+            });
+
+            container.appendChild(tierRow);
+
+            // Arrow to next tier
+            if (tierIndex < turretTiers.length - 1) {
+                const tierArrow = document.createElement('div');
+                tierArrow.className = 'tech-tier-arrow';
+                tierArrow.innerHTML = '⬇';
+                container.appendChild(tierArrow);
+            }
+        });
+    }
+
+    onTechStageClick(turretId, stage) {
+        if (stage.done) return;
+        if (stage.type === 'unlock') {
+            // Open school modal to unlock this turret
+            this.renderSchoolUI();
+            document.getElementById('school-modal').classList.remove('hidden');
+        }
+        console.log('Tech stage clicked:', turretId, stage.id);
+    }
+
+    onTechNodeClick(node) {
+        if (node.unlocked) return;
+        // Handle unlock logic
+        console.log('Tech node clicked:', node.id);
+    }
+
+    /** Update Side HUD Panel (Defender Idle 2 style) */
+    updateSideHUD() {
+        const elements = {
+            gold: document.getElementById('side-gold'),
+            gems: document.getElementById('side-gems'),
+            ether: document.getElementById('side-ether'),
+            level: document.getElementById('side-level'),
+            statPts: document.getElementById('side-stat-pts'),
+            xp: document.getElementById('side-xp'),
+            xpBar: document.getElementById('side-xp-bar'),
+            hp: document.getElementById('side-hp'),
+            hpBar: document.getElementById('side-hp-bar')
+        };
+
+        if (elements.gold) elements.gold.innerText = formatNumber(this.gold);
+        if (elements.gems) elements.gems.innerText = formatNumber(this.office?.gems || 0);
+        if (elements.ether) elements.ether.innerText = formatNumber(this.ether || 0);
+        if (elements.level) elements.level.innerText = this.level || 1;
+
+        const statPoints = ((this.level || 1) * 5) - (this.statPointsUsed || 0);
+        if (elements.statPts) elements.statPts.innerText = statPoints;
+
+        const xp = this.xp || 0;
+        const xpRequired = this.getXPRequired?.() || 100;
+        if (elements.xp) elements.xp.innerText = `${formatNumber(xp)}/${formatNumber(xpRequired)}`;
+        if (elements.xpBar) elements.xpBar.style.width = `${Math.min(100, (xp / xpRequired) * 100)}%`;
+
+        const hp = this.castle?.hp || 100;
+        const maxHp = this.getMaxHealth?.() || 100;
+        if (elements.hp) elements.hp.innerText = `${Math.floor(hp)}/${Math.floor(maxHp)}`;
+        if (elements.hpBar) elements.hpBar.style.width = `${Math.min(100, (hp / maxHp) * 100)}%`;
+    }
+
     renderGameModesUI() {
         const currentModeEl = document.getElementById('current-mode-display');
         const grid = document.getElementById('modes-grid');
@@ -6419,6 +6760,7 @@ class Game {
             if (this.challenges.darkMatter > 0) document.getElementById('ui-dark-matter').classList.remove('hidden');
         }
         this.stats.render();
+        this.updateSideHUD();
     }
 
     draw() {

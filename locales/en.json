@@ -1184,5 +1184,63 @@
     "slot3": { "name": "Preset 3" },
     "slot4": { "name": "Preset 4" },
     "slot5": { "name": "Preset 5" }
+  },
+  "stats": {
+    "damage": "DAMAGE",
+    "critDamage": "CRITICAL DAMAGE",
+    "fireRate": "FIRE RATE",
+    "range": "RANGE",
+    "aoe": "AREA OF EFFECT",
+    "mining": "MINING",
+    "totalHealth": "TOTAL HEALTH",
+    "summary": "Stats Summary",
+    "crit": "Crit",
+    "armor": "Armor",
+    "regen": "Regen"
+  },
+  "passives": {
+    "title": "PASSIVES",
+    "offense": "OFFENSE",
+    "defense": "DEFENSE",
+    "utility": "UTILITY",
+    "resources": "RESOURCES",
+    "rebirth": "REBIRTH (PERMANENT)",
+    "auras": "AURAS (PERMANENT)",
+    "refund": "REFUND",
+    "damage": "DAMAGE",
+    "critChance": "CRITICAL CHC",
+    "magicDamage": "MAGIC DAMAGE",
+    "armorIgnore": "ARMOR IGNORE",
+    "splash": "SPLASH",
+    "firstStrike": "FIRST STRIKE",
+    "health": "TOTAL HEALTH",
+    "block": "BLOCK",
+    "armor": "ARMOR",
+    "negate": "NEGATE",
+    "lastStand": "LAST STAND",
+    "barrier": "BARRIER",
+    "expGain": "EXP GAIN",
+    "statPointGain": "STAT POINT GAIN",
+    "researchReduction": "RESEARCH REDUCTION",
+    "energy": "ENERGY",
+    "skillCd": "SKILL COOLDOWN",
+    "timely": "TIMELY BLESSING",
+    "startGold": "STARTING GOLD",
+    "goldGain": "GOLD GAIN",
+    "production": "PRODUCTION",
+    "dropChance": "DROP CHANCE",
+    "crystalGain": "CRYSTAL GAIN",
+    "offlineGains": "OFFLINE GAINS"
+  },
+  "tech": {
+    "title": "TECHNOLOGY",
+    "sentrySpecial": "SENTRY SPECIAL",
+    "rocketSpecial": "ROCKET SPECIAL",
+    "laserSpecial": "LASER SPECIAL",
+    "hallowSpecial": "HALLOW SPECIAL",
+    "hint": "IN ORDER TO UNLOCK TURRET SPECIAL YOU NEED TO MAX ITS MASTERY FIRST"
+  },
+  "ui": {
+    "close": "CLOSE"
   }
 }

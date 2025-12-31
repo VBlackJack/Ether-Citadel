@@ -1189,5 +1189,63 @@
     "slot3": { "name": "Preset 3" },
     "slot4": { "name": "Preset 4" },
     "slot5": { "name": "Preset 5" }
+  },
+  "stats": {
+    "damage": "DÉGÂTS",
+    "critDamage": "DÉGÂTS CRITIQUES",
+    "fireRate": "CADENCE DE TIR",
+    "range": "PORTÉE",
+    "aoe": "ZONE D'EFFET",
+    "mining": "MINAGE",
+    "totalHealth": "VIE TOTALE",
+    "summary": "Résumé des Stats",
+    "crit": "Crit",
+    "armor": "Armure",
+    "regen": "Régén"
+  },
+  "passives": {
+    "title": "PASSIFS",
+    "offense": "OFFENSE",
+    "defense": "DÉFENSE",
+    "utility": "UTILITAIRE",
+    "resources": "RESSOURCES",
+    "rebirth": "RENAISSANCE (PERMANENT)",
+    "auras": "AURAS (PERMANENT)",
+    "refund": "REMBOURSER",
+    "damage": "DÉGÂTS",
+    "critChance": "CHANCE CRITIQUE",
+    "magicDamage": "DÉGÂTS MAGIQUES",
+    "armorIgnore": "IGNORER ARMURE",
+    "splash": "ÉCLABOUSSURE",
+    "firstStrike": "PREMIER COUP",
+    "health": "VIE TOTALE",
+    "block": "BLOCAGE",
+    "armor": "ARMURE",
+    "negate": "ANNULATION",
+    "lastStand": "DERNIER REMPART",
+    "barrier": "BARRIÈRE",
+    "expGain": "GAIN D'EXP",
+    "statPointGain": "GAIN DE POINTS",
+    "researchReduction": "RÉDUCTION RECHERCHE",
+    "energy": "ÉNERGIE",
+    "skillCd": "TEMPS RECHARGE",
+    "timely": "BÉNÉDICTION TEMPO",
+    "startGold": "OR DE DÉPART",
+    "goldGain": "GAIN D'OR",
+    "production": "PRODUCTION",
+    "dropChance": "CHANCE DE DROP",
+    "crystalGain": "GAIN DE CRISTAUX",
+    "offlineGains": "GAINS HORS-LIGNE"
+  },
+  "tech": {
+    "title": "TECHNOLOGIE",
+    "sentrySpecial": "SPÉCIAL SENTINELLE",
+    "rocketSpecial": "SPÉCIAL ROQUETTE",
+    "laserSpecial": "SPÉCIAL LASER",
+    "hallowSpecial": "SPÉCIAL HALLOW",
+    "hint": "POUR DÉBLOQUER LA SPÉCIALE DE LA TOURELLE, MAXIMISEZ D'ABORD SA MAÎTRISE"
+  },
+  "ui": {
+    "close": "FERMER"
   }
 }

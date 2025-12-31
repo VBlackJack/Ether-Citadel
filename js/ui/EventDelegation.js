@@ -175,6 +175,17 @@ export class EventDelegationManager {
         this.register('ascension.do', () => {
             this.game.ascensionMgr.doAscension();
         });
+
+        // Stats actions (Defender Idle 2 style)
+        this.register('stat.upgrade', (params) => {
+            this.game.upgradeStat(params.id);
+        });
+
+        // Passive actions (Defender Idle 2 style)
+        this.register('passive.upgrade', (params) => {
+            // TODO: Implement passive upgrade logic
+            console.log('Passive upgrade:', params.id);
+        });
     }
 
     /**
