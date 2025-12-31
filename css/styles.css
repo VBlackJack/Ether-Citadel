@@ -2696,19 +2696,46 @@ select:focus-visible {
 
 .lab-passive-card {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
     padding: 8px 10px;
     background: rgba(30, 41, 59, 0.8);
     border: 1px solid #334155;
     border-radius: 6px;
-    cursor: pointer;
     transition: all 0.15s ease;
 }
 
 .lab-passive-card:hover {
     background: rgba(51, 65, 85, 0.8);
-    border-color: #f59e0b;
+}
+
+.lab-passive-locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.lab-passive-affordable {
+    border-color: #06b6d4;
+    background: rgba(6, 182, 212, 0.1);
+    cursor: pointer;
+}
+
+.lab-passive-affordable:hover {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: #22d3ee;
+}
+
+.lab-passive-maxed {
+    border-color: #eab308;
+    background: rgba(234, 179, 8, 0.1);
+}
+
+.lab-passives-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: rgba(15, 23, 42, 0.8);
+    border-bottom: 1px solid #334155;
 }
 
 /* Lab Tech Tree - vertical layout for narrow panel */

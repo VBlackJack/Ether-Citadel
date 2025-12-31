@@ -330,6 +330,59 @@ export const PRESTIGE_UPGRADES = [
 ];
 
 /**
+ * Passive upgrades organized by category (Defender Idle 2 style)
+ * Each passive has: id, category, nameKey, descKey, icon, baseCost, costMult, maxLevel, effect, unlockReq
+ */
+export const PASSIVES = {
+    offense: [
+        { id: 'damage', nameKey: 'passives.damage.name', descKey: 'passives.damage.desc', icon: '🗡️', baseCost: 1, costMult: 1.5, maxLevel: 100, effect: (lvl) => 1 + lvl * 0.05 },
+        { id: 'critChance', nameKey: 'passives.critChance.name', descKey: 'passives.critChance.desc', icon: '🎯', baseCost: 2, costMult: 1.8, maxLevel: 50, effect: (lvl) => lvl * 0.02 },
+        { id: 'critDamage', nameKey: 'passives.critDamage.name', descKey: 'passives.critDamage.desc', icon: '💥', baseCost: 3, costMult: 2.0, maxLevel: 40, effect: (lvl) => 1.5 + lvl * 0.1 },
+        { id: 'splash', nameKey: 'passives.splash.name', descKey: 'passives.splash.desc', icon: '💫', baseCost: 2, costMult: 1.6, maxLevel: 30, effect: (lvl) => lvl * 5 },
+        { id: 'armorIgnore', nameKey: 'passives.armorIgnore.name', descKey: 'passives.armorIgnore.desc', icon: '🔱', baseCost: 5, costMult: 2.2, maxLevel: 20, effect: (lvl) => lvl * 0.03, unlockReq: { passive: 'damage', level: 10 } },
+        { id: 'firstStrike', nameKey: 'passives.firstStrike.name', descKey: 'passives.firstStrike.desc', icon: '⚡', baseCost: 10, costMult: 3.0, maxLevel: 10, effect: (lvl) => 1 + lvl * 0.25, unlockReq: { passive: 'critChance', level: 15 } }
+    ],
+    defense: [
+        { id: 'health', nameKey: 'passives.health.name', descKey: 'passives.health.desc', icon: '💓', baseCost: 1, costMult: 1.5, maxLevel: 100, effect: (lvl) => 1 + lvl * 0.05 },
+        { id: 'armor', nameKey: 'passives.armor.name', descKey: 'passives.armor.desc', icon: '🛡️', baseCost: 2, costMult: 1.6, maxLevel: 50, effect: (lvl) => lvl * 0.01 },
+        { id: 'barrier', nameKey: 'passives.barrier.name', descKey: 'passives.barrier.desc', icon: '🔮', baseCost: 3, costMult: 1.8, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.1 },
+        { id: 'regen', nameKey: 'passives.regen.name', descKey: 'passives.regen.desc', icon: '💚', baseCost: 4, costMult: 2.0, maxLevel: 25, effect: (lvl) => lvl * 0.5 },
+        { id: 'block', nameKey: 'passives.block.name', descKey: 'passives.block.desc', icon: '🚫', baseCost: 5, costMult: 2.2, maxLevel: 25, effect: (lvl) => lvl * 0.02, unlockReq: { passive: 'armor', level: 10 } },
+        { id: 'lastStand', nameKey: 'passives.lastStand.name', descKey: 'passives.lastStand.desc', icon: '🔥', baseCost: 15, costMult: 3.5, maxLevel: 5, effect: (lvl) => 1 + lvl * 0.2, unlockReq: { passive: 'health', level: 25 } }
+    ],
+    utility: [
+        { id: 'expGain', nameKey: 'passives.expGain.name', descKey: 'passives.expGain.desc', icon: '📚', baseCost: 2, costMult: 1.6, maxLevel: 50, effect: (lvl) => 1 + lvl * 0.05 },
+        { id: 'skillCd', nameKey: 'passives.skillCd.name', descKey: 'passives.skillCd.desc', icon: '⏰', baseCost: 3, costMult: 2.0, maxLevel: 20, effect: (lvl) => 1 - lvl * 0.03 },
+        { id: 'energy', nameKey: 'passives.energy.name', descKey: 'passives.energy.desc', icon: '⚡', baseCost: 2, costMult: 1.7, maxLevel: 30, effect: (lvl) => 1 + lvl * 0.1 },
+        { id: 'speed', nameKey: 'passives.speed.name', descKey: 'passives.speed.desc', icon: '💨', baseCost: 4, costMult: 2.2, maxLevel: 15, effect: (lvl) => 1 + lvl * 0.05 },
+        { id: 'statPointGain', nameKey: 'passives.statPointGain.name', descKey: 'passives.statPointGain.desc', icon: '🎁', baseCost: 10, costMult: 3.0, maxLevel: 20, effect: (lvl) => lvl, unlockReq: { passive: 'expGain', level: 15 } },
+        { id: 'autoPlay', nameKey: 'passives.autoPlay.name', descKey: 'passives.autoPlay.desc', icon: '🤖', baseCost: 20, costMult: 4.0, maxLevel: 5, effect: (lvl) => lvl, unlockReq: { passive: 'speed', level: 10 } }
+    ],
+    resources: [
+        { id: 'goldGain', nameKey: 'passives.goldGain.name', descKey: 'passives.goldGain.desc', icon: '🥇', baseCost: 1, costMult: 1.5, maxLevel: 50, effect: (lvl) => 1 + lvl * 0.1 },
+        { id: 'startGold', nameKey: 'passives.startGold.name', descKey: 'passives.startGold.desc', icon: '💰', baseCost: 2, costMult: 1.8, maxLevel: 50, effect: (lvl) => lvl * 100 },
+        { id: 'production', nameKey: 'passives.production.name', descKey: 'passives.production.desc', icon: '🏭', baseCost: 3, costMult: 2.0, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.2 },
+        { id: 'crystalGain', nameKey: 'passives.crystalGain.name', descKey: 'passives.crystalGain.desc', icon: '💎', baseCost: 5, costMult: 2.5, maxLevel: 25, effect: (lvl) => 1 + lvl * 0.15 },
+        { id: 'dropChance', nameKey: 'passives.dropChance.name', descKey: 'passives.dropChance.desc', icon: '🎲', baseCost: 8, costMult: 2.8, maxLevel: 30, effect: (lvl) => 1 + lvl * 0.05, unlockReq: { passive: 'goldGain', level: 15 } },
+        { id: 'offlineGains', nameKey: 'passives.offlineGains.name', descKey: 'passives.offlineGains.desc', icon: '🌙', baseCost: 15, costMult: 3.5, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.1, unlockReq: { passive: 'production', level: 10 } }
+    ]
+};
+
+/**
+ * Get all passives as flat array
+ */
+export function getAllPassives() {
+    return Object.values(PASSIVES).flat();
+}
+
+/**
+ * Get passive by ID
+ */
+export function getPassiveById(id) {
+    return getAllPassives().find(p => p.id === id);
+}
+
+/**
  * Game speed options
  */
 export const GAME_SPEEDS = [

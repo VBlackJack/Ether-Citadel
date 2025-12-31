@@ -1270,30 +1270,104 @@
     "rebirth": "REBIRTH (PERMANENT)",
     "auras": "AURAS (PERMANENT)",
     "refund": "REFUND",
-    "damage": "DAMAGE",
-    "critChance": "CRITICAL CHC",
-    "magicDamage": "MAGIC DAMAGE",
-    "armorIgnore": "ARMOR IGNORE",
-    "splash": "SPLASH",
-    "firstStrike": "FIRST STRIKE",
-    "health": "TOTAL HEALTH",
-    "block": "BLOCK",
-    "armor": "ARMOR",
-    "negate": "NEGATE",
-    "lastStand": "LAST STAND",
-    "barrier": "BARRIER",
-    "expGain": "EXP GAIN",
-    "statPointGain": "STAT POINT GAIN",
-    "researchReduction": "RESEARCH REDUCTION",
-    "energy": "ENERGY",
-    "skillCd": "SKILL COOLDOWN",
-    "timely": "TIMELY BLESSING",
-    "startGold": "STARTING GOLD",
-    "goldGain": "GOLD GAIN",
-    "production": "PRODUCTION",
-    "dropChance": "DROP CHANCE",
-    "crystalGain": "CRYSTAL GAIN",
-    "offlineGains": "OFFLINE GAINS"
+    "locked": "LOCKED",
+    "unlockAt": "Unlock: {{passive}} Lv{{level}}",
+    "damage": {
+      "name": "DAMAGE",
+      "desc": "+5% damage per level"
+    },
+    "critChance": {
+      "name": "CRIT CHANCE",
+      "desc": "+2% crit chance per level"
+    },
+    "critDamage": {
+      "name": "CRIT DAMAGE",
+      "desc": "+10% crit damage per level"
+    },
+    "splash": {
+      "name": "SPLASH",
+      "desc": "+5 splash radius per level"
+    },
+    "armorIgnore": {
+      "name": "ARMOR PIERCE",
+      "desc": "+3% armor ignore per level"
+    },
+    "firstStrike": {
+      "name": "FIRST STRIKE",
+      "desc": "+25% damage to full HP enemies"
+    },
+    "health": {
+      "name": "HEALTH",
+      "desc": "+5% max health per level"
+    },
+    "armor": {
+      "name": "ARMOR",
+      "desc": "+1% damage reduction per level"
+    },
+    "barrier": {
+      "name": "BARRIER",
+      "desc": "+10% shield strength per level"
+    },
+    "regen": {
+      "name": "REGEN",
+      "desc": "+0.5 HP/s per level"
+    },
+    "block": {
+      "name": "BLOCK",
+      "desc": "+2% block chance per level"
+    },
+    "lastStand": {
+      "name": "LAST STAND",
+      "desc": "+20% damage at low HP"
+    },
+    "expGain": {
+      "name": "EXP GAIN",
+      "desc": "+5% experience per level"
+    },
+    "skillCd": {
+      "name": "SKILL CD",
+      "desc": "-3% skill cooldown per level"
+    },
+    "energy": {
+      "name": "ENERGY",
+      "desc": "+10% energy gain per level"
+    },
+    "speed": {
+      "name": "SPEED",
+      "desc": "+5% attack speed per level"
+    },
+    "statPointGain": {
+      "name": "STAT POINTS",
+      "desc": "+1 stat point per level"
+    },
+    "autoPlay": {
+      "name": "AUTO PLAY",
+      "desc": "+1 auto feature per level"
+    },
+    "goldGain": {
+      "name": "GOLD GAIN",
+      "desc": "+10% gold per level"
+    },
+    "startGold": {
+      "name": "START GOLD",
+      "desc": "+100 starting gold per level"
+    },
+    "production": {
+      "name": "PRODUCTION",
+      "desc": "+20% production per level"
+    },
+    "crystalGain": {
+      "name": "CRYSTAL GAIN",
+      "desc": "+15% crystals per level"
+    },
+    "dropChance": {
+      "name": "DROP CHANCE",
+      "desc": "+5% drop rate per level"
+    },
+    "offlineGains": {
+      "name": "OFFLINE",
+      "desc": "+10% offline earnings per level"
+    }
   },
   "tech": {
     "title": "TECHNOLOGY",

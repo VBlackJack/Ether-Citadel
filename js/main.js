@@ -34,6 +34,9 @@ import {
     CHIP_TYPES,
     DAILY_QUEST_TYPES,
     PRESTIGE_UPGRADES,
+    PASSIVES,
+    getAllPassives,
+    getPassiveById,
     GAME_SPEEDS,
     TOWN_LEVELS,
     SCHOOL_TURRETS,
@@ -61,6 +64,7 @@ import {
     getName,
     getDesc
 } from './data.js';
+import { PassiveManager } from './systems/progression/PassiveManager.js';
 import { getEventDelegation } from './ui/EventDelegation.js';
 import { getErrorHandler, logError } from './utils/ErrorHandler.js';
 import { sanitizeColor, calculateChecksum, verifyChecksum } from './utils/HtmlSanitizer.js';
@@ -4179,6 +4183,7 @@ class Game {
         this.chips = new ChipManager(this);
         this.dailyQuests = new DailyQuestManager(this);
         this.prestige = new PrestigeManager(this);
+        this.passives = new PassiveManager(this);
         this.town = new TownManager(this);
         this.school = new SchoolManager(this);
         this.office = new OfficeManager(this);
@@ -5624,107 +5629,18 @@ class Game {
         return true;
     }
 
-    /** Defender Idle 2 Style - Passives Panel with 4 tabs */
+    /** Redirect to Lab Passives UI (modal removed, now integrated in Lab panel) */
     renderPassivesUI(tab = 'offense') {
-        const grid = document.getElementById('passives-grid');
-        const aurasGrid = document.getElementById('passives-auras');
-        if (!grid) return;
-
-        // Update active tab
-        document.querySelectorAll('.passive-tab').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.tab === tab);
-        });
-
-        // Passives organized by category like Defender Idle 2
-        const passivesByTab = {
-            offense: [
-                { id: 'damage', name: t('passives.damage') || 'DAMAGE', desc: '+5% damage per level', getValue: () => this.getPrestigeUpgradeLevel('prestige_damage'), max: 100 },
-                { id: 'critChance', name: t('passives.critChance') || 'CRITICAL CHC', desc: '+2% crit chance per level', getValue: () => this.getPrestigeUpgradeLevel('prestige_crit') || 0, max: 50 },
-                { id: 'magicDamage', name: t('passives.magicDamage') || 'MAGIC DAMAGE', desc: '+10% skill damage', getValue: () => 0, max: 25, locked: true },
-                { id: 'armorIgnore', name: t('passives.armorIgnore') || 'ARMOR IGNORE', desc: 'Ignore % enemy armor', getValue: () => 0, max: 20, locked: true },
-                { id: 'splash', name: t('passives.splash') || 'SPLASH', desc: '+5 splash radius', getValue: () => 0, max: 30 },
-                { id: 'firstStrike', name: t('passives.firstStrike') || 'FIRST STRIKE', desc: '+25% damage to full HP', getValue: () => 0, max: 10, locked: true }
-            ],
-            defense: [
-                { id: 'health', name: t('passives.health') || 'TOTAL HEALTH', desc: '+5% max health', getValue: () => this.getPrestigeUpgradeLevel('prestige_health'), max: 100 },
-                { id: 'block', name: t('passives.block') || 'BLOCK', desc: '+2% block chance', getValue: () => 0, max: 25, locked: true },
-                { id: 'armor', name: t('passives.armor') || 'ARMOR', desc: '+1% damage reduction', getValue: () => 0, max: 50 },
-                { id: 'negate', name: t('passives.negate') || 'NEGATE', desc: '+5% chance to negate', getValue: () => 0, max: 10, locked: true },
-                { id: 'lastStand', name: t('passives.lastStand') || 'LAST STAND', desc: '+20% dmg at low HP', getValue: () => 0, max: 5, locked: true },
-                { id: 'barrier', name: t('passives.barrier') || 'BARRIER', desc: '+10% shield strength', getValue: () => 0, max: 20 }
-            ],
-            utility: [
-                { id: 'expGain', name: t('passives.expGain') || 'EXP GAIN', desc: '+5% experience', getValue: () => 0, max: 50 },
-                { id: 'statPointGain', name: t('passives.statPointGain') || 'STAT POINT GAIN', desc: '+1 SP per level', getValue: () => 0, max: 20, locked: true },
-                { id: 'researchReduction', name: t('passives.researchReduction') || 'RESEARCH REDUCTION', desc: '-5% research cost', getValue: () => 0, max: 25 },
-                { id: 'energy', name: t('passives.energy') || 'ENERGY', desc: '+10% energy gain', getValue: () => 0, max: 30 },
-                { id: 'skillCd', name: t('passives.skillCd') || 'SKILL COOLDOWN', desc: '-5% skill cooldown', getValue: () => this.getPrestigeUpgradeLevel('prestige_skill_cd') || 0, max: 10 },
-                { id: 'timely', name: t('passives.timely') || 'TIMELY BLESSING', desc: '+X% after idle', getValue: () => 0, max: 15, locked: true }
-            ],
-            resources: [
-                { id: 'startGold', name: t('passives.startGold') || 'STARTING GOLD', desc: '+100 start gold', getValue: () => this.getPrestigeUpgradeLevel('prestige_start_gold') || 0, max: 50 },
-                { id: 'goldGain', name: t('passives.goldGain') || 'GOLD GAIN', desc: '+10% gold', getValue: () => this.getPrestigeUpgradeLevel('prestige_gold'), max: 50 },
-                { id: 'production', name: t('passives.production') || 'PRODUCTION', desc: '+20% production', getValue: () => this.getPrestigeUpgradeLevel('prestige_production'), max: 20 },
-                { id: 'dropChance', name: t('passives.dropChance') || 'DROP CHANCE', desc: '+5% drop rate', getValue: () => 0, max: 30, locked: true },
-                { id: 'crystalGain', name: t('passives.crystalGain') || 'CRYSTAL GAIN', desc: '+15% crystals', getValue: () => this.getPrestigeUpgradeLevel('prestige_crystals') || 0, max: 25 },
-                { id: 'offlineGains', name: t('passives.offlineGains') || 'OFFLINE GAINS', desc: '+10% offline earnings', getValue: () => 0, max: 20 }
-            ]
-        };
-
-        const passives = passivesByTab[tab] || passivesByTab.offense;
-        grid.innerHTML = '';
-
-        passives.forEach(passive => {
-            const level = passive.getValue();
-            const div = document.createElement('div');
-
-            if (passive.locked) {
-                div.className = 'passive-item passive-locked';
-                div.innerHTML = `<span class="lock-icon">🔒</span><span class="text-sm">${passive.name}</span>`;
-            } else {
-                div.className = 'passive-item';
-                div.innerHTML = `
-                    <span class="passive-name">${passive.name}</span>
-                    <span class="passive-value">${level}</span>
-                    <span class="text-amber-400 text-xs">/${passive.max}</span>
-                    <button class="passive-btn" ${level >= passive.max ? 'disabled' : ''}>-</button>
-                    <button class="passive-btn" data-action="passive.upgrade" data-id="${passive.id}" ${level >= passive.max ? 'disabled' : ''}>+</button>
-                `;
-            }
-            grid.appendChild(div);
-        });
-
-        // Auras (permanent buffs)
-        if (aurasGrid) {
-            const auras = [
-                { id: 'damageAura', name: 'DAMAGE AURA', value: '+10%', active: true, color: '#ef4444' },
-                { id: 'speedAura', name: 'SPEED AURA', value: '+15%', active: false, color: '#fbbf24' },
-                { id: 'rangeAura', name: 'RANGE AURA', value: '+20%', active: false, color: '#3b82f6' }
-            ];
-
-            aurasGrid.innerHTML = '';
-            auras.forEach(aura => {
-                const div = document.createElement('div');
-                div.className = `passive-item ${aura.active ? '' : 'opacity-50'}`;
-                div.style.borderColor = aura.active ? aura.color : '';
-                div.innerHTML = `
-                    <span class="passive-name">${aura.name}</span>
-                    <span class="passive-value" style="color: ${aura.color}">${aura.value}</span>
-                `;
-                aurasGrid.appendChild(div);
-            });
-        }
+        this.renderLabPassivesUI(tab);
     }
 
     switchPassiveTab(tab) {
-        this.renderPassivesUI(tab);
+        this.renderLabPassivesUI(tab);
     }
 
     refundPassives() {
-        // Refund all passive points
-        this.statPointsUsed = 0;
-        this.statLevels = {};
-        this.renderPassivesUI();
+        this.passives?.refundAll();
+        this.renderLabPassivesUI();
         this.renderStatsUI();
     }
 
@@ -5917,77 +5833,71 @@ class Game {
         }
     }
 
-    /** Lab Panel - Compact Passives UI */
+    /** Lab Panel - Compact Passives UI (Defender Idle 2 style) */
     renderLabPassivesUI(tab = null) {
         tab = tab || this.activeLabPassiveTab || 'offense';
         this.activeLabPassiveTab = tab;
 
         const grid = document.getElementById('lab-passives-grid');
-        const aurasGrid = document.getElementById('lab-passives-auras');
+        const crystalDisplay = document.getElementById('lab-passives-crystals');
         if (!grid) return;
 
         document.querySelectorAll('.lab-passive-tab').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.tab === tab);
         });
 
-        const passivesByTab = {
-            offense: [
-                { id: 'damage', name: 'DAMAGE', getValue: () => this.getPrestigeUpgradeLevel('prestige_damage'), max: 100 },
-                { id: 'critChance', name: 'CRIT CHC', getValue: () => this.getPrestigeUpgradeLevel('prestige_crit') || 0, max: 50 },
-                { id: 'splash', name: 'SPLASH', getValue: () => 0, max: 30 }
-            ],
-            defense: [
-                { id: 'health', name: 'HEALTH', getValue: () => this.getPrestigeUpgradeLevel('prestige_health'), max: 100 },
-                { id: 'armor', name: 'ARMOR', getValue: () => 0, max: 50 },
-                { id: 'barrier', name: 'BARRIER', getValue: () => 0, max: 20 }
-            ],
-            utility: [
-                { id: 'expGain', name: 'EXP', getValue: () => 0, max: 50 },
-                { id: 'energy', name: 'ENERGY', getValue: () => 0, max: 30 },
-                { id: 'skillCd', name: 'SKILL CD', getValue: () => this.getPrestigeUpgradeLevel('prestige_skill_cd') || 0, max: 10 }
-            ],
-            resources: [
-                { id: 'startGold', name: 'START $', getValue: () => this.getPrestigeUpgradeLevel('prestige_start_gold') || 0, max: 50 },
-                { id: 'goldGain', name: 'GOLD', getValue: () => this.getPrestigeUpgradeLevel('prestige_gold'), max: 50 },
-                { id: 'production', name: 'PROD', getValue: () => this.getPrestigeUpgradeLevel('prestige_production'), max: 20 }
-            ]
-        };
+        if (crystalDisplay) {
+            crystalDisplay.textContent = formatNumber(this.crystals);
+        }
 
-        const passives = passivesByTab[tab] || passivesByTab.offense;
+        const passives = PASSIVES[tab] || PASSIVES.offense;
         grid.innerHTML = '';
 
         passives.forEach(passive => {
-            const level = passive.getValue();
+            const level = this.passives.getLevel(passive.id);
+            const isMaxed = level >= passive.maxLevel;
+            const isUnlocked = this.passives.isUnlocked(passive.id);
+            const cost = this.passives.getCost(passive.id);
+            const canAfford = this.crystals >= cost && !isMaxed && isUnlocked;
+
             const div = document.createElement('div');
-            div.className = 'lab-passive-card';
-            div.innerHTML = `
-                <span class="text-xs text-slate-300">${passive.name}</span>
-                <div class="flex items-center gap-1">
-                    <span class="text-sm font-bold text-amber-400">${level}</span>
-                    <span class="text-xs text-slate-500">/${passive.max}</span>
-                    <button class="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded" ${level >= passive.max ? 'disabled style="opacity:0.5"' : ''}>+</button>
-                </div>
-            `;
+
+            if (!isUnlocked) {
+                const req = this.passives.getUnlockReq(passive.id);
+                div.className = 'lab-passive-card lab-passive-locked';
+                div.innerHTML = `
+                    <div class="flex items-center gap-1">
+                        <span class="text-lg">${passive.icon}</span>
+                        <span class="text-xs text-slate-500">${t(passive.nameKey)}</span>
+                    </div>
+                    <div class="text-xs text-slate-600">
+                        <span>🔒</span> ${req.passiveName} Lv${req.level}
+                    </div>
+                `;
+            } else {
+                div.className = `lab-passive-card ${canAfford ? 'lab-passive-affordable' : ''} ${isMaxed ? 'lab-passive-maxed' : ''}`;
+                div.innerHTML = `
+                    <div class="flex items-center gap-1 mb-1">
+                        <span class="text-lg">${passive.icon}</span>
+                        <span class="text-xs text-slate-300 flex-grow">${t(passive.nameKey)}</span>
+                        <span class="text-xs font-bold ${isMaxed ? 'text-yellow-400' : 'text-amber-400'}">${level}/${passive.maxLevel}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-slate-500">${t(passive.descKey)}</span>
+                        ${!isMaxed ? `
+                            <button
+                                class="w-12 h-5 ${canAfford ? 'bg-cyan-600 hover:bg-cyan-500' : 'bg-slate-700'} text-white text-xs font-bold rounded flex items-center justify-center gap-0.5"
+                                data-action="passive.upgrade"
+                                data-id="${passive.id}"
+                                ${!canAfford ? 'disabled style="opacity:0.5"' : ''}>
+                                ${formatNumber(cost)}💎
+                            </button>
+                        ` : '<span class="text-xs text-yellow-400">MAX</span>'}
+                    </div>
+                `;
+            }
             grid.appendChild(div);
         });
-
-        if (aurasGrid) {
-            const auras = [
-                { name: 'DMG', value: '+10%', active: true, color: '#ef4444' },
-                { name: 'SPD', value: '+15%', active: false, color: '#fbbf24' },
-                { name: 'RNG', value: '+20%', active: false, color: '#3b82f6' }
-            ];
-            aurasGrid.innerHTML = '';
-            auras.forEach(aura => {
-                const div = document.createElement('div');
-                div.className = `lab-passive-card ${aura.active ? '' : 'opacity-50'}`;
-                div.innerHTML = `
-                    <span class="text-xs text-slate-300">${aura.name}</span>
-                    <span class="text-sm font-bold" style="color: ${aura.color}">${aura.value}</span>
-                `;
-                aurasGrid.appendChild(div);
-            });
-        }
     }
 
     /** Lab Panel - Compact Tech Tree UI */
@@ -7300,6 +7210,7 @@ class Game {
             chips: this.chips.getSaveData(),
             dailyQuests: this.dailyQuests.getSaveData(),
             prestige: this.prestige.getSaveData(),
+            passives: this.passives.getSaveData(),
             speedIndex: this.speedIndex,
             town: this.town.getSaveData(),
             school: this.school.getSaveData(),
@@ -7506,6 +7417,9 @@ class Game {
                 }
                 if (data.prestige) {
                     this.prestige.loadSaveData(data.prestige);
+                }
+                if (data.passives) {
+                    this.passives.loadSaveData(data.passives);
                 }
                 if (data.speedIndex !== undefined) {
                     this.speedIndex = data.speedIndex;

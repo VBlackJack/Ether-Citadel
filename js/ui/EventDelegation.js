@@ -183,8 +183,9 @@ export class EventDelegationManager {
 
         // Passive actions (Defender Idle 2 style)
         this.register('passive.upgrade', (params) => {
-            // TODO: Implement passive upgrade logic
-            console.log('Passive upgrade:', params.id);
+            if (this.game.passives.buy(params.id)) {
+                this.game.renderLabPassivesUI();
+            }
         });
     }
 

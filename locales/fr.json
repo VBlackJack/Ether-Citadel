@@ -1269,36 +1269,110 @@
   "passives": {
     "title": "PASSIFS",
     "offense": "OFFENSE",
-    "defense": "DÉFENSE",
+    "defense": "DEFENSE",
     "utility": "UTILITAIRE",
     "resources": "RESSOURCES",
     "rebirth": "RENAISSANCE (PERMANENT)",
     "auras": "AURAS (PERMANENT)",
     "refund": "REMBOURSER",
-    "damage": "DÉGÂTS",
-    "critChance": "CHANCE CRITIQUE",
-    "magicDamage": "DÉGÂTS MAGIQUES",
-    "armorIgnore": "IGNORER ARMURE",
-    "splash": "ÉCLABOUSSURE",
-    "firstStrike": "PREMIER COUP",
-    "health": "VIE TOTALE",
-    "block": "BLOCAGE",
-    "armor": "ARMURE",
-    "negate": "ANNULATION",
-    "lastStand": "DERNIER REMPART",
-    "barrier": "BARRIÈRE",
-    "expGain": "GAIN D'EXP",
-    "statPointGain": "GAIN DE POINTS",
-    "researchReduction": "RÉDUCTION RECHERCHE",
-    "energy": "ÉNERGIE",
-    "skillCd": "TEMPS RECHARGE",
-    "timely": "BÉNÉDICTION TEMPO",
-    "startGold": "OR DE DÉPART",
-    "goldGain": "GAIN D'OR",
-    "production": "PRODUCTION",
-    "dropChance": "CHANCE DE DROP",
-    "crystalGain": "GAIN DE CRISTAUX",
-    "offlineGains": "GAINS HORS-LIGNE"
+    "locked": "VERROUILLE",
+    "unlockAt": "Debloquer: {{passive}} Nv{{level}}",
+    "damage": {
+      "name": "DEGATS",
+      "desc": "+5% degats par niveau"
+    },
+    "critChance": {
+      "name": "CHANCE CRIT",
+      "desc": "+2% chance critique par niveau"
+    },
+    "critDamage": {
+      "name": "DEGATS CRIT",
+      "desc": "+10% degats critiques par niveau"
+    },
+    "splash": {
+      "name": "SPLASH",
+      "desc": "+5 rayon de splash par niveau"
+    },
+    "armorIgnore": {
+      "name": "PERCE ARMURE",
+      "desc": "+3% ignore armure par niveau"
+    },
+    "firstStrike": {
+      "name": "1ERE FRAPPE",
+      "desc": "+25% degats aux ennemis a vie max"
+    },
+    "health": {
+      "name": "VIE",
+      "desc": "+5% vie max par niveau"
+    },
+    "armor": {
+      "name": "ARMURE",
+      "desc": "+1% reduction de degats par niveau"
+    },
+    "barrier": {
+      "name": "BARRIERE",
+      "desc": "+10% puissance du bouclier par niveau"
+    },
+    "regen": {
+      "name": "REGEN",
+      "desc": "+0.5 PV/s par niveau"
+    },
+    "block": {
+      "name": "BLOCAGE",
+      "desc": "+2% chance de blocage par niveau"
+    },
+    "lastStand": {
+      "name": "DERNIER REMPART",
+      "desc": "+20% degats a faible vie"
+    },
+    "expGain": {
+      "name": "GAIN EXP",
+      "desc": "+5% experience par niveau"
+    },
+    "skillCd": {
+      "name": "CD COMPETENCE",
+      "desc": "-3% temps de recharge par niveau"
+    },
+    "energy": {
+      "name": "ENERGIE",
+      "desc": "+10% gain d'energie par niveau"
+    },
+    "speed": {
+      "name": "VITESSE",
+      "desc": "+5% vitesse d'attaque par niveau"
+    },
+    "statPointGain": {
+      "name": "POINTS STAT",
+      "desc": "+1 point de stat par niveau"
+    },
+    "autoPlay": {
+      "name": "AUTO JEU",
+      "desc": "+1 fonction auto par niveau"
+    },
+    "goldGain": {
+      "name": "GAIN OR",
+      "desc": "+10% or par niveau"
+    },
+    "startGold": {
+      "name": "OR DEPART",
+      "desc": "+100 or de depart par niveau"
+    },
+    "production": {
+      "name": "PRODUCTION",
+      "desc": "+20% production par niveau"
+    },
+    "crystalGain": {
+      "name": "GAIN CRISTAUX",
+      "desc": "+15% cristaux par niveau"
+    },
+    "dropChance": {
+      "name": "CHANCE DROP",
+      "desc": "+5% taux de drop par niveau"
+    },
+    "offlineGains": {
+      "name": "HORS-LIGNE",
+      "desc": "+10% gains hors-ligne par niveau"
+    }
   },
   "tech": {
     "title": "TECHNOLOGIE",

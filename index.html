@@ -1068,21 +1068,20 @@
 
         <!-- PASSIVES CONTENT -->
         <div id="lab-content-passives" class="lab-content hidden flex-grow flex flex-col overflow-hidden">
+            <div class="lab-passives-header">
+                <div class="flex items-center gap-2">
+                    <span class="text-cyan-400 font-bold text-sm">💎 <span id="lab-passives-crystals" class="text-white">0</span></span>
+                </div>
+                <button onclick="game.passives?.refundAll(); game.renderLabPassivesUI();" class="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded border border-slate-600" data-i18n="passives.refund">REFUND</button>
+            </div>
             <div class="lab-passives-tabs">
-                <button onclick="game.switchLabPassiveTab('offense')" class="lab-passive-tab active" data-tab="offense" title="Offense - Damage bonuses">⚔️</button>
-                <button onclick="game.switchLabPassiveTab('defense')" class="lab-passive-tab" data-tab="defense" title="Defense - Health & armor">🛡️</button>
-                <button onclick="game.switchLabPassiveTab('utility')" class="lab-passive-tab" data-tab="utility" title="Utility - XP & skills">⚡</button>
-                <button onclick="game.switchLabPassiveTab('resources')" class="lab-passive-tab" data-tab="resources" title="Resources - Gold & production">💰</button>
+                <button onclick="game.switchLabPassiveTab('offense')" class="lab-passive-tab active" data-tab="offense" data-i18n-title="passives.offense">⚔️</button>
+                <button onclick="game.switchLabPassiveTab('defense')" class="lab-passive-tab" data-tab="defense" data-i18n-title="passives.defense">🛡️</button>
+                <button onclick="game.switchLabPassiveTab('utility')" class="lab-passive-tab" data-tab="utility" data-i18n-title="passives.utility">⚡</button>
+                <button onclick="game.switchLabPassiveTab('resources')" class="lab-passive-tab" data-tab="resources" data-i18n-title="passives.resources">💰</button>
             </div>
             <div class="flex-grow overflow-y-auto">
-                <div class="p-2 text-center">
-                    <button onclick="game.refundPassives()" class="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded border border-slate-600" data-i18n="passives.refund">REFUND</button>
-                </div>
                 <div id="lab-passives-grid" class="lab-passives-grid"></div>
-                <div class="p-2 border-t border-slate-700">
-                    <div class="text-amber-400 font-bold text-xs uppercase mb-2" data-i18n="passives.auras">AURAS</div>
-                    <div id="lab-passives-auras" class="lab-passives-grid"></div>
-                </div>
             </div>
         </div>
 
