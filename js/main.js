@@ -2697,7 +2697,7 @@ class Game {
         this.enemiesToSpawn = 0;
         this.waveInProgress = false;
         this.wave++;
-        this.enemiesToSpawn += (5 + Math.floor(this.wave * 3));
+        this.enemiesToSpawn += (5 + Math.floor(this.wave * 1.5));
         this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, `${t('game.wave')} ${this.wave}`, '#fff', 40));
         this.checkEvolution();
         this.save();
@@ -2708,7 +2708,7 @@ class Game {
         this.stats.registerWave(this.wave);
         this.isBossWave = (this.wave % 10 === 0);
         this.isRushBonus = false;
-        this.enemiesToSpawn = this.isBossWave ? 1 : (5 + Math.floor(this.wave * 3));
+        this.enemiesToSpawn = this.isBossWave ? 1 : (5 + Math.floor(this.wave * 1.5));
         this.spawnTimer = 0;
         if (this.activeChallenge && this.activeChallenge.id === 'horde') this.enemiesToSpawn *= 3;
         if (this.isBossWave) {
@@ -2767,10 +2767,10 @@ class Game {
      */
     getSpawnBurst() {
         if (this.isBossWave) return 1;
-        if (this.wave <= 50) return 1;
-        // +1 enemy per burst every 10 waves after 50
-        // Wave 60: 2, Wave 70: 3, Wave 80: 4, etc.
-        return 1 + Math.floor((this.wave - 50) / 10);
+        if (this.wave <= 75) return 1;
+        // +1 enemy per burst every 25 waves after 75
+        // Wave 100: 2, Wave 125: 3, etc. (slower scaling)
+        return 1 + Math.floor((this.wave - 75) / 25);
     }
 
     findTarget(sourceX, sourceY, range) {

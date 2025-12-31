@@ -31,7 +31,7 @@ export class Enemy {
         this.isElite = Math.random() < 0.05;
         this.x = x || game.width + 50;
         this.y = y || MathUtils.randomRange(game.height * 0.2, game.height * 0.8);
-        const diffMult = 1 + (wave * 0.20);
+        const diffMult = 1 + (wave * 0.35);
         const hpMod = game.activeChallenge && game.activeChallenge.id === 'glass' ? 0.1 : 1;
         const speedMod = game.activeChallenge && game.activeChallenge.id === 'speed' ? 2 : 1;
         const dread = game.getDreadMultipliers();
