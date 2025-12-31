@@ -6262,11 +6262,19 @@ class Game {
                     menuItem.classList.add('menu-unlocked');
                     if (!localStorage.getItem(`unlock_seen_${feature}`)) {
                         menuItem.classList.add('newly-unlocked');
-                        localStorage.setItem(`unlock_seen_${feature}`, 'true');
+                        // Mark as seen only when clicked
+                        if (!menuItem.dataset.unlockListenerAdded) {
+                            menuItem.dataset.unlockListenerAdded = 'true';
+                            menuItem.addEventListener('click', () => {
+                                localStorage.setItem(`unlock_seen_${feature}`, 'true');
+                                menuItem.classList.remove('newly-unlocked');
+                            }, { once: true });
+                        }
                     }
                 } else {
                     menuItem.classList.add('menu-locked');
                     menuItem.classList.remove('menu-unlocked');
+                    menuItem.classList.remove('newly-unlocked');
                 }
             }
         });
@@ -6279,7 +6287,7 @@ class Game {
 
             if (this.turretSlots.canPurchaseSlot(slot.id)) {
                 const costText = t('slots.confirmBuy') || 'Buy slot for {{cost}}?';
-                if (confirm(costText.replace('{{cost}}', formatNumber(slot.cost)))) {
+                gameConfirm(costText.replace('{{cost}}', formatNumber(slot.cost)), () => {
                     this.turretSlots.purchaseSlot(slot.id);
                     this.floatingTexts.push(new FloatingText(
                         pos.x, pos.y,
@@ -6287,7 +6295,7 @@ class Game {
                         '#22d3ee',
                         24
                     ));
-                }
+                });
             } else {
                 this.floatingTexts.push(new FloatingText(
                     pos.x, pos.y,
@@ -6967,10 +6975,10 @@ class Game {
 
     confirmReset() {
         const message = t('modals.settings.confirmReset') || 'Are you sure you want to reset all progress?';
-        if (confirm(message)) {
+        gameConfirm(message, () => {
             localStorage.removeItem(CONFIG.saveKey);
             location.reload();
-        }
+        });
     }
 
     exportSave() {
@@ -7528,5 +7536,129 @@ function initHelpTooltips() {
         }
     });
 })();
+
+// Global action handler for data-action buttons with visual feedback
+(function initActionHandler() {
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-action]');
+        if (!btn || btn.disabled) return;
+
+        const action = btn.dataset.action;
+        const id = btn.dataset.id;
+
+        // Handle different actions
+        if (action === 'stat.upgrade' && window.game) {
+            if (game.upgradeStat(id)) {
+                // Success animation
+                const row = btn.closest('.stat-row');
+                if (row) {
+                    row.classList.add('upgrade-success-anim');
+                    setTimeout(() => row.classList.remove('upgrade-success-anim'), 400);
+                }
+            }
+        } else if (action === 'passive.upgrade' && window.game) {
+            // Handle passive upgrades
+            btn.classList.add('upgrade-success-anim');
+            setTimeout(() => btn.classList.remove('upgrade-success-anim'), 400);
+        } else if (action === 'turretSlot.remove' && window.game) {
+            const slotId = parseInt(id);
+            game.turretSlots.removeTurret(slotId);
+            game.renderTurretSlotsUI();
+        }
+    });
+})();
+
+// Touch-friendly tooltips for mobile devices
+(function initTouchTooltips() {
+    let activeTooltip = null;
+    let tooltipElement = null;
+
+    function createTooltipElement() {
+        if (!tooltipElement) {
+            tooltipElement = document.createElement('div');
+            tooltipElement.className = 'touch-tooltip';
+            document.body.appendChild(tooltipElement);
+        }
+        return tooltipElement;
+    }
+
+    function showTooltip(target, text) {
+        const tooltip = createTooltipElement();
+        tooltip.textContent = text;
+        tooltip.classList.add('visible');
+
+        const rect = target.getBoundingClientRect();
+        tooltip.style.left = `${rect.left + rect.width / 2}px`;
+        tooltip.style.top = `${rect.top - 10}px`;
+        tooltip.style.transform = 'translate(-50%, -100%)';
+
+        activeTooltip = target;
+    }
+
+    function hideTooltip() {
+        if (tooltipElement) {
+            tooltipElement.classList.remove('visible');
+        }
+        activeTooltip = null;
+    }
+
+    // Touch handler for elements with title attribute
+    document.addEventListener('touchstart', (e) => {
+        const target = e.target.closest('[title]');
+        if (target && target.title) {
+            e.preventDefault();
+            if (activeTooltip === target) {
+                hideTooltip();
+            } else {
+                showTooltip(target, target.title);
+            }
+        } else {
+            hideTooltip();
+        }
+    }, { passive: false });
+
+    // Hide on scroll
+    document.addEventListener('scroll', hideTooltip, { passive: true });
+})();
+
+// Custom confirm modal to replace native confirm()
+window.gameConfirm = function(message, onConfirm, onCancel) {
+    const modal = document.getElementById('confirm-modal');
+    const messageEl = document.getElementById('confirm-message');
+    const okBtn = document.getElementById('confirm-ok');
+    const cancelBtn = document.getElementById('confirm-cancel');
+
+    if (!modal || !messageEl || !okBtn || !cancelBtn) {
+        // Fallback to native confirm if modal not found
+        if (confirm(message)) {
+            onConfirm && onConfirm();
+        } else {
+            onCancel && onCancel();
+        }
+        return;
+    }
+
+    messageEl.textContent = message;
+    modal.classList.remove('hidden');
+
+    // Clean up previous listeners
+    const newOkBtn = okBtn.cloneNode(true);
+    const newCancelBtn = cancelBtn.cloneNode(true);
+    okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+    cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+    newOkBtn.onclick = () => {
+        modal.classList.add('hidden');
+        onConfirm && onConfirm();
+    };
+
+    newCancelBtn.onclick = () => {
+        modal.classList.add('hidden');
+        onCancel && onCancel();
+    };
+
+    // Focus the cancel button for safety
+    newCancelBtn.focus();
+};
 
 init();

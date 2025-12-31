@@ -54,11 +54,16 @@
                 <span data-i18n="game.level">Level</span> <span id="ui-level">1</span>
             </div>
             <div class="flex items-center gap-4">
-                <div class="text-4xl font-bold text-yellow-400 drop-shadow-lg">
-                    <span data-i18n="game.gold">Gold</span>: <span id="ui-gold">0</span>
+                <div class="resource-display text-4xl font-bold text-yellow-400 drop-shadow-lg flex items-center gap-2 cursor-help" title="Gold - Primary currency for upgrades and towers">
+                    <span class="text-3xl">🪙</span> <span id="ui-gold">0</span>
                 </div>
                 <button id="btn-pause" onclick="game.togglePause()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-3 rounded border border-slate-500 backdrop-blur-sm transition text-sm">⏸️</button>
                 <button id="btn-sound" onclick="game.sound.toggle()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-2 rounded border border-slate-500 backdrop-blur-sm transition text-sm">🔊</button>
+                <div id="speed-controls-hud" class="pointer-events-auto flex gap-1 ml-2">
+                    <button onclick="game.setSpeed(1)" class="speed-btn-mini active" data-speed="1">1x</button>
+                    <button onclick="game.setSpeed(3)" class="speed-btn-mini" data-speed="3">3x</button>
+                    <button onclick="game.setSpeed(6)" class="speed-btn-mini" data-speed="6">6x</button>
+                </div>
             </div>
             <div class="flex items-center gap-2 text-2xl font-bold drop-shadow-lg">
                 <span class="text-blue-400 group relative cursor-help">
@@ -71,14 +76,14 @@
                 <button onclick="game.rushWave()" class="pointer-events-auto bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold py-1 px-2 rounded border border-red-400 backdrop-blur-sm transition flex items-center gap-1" data-i18n-title="game.rushTooltip" aria-label="Rush next wave for +25% gold bonus">
                     <span>🔥</span> <span data-i18n="game.rush">RUSH</span>
                 </button>
-                <button id="btn-surrender" onclick="if(game.canSurrender() && confirm(game.t('surrender.confirm'))) game.strategicSurrender()" class="hidden pointer-events-auto bg-amber-600/80 hover:bg-amber-500 text-white text-xs font-bold py-1 px-2 rounded border border-amber-400 backdrop-blur-sm transition flex items-center gap-1">
+                <button id="btn-surrender" onclick="if(game.canSurrender()) gameConfirm(game.t('surrender.confirm'), () => game.strategicSurrender())" class="hidden pointer-events-auto bg-amber-600/80 hover:bg-amber-500 text-white text-xs font-bold py-1 px-2 rounded border border-amber-400 backdrop-blur-sm transition flex items-center gap-1">
                     <span>🏳️</span> <span data-i18n="surrender.button">Surrender</span>
                 </button>
-                <span class="text-purple-400 text-xl flex items-center gap-1 ml-4">
-                    <span>🔮</span> <span id="ui-ether-hud">0</span>
+                <span class="resource-display text-purple-400 text-xl flex items-center gap-1 ml-4 cursor-help" title="Ether - Used for permanent upgrades and awakening">
+                    <span class="text-2xl">🔮</span> <span id="ui-ether-hud" class="font-bold">0</span>
                 </span>
-                <span class="text-cyan-400 text-xl flex items-center gap-1 ml-2">
-                    <span>💎</span> <span id="ui-crystals">0</span>
+                <span class="resource-display text-cyan-400 text-xl flex items-center gap-1 ml-2 cursor-help" title="Crystals - Used for school upgrades and turret mastery">
+                    <span class="text-2xl">💎</span> <span id="ui-crystals" class="font-bold">0</span>
                 </span>
             </div>
             <div class="text-xl text-slate-300 font-bold flex items-center gap-2">
@@ -157,7 +162,7 @@
                         <div class="text-amber-300 text-xs">SP PER LEVEL<span class="text-white font-bold ml-1">5</span></div>
                         <div class="text-amber-300 text-xs">STAT POINTS<span id="side-stat-pts" class="text-white font-bold ml-1">0</span></div>
                     </div>
-                    <button class="w-6 h-6 bg-amber-600 hover:bg-amber-500 rounded text-white font-bold text-xs">⊕</button>
+                    <button onclick="game.renderStatsUI(); document.getElementById('stats-modal').classList.remove('hidden')" class="w-6 h-6 bg-amber-600 hover:bg-amber-500 rounded text-white font-bold text-xs" title="Spend Stat Points" data-i18n-title="sideHud.spendPoints">⊕</button>
                 </div>
                 <div class="mt-2">
                     <div class="text-amber-400 text-xs flex justify-between"><span>EXP</span> <span id="side-xp">0/10</span></div>
@@ -166,7 +171,7 @@
                     </div>
                 </div>
                 <div class="mt-2">
-                    <div class="text-amber-400 text-xs flex justify-between"><span>NE</span> <span class="flex items-center gap-1"><span class="text-yellow-400">🔒</span>250</span></div>
+                    <div class="text-amber-400 text-xs flex justify-between cursor-help" title="Next Evolution - Reach wave 250 to evolve" data-i18n-title="sideHud.nextEvolution"><span>NE</span> <span class="flex items-center gap-1"><span class="text-yellow-400">🔒</span>250</span></div>
                     <div class="h-3 bg-slate-900 rounded-full border border-slate-700 mt-1 overflow-hidden">
                         <div class="h-full bg-gradient-to-r from-purple-600 to-purple-400" style="width: 0%"></div>
                     </div>
@@ -207,7 +212,7 @@
                         <span>⚔️</span><span data-i18n="ux.menu.combat">Combat</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-combat">
-                        <button onclick="game.renderChipsUI(); document.getElementById('chips-modal').classList.remove('hidden')" class="menu-item">🔧 <span data-i18n="chips.title">Chips</span></button>
+                        <button onclick="game.renderChipsUI(); document.getElementById('chips-modal').classList.remove('hidden')" class="menu-item">🔧 <span data-i18n="chips.title">Chips</span> <span id="ui-chips-count" class="menu-count ml-auto">0</span></button>
                         <button onclick="game.renderPresetsUI(); document.getElementById('presets-modal').classList.remove('hidden')" class="menu-item">💾 <span data-i18n="presets.title">Presets</span></button>
                     </div>
                 </div>
@@ -221,7 +226,7 @@
                         <button onclick="game.renderMiningUI(); document.getElementById('mining-modal').classList.remove('hidden')" class="menu-item">⛏️ <span data-i18n="mining.title">Mining</span></button>
                         <button onclick="game.renderForgeUI(); document.getElementById('forge-modal').classList.remove('hidden')" class="menu-item">🔥 <span data-i18n="forge.title">Forge</span></button>
                         <button onclick="game.renderProductionUI(); document.getElementById('production-modal').classList.remove('hidden')" class="menu-item">🏭 <span data-i18n="production.title">Production</span></button>
-                        <button id="btn-office" onclick="game.renderOfficeUI(); document.getElementById('office-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="office" title="Unlocks at Wave 50">🏢 <span data-i18n="office.title">Office</span> <span class="unlock-req text-amber-400 text-xs ml-auto">(W50)</span></button>
+                        <button id="btn-office" onclick="game.renderOfficeUI(); document.getElementById('office-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="office" data-i18n-title="unlock.office.tooltip">🏢 <span data-i18n="office.title">Office</span> <span class="unlock-req text-amber-400 text-xs ml-auto" data-i18n="unlock.office.req">Town Lv.4</span></button>
                     </div>
                 </div>
 
@@ -231,12 +236,12 @@
                         <span>📈</span><span data-i18n="ux.menu.progression">Progression</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-progression">
-                        <button id="btn-school" onclick="game.renderSchoolUI(); document.getElementById('school-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="school" title="Unlocks at Wave 100">🎓 <span data-i18n="school.title">School</span> <span class="unlock-req text-amber-400 text-xs ml-auto">(W100)</span></button>
+                        <button id="btn-school" onclick="game.renderSchoolUI(); document.getElementById('school-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="school" data-i18n-title="unlock.school.tooltip">🎓 <span data-i18n="school.title">School</span> <span class="unlock-req text-amber-400 text-xs ml-auto" data-i18n="unlock.school.req">Town Lv.3</span></button>
                         <button onclick="game.renderResearchUI(); document.getElementById('research-modal').classList.remove('hidden')" class="menu-item">🔬 <span data-i18n="research.title">Research</span></button>
                         <button id="btn-prestige-menu" onclick="game.renderPrestigeUI(); document.getElementById('prestige-modal').classList.remove('hidden')" class="menu-item">👑 <span data-i18n="prestige.title">Prestige</span></button>
                         <button onclick="game.renderTownUI(); document.getElementById('town-modal').classList.remove('hidden')" class="menu-item">🏰 <span data-i18n="town.title">Town</span></button>
-                        <button onclick="document.getElementById('mastery-modal').classList.remove('hidden')" class="menu-item">🎓 <span data-i18n="modals.mastery.title">Mastery</span> <span id="ui-mastery-pts" class="text-cyan-400 ml-1">0</span></button>
-                        <button id="btn-awakening" onclick="game.renderAwakeningUI(); document.getElementById('awakening-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="awakening" title="Unlocks after 1st Prestige">✨ <span data-i18n="awakening.title">Awaken</span> <span class="unlock-req text-amber-400 text-xs ml-auto">(P1)</span></button>
+                        <button onclick="document.getElementById('mastery-modal').classList.remove('hidden')" class="menu-item">⭐ <span data-i18n="modals.mastery.title">Mastery</span> <span id="ui-mastery-pts" class="text-cyan-400 ml-1">0</span></button>
+                        <button id="btn-awakening" onclick="game.renderAwakeningUI(); document.getElementById('awakening-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="awakening" data-i18n-title="unlock.awakening.tooltip">✨ <span data-i18n="awakening.title">Awaken</span> <span class="unlock-req text-amber-400 text-xs ml-auto" data-i18n="unlock.awakening.req">Dread 6</span></button>
                     </div>
                 </div>
 
@@ -259,9 +264,12 @@
                         <span>📚</span><span data-i18n="ux.menu.info">Info</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-info">
+                        <button onclick="game.renderQuestsUI && game.renderQuestsUI(); document.getElementById('quests-modal').classList.remove('hidden')" class="menu-item">📋 <span data-i18n="quests.title">Quests</span> <span id="ui-quests-count" class="menu-count ml-auto">0</span></button>
+                        <button onclick="game.renderAchievementsUI && game.renderAchievementsUI(); document.getElementById('achievements-modal').classList.remove('hidden')" class="menu-item">🏆 <span data-i18n="game.success">Achievements</span></button>
                         <button onclick="document.getElementById('relic-modal').classList.remove('hidden')" class="menu-item">🎒 <span data-i18n="modals.collection.title">Collection</span> <span id="ui-relic-count" class="text-yellow-400 ml-1">0</span></button>
-                        <button onclick="document.getElementById('codex-modal').classList.remove('hidden')" class="menu-item">📖 <span data-i18n="game.codex">Codex</span></button>
+                        <button onclick="document.getElementById('codex-modal').classList.remove('hidden')" class="menu-item">📖 <span data-i18n="game.codex">Codex</span> <span id="ui-codex-count" class="menu-count ml-auto">0</span></button>
                         <button onclick="game.renderStatisticsUI(); document.getElementById('statistics-modal').classList.remove('hidden')" class="menu-item">📊 <span data-i18n="statistics.title">Statistics</span></button>
+                        <button onclick="document.getElementById('settings-modal').classList.remove('hidden')" class="menu-item">⚙️ <span data-i18n="game.options">Options</span></button>
                     </div>
                 </div>
             </div>
@@ -356,7 +364,13 @@
                     </h2>
                     <button onclick="document.getElementById('relic-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
-                <div id="relic-grid" class="p-4 grid grid-cols-2 md:grid-cols-3 gap-4 overflow-y-auto"></div>
+                <div id="relic-grid" class="p-4 grid grid-cols-2 md:grid-cols-3 gap-4 overflow-y-auto">
+                    <div class="empty-state col-span-full text-center py-8 text-slate-400">
+                        <div class="text-4xl mb-3">🏆</div>
+                        <div class="text-lg font-medium" data-i18n="emptyStates.relics.title">No relics yet</div>
+                        <div class="text-sm mt-1" data-i18n="emptyStates.relics.hint">Defeat bosses to collect powerful relics!</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -370,7 +384,13 @@
                     </h2>
                     <button onclick="document.getElementById('codex-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
-                <div id="codex-grid" class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto"></div>
+                <div id="codex-grid" class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto">
+                    <div class="empty-state col-span-full text-center py-8 text-slate-400">
+                        <div class="text-4xl mb-3">📖</div>
+                        <div class="text-lg font-medium" data-i18n="emptyStates.codex.title">No enemies encountered</div>
+                        <div class="text-sm mt-1" data-i18n="emptyStates.codex.hint">Start fighting to fill your codex!</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -439,6 +459,10 @@
                     </div>
                 </div>
                 <div class="p-4 overflow-y-auto">
+                    <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="research.desc">Research permanent upgrades for your turrets and defenses.</div>
+                    <div class="mb-4 bg-slate-700/50 p-2 rounded border border-slate-600 text-xs text-slate-400 text-center">
+                        <span class="text-purple-400">💡</span> <span data-i18n="research.tip">Each branch has prerequisites. Complete lower tiers to unlock higher ones!</span>
+                    </div>
                     <div id="research-branches" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
                 </div>
             </div>
@@ -458,6 +482,7 @@
                     <!-- Dread Mode Section -->
                     <div class="mb-6">
                         <h3 class="text-lg font-bold text-purple-400 mb-2" data-i18n="dread.title">Dread Mode</h3>
+                        <div class="mb-3 text-xs text-slate-400 text-center" data-i18n="dread.desc">Higher Dread = harder enemies, but more rewards! Select a level below.</div>
                         <div class="dread-selector" id="dread-selector"></div>
                         <div class="dread-info">
                             <div class="dread-info-title" id="dread-info-title"></div>
@@ -558,6 +583,37 @@
                     </div>
                     <hr class="border-slate-700 my-4">
                     <button onclick="game.confirmReset()" class="w-full bg-red-900 hover:bg-red-700 text-red-200 py-2 rounded text-sm font-bold border border-red-700" data-i18n="modals.settings.reset">RESET</button>
+                    <!-- Keyboard Shortcuts Section -->
+                    <hr class="border-slate-700 my-4">
+                    <div class="bg-slate-900 p-3 rounded">
+                        <h3 class="text-sm font-bold text-slate-300 mb-3" data-i18n="modals.settings.shortcuts.title">Keyboard Shortcuts</h3>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="flex items-center gap-2">
+                                <kbd class="kbd-key">Q</kbd>
+                                <span class="text-slate-400" data-i18n="modals.settings.shortcuts.overdrive">Overdrive</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <kbd class="kbd-key">W</kbd>
+                                <span class="text-slate-400" data-i18n="modals.settings.shortcuts.nuke">Nuke</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <kbd class="kbd-key">E</kbd>
+                                <span class="text-slate-400" data-i18n="modals.settings.shortcuts.blackhole">Black Hole</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <kbd class="kbd-key">P</kbd>
+                                <span class="text-slate-400" data-i18n="modals.settings.shortcuts.pause">Pause</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <kbd class="kbd-key">Esc</kbd>
+                                <span class="text-slate-400" data-i18n="modals.settings.shortcuts.closeModal">Close Modal</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <kbd class="kbd-key">1-6</kbd>
+                                <span class="text-slate-400" data-i18n="modals.settings.shortcuts.speed">Game Speed</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -574,6 +630,9 @@
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="production.desc">Build passive resource generators to earn resources over time.</div>
+                    <div class="mb-4 bg-slate-700/50 p-2 rounded border border-slate-600 text-xs text-slate-400 text-center">
+                        <span class="text-orange-400">💡</span> <span data-i18n="production.tip">Buildings produce resources even when offline. Upgrade for higher output!</span>
+                    </div>
                     <div id="production-summary" class="mb-4 bg-orange-900/30 p-3 rounded border border-orange-800 grid grid-cols-2 md:grid-cols-4 gap-2 text-center text-sm"></div>
                     <div id="production-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
@@ -630,7 +689,7 @@
                                 <div class="text-xl font-bold text-cyan-400"><span id="prestige-wave-skip">0</span> 🚀</div>
                             </div>
                         </div>
-                        <button onclick="if(game.prestige.canPrestige() && confirm(game.t('prestige.confirmReset'))) game.prestige.doPrestige()" id="btn-prestige" class="mt-4 px-8 py-3 bg-amber-600 hover:bg-amber-500 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-bold rounded text-lg transition" data-i18n="prestige.doPrestige">
+                        <button onclick="if(game.prestige.canPrestige()) gameConfirm(game.t('prestige.confirmReset'), () => game.prestige.doPrestige())" id="btn-prestige" class="mt-4 px-8 py-3 bg-amber-600 hover:bg-amber-500 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-bold rounded text-lg transition" data-i18n="prestige.doPrestige">
                             PRESTIGE NOW
                         </button>
                         <div class="text-xs text-slate-400 mt-2" data-i18n="prestige.requirement">Requires Wave 25+</div>
@@ -676,11 +735,20 @@
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="chips.desc">Equip chips to turrets for bonus effects. Chips drop from bosses.</div>
                     <div class="mb-6">
                         <h3 class="text-lg font-bold text-pink-400 mb-3" data-i18n="chips.inventory">Chip Inventory</h3>
-                        <div id="chips-inventory" class="grid grid-cols-2 md:grid-cols-4 gap-2"></div>
+                        <div id="chips-inventory" class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                            <div class="empty-state col-span-full text-center py-4 text-slate-400">
+                                <div class="text-2xl mb-2">💎</div>
+                                <div class="text-sm" data-i18n="emptyStates.chips.inventory">No chips collected. Chips drop from bosses.</div>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <h3 class="text-lg font-bold text-pink-400 mb-3" data-i18n="chips.equipped">Equipped Chips</h3>
-                        <div id="chips-equipped" class="space-y-3"></div>
+                        <div id="chips-equipped" class="space-y-3">
+                            <div class="empty-state text-center py-4 text-slate-400">
+                                <div class="text-sm" data-i18n="emptyStates.chips.equipped">No chips equipped. Select a chip from inventory to equip.</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -717,7 +785,13 @@
                         </div>
                     </div>
                     <h3 class="text-lg font-bold text-teal-400 mb-3" data-i18n="town.unlocks">Unlocked Features</h3>
-                    <div id="town-unlocks-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    <div id="town-unlocks-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="empty-state col-span-full text-center py-6 text-slate-400">
+                            <div class="text-4xl mb-3">🏘️</div>
+                            <div class="text-lg font-medium" data-i18n="emptyStates.town.title">No features unlocked</div>
+                            <div class="text-sm mt-1" data-i18n="emptyStates.town.hint">Level up your town to unlock features!</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -754,6 +828,9 @@
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="office.desc">Activate temporary boosts using gems.</div>
+                    <div class="mb-3 bg-slate-700/50 p-2 rounded border border-slate-600 text-xs text-slate-400 text-center">
+                        <span class="text-lime-400">💡</span> <span data-i18n="office.tip">Gems are earned from bosses and quests. Boosts stack and persist through runs!</span>
+                    </div>
                     <div class="mb-4 text-center">
                         <span class="text-lg text-pink-400">💠 <span id="office-gems">0</span></span>
                     </div>
@@ -776,6 +853,9 @@
                     <button onclick="document.getElementById('awakening-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
+                    <div class="mb-4 bg-slate-700/50 p-2 rounded border border-slate-600 text-xs text-slate-400 text-center">
+                        <span class="text-fuchsia-400">💡</span> <span data-i18n="awakening.tip">Awakening permanently boosts your power. Choose bonuses wisely - they persist forever!</span>
+                    </div>
                     <div class="mb-6 bg-fuchsia-900/30 p-4 rounded border border-fuchsia-800 text-center">
                         <div id="awakening-status" class="text-xl font-bold text-white mb-2"></div>
                         <div id="awakening-requirement" class="text-sm text-slate-400"></div>
@@ -842,7 +922,13 @@
                     <button onclick="document.getElementById('campaign-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
-                    <div id="campaign-chapters" class="space-y-6"></div>
+                    <div id="campaign-chapters" class="space-y-6">
+                        <div class="empty-state text-center py-8 text-slate-400">
+                            <div class="text-4xl mb-3">🗺️</div>
+                            <div class="text-lg font-medium" data-i18n="emptyStates.campaign.title">Campaign loading...</div>
+                            <div class="text-sm mt-1" data-i18n="emptyStates.campaign.hint">Explore different worlds and challenges!</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -861,7 +947,13 @@
                     <div class="flex gap-2 mb-4 flex-wrap justify-center">
                         <select id="leaderboard-category" onchange="game.renderLeaderboardUI()" class="bg-slate-700 text-white border border-slate-600 rounded px-3 py-2 text-sm"></select>
                     </div>
-                    <div id="leaderboard-list" class="space-y-2"></div>
+                    <div id="leaderboard-list" class="space-y-2">
+                        <div class="empty-state text-center py-8 text-slate-400">
+                            <div class="text-4xl mb-3">🏅</div>
+                            <div class="text-lg font-medium" data-i18n="emptyStates.leaderboard.title">No data available</div>
+                            <div class="text-sm mt-1" data-i18n="emptyStates.leaderboard.hint">Play to appear on the leaderboard!</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -877,7 +969,13 @@
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="presets.desc">Save and load your turret configurations.</div>
-                    <div id="presets-grid" class="space-y-3"></div>
+                    <div id="presets-grid" class="space-y-3">
+                        <div class="empty-state text-center py-8 text-slate-400">
+                            <div class="text-4xl mb-3">💾</div>
+                            <div class="text-lg font-medium" data-i18n="emptyStates.presets.title">No presets saved</div>
+                            <div class="text-sm mt-1" data-i18n="emptyStates.presets.hint">Save your turret configuration for quick loading!</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -954,6 +1052,18 @@
             </div>
         </div>
 
+        <!-- Custom Confirm Modal -->
+        <div id="confirm-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-[60] backdrop-blur-sm" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+            <div class="bg-slate-800 border-2 border-amber-500 p-6 rounded-2xl max-w-sm w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
+                <h2 id="confirm-title" class="text-xl text-amber-400 font-bold mb-3 text-center" data-i18n="confirm.title">Confirm Action</h2>
+                <p id="confirm-message" class="text-slate-300 text-center mb-6"></p>
+                <div class="flex gap-3">
+                    <button id="confirm-cancel" class="flex-1 py-2 bg-slate-600 hover:bg-slate-500 text-white font-bold rounded border border-slate-500 transition" data-i18n="confirm.cancel">Cancel</button>
+                    <button id="confirm-ok" class="flex-1 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold rounded border border-amber-400 transition" data-i18n="confirm.ok">Confirm</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Dev Modal -->
         <div id="dev-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true">
             <div class="bg-red-950 border border-red-600 p-8 rounded-2xl max-w-md text-center shadow-2xl" onclick="event.stopPropagation()">
@@ -981,6 +1091,7 @@
                 </div>
                 <div id="offline-bonus" class="hidden bg-purple-900/30 p-3 rounded-lg border border-purple-500/50 mb-4">
                     <div class="text-sm text-purple-300"><span data-i18n="modals.offline.bonusApplied">Bonus applied</span>: <span id="offline-bonus-value" class="text-white font-bold">+0%</span></div>
+                    <div class="text-xs text-slate-400 mt-1" data-i18n="modals.offline.bonusSource">From relics, production buildings, and upgrades</div>
                 </div>
                 <button onclick="document.getElementById('offline-modal').classList.add('hidden')" class="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded shadow-lg transition" data-i18n="modals.offline.collect">Collect</button>
             </div>

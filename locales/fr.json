@@ -20,11 +20,20 @@
     "boss": "BOSS"
   },
   "hud": {
-    "evolutionTier": "\u00c9volution Tier",
-    "activeChallenge": "D\u00c9FI ACTIF :",
+    "evolutionTier": "Évolution Tier",
+    "activeChallenge": "DÉFI ACTIF :",
     "autoRetry": "AUTO RETRY",
     "autoBuy": "AUTO BUY",
     "aiActive": "IA ACTIVE"
+  },
+  "sideHud": {
+    "spendPoints": "Dépenser les Points",
+    "nextEvolution": "Prochaine Évolution - Atteindre vague 250"
+  },
+  "confirm": {
+    "title": "Confirmer l'Action",
+    "ok": "Confirmer",
+    "cancel": "Annuler"
   },
   "skills": {
     "overdrive": {
@@ -81,7 +90,16 @@
       "import": "IMPORTER",
       "reset": "RESET",
       "confirmReset": "Tout effacer ?",
-      "language": "Langue"
+      "language": "Langue",
+      "shortcuts": {
+        "title": "Raccourcis Clavier",
+        "overdrive": "Overdrive",
+        "nuke": "Bombe",
+        "blackhole": "Trou Noir",
+        "pause": "Pause",
+        "closeModal": "Fermer",
+        "speed": "Vitesse"
+      }
     },
     "dev": {
       "title": "MODE D\u00c9VELOPPEUR",
@@ -97,6 +115,7 @@
       "subtitle": "Gain Hors-Ligne",
       "timeAway": "Temps d'absence",
       "bonusApplied": "Bonus appliqu\u00e9",
+      "bonusSource": "Venant des reliques, batiments et ameliorations",
       "collect": "R\u00e9cup\u00e9rer"
     },
     "gameOver": {
@@ -537,6 +556,7 @@
   },
   "dread": {
     "title": "Mode Dread",
+    "desc": "Plus de Terreur = ennemis plus durs, mais plus de recompenses ! Selectionnez un niveau.",
     "level": "Niveau",
     "bonus": "Bonus",
     "difficulty": "Difficulte",
@@ -554,6 +574,8 @@
   },
   "research": {
     "title": "Arbre de Recherche",
+    "desc": "Recherchez des ameliorations permanentes pour vos tourelles et defenses.",
+    "tip": "Chaque branche a des prerequis. Completez les niveaux inferieurs d'abord !",
     "purchase": "Acheter",
     "purchased": "Debloque",
     "unlocked": "Recherche Debloquee !",
@@ -598,6 +620,7 @@
   "production": {
     "title": "Production",
     "desc": "Construisez des generateurs de ressources passifs.",
+    "tip": "Les batiments produisent des ressources meme hors ligne. Ameliorez-les pour plus de rendement !",
     "level": "Niveau",
     "upgrade": "Ameliorer",
     "upgraded": "Batiment ameliore !",
@@ -733,6 +756,7 @@
   "office": {
     "title": "Bureau",
     "desc": "Activez des boosts temporaires avec des gemmes.",
+    "tip": "Les gemmes s'obtiennent des boss et quetes. Les boosts s'accumulent entre les parties !",
     "active": "Boosts actifs",
     "available": "Boosts disponibles",
     "noActive": "Aucun boost actif",
@@ -745,6 +769,7 @@
   },
   "awakening": {
     "title": "\u00c9veil",
+    "tip": "L'eveil booste votre puissance de facon permanente. Choisissez bien vos bonus !",
     "awakened": "\u00c9VEILL\u00c9",
     "notAwakened": "Non \u00e9veill\u00e9",
     "level": "Niveau d'\u00e9veil",
@@ -1268,5 +1293,49 @@
   },
   "ui": {
     "close": "FERMER"
+  },
+  "unlock": {
+    "office": {
+      "req": "Ville Niv.4",
+      "tooltip": "Se débloque quand la Ville atteint le Niveau 4"
+    },
+    "school": {
+      "req": "Ville Niv.3",
+      "tooltip": "Se débloque quand la Ville atteint le Niveau 3"
+    },
+    "awakening": {
+      "req": "Terreur 6",
+      "tooltip": "Se débloque au Niveau de Terreur 6 (après Prestige)"
+    }
+  },
+  "emptyStates": {
+    "relics": {
+      "title": "Aucune relique",
+      "hint": "Vainquez des boss pour collecter des reliques !"
+    },
+    "codex": {
+      "title": "Aucun ennemi rencontré",
+      "hint": "Combattez pour remplir votre codex !"
+    },
+    "chips": {
+      "inventory": "Aucune puce collectée. Les puces tombent des boss.",
+      "equipped": "Aucune puce équipée. Sélectionnez une puce pour l'équiper."
+    },
+    "campaign": {
+      "title": "Campagne en chargement...",
+      "hint": "Explorez différents mondes et défis !"
+    },
+    "presets": {
+      "title": "Aucun preset sauvegardé",
+      "hint": "Sauvegardez votre configuration de tourelles !"
+    },
+    "leaderboard": {
+      "title": "Aucune donnée disponible",
+      "hint": "Jouez pour apparaître au classement !"
+    },
+    "town": {
+      "title": "Aucune fonctionnalité débloquée",
+      "hint": "Montez en niveau pour débloquer des fonctionnalités !"
+    }
   }
 }
