@@ -41,7 +41,9 @@ export class Enemy {
         this.baseSpeed = CONFIG.baseEnemySpeed * (1 + wave * 0.03) * this.type.speedMult * speedMod * dread.enemySpeed;
         this.damage = Math.floor((5 + Math.floor(wave * 0.8)) * (typeKey === 'BOSS' ? 5 : 1) * dread.enemyDamage);
         const baseGold = Math.max(1, Math.floor(2 * (1 + wave * 0.18)));
-        const goldMult = game.metaUpgrades.getEffectValue('goldMult') * (1 + (game.relicMults.gold || 0));
+        const passiveGoldMult = game.passives?.getEffect('goldGain') || 1;
+        const prestigeGoldMult = game.prestige?.getEffect('prestige_gold') || 1;
+        const goldMult = game.metaUpgrades.getEffectValue('goldMult') * (1 + (game.relicMults.gold || 0)) * passiveGoldMult * prestigeGoldMult;
         const catchupBonus = (wave > (game.stats?.maxWave || 0)) ? 1.5 : 1.0;
         this.goldValue = Math.floor(baseGold * goldMult * catchupBonus * (typeKey === 'BOSS' ? 15 : (typeKey === 'TANK' ? 2 : 1)) * (this.isElite ? 10 : 1) * dread.crystalBonus);
         if (game.activeBuffs['midas'] > 0) this.goldValue *= 5;

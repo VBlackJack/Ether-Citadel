@@ -225,14 +225,14 @@ export class StatsBreakdown {
         }
 
         // Passives
-        const passiveMult = this.game.passives?.getEffect('damageMult') || 1;
+        const passiveMult = this.game.passives?.getEffect('damage') || 1;
         if (passiveMult !== 1) {
             multipliers.push({ label: t('stats.sources.passives') || 'Passives', mult: passiveMult });
             total *= passiveMult;
         }
 
         // Prestige
-        const prestigeMult = this.game.prestige?.getEffect('damageMult') || 1;
+        const prestigeMult = this.game.prestige?.getEffect('prestige_damage') || 1;
         if (prestigeMult !== 1) {
             multipliers.push({ label: t('stats.sources.prestige') || 'Prestige', mult: prestigeMult });
             total *= prestigeMult;
@@ -297,7 +297,7 @@ export class StatsBreakdown {
         }
 
         // Passives
-        const passiveMult = this.game.passives?.getEffect('goldMult') || 1;
+        const passiveMult = this.game.passives?.getEffect('goldGain') || 1;
         if (passiveMult !== 1) {
             multipliers.push({ label: t('stats.sources.passives') || 'Passives', mult: passiveMult });
             total *= passiveMult;

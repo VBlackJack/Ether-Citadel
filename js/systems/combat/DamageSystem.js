@@ -95,14 +95,14 @@ export class DamageSystem {
         }
 
         // 5. Passive multiplier
-        const passiveDamageMult = this.game.passives?.getEffect('damageMult') || 1;
+        const passiveDamageMult = this.game.passives?.getEffect('damage') || 1;
         if (passiveDamageMult !== 1) {
             multipliers.push({ source: 'passives', mult: passiveDamageMult, label: 'Passives' });
             mult *= passiveDamageMult;
         }
 
         // 6. Prestige multiplier
-        const prestigeDamageMult = this.game.prestige?.getEffect('damageMult') || 1;
+        const prestigeDamageMult = this.game.prestige?.getEffect('prestige_damage') || 1;
         if (prestigeDamageMult !== 1) {
             multipliers.push({ source: 'prestige', mult: prestigeDamageMult, label: 'Prestige' });
             mult *= prestigeDamageMult;

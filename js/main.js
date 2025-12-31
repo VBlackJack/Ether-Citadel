@@ -2560,21 +2560,23 @@ class Game {
     updateStats() {
         const tierMult = Math.pow(CONFIG.evolutionMultiplier, Math.min(3, this.castle.tier) - 1 + Math.max(0, this.castle.tier - 3) * 0.5);
 
-        // Multiplicative stacking for damage (meta × relic × prestige × research)
+        // Multiplicative stacking for damage (meta × relic × prestige × research × passive)
         const metaDmgMult = this.metaUpgrades.getEffectValue('damageMult');
         const relicDmgMult = 1 + (this.relicMults.damage || 0);
         const prestigeDmgMult = this.prestige?.getEffectValue('prestige_damage') || 1;
         const researchDmgMult = 1 + (this.researchEffects?.damageMult || 0);
+        const passiveDmgMult = this.passives?.getEffect('damage') || 1;
         const slotBonuses = this.turretSlots?.getPassiveBonuses() || { damage: 0, speed: 0, range: 0 };
         const slotDmgMult = 1 + slotBonuses.damage;
-        const totalDmgMult = metaDmgMult * relicDmgMult * prestigeDmgMult * researchDmgMult * slotDmgMult;
+        const totalDmgMult = metaDmgMult * relicDmgMult * prestigeDmgMult * researchDmgMult * passiveDmgMult * slotDmgMult;
 
-        // Multiplicative stacking for health
+        // Multiplicative stacking for health (meta × relic × prestige × research × passive)
         const metaHpMult = this.metaUpgrades.getEffectValue('healthMult');
         const relicHpMult = 1 + (this.relicMults.health || 0);
         const prestigeHpMult = this.prestige?.getEffectValue('prestige_health') || 1;
         const researchHpMult = 1 + (this.researchEffects?.healthMult || 0);
-        const totalHpMult = metaHpMult * relicHpMult * prestigeHpMult * researchHpMult;
+        const passiveHpMult = this.passives?.getEffect('health') || 1;
+        const totalHpMult = metaHpMult * relicHpMult * prestigeHpMult * researchHpMult * passiveHpMult;
 
         const dmgBase = this.upgrades.upgrades.find(u => u.id === 'damage');
         this.currentDamage = Math.floor(dmgBase.getValue(dmgBase.level) * tierMult * totalDmgMult);
@@ -2587,8 +2589,10 @@ class Game {
         const critStat = this.upgrades.upgrades.find(u => u.id === 'crit').getValue(this.upgrades.upgrades.find(u => u.id === 'crit').level);
         const researchCritChance = this.researchEffects?.critChance || 0;
         const researchCritDmg = this.researchEffects?.critDamage || 0;
-        this.critChance = critStat.chance + this.relicMults.critChance + researchCritChance;
-        this.critMult = critStat.mult + (this.stats.mastery['crit_dmg'] || 0) * 0.1 + (this.relicMults.critDamage || 0) + researchCritDmg;
+        const passiveCritChance = this.passives?.getEffect('critChance') || 0;
+        const passiveCritDamage = this.passives?.getEffect('critDamage') || 0;
+        this.critChance = critStat.chance + this.relicMults.critChance + researchCritChance + passiveCritChance;
+        this.critMult = critStat.mult + (this.stats.mastery['crit_dmg'] || 0) * 0.1 + (this.relicMults.critDamage || 0) + researchCritDmg + passiveCritDamage;
 
         const hpBase = this.upgrades.upgrades.find(u => u.id === 'health');
         const hpMod = this.activeChallenge && this.activeChallenge.id === 'glass' ? 0.1 : 1;
@@ -2596,7 +2600,15 @@ class Game {
 
         const regBase = this.upgrades.upgrades.find(u => u.id === 'regen');
         const researchRegenMult = 1 + (this.researchEffects?.regenMult || 0);
-        this.castle.regen = regBase.getValue(regBase.level) * tierMult * researchRegenMult;
+        const passiveRegenBonus = this.passives?.getEffect('regen') || 0;
+        this.castle.regen = regBase.getValue(regBase.level) * tierMult * researchRegenMult + passiveRegenBonus;
+
+        // Armor from upgrades + passives
+        const armorUpg = this.upgrades.upgrades.find(u => u.id === 'armor');
+        const upgradeArmor = armorUpg ? armorUpg.getValue(armorUpg.level) : 0;
+        const passiveArmor = this.passives?.getEffect('armor') || 0;
+        const researchArmor = this.researchEffects?.armorFlat || 0;
+        this.castle.armor = Math.min(0.9, upgradeArmor + passiveArmor + researchArmor);
 
         this.currentRange = this.upgrades.upgrades.find(u => u.id === 'range').getValue(this.upgrades.upgrades.find(u => u.id === 'range').level);
         this.multiShotChance = this.upgrades.upgrades.find(u => u.id === 'multishot').getValue(this.upgrades.upgrades.find(u => u.id === 'multishot').level);
