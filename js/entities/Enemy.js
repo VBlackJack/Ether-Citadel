@@ -18,10 +18,9 @@
  * Enemy - Base enemy entity with type-specific behaviors
  */
 
-import { ENEMY_TYPES, CONFIG } from '../data.js';
-import { MathUtils } from '../config.js';
+import { ENEMY_TYPES } from '../data.js';
+import { CONFIG, MathUtils, formatNumber } from '../config.js';
 import { t } from '../i18n.js';
-import { formatNumber } from '../utils.js';
 
 export class Enemy {
     constructor(game, wave, typeKey = 'NORMAL', x, y) {

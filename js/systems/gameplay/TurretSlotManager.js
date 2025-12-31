@@ -3,8 +3,10 @@
  * Apache-2.0 License
  */
 
-import { TURRET_SLOTS } from '../../data.js';
+import { TURRET_SLOTS, SCHOOL_TURRETS } from '../../data.js';
 import { t } from '../../i18n.js';
+import { formatNumber } from '../../config.js';
+import { Projectile } from '../../entities/Projectile.js';
 
 export class TurretSlotManager {
     constructor(game) {

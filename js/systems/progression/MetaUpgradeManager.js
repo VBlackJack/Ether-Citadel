@@ -88,7 +88,7 @@ export class MetaUpgradeManager {
         this.upgrades.forEach(u => {
             const cost = this.getCost(u);
             const isMaxed = u.maxLevel && u.level >= u.maxLevel;
-            const canAfford = this.game.ether >= cost && !isMaxed;
+            const canAfford = (this.game?.ether || 0) >= cost && !isMaxed;
 
             const div = document.createElement('div');
             div.className = `p-4 rounded-xl border flex justify-between items-center transition-all ${

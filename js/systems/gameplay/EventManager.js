@@ -5,6 +5,7 @@
 
 import { RANDOM_EVENTS } from '../../data.js';
 import { t } from '../../i18n.js';
+import { FloatingText } from '../../entities/FloatingText.js';
 
 export class EventManager {
     constructor(game) {

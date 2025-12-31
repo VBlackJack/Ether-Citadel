@@ -107,8 +107,8 @@ class Game {
         this.devClickCount = 0;
         this.config = ConfigRegistry;
         this.sound = new SoundManager();
-        this.metaUpgrades = new MetaUpgradeManager();
-        this.skills = new SkillManager();
+        this.metaUpgrades = new MetaUpgradeManager(this);
+        this.skills = new SkillManager(this);
         this.autoSkills = new AutoSkillManager(this);
         this.projectileSystem = new ProjectileSystem(this);
         this.stats = new StatsManager();
@@ -299,11 +299,12 @@ class Game {
         requestAnimationFrame((t) => this.loop(t));
 
         this._intervals.push(setInterval(() => {
+            const autoStatus = document.getElementById('auto-status');
             if (this.autoBuyEnabled && !this.isPaused && !this.isGameOver && this.metaUpgrades.getEffectValue('unlockAI')) {
                 this.performAutoBuy();
-                document.getElementById('auto-status').classList.remove('hidden');
+                autoStatus?.classList.remove('hidden');
             } else {
-                document.getElementById('auto-status').classList.add('hidden');
+                autoStatus?.classList.add('hidden');
             }
         }, 500));
 
@@ -482,6 +483,18 @@ class Game {
         this.stats.registerGold(amount);
         this.upgrades.render(this.activeTab);
         this.tutorial.check(this.gold);
+    }
+
+    createFloatingText(x, y, text, color, size = 20) {
+        return new FloatingText(x, y, text, color, size);
+    }
+
+    createRune(x, y) {
+        return new Rune(x, y);
+    }
+
+    createParticle(x, y, color) {
+        return new Particle(x, y, color);
     }
 
     switchTab(id) {
@@ -3043,10 +3056,11 @@ class Game {
             u.level = resetIds.includes(u.id) ? 0 : 1;
         });
         this.gold = this.metaUpgrades.getEffectValue('startGold');
+        const autoStatusEl = document.getElementById('auto-status');
         if (isAuto && this.autoBuyEnabled && this.metaUpgrades.getEffectValue('unlockAI')) {
-            document.getElementById('auto-status').classList.remove('hidden');
+            autoStatusEl?.classList.remove('hidden');
         } else {
-            document.getElementById('auto-status').classList.add('hidden');
+            autoStatusEl?.classList.add('hidden');
         }
         this.updateStats();
         this.upgrades.render(this.activeTab);

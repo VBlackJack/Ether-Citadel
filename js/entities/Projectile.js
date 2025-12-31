@@ -4,6 +4,7 @@
  */
 
 import { MathUtils } from '../config.js';
+import { Particle } from './Particle.js';
 
 export class Projectile {
     constructor(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props) {

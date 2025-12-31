@@ -7,6 +7,7 @@ import { ACHIEVEMENTS_DB, MASTERIES, ENEMY_TYPES } from '../../data.js';
 import { formatNumber } from '../../config.js';
 import { t } from '../../i18n.js';
 import { sanitizeColor } from '../../utils/HtmlSanitizer.js';
+import { FloatingText } from '../../entities/FloatingText.js';
 
 export class StatsManager {
     constructor() {
