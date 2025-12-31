@@ -4,6 +4,7 @@
  */
 
 import { MathUtils } from '../config.js';
+import { Projectile } from './Projectile.js';
 
 export class Drone {
     constructor() {

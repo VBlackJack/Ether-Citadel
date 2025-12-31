@@ -188,7 +188,7 @@ class BigNumServiceClass {
      */
     init() {
         if (typeof Decimal === 'undefined') {
-            console.error('BigNumService: break_infinity.js Decimal not found');
+            console.warn('BigNumService: Decimal not available, using fallback formatting');
             return false;
         }
         this.initialized = true;

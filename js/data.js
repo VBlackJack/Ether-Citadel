@@ -66,11 +66,11 @@ export const DREAD_LEVELS = [
  * Mining resource definitions
  */
 export const MINING_RESOURCES = [
-    { id: 'copper', nameKey: 'mining.copper.name', icon: '🟤', baseRate: 1.0, color: '#b87333', tier: 1 },
-    { id: 'iron', nameKey: 'mining.iron.name', icon: '⚫', baseRate: 0.5, color: '#71797E', tier: 1 },
+    { id: 'copper', nameKey: 'mining.copper.name', icon: '⛏️', baseRate: 1.0, color: '#b87333', tier: 1 },
+    { id: 'iron', nameKey: 'mining.iron.name', icon: '🔩', baseRate: 0.5, color: '#71797E', tier: 1 },
     { id: 'crystal', nameKey: 'mining.crystal.name', icon: '💎', baseRate: 0.2, color: '#22d3ee', tier: 2 },
-    { id: 'gold_ore', nameKey: 'mining.gold_ore.name', icon: '🟡', baseRate: 0.1, color: '#fbbf24', tier: 2 },
-    { id: 'void_shard', nameKey: 'mining.void_shard.name', icon: '🟣', baseRate: 0.05, color: '#a855f7', tier: 3 },
+    { id: 'gold_ore', nameKey: 'mining.gold_ore.name', icon: '🥇', baseRate: 0.1, color: '#fbbf24', tier: 2 },
+    { id: 'void_shard', nameKey: 'mining.void_shard.name', icon: '🔮', baseRate: 0.05, color: '#a855f7', tier: 3 },
     { id: 'starlight', nameKey: 'mining.starlight.name', icon: '✨', baseRate: 0.02, color: '#fff', tier: 3 }
 ];
 
@@ -189,16 +189,16 @@ export const DARK_MATTER_UPGRADES = [
 export const RELIC_DB = [
     // Common relics (tier 1)
     { id: 'dmg_boost', nameKey: 'relics.dmg_boost.name', icon: '🗡️', descKey: 'relics.dmg_boost.desc', tier: 1, effect: (g) => g.relicMults.damage += 0.2 },
-    { id: 'gold_boost', nameKey: 'relics.gold_boost.name', icon: '🪙', descKey: 'relics.gold_boost.desc', tier: 1, effect: (g) => g.relicMults.gold += 0.25 },
+    { id: 'gold_boost', nameKey: 'relics.gold_boost.name', icon: '💰', descKey: 'relics.gold_boost.desc', tier: 1, effect: (g) => g.relicMults.gold += 0.25 },
     { id: 'speed_boost', nameKey: 'relics.speed_boost.name', icon: '💨', descKey: 'relics.speed_boost.desc', tier: 1, effect: (g) => g.relicMults.speed += 0.15 },
-    { id: 'crit_boost', nameKey: 'relics.crit_boost.name', icon: '👁️', descKey: 'relics.crit_boost.desc', tier: 1, effect: (g) => g.relicMults.critChance += 10 },
+    { id: 'crit_boost', nameKey: 'relics.crit_boost.name', icon: '💥', descKey: 'relics.crit_boost.desc', tier: 1, effect: (g) => g.relicMults.critChance += 10 },
     { id: 'hp_boost', nameKey: 'relics.hp_boost.name', icon: '❤️', descKey: 'relics.hp_boost.desc', tier: 1, effect: (g) => g.relicMults.health += 0.3 },
-    { id: 'skill_cd', nameKey: 'relics.skill_cd.name', icon: '⏳', descKey: 'relics.skill_cd.desc', tier: 1, effect: (g) => g.relicMults.cooldown += 0.1 },
+    { id: 'skill_cd', nameKey: 'relics.skill_cd.name', icon: '⏰', descKey: 'relics.skill_cd.desc', tier: 1, effect: (g) => g.relicMults.cooldown += 0.1 },
     // Rare relics (tier 2)
     { id: 'vampiric_blade', nameKey: 'relics.vampiric_blade.name', icon: '🩸', descKey: 'relics.vampiric_blade.desc', tier: 2, effect: (g) => { g.relicMults.damage += 0.15; g.relicMults.leech += 0.05; } },
     { id: 'miners_pick', nameKey: 'relics.miners_pick.name', icon: '⛏️', descKey: 'relics.miners_pick.desc', tier: 2, effect: (g) => g.relicMults.mining += 0.5 },
     { id: 'chaos_gem', nameKey: 'relics.chaos_gem.name', icon: '☠️', descKey: 'relics.chaos_gem.desc', tier: 2, effect: (g) => g.relicMults.dreadReward += 0.25 },
-    { id: 'temporal_shard', nameKey: 'relics.temporal_shard.name', icon: '⏱️', descKey: 'relics.temporal_shard.desc', tier: 2, effect: (g) => { g.relicMults.cooldown += 0.15; g.relicMults.speed += 0.1; } },
+    { id: 'temporal_shard', nameKey: 'relics.temporal_shard.name', icon: '⏰', descKey: 'relics.temporal_shard.desc', tier: 2, effect: (g) => { g.relicMults.cooldown += 0.15; g.relicMults.speed += 0.1; } },
     // Epic relics (tier 3)
     { id: 'dragon_heart', nameKey: 'relics.dragon_heart.name', icon: '🐉', descKey: 'relics.dragon_heart.desc', tier: 3, effect: (g) => { g.relicMults.damage += 0.35; g.relicMults.health += 0.35; } },
     { id: 'void_crystal', nameKey: 'relics.void_crystal.name', icon: '🔷', descKey: 'relics.void_crystal.desc', tier: 3, effect: (g) => { g.relicMults.critChance += 20; g.relicMults.critDamage += 0.5; } },
@@ -251,9 +251,9 @@ export const ENEMY_TYPES = {
  * @type {Array<{id: string, nameKey: string, color: string, icon: string, duration: number, descKey: string, instant?: boolean}>}
  */
 export const RUNE_TYPES = [
-    { id: 'rage', nameKey: 'runes.rage.name', color: '#ef4444', icon: '🔴', duration: 10000, descKey: 'runes.rage.desc' },
-    { id: 'midas', nameKey: 'runes.midas.name', color: '#fbbf24', icon: '🟡', duration: 10000, descKey: 'runes.midas.desc' },
-    { id: 'heal', nameKey: 'runes.heal.name', color: '#4ade80', icon: '🟢', duration: 0, descKey: 'runes.heal.desc', instant: true }
+    { id: 'rage', nameKey: 'runes.rage.name', color: '#ef4444', icon: '🔥', duration: 10000, descKey: 'runes.rage.desc' },
+    { id: 'midas', nameKey: 'runes.midas.name', color: '#fbbf24', icon: '👑', duration: 10000, descKey: 'runes.midas.desc' },
+    { id: 'heal', nameKey: 'runes.heal.name', color: '#4ade80', icon: '💚', duration: 0, descKey: 'runes.heal.desc', instant: true }
 ];
 
 /**
@@ -272,7 +272,7 @@ export const MASTERIES = [
  */
 export const PRODUCTION_BUILDINGS = [
     { id: 'gold_mine', nameKey: 'production.gold_mine.name', descKey: 'production.gold_mine.desc', icon: '🏭', resource: 'gold', baseRate: 1, baseCost: 100, costMult: 1.5, maxLevel: 50 },
-    { id: 'crystal_extractor', nameKey: 'production.crystal_extractor.name', descKey: 'production.crystal_extractor.desc', icon: '💠', resource: 'crystal', baseRate: 0.1, baseCost: 500, costMult: 1.8, maxLevel: 25 },
+    { id: 'crystal_extractor', nameKey: 'production.crystal_extractor.name', descKey: 'production.crystal_extractor.desc', icon: '💎', resource: 'crystal', baseRate: 0.1, baseCost: 500, costMult: 1.8, maxLevel: 25 },
     { id: 'ether_condenser', nameKey: 'production.ether_condenser.name', descKey: 'production.ether_condenser.desc', icon: '⚗️', resource: 'ether', baseRate: 0.05, baseCost: 1000, costMult: 2.0, maxLevel: 10 },
     { id: 'void_harvester', nameKey: 'production.void_harvester.name', descKey: 'production.void_harvester.desc', icon: '🌌', resource: 'void_shard', baseRate: 0.02, baseCost: 5000, costMult: 2.5, maxLevel: 5 }
 ];
@@ -292,12 +292,12 @@ export const AURA_TYPES = [
  * Chip/Module types for turret customization
  */
 export const CHIP_TYPES = [
-    { id: 'chip_dmg', nameKey: 'chips.damage.name', descKey: 'chips.damage.desc', icon: '🔴', rarity: 1, effect: { damage: 0.15 } },
-    { id: 'chip_speed', nameKey: 'chips.speed.name', descKey: 'chips.speed.desc', icon: '🟡', rarity: 1, effect: { fireRate: 0.1 } },
-    { id: 'chip_range', nameKey: 'chips.range.name', descKey: 'chips.range.desc', icon: '🔵', rarity: 1, effect: { range: 0.2 } },
-    { id: 'chip_crit', nameKey: 'chips.crit.name', descKey: 'chips.crit.desc', icon: '🟣', rarity: 2, effect: { critChance: 5, critDamage: 0.25 } },
-    { id: 'chip_pierce', nameKey: 'chips.pierce.name', descKey: 'chips.pierce.desc', icon: '🟠', rarity: 2, effect: { pierce: 1 } },
-    { id: 'chip_splash', nameKey: 'chips.splash.name', descKey: 'chips.splash.desc', icon: '🟤', rarity: 2, effect: { splash: 30 } },
+    { id: 'chip_dmg', nameKey: 'chips.damage.name', descKey: 'chips.damage.desc', icon: '🗡️', rarity: 1, effect: { damage: 0.15 } },
+    { id: 'chip_speed', nameKey: 'chips.speed.name', descKey: 'chips.speed.desc', icon: '⚡', rarity: 1, effect: { fireRate: 0.1 } },
+    { id: 'chip_range', nameKey: 'chips.range.name', descKey: 'chips.range.desc', icon: '🎯', rarity: 1, effect: { range: 0.2 } },
+    { id: 'chip_crit', nameKey: 'chips.crit.name', descKey: 'chips.crit.desc', icon: '💥', rarity: 2, effect: { critChance: 5, critDamage: 0.25 } },
+    { id: 'chip_pierce', nameKey: 'chips.pierce.name', descKey: 'chips.pierce.desc', icon: '🔱', rarity: 2, effect: { pierce: 1 } },
+    { id: 'chip_splash', nameKey: 'chips.splash.name', descKey: 'chips.splash.desc', icon: '💣', rarity: 2, effect: { splash: 30 } },
     { id: 'chip_vampiric', nameKey: 'chips.vampiric.name', descKey: 'chips.vampiric.desc', icon: '🩸', rarity: 3, effect: { leech: 0.05 } },
     { id: 'chip_chaos', nameKey: 'chips.chaos.name', descKey: 'chips.chaos.desc', icon: '☢️', rarity: 3, effect: { damage: 0.3, fireRate: -0.1 } },
     { id: 'chip_void', nameKey: 'chips.void.name', descKey: 'chips.void.desc', icon: '🌀', rarity: 4, effect: { damage: 0.5, critChance: 10, pierce: 2 } }
@@ -320,9 +320,9 @@ export const DAILY_QUEST_TYPES = [
  */
 export const PRESTIGE_UPGRADES = [
     { id: 'prestige_damage', nameKey: 'prestige.damage.name', descKey: 'prestige.damage.desc', icon: '🗡️', baseCost: 1, costMult: 2.0, maxLevel: 100, effect: (lvl) => 1 + lvl * 0.05 },
-    { id: 'prestige_health', nameKey: 'prestige.health.name', descKey: 'prestige.health.desc', icon: '💓', baseCost: 1, costMult: 2.0, maxLevel: 100, effect: (lvl) => 1 + lvl * 0.05 },
+    { id: 'prestige_health', nameKey: 'prestige.health.name', descKey: 'prestige.health.desc', icon: '❤️', baseCost: 1, costMult: 2.0, maxLevel: 100, effect: (lvl) => 1 + lvl * 0.05 },
     { id: 'prestige_gold', nameKey: 'prestige.gold.name', descKey: 'prestige.gold.desc', icon: '🥇', baseCost: 2, costMult: 1.8, maxLevel: 50, effect: (lvl) => 1 + lvl * 0.1 },
-    { id: 'prestige_crystals', nameKey: 'prestige.crystals.name', descKey: 'prestige.crystals.desc', icon: '🔶', baseCost: 3, costMult: 2.2, maxLevel: 25, effect: (lvl) => 1 + lvl * 0.15 },
+    { id: 'prestige_crystals', nameKey: 'prestige.crystals.name', descKey: 'prestige.crystals.desc', icon: '💎', baseCost: 3, costMult: 2.2, maxLevel: 25, effect: (lvl) => 1 + lvl * 0.15 },
     { id: 'prestige_start_wave', nameKey: 'prestige.start_wave.name', descKey: 'prestige.start_wave.desc', icon: '⏩', baseCost: 5, costMult: 3.0, maxLevel: 10, effect: (lvl) => lvl * 5 },
     { id: 'prestige_auto_turrets', nameKey: 'prestige.auto_turrets.name', descKey: 'prestige.auto_turrets.desc', icon: '🤖', baseCost: 10, costMult: 5.0, maxLevel: 4, effect: (lvl) => lvl },
     { id: 'prestige_production', nameKey: 'prestige.production.name', descKey: 'prestige.production.desc', icon: '🏭', baseCost: 5, costMult: 2.5, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.2 },
@@ -336,14 +336,14 @@ export const PRESTIGE_UPGRADES = [
 export const PASSIVES = {
     offense: [
         { id: 'damage', nameKey: 'passives.damage.name', descKey: 'passives.damage.desc', icon: '🗡️', baseCost: 1, costMult: 1.5, maxLevel: 100, effect: (lvl) => 1 + lvl * 0.05 },
-        { id: 'critChance', nameKey: 'passives.critChance.name', descKey: 'passives.critChance.desc', icon: '🎯', baseCost: 2, costMult: 1.8, maxLevel: 50, effect: (lvl) => lvl * 0.02 },
+        { id: 'critChance', nameKey: 'passives.critChance.name', descKey: 'passives.critChance.desc', icon: '🎲', baseCost: 2, costMult: 1.8, maxLevel: 50, effect: (lvl) => lvl * 0.02 },
         { id: 'critDamage', nameKey: 'passives.critDamage.name', descKey: 'passives.critDamage.desc', icon: '💥', baseCost: 3, costMult: 2.0, maxLevel: 40, effect: (lvl) => 1.5 + lvl * 0.1 },
         { id: 'splash', nameKey: 'passives.splash.name', descKey: 'passives.splash.desc', icon: '💫', baseCost: 2, costMult: 1.6, maxLevel: 30, effect: (lvl) => lvl * 5 },
         { id: 'armorIgnore', nameKey: 'passives.armorIgnore.name', descKey: 'passives.armorIgnore.desc', icon: '🔱', baseCost: 5, costMult: 2.2, maxLevel: 20, effect: (lvl) => lvl * 0.03, unlockReq: { passive: 'damage', level: 10 } },
         { id: 'firstStrike', nameKey: 'passives.firstStrike.name', descKey: 'passives.firstStrike.desc', icon: '⚡', baseCost: 10, costMult: 3.0, maxLevel: 10, effect: (lvl) => 1 + lvl * 0.25, unlockReq: { passive: 'critChance', level: 15 } }
     ],
     defense: [
-        { id: 'health', nameKey: 'passives.health.name', descKey: 'passives.health.desc', icon: '💓', baseCost: 1, costMult: 1.5, maxLevel: 100, effect: (lvl) => 1 + lvl * 0.05 },
+        { id: 'health', nameKey: 'passives.health.name', descKey: 'passives.health.desc', icon: '❤️', baseCost: 1, costMult: 1.5, maxLevel: 100, effect: (lvl) => 1 + lvl * 0.05 },
         { id: 'armor', nameKey: 'passives.armor.name', descKey: 'passives.armor.desc', icon: '🛡️', baseCost: 2, costMult: 1.6, maxLevel: 50, effect: (lvl) => lvl * 0.01 },
         { id: 'barrier', nameKey: 'passives.barrier.name', descKey: 'passives.barrier.desc', icon: '🔮', baseCost: 3, costMult: 1.8, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.1 },
         { id: 'regen', nameKey: 'passives.regen.name', descKey: 'passives.regen.desc', icon: '💚', baseCost: 4, costMult: 2.0, maxLevel: 25, effect: (lvl) => lvl * 0.5 },
@@ -412,7 +412,7 @@ export const TOWN_LEVELS = [
 export const SCHOOL_TURRETS = [
     { id: 'sentry', nameKey: 'school.sentry.name', descKey: 'school.sentry.desc', icon: '🔫', unlockCost: 0, maxLevel: 10, levelCost: 5, stats: { damage: 1.0, speed: 1.0, range: 1.0 } },
     { id: 'blaster', nameKey: 'school.blaster.name', descKey: 'school.blaster.desc', icon: '🧨', unlockCost: 50, maxLevel: 10, levelCost: 10, stats: { damage: 1.5, speed: 1.2, range: 0.8 } },
-    { id: 'laser', nameKey: 'school.laser.name', descKey: 'school.laser.desc', icon: '📍', unlockCost: 200, maxLevel: 15, levelCost: 25, stats: { damage: 2.0, speed: 2.0, range: 1.0 } },
+    { id: 'laser', nameKey: 'school.laser.name', descKey: 'school.laser.desc', icon: '📡', unlockCost: 200, maxLevel: 15, levelCost: 25, stats: { damage: 2.0, speed: 2.0, range: 1.0 } },
     { id: 'solidifier', nameKey: 'school.solidifier.name', descKey: 'school.solidifier.desc', icon: '❄️', unlockCost: 300, maxLevel: 10, levelCost: 20, stats: { damage: 0.5, speed: 0.8, range: 1.2, slow: 0.5 } },
     { id: 'swamper', nameKey: 'school.swamper.name', descKey: 'school.swamper.desc', icon: '💧', unlockCost: 500, maxLevel: 15, levelCost: 40, stats: { damage: 0.8, speed: 0.5, range: 2.0, aoe: 100 } },
     { id: 'rocket', nameKey: 'school.rocket.name', descKey: 'school.rocket.desc', icon: '🚀', unlockCost: 1000, maxLevel: 10, levelCost: 75, stats: { damage: 3.0, speed: 0.3, range: 1.5, aoe: 60 } },
@@ -424,11 +424,11 @@ export const SCHOOL_TURRETS = [
  * Office - Temporary boost system
  */
 export const OFFICE_BOOSTS = [
-    { id: 'damage_boost', nameKey: 'office.damage.name', descKey: 'office.damage.desc', icon: '💪', mult: 2.0, duration: 300, baseCost: 10, effect: 'damage' },
-    { id: 'gold_boost', nameKey: 'office.gold.name', descKey: 'office.gold.desc', icon: '💵', mult: 3.0, duration: 300, baseCost: 15, effect: 'gold' },
+    { id: 'damage_boost', nameKey: 'office.damage.name', descKey: 'office.damage.desc', icon: '🗡️', mult: 2.0, duration: 300, baseCost: 10, effect: 'damage' },
+    { id: 'gold_boost', nameKey: 'office.gold.name', descKey: 'office.gold.desc', icon: '💰', mult: 3.0, duration: 300, baseCost: 15, effect: 'gold' },
     { id: 'speed_boost', nameKey: 'office.speed.name', descKey: 'office.speed.desc', icon: '⚡', mult: 1.5, duration: 300, baseCost: 20, effect: 'attackSpeed' },
     { id: 'xp_boost', nameKey: 'office.xp.name', descKey: 'office.xp.desc', icon: '📈', mult: 2.0, duration: 300, baseCost: 25, effect: 'xp' },
-    { id: 'crit_boost', nameKey: 'office.crit.name', descKey: 'office.crit.desc', icon: '⭐', mult: 2.0, duration: 300, baseCost: 30, effect: 'critChance' }
+    { id: 'crit_boost', nameKey: 'office.crit.name', descKey: 'office.crit.desc', icon: '💥', mult: 2.0, duration: 300, baseCost: 30, effect: 'critChance' }
 ];
 
 /**
@@ -553,8 +553,8 @@ export const RANDOM_EVENTS = [
  */
 export const ASCENSION_PERKS = [
     { id: 'eternal_damage', nameKey: 'ascension.eternalDamage.name', descKey: 'ascension.eternalDamage.desc', icon: '🗡️', cost: 1, effect: { permanentDamage: 0.25 } },
-    { id: 'eternal_health', nameKey: 'ascension.eternalHealth.name', descKey: 'ascension.eternalHealth.desc', icon: '💓', cost: 1, effect: { permanentHealth: 0.25 } },
-    { id: 'eternal_gold', nameKey: 'ascension.eternalGold.name', descKey: 'ascension.eternalGold.desc', icon: '🪙', cost: 1, effect: { permanentGold: 0.25 } },
+    { id: 'eternal_health', nameKey: 'ascension.eternalHealth.name', descKey: 'ascension.eternalHealth.desc', icon: '❤️', cost: 1, effect: { permanentHealth: 0.25 } },
+    { id: 'eternal_gold', nameKey: 'ascension.eternalGold.name', descKey: 'ascension.eternalGold.desc', icon: '💰', cost: 1, effect: { permanentGold: 0.25 } },
     { id: 'ether_mastery', nameKey: 'ascension.etherMastery.name', descKey: 'ascension.etherMastery.desc', icon: '🔮', cost: 2, effect: { etherGainMult: 0.5 } },
     { id: 'starting_power', nameKey: 'ascension.startingPower.name', descKey: 'ascension.startingPower.desc', icon: '🌠', cost: 2, effect: { startWave: 10, startGold: 5000 } },
     { id: 'relic_affinity', nameKey: 'ascension.relicAffinity.name', descKey: 'ascension.relicAffinity.desc', icon: '🎁', cost: 3, effect: { relicDropMult: 1.5 } },

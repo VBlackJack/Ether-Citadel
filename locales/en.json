@@ -727,6 +727,7 @@
     "autoEnable": "Enable Auto-Prestige",
     "autoWave": "Prestige at Wave",
     "autoDesc": "When enabled, prestige will trigger automatically on game over if wave threshold is reached.",
+    "pending": "PP",
     "damage": { "name": "Ancestral Power", "desc": "+5% Damage per level" },
     "health": { "name": "Ancestral Vitality", "desc": "+5% Health per level" },
     "gold": { "name": "Golden Legacy", "desc": "+10% Gold per level" },
@@ -1437,7 +1438,19 @@
     "laserSpecial": "LASER SPECIAL",
     "hallowSpecial": "HALLOW SPECIAL",
     "hint": "Max mastery to unlock specials",
-    "unlockHint": "Unlock at max turret mastery"
+    "unlockHint": "Unlock at max turret mastery",
+    "sentry": {
+      "tooltip": "Sentry Special - Unlock at max mastery"
+    },
+    "rocket": {
+      "tooltip": "Rocket Special - Unlock at max mastery"
+    },
+    "laser": {
+      "tooltip": "Laser Special - Unlock at max mastery"
+    },
+    "hallow": {
+      "tooltip": "Hallow Special - Unlock at max mastery"
+    }
   },
   "ui": {
     "close": "CLOSE"

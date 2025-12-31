@@ -4,6 +4,7 @@
  */
 
 import { RUNE_TYPES } from '../data.js';
+import { MathUtils } from '../config.js';
 
 export class Rune {
     constructor(x, y) {

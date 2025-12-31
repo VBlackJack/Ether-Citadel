@@ -4,6 +4,7 @@
  */
 
 import { COMBO_TIERS } from '../../data.js';
+import { t } from '../../i18n.js';
 
 export class ComboManager {
     constructor(game) {

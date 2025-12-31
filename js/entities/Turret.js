@@ -5,6 +5,7 @@
 
 import { TURRET_SLOTS, SCHOOL_TURRETS, TURRET_TIERS } from '../data.js';
 import { MathUtils } from '../config.js';
+import { Projectile } from './Projectile.js';
 
 export class Turret {
     constructor(id, offsetIndex, total, type = 'NORMAL', tier = 1) {

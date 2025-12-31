@@ -5,6 +5,7 @@
 
 import { escapeHtml } from '../utils/HtmlSanitizer.js';
 import { logError, ErrorSeverity } from '../utils/ErrorHandler.js';
+import { t } from '../i18n.js';
 
 /**
  * Default i18n keys for dialog buttons

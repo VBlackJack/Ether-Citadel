@@ -497,6 +497,54 @@ class Game {
         return new Particle(x, y, color);
     }
 
+    // Stat getter methods for UI rendering
+    getDamage() {
+        return this.currentDamage || 10;
+    }
+
+    getCritMult() {
+        return this.currentCrit?.mult || 1.5;
+    }
+
+    getCritChance() {
+        return this.currentCrit?.chance || 5;
+    }
+
+    getFireRate() {
+        return this.currentFireRate || 1000;
+    }
+
+    getRange() {
+        return this.currentRange || 150;
+    }
+
+    getBlastRadius() {
+        return this.currentBlast || 0;
+    }
+
+    getMiningSpeedMult() {
+        return this.miningSpeedMult || 1;
+    }
+
+    getMaxHealth() {
+        return this.castle?.maxHp || 100;
+    }
+
+    getCurrentDPS() {
+        const damage = this.getDamage();
+        const fireRate = this.getFireRate();
+        const turretCount = this.turrets?.length || 1;
+        return (damage * turretCount * 1000) / fireRate;
+    }
+
+    getArmor() {
+        return this.currentArmor || 0;
+    }
+
+    getRegen() {
+        return this.currentRegen || 0;
+    }
+
     switchTab(id) {
         this.activeTab = id;
         document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
@@ -2678,11 +2726,13 @@ class Game {
         ));
     }
 
-    spawnEnemy() {
-        const startX = this.width + 50;
-        const startY = MathUtils.randomRange(this.height * 0.1, this.height * 0.9);
+    spawnEnemy(forcedType = null, forcedX = null, forcedY = null) {
+        const startX = forcedX !== null ? forcedX : this.width + 50;
+        const startY = forcedY !== null ? forcedY : MathUtils.randomRange(this.height * 0.1, this.height * 0.9);
 
-        if (this.isBossWave) {
+        if (forcedType) {
+            this.enemies.push(new Enemy(this, this.wave, forcedType, startX, startY));
+        } else if (this.isBossWave) {
             this.enemies.push(new Enemy(this, this.wave, 'BOSS', startX, startY));
         } else {
             const rand = Math.random();
@@ -2999,7 +3049,7 @@ class Game {
         // Check auto-prestige first (priority over auto-retry)
         if (this.prestige?.autoPrestige && this.prestige.canPrestige() && this.wave >= this.prestige.autoPrestigeWave) {
             if (timerEl) timerEl.classList.remove('hidden');
-            if (countdownEl) countdownEl.innerText = 'PP';
+            if (countdownEl) countdownEl.innerText = t('prestige.pending');
             this.clearRetryTimers();
             this.retryTimeoutId = setTimeout(() => {
                 this.prestige.doPrestige();

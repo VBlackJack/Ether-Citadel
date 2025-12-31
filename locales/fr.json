@@ -727,6 +727,7 @@
     "autoEnable": "Activer l'Auto-Prestige",
     "autoWave": "Prestige \u00e0 la vague",
     "autoDesc": "Quand activ\u00e9, le prestige se d\u00e9clenchera automatiquement au game over si le seuil de vague est atteint.",
+    "pending": "PP",
     "damage": { "name": "Pouvoir ancestral", "desc": "+5% D\u00e9g\u00e2ts par niveau" },
     "health": { "name": "Vitalit\u00e9 ancestrale", "desc": "+5% Sant\u00e9 par niveau" },
     "gold": { "name": "H\u00e9ritage dor\u00e9", "desc": "+10% Or par niveau" },
@@ -1442,7 +1443,19 @@
     "laserSpecial": "SP\u00c9CIAL LASER",
     "hallowSpecial": "SP\u00c9CIAL HALLOW",
     "hint": "Ma\u00eetrise max pour d\u00e9bloquer les sp\u00e9ciaux",
-    "unlockHint": "D\u00e9bloquer \u00e0 ma\u00eetrise max de tourelle"
+    "unlockHint": "D\u00e9bloquer \u00e0 ma\u00eetrise max de tourelle",
+    "sentry": {
+      "tooltip": "Sp\u00e9cial Sentinelle - D\u00e9bloquer \u00e0 ma\u00eetrise max"
+    },
+    "rocket": {
+      "tooltip": "Sp\u00e9cial Roquette - D\u00e9bloquer \u00e0 ma\u00eetrise max"
+    },
+    "laser": {
+      "tooltip": "Sp\u00e9cial Laser - D\u00e9bloquer \u00e0 ma\u00eetrise max"
+    },
+    "hallow": {
+      "tooltip": "Sp\u00e9cial Hallow - D\u00e9bloquer \u00e0 ma\u00eetrise max"
+    }
   },
   "ui": {
     "close": "FERMER"

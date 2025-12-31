@@ -70,7 +70,7 @@ export class ChallengeManager {
             const div = document.createElement('div');
             div.className = `p-2 rounded bg-purple-900/30 border border-purple-700 ${lvl >= tech.max ? 'opacity-50' : 'hover:bg-purple-800/50 cursor-pointer'}`;
             if (lvl < tech.max) div.onclick = () => this.buyTech(tech.id);
-            div.innerHTML = `<div class="flex justify-between"><span class="font-bold text-xs text-purple-300">${t(tech.nameKey)}</span><span class="text-xs">${lvl}/${tech.max}</span></div><div class="text-[10px] text-slate-400">${t(tech.descKey)}</div>${lvl < tech.max ? `<div class="text-right text-xs font-bold mt-1 text-white">${tech.cost} ⚫</div>` : `<div class="text-right text-xs text-green-400">${t('lab.max')}</div>`}`;
+            div.innerHTML = `<div class="flex justify-between"><span class="font-bold text-xs text-purple-300">${t(tech.nameKey)}</span><span class="text-xs">${lvl}/${tech.max}</span></div><div class="text-[10px] text-slate-400">${t(tech.descKey)}</div>${lvl < tech.max ? `<div class="text-right text-xs font-bold mt-1 text-white">${tech.cost} 🌑</div>` : `<div class="text-right text-xs text-green-400">${t('lab.max')}</div>`}`;
             shop.appendChild(div);
         });
 
