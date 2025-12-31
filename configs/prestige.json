@@ -11,81 +11,81 @@
       "id": "prestige_damage",
       "nameKey": "prestige.damage.name",
       "descKey": "prestige.damage.desc",
-      "icon": "⚔️",
-      "maxLevel": 100,
+      "icon": "🗡️",
       "baseCost": 1,
-      "costMult": 1.2,
-      "effect": { "type": "damageMult", "valuePerLevel": 0.02 }
+      "costMult": 2.0,
+      "maxLevel": 100,
+      "effect": { "type": "damageMult", "valuePerLevel": 0.05 }
     },
     {
       "id": "prestige_health",
       "nameKey": "prestige.health.name",
       "descKey": "prestige.health.desc",
       "icon": "❤️",
-      "maxLevel": 100,
       "baseCost": 1,
-      "costMult": 1.2,
-      "effect": { "type": "healthMult", "valuePerLevel": 0.02 }
+      "costMult": 2.0,
+      "maxLevel": 100,
+      "effect": { "type": "healthMult", "valuePerLevel": 0.05 }
     },
     {
       "id": "prestige_gold",
       "nameKey": "prestige.gold.name",
       "descKey": "prestige.gold.desc",
-      "icon": "💰",
-      "maxLevel": 50,
+      "icon": "🥇",
       "baseCost": 2,
-      "costMult": 1.3,
-      "effect": { "type": "goldMult", "valuePerLevel": 0.03 }
+      "costMult": 1.8,
+      "maxLevel": 50,
+      "effect": { "type": "goldMult", "valuePerLevel": 0.1 }
     },
     {
-      "id": "prestige_crit",
-      "nameKey": "prestige.crit.name",
-      "descKey": "prestige.crit.desc",
-      "icon": "💥",
-      "maxLevel": 25,
-      "baseCost": 3,
-      "costMult": 1.4,
-      "effect": { "type": "critChance", "valuePerLevel": 1 }
-    },
-    {
-      "id": "prestige_speed",
-      "nameKey": "prestige.speed.name",
-      "descKey": "prestige.speed.desc",
-      "icon": "⚡",
-      "maxLevel": 25,
-      "baseCost": 3,
-      "costMult": 1.4,
-      "effect": { "type": "fireRateMult", "valuePerLevel": 0.02 }
-    },
-    {
-      "id": "prestige_ether",
-      "nameKey": "prestige.ether.name",
-      "descKey": "prestige.ether.desc",
+      "id": "prestige_crystals",
+      "nameKey": "prestige.crystals.name",
+      "descKey": "prestige.crystals.desc",
       "icon": "💎",
-      "maxLevel": 20,
-      "baseCost": 5,
-      "costMult": 1.5,
-      "effect": { "type": "etherMult", "valuePerLevel": 0.05 }
+      "baseCost": 3,
+      "costMult": 2.2,
+      "maxLevel": 25,
+      "effect": { "type": "crystalMult", "valuePerLevel": 0.15 }
     },
     {
       "id": "prestige_start_wave",
-      "nameKey": "prestige.startWave.name",
-      "descKey": "prestige.startWave.desc",
-      "icon": "🌊",
+      "nameKey": "prestige.start_wave.name",
+      "descKey": "prestige.start_wave.desc",
+      "icon": "⏩",
+      "baseCost": 5,
+      "costMult": 3.0,
       "maxLevel": 10,
-      "baseCost": 10,
-      "costMult": 2.0,
       "effect": { "type": "startWave", "valuePerLevel": 5 }
     },
     {
-      "id": "prestige_start_gold",
-      "nameKey": "prestige.startGold.name",
-      "descKey": "prestige.startGold.desc",
-      "icon": "🪙",
-      "maxLevel": 10,
+      "id": "prestige_auto_turrets",
+      "nameKey": "prestige.auto_turrets.name",
+      "descKey": "prestige.auto_turrets.desc",
+      "icon": "🤖",
+      "baseCost": 10,
+      "costMult": 5.0,
+      "maxLevel": 4,
+      "effect": { "type": "autoTurrets", "valuePerLevel": 1 }
+    },
+    {
+      "id": "prestige_production",
+      "nameKey": "prestige.production.name",
+      "descKey": "prestige.production.desc",
+      "icon": "🏭",
       "baseCost": 5,
-      "costMult": 1.8,
-      "effect": { "type": "startGold", "valuePerLevel": 100 }
+      "costMult": 2.5,
+      "maxLevel": 20,
+      "effect": { "type": "productionMult", "valuePerLevel": 0.2 }
+    },
+    {
+      "id": "prestige_skill_cd",
+      "nameKey": "prestige.skill_cd.name",
+      "descKey": "prestige.skill_cd.desc",
+      "icon": "⏰",
+      "baseCost": 8,
+      "costMult": 3.0,
+      "maxLevel": 10,
+      "effect": { "type": "cooldownReduction", "valuePerLevel": 0.05 }
     }
   ],
   "milestones": [

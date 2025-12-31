@@ -7,11 +7,10 @@
     { "id": "chip_range", "nameKey": "chips.range.name", "descKey": "chips.range.desc", "icon": "🎯", "rarity": 1, "effect": { "range": 0.2 } },
     { "id": "chip_crit", "nameKey": "chips.crit.name", "descKey": "chips.crit.desc", "icon": "💥", "rarity": 2, "effect": { "critChance": 5, "critDamage": 0.25 } },
     { "id": "chip_pierce", "nameKey": "chips.pierce.name", "descKey": "chips.pierce.desc", "icon": "🔱", "rarity": 2, "effect": { "pierce": 1 } },
-    { "id": "chip_splash", "nameKey": "chips.splash.name", "descKey": "chips.splash.desc", "icon": "💥", "rarity": 2, "effect": { "splash": 0.3, "splashRadius": 50 } },
-    { "id": "chip_slow", "nameKey": "chips.slow.name", "descKey": "chips.slow.desc", "icon": "❄️", "rarity": 2, "effect": { "slow": 0.2, "slowDuration": 2000 } },
-    { "id": "chip_chain", "nameKey": "chips.chain.name", "descKey": "chips.chain.desc", "icon": "⚡", "rarity": 3, "effect": { "chain": 2, "chainDamageFalloff": 0.5 } },
-    { "id": "chip_execute", "nameKey": "chips.execute.name", "descKey": "chips.execute.desc", "icon": "💀", "rarity": 3, "effect": { "executeThreshold": 0.1 } },
-    { "id": "chip_legendary", "nameKey": "chips.legendary.name", "descKey": "chips.legendary.desc", "icon": "🌟", "rarity": 4, "effect": { "damage": 0.5, "critChance": 15, "fireRate": 0.25 } }
+    { "id": "chip_splash", "nameKey": "chips.splash.name", "descKey": "chips.splash.desc", "icon": "💣", "rarity": 2, "effect": { "splash": 30 } },
+    { "id": "chip_vampiric", "nameKey": "chips.vampiric.name", "descKey": "chips.vampiric.desc", "icon": "🩸", "rarity": 3, "effect": { "leech": 0.05 } },
+    { "id": "chip_chaos", "nameKey": "chips.chaos.name", "descKey": "chips.chaos.desc", "icon": "☢️", "rarity": 3, "effect": { "damage": 0.3, "fireRate": -0.1 } },
+    { "id": "chip_void", "nameKey": "chips.void.name", "descKey": "chips.void.desc", "icon": "🌀", "rarity": 4, "effect": { "damage": 0.5, "critChance": 10, "pierce": 2 } }
   ],
   "auras": [
     { "id": "damage_aura", "nameKey": "auras.damage.name", "descKey": "auras.damage.desc", "icon": "⚔️", "color": "#ef4444", "effect": "damage", "baseValue": 0.1, "range": 150, "cost": 50 },

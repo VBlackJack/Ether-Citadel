@@ -17,7 +17,7 @@
       "id": "crystal_extractor",
       "nameKey": "production.crystal_extractor.name",
       "descKey": "production.crystal_extractor.desc",
-      "icon": "💠",
+      "icon": "💎",
       "resource": "crystal",
       "baseRate": 0.1,
       "baseCost": 500,
