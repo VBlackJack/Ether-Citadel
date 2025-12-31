@@ -2571,24 +2571,28 @@ select:focus-visible {
     }
 }
 
-/* Hide menu groups on desktop - use Lab panel instead */
+/* Desktop layout - position menu next to Lab panel */
 @media (min-width: 768px) {
-    #menu-groups {
-        display: none;
-    }
-
     #menu-container {
         right: calc(25% + 16px) !important;
-    }
-
-    /* Hide menu toggle button on desktop (menus are hidden anyway) */
-    #btn-toggle-menu {
-        display: none;
     }
 
     /* Hide redundant auto-controls on desktop (Lab has them) */
     #auto-controls {
         display: none !important;
+    }
+
+    /* Hide menu toggle on desktop - menus always visible */
+    #btn-toggle-menu {
+        display: none !important;
+    }
+
+    /* Menu groups always visible on desktop, override .collapsed */
+    #menu-groups,
+    #menu-groups.collapsed {
+        display: flex !important;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
     }
 }
 
@@ -2601,4 +2605,203 @@ select:focus-visible {
     #menu-container {
         right: 8px !important;
     }
+}
+
+/* ===== LAB PRIMARY TABS SYSTEM ===== */
+
+.lab-primary-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 8px 4px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.lab-primary-tab:hover {
+    color: #e2e8f0;
+    background: rgba(51, 65, 85, 0.3);
+}
+
+.lab-primary-tab.active {
+    color: #60a5fa;
+    border-bottom-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.lab-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.lab-content.hidden {
+    display: none !important;
+}
+
+/* Mobile: icons only for primary tabs */
+@media (max-width: 767px) {
+    .lab-primary-tab span {
+        display: none;
+    }
+    .lab-primary-tab {
+        font-size: 1rem;
+        padding: 10px 8px;
+    }
+}
+
+/* Lab Stats Grid - compact for 25% width */
+.lab-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.lab-stat-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid #334155;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.lab-stat-card:hover {
+    background: rgba(51, 65, 85, 0.8);
+    border-color: #60a5fa;
+}
+
+.lab-stat-card.upgraded {
+    animation: stat-pulse 0.3s ease;
+}
+
+@keyframes stat-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+/* Lab Passives - compact layout */
+.lab-passives-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 8px;
+    background: rgba(15, 23, 42, 0.5);
+    border-bottom: 1px solid #334155;
+}
+
+.lab-passive-tab {
+    flex: 1;
+    padding: 6px 8px;
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid #334155;
+    border-radius: 4px;
+    color: #94a3b8;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.lab-passive-tab:hover {
+    background: rgba(51, 65, 85, 0.8);
+}
+
+.lab-passive-tab.active {
+    background: #f59e0b;
+    border-color: #fbbf24;
+    color: #1f2937;
+}
+
+.lab-passives-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 8px;
+}
+
+.lab-passive-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid #334155;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.lab-passive-card:hover {
+    background: rgba(51, 65, 85, 0.8);
+    border-color: #f59e0b;
+}
+
+/* Lab Tech Tree - vertical layout for narrow panel */
+.lab-tech-tree {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 8px;
+}
+
+.lab-tech-tier {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.lab-tech-tier-header {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #60a5fa;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #334155;
+}
+
+.lab-tech-tier-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.lab-tech-item {
+    flex: 1 1 45%;
+    min-width: 80px;
+    padding: 8px;
+    background: rgba(30, 41, 59, 0.8);
+    border: 2px solid #334155;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.lab-tech-item:hover {
+    border-color: #60a5fa;
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.lab-tech-item.unlocked {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.lab-tech-item.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

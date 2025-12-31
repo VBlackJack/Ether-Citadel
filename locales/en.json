@@ -132,6 +132,12 @@
   },
   "lab": {
     "title": "Laboratory",
+    "primaryTabs": {
+      "upgrades": "Upgrades",
+      "stats": "Stats",
+      "passives": "Passives",
+      "tech": "Tech"
+    },
     "tabs": {
       "attack": "Attack",
       "defense": "Defense",

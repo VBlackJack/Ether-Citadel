@@ -4542,6 +4542,49 @@ class Game {
         this.upgrades.render(this.activeTab);
     }
 
+    switchLabTab(tabId) {
+        // Hide all content
+        document.querySelectorAll('.lab-content').forEach(c => c.classList.add('hidden'));
+        // Show selected
+        const content = document.getElementById(`lab-content-${tabId}`);
+        if (content) content.classList.remove('hidden');
+        // Update tab states
+        document.querySelectorAll('.lab-primary-tab').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tabId);
+        });
+        // Render content
+        if (tabId === 'stats') this.renderLabStatsUI();
+        if (tabId === 'passives') this.renderLabPassivesUI();
+        if (tabId === 'tech') this.renderLabTechUI();
+        if (tabId === 'upgrades') this.upgrades.render(this.activeTab);
+    }
+
+    switchLabPassiveTab(tab) {
+        this.activeLabPassiveTab = tab;
+        document.querySelectorAll('.lab-passive-tab').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tab);
+        });
+        this.renderLabPassivesUI(tab);
+    }
+
+    selectTechSpecial(type) {
+        this.selectedTechSpecial = type;
+        // Update button states
+        ['sentry', 'rocket', 'laser', 'hallow'].forEach(t => {
+            const btn = document.getElementById(`lab-tech-${t}`);
+            if (btn) {
+                if (t === type) {
+                    btn.classList.add('bg-cyan-900/50', 'border-cyan-700', 'text-cyan-400');
+                    btn.classList.remove('bg-slate-700/50', 'border-slate-600', 'text-slate-400');
+                } else {
+                    btn.classList.remove('bg-cyan-900/50', 'border-cyan-700', 'text-cyan-400');
+                    btn.classList.add('bg-slate-700/50', 'border-slate-600', 'text-slate-400');
+                }
+            }
+        });
+        this.renderLabTechUI();
+    }
+
     updateChallengeUI() {
         this.challenges.render();
     }
@@ -5820,37 +5863,204 @@ class Game {
         console.log('Tech node clicked:', node.id);
     }
 
-    /** Update Side HUD Panel (Defender Idle 2 style) */
-    updateSideHUD() {
-        const elements = {
-            gold: document.getElementById('side-gold'),
-            gems: document.getElementById('side-gems'),
-            ether: document.getElementById('side-ether'),
-            level: document.getElementById('side-level'),
-            statPts: document.getElementById('side-stat-pts'),
-            xp: document.getElementById('side-xp'),
-            xpBar: document.getElementById('side-xp-bar'),
-            hp: document.getElementById('side-hp'),
-            hpBar: document.getElementById('side-hp-bar')
+    /** Lab Panel - Compact Stats UI */
+    renderLabStatsUI() {
+        const grid = document.getElementById('lab-stats-grid');
+        const summary = document.getElementById('lab-stats-summary');
+        const spEl = document.getElementById('lab-stats-sp');
+        const tierEl = document.getElementById('lab-stats-tier');
+        if (!grid) return;
+
+        const statPoints = (this.level || 1) * 5;
+        const usedPoints = this.statPointsUsed || 0;
+        const availablePoints = Math.max(0, statPoints - usedPoints);
+
+        if (spEl) spEl.innerText = availablePoints;
+        if (tierEl) tierEl.innerText = this.castle?.tier || 1;
+
+        const stats = [
+            { id: 'damage', name: 'DMG', icon: '⚔️', getValue: () => Math.floor(this.getDamage()), format: (v) => `${v}` },
+            { id: 'critDamage', name: 'CRIT', icon: '💥', getValue: () => this.getCritMult().toFixed(2), format: (v) => `x${v}` },
+            { id: 'fireRate', name: 'RATE', icon: '🔥', getValue: () => (1000 / this.getFireRate()).toFixed(1), format: (v) => `${v}/s` },
+            { id: 'range', name: 'RNG', icon: '🎯', getValue: () => Math.floor(this.getRange()), format: (v) => `${v}` },
+            { id: 'aoe', name: 'AOE', icon: '💫', getValue: () => this.getBlastRadius(), format: (v) => `${v}` },
+            { id: 'mining', name: 'MINE', icon: '⛏️', getValue: () => ((this.getMiningSpeedMult() - 1) * 100).toFixed(0), format: (v) => `+${v}%` },
+            { id: 'totalHealth', name: 'HP', icon: '❤️', getValue: () => Math.floor(this.getMaxHealth()), format: (v) => `${v}` }
+        ];
+
+        grid.innerHTML = '';
+        stats.forEach(stat => {
+            const level = this.statLevels?.[stat.id] || 0;
+            const value = stat.getValue();
+
+            const div = document.createElement('div');
+            div.className = 'lab-stat-card';
+            div.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <span>${stat.icon}</span>
+                    <span class="text-xs text-slate-400">${stat.name}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold text-white">${stat.format(value)}</span>
+                    <span class="text-xs text-amber-400">${level}/100</span>
+                    <button onclick="game.upgradeStat('${stat.id}')" class="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded" ${availablePoints <= 0 || level >= 100 ? 'disabled style="opacity:0.5"' : ''}>+</button>
+                </div>
+            `;
+            grid.appendChild(div);
+        });
+
+        if (summary) {
+            summary.innerHTML = `
+                <div class="flex justify-between"><span class="text-slate-500">DPS</span><span class="text-cyan-400">${formatNumber(this.getCurrentDPS())}</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Crit</span><span class="text-cyan-400">${this.getCritChance()}%</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Armor</span><span class="text-cyan-400">${(this.getArmor() * 100).toFixed(0)}%</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">Regen</span><span class="text-cyan-400">${this.getRegen()}/s</span></div>
+            `;
+        }
+    }
+
+    /** Lab Panel - Compact Passives UI */
+    renderLabPassivesUI(tab = null) {
+        tab = tab || this.activeLabPassiveTab || 'offense';
+        this.activeLabPassiveTab = tab;
+
+        const grid = document.getElementById('lab-passives-grid');
+        const aurasGrid = document.getElementById('lab-passives-auras');
+        if (!grid) return;
+
+        document.querySelectorAll('.lab-passive-tab').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tab);
+        });
+
+        const passivesByTab = {
+            offense: [
+                { id: 'damage', name: 'DAMAGE', getValue: () => this.getPrestigeUpgradeLevel('prestige_damage'), max: 100 },
+                { id: 'critChance', name: 'CRIT CHC', getValue: () => this.getPrestigeUpgradeLevel('prestige_crit') || 0, max: 50 },
+                { id: 'splash', name: 'SPLASH', getValue: () => 0, max: 30 }
+            ],
+            defense: [
+                { id: 'health', name: 'HEALTH', getValue: () => this.getPrestigeUpgradeLevel('prestige_health'), max: 100 },
+                { id: 'armor', name: 'ARMOR', getValue: () => 0, max: 50 },
+                { id: 'barrier', name: 'BARRIER', getValue: () => 0, max: 20 }
+            ],
+            utility: [
+                { id: 'expGain', name: 'EXP', getValue: () => 0, max: 50 },
+                { id: 'energy', name: 'ENERGY', getValue: () => 0, max: 30 },
+                { id: 'skillCd', name: 'SKILL CD', getValue: () => this.getPrestigeUpgradeLevel('prestige_skill_cd') || 0, max: 10 }
+            ],
+            resources: [
+                { id: 'startGold', name: 'START $', getValue: () => this.getPrestigeUpgradeLevel('prestige_start_gold') || 0, max: 50 },
+                { id: 'goldGain', name: 'GOLD', getValue: () => this.getPrestigeUpgradeLevel('prestige_gold'), max: 50 },
+                { id: 'production', name: 'PROD', getValue: () => this.getPrestigeUpgradeLevel('prestige_production'), max: 20 }
+            ]
         };
 
-        if (elements.gold) elements.gold.innerText = formatNumber(this.gold);
-        if (elements.gems) elements.gems.innerText = formatNumber(this.office?.gems || 0);
-        if (elements.ether) elements.ether.innerText = formatNumber(this.ether || 0);
-        if (elements.level) elements.level.innerText = this.level || 1;
+        const passives = passivesByTab[tab] || passivesByTab.offense;
+        grid.innerHTML = '';
 
-        const statPoints = ((this.level || 1) * 5) - (this.statPointsUsed || 0);
-        if (elements.statPts) elements.statPts.innerText = statPoints;
+        passives.forEach(passive => {
+            const level = passive.getValue();
+            const div = document.createElement('div');
+            div.className = 'lab-passive-card';
+            div.innerHTML = `
+                <span class="text-xs text-slate-300">${passive.name}</span>
+                <div class="flex items-center gap-1">
+                    <span class="text-sm font-bold text-amber-400">${level}</span>
+                    <span class="text-xs text-slate-500">/${passive.max}</span>
+                    <button class="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded" ${level >= passive.max ? 'disabled style="opacity:0.5"' : ''}>+</button>
+                </div>
+            `;
+            grid.appendChild(div);
+        });
 
-        const xp = this.xp || 0;
-        const xpRequired = this.getXPRequired?.() || 100;
-        if (elements.xp) elements.xp.innerText = `${formatNumber(xp)}/${formatNumber(xpRequired)}`;
-        if (elements.xpBar) elements.xpBar.style.width = `${Math.min(100, (xp / xpRequired) * 100)}%`;
+        if (aurasGrid) {
+            const auras = [
+                { name: 'DMG', value: '+10%', active: true, color: '#ef4444' },
+                { name: 'SPD', value: '+15%', active: false, color: '#fbbf24' },
+                { name: 'RNG', value: '+20%', active: false, color: '#3b82f6' }
+            ];
+            aurasGrid.innerHTML = '';
+            auras.forEach(aura => {
+                const div = document.createElement('div');
+                div.className = `lab-passive-card ${aura.active ? '' : 'opacity-50'}`;
+                div.innerHTML = `
+                    <span class="text-xs text-slate-300">${aura.name}</span>
+                    <span class="text-sm font-bold" style="color: ${aura.color}">${aura.value}</span>
+                `;
+                aurasGrid.appendChild(div);
+            });
+        }
+    }
 
-        const hp = this.castle?.hp || 100;
-        const maxHp = this.getMaxHealth?.() || 100;
-        if (elements.hp) elements.hp.innerText = `${Math.floor(hp)}/${Math.floor(maxHp)}`;
-        if (elements.hpBar) elements.hpBar.style.width = `${Math.min(100, (hp / maxHp) * 100)}%`;
+    /** Lab Panel - Compact Tech Tree UI */
+    renderLabTechUI() {
+        const container = document.getElementById('lab-tech-tree');
+        if (!container) return;
+
+        const isUnlocked = (id) => this.school?.isUnlocked(id) || id === 'sentry';
+        const getLevel = (id) => this.school?.getLevel(id) || 0;
+        const getMaxLevel = (id) => {
+            const turret = SCHOOL_TURRETS.find(t => t.id === id);
+            return turret?.maxLevel || 10;
+        };
+
+        const turretTiers = [
+            { tier: 1, label: 'TIER I', turrets: ['sentry', 'blaster'] },
+            { tier: 2, label: 'TIER II', turrets: ['laser', 'solidifier', 'swamper'] },
+            { tier: 3, label: 'TIER III', turrets: ['rocket', 'sniper'] },
+            { tier: 4, label: 'TIER IV', turrets: ['inferno'] }
+        ];
+
+        const turretInfo = {
+            sentry: { name: 'SENTRY', icon: '🔫' },
+            blaster: { name: 'BLASTER', icon: '🧨' },
+            laser: { name: 'LASER', icon: '📍' },
+            solidifier: { name: 'SOLID', icon: '❄️' },
+            swamper: { name: 'SWAMP', icon: '💧' },
+            rocket: { name: 'ROCKET', icon: '🚀' },
+            sniper: { name: 'SNIPER', icon: '🔭' },
+            inferno: { name: 'INFERNO', icon: '🌋' }
+        };
+
+        container.innerHTML = '';
+
+        turretTiers.forEach(tierData => {
+            const tierDiv = document.createElement('div');
+            tierDiv.className = 'lab-tech-tier';
+
+            const header = document.createElement('div');
+            header.className = 'lab-tech-tier-header';
+            header.textContent = tierData.label;
+            tierDiv.appendChild(header);
+
+            const items = document.createElement('div');
+            items.className = 'lab-tech-tier-items';
+
+            tierData.turrets.forEach(turretId => {
+                const info = turretInfo[turretId];
+                const unlocked = isUnlocked(turretId);
+                const level = getLevel(turretId);
+                const maxLevel = getMaxLevel(turretId);
+
+                const item = document.createElement('div');
+                item.className = `lab-tech-item ${unlocked ? 'unlocked' : 'locked'}`;
+                item.innerHTML = `
+                    <div class="text-lg">${info.icon}</div>
+                    <div class="text-xs font-bold ${unlocked ? 'text-white' : 'text-slate-500'}">${info.name}</div>
+                    ${unlocked ? `<div class="text-xs text-cyan-400">${level}/${maxLevel}</div>` : '<div class="text-xs">🔒</div>'}
+                `;
+                item.onclick = () => {
+                    if (!unlocked) {
+                        this.renderSchoolUI();
+                        document.getElementById('school-modal')?.classList.remove('hidden');
+                    }
+                };
+                items.appendChild(item);
+            });
+
+            tierDiv.appendChild(items);
+            container.appendChild(tierDiv);
+        });
     }
 
     renderGameModesUI() {
@@ -6856,7 +7066,6 @@ class Game {
             if (this.challenges.darkMatter > 0) document.getElementById('ui-dark-matter').classList.remove('hidden');
         }
         this.stats.render();
-        this.updateSideHUD();
     }
 
     draw() {
