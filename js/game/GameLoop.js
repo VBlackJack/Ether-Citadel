@@ -167,37 +167,62 @@ export class GameLoopManager {
         }
 
         // Update entities - using filter instead of splice for better performance
-        // Update enemies
-        for (const enemy of g.enemies) {
+        // Update enemies and compact in-place (avoid filter allocation)
+        let writeIdx = 0;
+        for (let i = 0; i < g.enemies.length; i++) {
+            const enemy = g.enemies[i];
             enemy.update(dt);
+            if (enemy.hp > 0 && !enemy.reachedEnd) {
+                g.enemies[writeIdx++] = enemy;
+            }
         }
-        g.enemies = g.enemies.filter(e => e.hp > 0 && !e.reachedEnd);
+        g.enemies.length = writeIdx;
 
-        // Update projectiles
-        for (const proj of g.projectiles) {
+        // Update projectiles and compact in-place
+        writeIdx = 0;
+        for (let i = 0; i < g.projectiles.length; i++) {
+            const proj = g.projectiles[i];
             if (proj.update) proj.update(dt, g);
+            if (proj.active && !proj.dead) {
+                g.projectiles[writeIdx++] = proj;
+            }
         }
-        g.projectiles = g.projectiles.filter(p => p.active && !p.dead);
+        g.projectiles.length = writeIdx;
 
-        // Update particles
-        for (const p of g.particles) {
+        // Update particles and compact in-place
+        writeIdx = 0;
+        for (let i = 0; i < g.particles.length; i++) {
+            const p = g.particles[i];
             p.update(dt);
+            if (p.life > 0) {
+                g.particles[writeIdx++] = p;
+            }
         }
-        g.particles = g.particles.filter(p => p.life > 0);
+        g.particles.length = writeIdx;
 
-        // Update floating texts
-        for (const ft of g.floatingTexts) {
+        // Update floating texts and compact in-place (single pass)
+        writeIdx = 0;
+        for (let i = 0; i < g.floatingTexts.length; i++) {
+            const ft = g.floatingTexts[i];
             ft.update(dt);
+            if (ft.life > 0) {
+                g.floatingTexts[writeIdx++] = ft;
+            } else {
+                ft.release?.();
+            }
         }
-        // Release dead floating texts back to pool before filtering
-        g.floatingTexts.filter(ft => ft.life <= 0).forEach(ft => ft.release?.());
-        g.floatingTexts = g.floatingTexts.filter(ft => ft.life > 0);
+        g.floatingTexts.length = writeIdx;
 
-        // Update runes
-        for (const rune of g.runes) {
+        // Update runes and compact in-place
+        writeIdx = 0;
+        for (let i = 0; i < g.runes.length; i++) {
+            const rune = g.runes[i];
             if (rune.update) rune.update(dt);
+            if (!rune.expired && rune.life > 0) {
+                g.runes[writeIdx++] = rune;
+            }
         }
-        g.runes = g.runes.filter(r => !r.expired && r.life > 0);
+        g.runes.length = writeIdx;
 
         // Update turrets
         for (const turret of g.turrets) {

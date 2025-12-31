@@ -60,7 +60,8 @@ export class Enemy {
 
     update(dt) {
         const game = this.game;
-        if (game.skills.isActive('blackhole')) {
+        if (!game) return;
+        if (game.skills?.isActive?.('blackhole')) {
             const cx = game.width * 0.7;
             const cy = game.height / 2;
             const dist = MathUtils.dist(this.x, this.y, cx, cy);

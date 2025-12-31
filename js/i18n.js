@@ -200,17 +200,35 @@ class I18n {
     }
 
     /**
-     * Sanitize HTML to prevent XSS - allows only safe tags
+     * Sanitize HTML to prevent XSS - whitelist approach for safe tags only
      * @param {string} html
      * @returns {string}
      */
     sanitizeHtml(html) {
         if (typeof html !== 'string') return '';
-        // Remove script tags and event handlers
-        return html
-            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-            .replace(/on\w+\s*=/gi, 'data-blocked=')
-            .replace(/javascript:/gi, 'blocked:');
+
+        // Use a temporary element to parse and sanitize
+        const temp = document.createElement('div');
+        temp.textContent = html; // Escape all HTML first
+        let escaped = temp.innerHTML;
+
+        // Whitelist: only allow specific safe tags
+        const allowedTags = ['b', 'i', 'u', 'strong', 'em', 'span', 'br', 'p', 'div'];
+
+        // Restore allowed tags from their escaped form
+        for (const tag of allowedTags) {
+            // Opening tags (with optional class attribute only)
+            const openRegex = new RegExp(`&lt;(${tag})(\\s+class="[a-zA-Z0-9_\\s-]*")?\\s*&gt;`, 'gi');
+            escaped = escaped.replace(openRegex, (_, t, cls) => `<${t}${cls || ''}>`);
+            // Self-closing tags
+            const selfCloseRegex = new RegExp(`&lt;${tag}\\s*/&gt;`, 'gi');
+            escaped = escaped.replace(selfCloseRegex, `<${tag}/>`);
+            // Closing tags
+            const closeRegex = new RegExp(`&lt;/${tag}&gt;`, 'gi');
+            escaped = escaped.replace(closeRegex, `</${tag}>`);
+        }
+
+        return escaped;
     }
 
     /**

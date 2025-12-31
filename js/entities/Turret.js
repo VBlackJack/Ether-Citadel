@@ -17,6 +17,7 @@ export class Turret {
         this.x = 0;
         this.y = 0;
         this.lastShotTime = 0;
+        this.cachedTarget = null;
         this.updateTierStats();
     }
 
@@ -69,13 +70,11 @@ export class Turret {
 
         const baseFireRate = (window.game.skills?.isActive('overdrive') || window.game.activeBuffs?.['rage'] > 0) ? window.game.currentFireRate / 3 : window.game.currentFireRate;
         const fireInterval = baseFireRate / this.fireRateMult;
-        if (gameTime - this.lastShotTime > fireInterval) {
-            const range = window.game.currentRange * this.rangeMult;
-            const target = window.game.findTarget?.(this.x, this.y, range);
-            if (target) {
-                this.shoot(target);
-                this.lastShotTime = gameTime;
-            }
+        const range = window.game.currentRange * this.rangeMult;
+        this.cachedTarget = window.game.findTarget?.(this.x, this.y, range) || null;
+        if (gameTime - this.lastShotTime > fireInterval && this.cachedTarget) {
+            this.shoot(this.cachedTarget);
+            this.lastShotTime = gameTime;
         }
     }
 
@@ -96,8 +95,7 @@ export class Turret {
         const tierData = TURRET_TIERS[this.tier] || TURRET_TIERS[1];
         ctx.save();
         ctx.translate(this.x, this.y);
-        const target = window.game?.findTarget?.(this.x, this.y, (window.game?.currentRange || 150) * this.rangeMult);
-        if (target) ctx.rotate(Math.atan2(target.y - this.y, target.x - this.x));
+        if (this.cachedTarget) ctx.rotate(Math.atan2(this.cachedTarget.y - this.y, this.cachedTarget.x - this.x));
 
         ctx.shadowColor = tierData.color;
         ctx.shadowBlur = this.tier > 1 ? 5 + this.tier * 2 : 0;

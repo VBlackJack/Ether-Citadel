@@ -447,6 +447,22 @@
     "world_eater": {
       "name": "World Eater",
       "desc": "+100% Damage, -30% Health"
+    },
+    "pumpkinCrown": {
+      "name": "Pumpkin Crown",
+      "desc": "+25% crit chance, +30% gold (Halloween exclusive)"
+    },
+    "santasBlessing": {
+      "name": "Santa's Blessing",
+      "desc": "+50% gold, +25% health (Christmas exclusive)"
+    },
+    "dragonPearl": {
+      "name": "Dragon Pearl",
+      "desc": "+40% damage, +75% crit damage (Lunar New Year exclusive)"
+    },
+    "sunStone": {
+      "name": "Sun Stone",
+      "desc": "+30% speed, +20% cooldown reduction (Summer exclusive)"
     }
   },
   "achievements": {
@@ -545,6 +561,7 @@
     "loadFailed": "Load failed",
     "networkError": "Network error",
     "saveCorrupted": "Save data may be corrupted",
+    "saveCorruptedBlocked": "Save corrupted - use Settings > Restore Backup",
     "gameError": "Game error - please reload"
   },
   "feedback": {
@@ -572,6 +589,9 @@
   },
   "currency": {
     "crystals": "Crystals"
+  },
+  "loot": {
+    "newItem": "New Item"
   },
   "mining": {
     "title": "Mining",
@@ -1237,24 +1257,6 @@
     "boss": "Boss Battle",
     "victory": "Victory",
     "defeat": "Defeat"
-  },
-  "relics": {
-    "pumpkinCrown": {
-      "name": "Pumpkin Crown",
-      "desc": "+25% crit chance, +30% gold (Halloween exclusive)"
-    },
-    "santasBlessing": {
-      "name": "Santa's Blessing",
-      "desc": "+50% gold, +25% health (Christmas exclusive)"
-    },
-    "dragonPearl": {
-      "name": "Dragon Pearl",
-      "desc": "+40% damage, +75% crit damage (Lunar New Year exclusive)"
-    },
-    "sunStone": {
-      "name": "Sun Stone",
-      "desc": "+30% speed, +20% cooldown reduction (Summer exclusive)"
-    }
   },
   "ux": {
     "suggestionLabel": "Suggested",

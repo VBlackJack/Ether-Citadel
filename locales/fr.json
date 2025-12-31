@@ -447,6 +447,22 @@
     "world_eater": {
       "name": "D\u00e9voreur de Mondes",
       "desc": "+100% D\u00e9g\u00e2ts, -30% Sant\u00e9"
+    },
+    "pumpkinCrown": {
+      "name": "Couronne de Citrouille",
+      "desc": "+25% coup crit, +30% or (exclusif Halloween)"
+    },
+    "santasBlessing": {
+      "name": "B\u00e9n\u00e9diction du P\u00e8re No\u00ebl",
+      "desc": "+50% or, +25% sant\u00e9 (exclusif No\u00ebl)"
+    },
+    "dragonPearl": {
+      "name": "Perle du Dragon",
+      "desc": "+40% d\u00e9g\u00e2ts, +75% d\u00e9g\u00e2ts crit (exclusif Nouvel An Lunaire)"
+    },
+    "sunStone": {
+      "name": "Pierre du Soleil",
+      "desc": "+30% vitesse, +20% r\u00e9duction recharge (exclusif \u00c9t\u00e9)"
     }
   },
   "achievements": {
@@ -545,6 +561,7 @@
     "loadFailed": "Échec du chargement",
     "networkError": "Erreur réseau",
     "saveCorrupted": "Sauvegarde potentiellement corrompue",
+    "saveCorruptedBlocked": "Sauvegarde corrompue - utilisez Options > Restaurer",
     "gameError": "Erreur de jeu - veuillez recharger"
   },
   "feedback": {
@@ -572,6 +589,9 @@
   },
   "currency": {
     "crystals": "Cristaux"
+  },
+  "loot": {
+    "newItem": "Nouvel Objet"
   },
   "mining": {
     "title": "Minage",

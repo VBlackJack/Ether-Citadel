@@ -3352,9 +3352,10 @@ class Game {
                 if (parsed.checksum !== undefined && parsed.data !== undefined) {
                     const jsonData = JSON.stringify(parsed.data);
                     if (!verifyChecksum(jsonData, parsed.checksum)) {
-                        logError('Save data checksum mismatch - data may be corrupted', 'Game.load');
-                        // Continue loading anyway, but warn the user
-                        this.ui?.showToast(t('notifications.saveCorrupted') || 'Save data may be corrupted', 'warning');
+                        logError('Save data checksum mismatch - data may be corrupted', 'Game.load', ErrorSeverity.ERROR);
+                        // Block loading corrupted data - suggest backup restoration
+                        this.ui?.showToast(t('notifications.saveCorruptedBlocked') || 'Save corrupted - use Settings > Restore Backup', 'error');
+                        return false;
                     }
                     data = parsed.data;
                 } else {

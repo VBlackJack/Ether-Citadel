@@ -23,9 +23,8 @@
 export { SoundManager } from './audio/SoundManager.js';
 
 // Combat Systems
-export { SkillManager } from './combat/SkillManager.js';
-export { DamageSystem } from './combat/DamageSystem.js';
-export { TargetingSystem, TargetingMode } from './combat/TargetingSystem.js';
+// Note: SkillManager is in gameplay/, not combat/ - combat/SkillManager.js is unused
+// DamageSystem and TargetingSystem classes exist but are not currently used
 export { AutoSkillManager } from './combat/AutoSkillManager.js';
 export { ProjectileSystem, Projectile, ProjectileType } from './combat/ProjectileSystem.js';
 

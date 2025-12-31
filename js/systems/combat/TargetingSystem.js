@@ -123,12 +123,12 @@ export class TargetingSystem {
         if (!this.game.castle) return enemies[0];
 
         let furthest = null;
-        let minDistToCastle = Infinity;
+        let minDistToCastleSq = Infinity;
 
         for (const enemy of enemies) {
-            const dist = this.distance(enemy.x, enemy.y, this.game.castle.x, this.game.castle.y);
-            if (dist < minDistToCastle) {
-                minDistToCastle = dist;
+            const distSq = this.distanceSquared(enemy.x, enemy.y, this.game.castle.x, this.game.castle.y);
+            if (distSq < minDistToCastleSq) {
+                minDistToCastleSq = distSq;
                 furthest = enemy;
             }
         }
@@ -214,12 +214,12 @@ export class TargetingSystem {
 
         // Find enemy closest to center
         let closest = null;
-        let minDist = Infinity;
+        let minDistSq = Infinity;
 
         for (const enemy of enemies) {
-            const dist = this.distance(centerX, centerY, enemy.x, enemy.y);
-            if (dist < minDist) {
-                minDist = dist;
+            const distSq = this.distanceSquared(centerX, centerY, enemy.x, enemy.y);
+            if (distSq < minDistSq) {
+                minDistSq = distSq;
                 closest = enemy;
             }
         }
@@ -314,7 +314,7 @@ export class TargetingSystem {
      * @returns {boolean}
      */
     inRange(x1, y1, x2, y2, range) {
-        return this.distance(x1, y1, x2, y2) <= range;
+        return this.distanceSquared(x1, y1, x2, y2) <= range * range;
     }
 
     /**
