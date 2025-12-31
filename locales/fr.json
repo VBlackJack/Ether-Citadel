@@ -21,6 +21,7 @@
   },
   "hud": {
     "evolutionTier": "\u00c9volution Tier",
+    "dreadLevel": "Terreur",
     "activeChallenge": "D\u00c9FI ACTIF :",
     "autoAdvance": "Auto",
     "autoRetry": "Relance",
@@ -273,6 +274,18 @@
     "unlockDrone": {
       "name": "Drone Sentinelle",
       "desc": "Active le compagnon."
+    },
+    "autoSkillQ": {
+      "name": "Auto Overdrive",
+      "desc": "Active auto Overdrive."
+    },
+    "autoSkillW": {
+      "name": "Auto Météore",
+      "desc": "Active auto Météore."
+    },
+    "autoSkillE": {
+      "name": "Auto Trou Noir",
+      "desc": "Active auto Trou Noir."
     }
   },
   "darkMatter": {
@@ -370,9 +383,10 @@
     }
   },
   "relics": {
+    "drop": "Drops",
     "dmg_boost": {
       "name": "Lame du Roi",
-      "desc": "+20% D\u00e9g\u00e2ts globaux"
+      "desc": "+20% Dégâts globaux"
     },
     "gold_boost": {
       "name": "Pi\u00e8ce Maudite",
@@ -502,21 +516,30 @@
     }
   },
   "notifications": {
-    "evolution": "\u00c9VOLUTION !",
-    "evolutionSub": "Tier Sup\u00e9rieur Atteint",
+    "evolution": "ÉVOLUTION !",
+    "evolutionSub": "Tier Supérieur Atteint",
     "bossWarning": "BOSS",
-    "bossWarningSub": "Pr\u00e9parez vos d\u00e9fenses !",
+    "bossWarningSub": "Préparez vos défenses !",
     "relicObtained": "RELIQUE OBTENUE!",
-    "levelUp": "NIVEAU SUP\u00c9RIEUR !",
+    "levelUp": "NIVEAU SUPÉRIEUR !",
     "thermalShock": "CHOC THERMIQUE!",
     "orbital": "ORBITAL!",
     "waveRush": "VAGUE RUSH!",
-    "devModeActivated": "MODE DEV ACTIV\u00c9",
-    "saveCopied": "Sauvegarde copi\u00e9e!",
+    "devModeActivated": "MODE DEV ACTIVÉ",
+    "saveCopied": "Sauvegarde copiée!",
     "invalidSave": "Invalide",
     "pasteSave": "Collez votre sauvegarde:",
-    "autoSaved": "Partie sauvegard\u00e9e",
-    "importFailed": "\u00c9chec de l'import"
+    "autoSaved": "Partie sauvegardée",
+    "importFailed": "Échec de l'import",
+    "noSaveFound": "Aucune sauvegarde trouvée",
+    "clipboardError": "Échec de la copie",
+    "invalidSaveFormat": "Format de sauvegarde invalide",
+    "invalidSaveData": "Données de sauvegarde invalides",
+    "backupRestored": "Sauvegarde restaurée !",
+    "noBackup": "Aucune sauvegarde de secours",
+    "saveFailed": "Échec de la sauvegarde",
+    "loadFailed": "Échec du chargement",
+    "networkError": "Erreur réseau"
   },
   "feedback": {
     "noStatPoints": "Pas de points de stat disponibles",
@@ -1268,7 +1291,41 @@
     "summary": "Résumé des Stats",
     "crit": "Crit",
     "armor": "Armure",
-    "regen": "Régén"
+    "regen": "Régén",
+    "breakdown": {
+      "title": "Détail des Stats",
+      "damage": "Dégâts",
+      "base": "Dégâts de Base",
+      "final": "Dégâts Finaux",
+      "dps": "DPS",
+      "critDps": "DPS Moy. (avec crits)",
+      "gold": "Or",
+      "baseGold": "Or de Base/Kill",
+      "finalGold": "Or Final/Kill",
+      "defense": "Défense",
+      "maxHp": "PV Max",
+      "regen": "Régén PV/s",
+      "armor": "Armure",
+      "shield": "Bouclier",
+      "crit": "Critique",
+      "critChance": "Chance Crit",
+      "critMult": "Multi Crit",
+      "turrets": "Tourelles",
+      "turretCount": "Tourelles Actives",
+      "fireRate": "Cadence de Tir",
+      "range": "Portée"
+    },
+    "sources": {
+      "tier": "Tier d'Évolution",
+      "meta": "Améliorations Méta",
+      "relics": "Reliques",
+      "research": "Recherche",
+      "passives": "Passifs",
+      "prestige": "Prestige",
+      "darkMatter": "Matière Noire",
+      "dread": "Mode Terreur",
+      "rune": "Rune Active"
+    }
   },
   "passives": {
     "title": "PASSIFS",

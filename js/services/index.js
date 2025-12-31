@@ -41,3 +41,5 @@ export {
     SCHEMAS,
     ConfigValidationError
 } from './ConfigLoader.js';
+
+export { ConfigRegistry } from './ConfigRegistry.js';

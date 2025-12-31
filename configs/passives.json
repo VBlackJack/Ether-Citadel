@@ -1,0 +1,253 @@
+{
+  "$schema": "./schemas/passives.schema.json",
+  "version": 1,
+  "passives": [
+    {
+      "id": "passive_damage",
+      "nameKey": "passives.damage.name",
+      "descKey": "passives.damage.desc",
+      "icon": "⚔️",
+      "category": "offense",
+      "maxLevel": 20,
+      "costPerLevel": 1,
+      "effect": { "type": "damageMult", "valuePerLevel": 0.05 }
+    },
+    {
+      "id": "passive_crit_chance",
+      "nameKey": "passives.critChance.name",
+      "descKey": "passives.critChance.desc",
+      "icon": "🎯",
+      "category": "offense",
+      "maxLevel": 10,
+      "costPerLevel": 2,
+      "effect": { "type": "critChance", "valuePerLevel": 2 }
+    },
+    {
+      "id": "passive_crit_damage",
+      "nameKey": "passives.critDamage.name",
+      "descKey": "passives.critDamage.desc",
+      "icon": "💥",
+      "category": "offense",
+      "maxLevel": 15,
+      "costPerLevel": 2,
+      "effect": { "type": "critDamage", "valuePerLevel": 0.1 }
+    },
+    {
+      "id": "passive_fire_rate",
+      "nameKey": "passives.fireRate.name",
+      "descKey": "passives.fireRate.desc",
+      "icon": "⚡",
+      "category": "offense",
+      "maxLevel": 10,
+      "costPerLevel": 3,
+      "effect": { "type": "fireRateMult", "valuePerLevel": 0.05 }
+    },
+    {
+      "id": "passive_multishot",
+      "nameKey": "passives.multishot.name",
+      "descKey": "passives.multishot.desc",
+      "icon": "🔱",
+      "category": "offense",
+      "maxLevel": 5,
+      "costPerLevel": 5,
+      "effect": { "type": "multishotChance", "valuePerLevel": 5 }
+    },
+    {
+      "id": "passive_pierce",
+      "nameKey": "passives.pierce.name",
+      "descKey": "passives.pierce.desc",
+      "icon": "➡️",
+      "category": "offense",
+      "maxLevel": 3,
+      "costPerLevel": 8,
+      "effect": { "type": "pierce", "valuePerLevel": 1 }
+    },
+    {
+      "id": "passive_health",
+      "nameKey": "passives.health.name",
+      "descKey": "passives.health.desc",
+      "icon": "❤️",
+      "category": "defense",
+      "maxLevel": 20,
+      "costPerLevel": 1,
+      "effect": { "type": "healthMult", "valuePerLevel": 0.05 }
+    },
+    {
+      "id": "passive_regen",
+      "nameKey": "passives.regen.name",
+      "descKey": "passives.regen.desc",
+      "icon": "💚",
+      "category": "defense",
+      "maxLevel": 15,
+      "costPerLevel": 2,
+      "effect": { "type": "regenMult", "valuePerLevel": 0.1 }
+    },
+    {
+      "id": "passive_armor",
+      "nameKey": "passives.armor.name",
+      "descKey": "passives.armor.desc",
+      "icon": "🛡️",
+      "category": "defense",
+      "maxLevel": 10,
+      "costPerLevel": 3,
+      "effect": { "type": "armorFlat", "valuePerLevel": 0.02 }
+    },
+    {
+      "id": "passive_shield",
+      "nameKey": "passives.shield.name",
+      "descKey": "passives.shield.desc",
+      "icon": "🔷",
+      "category": "defense",
+      "maxLevel": 10,
+      "costPerLevel": 3,
+      "effect": { "type": "shieldMult", "valuePerLevel": 0.1 }
+    },
+    {
+      "id": "passive_dodge",
+      "nameKey": "passives.dodge.name",
+      "descKey": "passives.dodge.desc",
+      "icon": "💨",
+      "category": "defense",
+      "maxLevel": 5,
+      "costPerLevel": 5,
+      "effect": { "type": "dodgeChance", "valuePerLevel": 2 }
+    },
+    {
+      "id": "passive_thorns",
+      "nameKey": "passives.thorns.name",
+      "descKey": "passives.thorns.desc",
+      "icon": "🌹",
+      "category": "defense",
+      "maxLevel": 5,
+      "costPerLevel": 4,
+      "effect": { "type": "thornsDamage", "valuePerLevel": 0.1 }
+    },
+    {
+      "id": "passive_range",
+      "nameKey": "passives.range.name",
+      "descKey": "passives.range.desc",
+      "icon": "🎯",
+      "category": "utility",
+      "maxLevel": 10,
+      "costPerLevel": 2,
+      "effect": { "type": "rangeMult", "valuePerLevel": 0.05 }
+    },
+    {
+      "id": "passive_cooldown",
+      "nameKey": "passives.cooldown.name",
+      "descKey": "passives.cooldown.desc",
+      "icon": "⏱️",
+      "category": "utility",
+      "maxLevel": 10,
+      "costPerLevel": 3,
+      "effect": { "type": "cooldownReduction", "valuePerLevel": 0.03 }
+    },
+    {
+      "id": "passive_xp",
+      "nameKey": "passives.xp.name",
+      "descKey": "passives.xp.desc",
+      "icon": "📈",
+      "category": "utility",
+      "maxLevel": 15,
+      "costPerLevel": 2,
+      "effect": { "type": "xpMult", "valuePerLevel": 0.05 }
+    },
+    {
+      "id": "passive_luck",
+      "nameKey": "passives.luck.name",
+      "descKey": "passives.luck.desc",
+      "icon": "🍀",
+      "category": "utility",
+      "maxLevel": 10,
+      "costPerLevel": 3,
+      "effect": { "type": "luckMult", "valuePerLevel": 0.05 }
+    },
+    {
+      "id": "passive_turret_slots",
+      "nameKey": "passives.turretSlots.name",
+      "descKey": "passives.turretSlots.desc",
+      "icon": "🗼",
+      "category": "utility",
+      "maxLevel": 4,
+      "costPerLevel": 10,
+      "effect": { "type": "turretSlots", "valuePerLevel": 1 }
+    },
+    {
+      "id": "passive_drone",
+      "nameKey": "passives.drone.name",
+      "descKey": "passives.drone.desc",
+      "icon": "🤖",
+      "category": "utility",
+      "maxLevel": 2,
+      "costPerLevel": 15,
+      "effect": { "type": "droneCount", "valuePerLevel": 1 }
+    },
+    {
+      "id": "passive_gold",
+      "nameKey": "passives.gold.name",
+      "descKey": "passives.gold.desc",
+      "icon": "💰",
+      "category": "resources",
+      "maxLevel": 20,
+      "costPerLevel": 1,
+      "effect": { "type": "goldMult", "valuePerLevel": 0.05 }
+    },
+    {
+      "id": "passive_ether",
+      "nameKey": "passives.ether.name",
+      "descKey": "passives.ether.desc",
+      "icon": "💎",
+      "category": "resources",
+      "maxLevel": 15,
+      "costPerLevel": 2,
+      "effect": { "type": "etherMult", "valuePerLevel": 0.05 }
+    },
+    {
+      "id": "passive_crystal",
+      "nameKey": "passives.crystal.name",
+      "descKey": "passives.crystal.desc",
+      "icon": "🔮",
+      "category": "resources",
+      "maxLevel": 10,
+      "costPerLevel": 3,
+      "effect": { "type": "crystalMult", "valuePerLevel": 0.1 }
+    },
+    {
+      "id": "passive_mining",
+      "nameKey": "passives.mining.name",
+      "descKey": "passives.mining.desc",
+      "icon": "⛏️",
+      "category": "resources",
+      "maxLevel": 10,
+      "costPerLevel": 3,
+      "effect": { "type": "miningSpeed", "valuePerLevel": 0.1 }
+    },
+    {
+      "id": "passive_production",
+      "nameKey": "passives.production.name",
+      "descKey": "passives.production.desc",
+      "icon": "🏭",
+      "category": "resources",
+      "maxLevel": 10,
+      "costPerLevel": 3,
+      "effect": { "type": "productionMult", "valuePerLevel": 0.1 }
+    },
+    {
+      "id": "passive_offline",
+      "nameKey": "passives.offline.name",
+      "descKey": "passives.offline.desc",
+      "icon": "🌙",
+      "category": "resources",
+      "maxLevel": 5,
+      "costPerLevel": 5,
+      "effect": { "type": "offlineMult", "valuePerLevel": 0.1 }
+    }
+  ],
+  "categories": ["offense", "defense", "utility", "resources"],
+  "categoryIcons": {
+    "offense": "⚔️",
+    "defense": "🛡️",
+    "utility": "⚡",
+    "resources": "💰"
+  }
+}

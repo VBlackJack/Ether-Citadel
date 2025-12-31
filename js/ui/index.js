@@ -31,6 +31,8 @@ export {
     cleanupEventDelegation
 } from './EventDelegation.js';
 
+export { StatsBreakdown } from './StatsBreakdown.js';
+
 import { cleanupModals } from './Modal.js';
 import { cleanupToasts } from './Toast.js';
 import { cleanupHelpTooltips } from './HelpTooltip.js';

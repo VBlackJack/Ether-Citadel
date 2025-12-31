@@ -1,0 +1,95 @@
+{
+  "$schema": "./schemas/dread.schema.json",
+  "version": 1,
+  "levels": [
+    {
+      "level": 0,
+      "nameKey": "dread.level0",
+      "enemyMult": 1.0,
+      "rewardMult": 1.0,
+      "color": "#94a3b8",
+      "unlockWave": 0
+    },
+    {
+      "level": 1,
+      "nameKey": "dread.level1",
+      "enemyMult": 1.5,
+      "rewardMult": 1.5,
+      "color": "#fbbf24",
+      "unlockWave": 10
+    },
+    {
+      "level": 2,
+      "nameKey": "dread.level2",
+      "enemyMult": 2.0,
+      "rewardMult": 2.0,
+      "color": "#f97316",
+      "unlockWave": 20
+    },
+    {
+      "level": 3,
+      "nameKey": "dread.level3",
+      "enemyMult": 3.0,
+      "rewardMult": 3.0,
+      "color": "#ef4444",
+      "unlockWave": 30
+    },
+    {
+      "level": 4,
+      "nameKey": "dread.level4",
+      "enemyMult": 5.0,
+      "rewardMult": 5.0,
+      "color": "#dc2626",
+      "unlockWave": 40
+    },
+    {
+      "level": 5,
+      "nameKey": "dread.level5",
+      "enemyMult": 8.0,
+      "rewardMult": 8.0,
+      "color": "#991b1b",
+      "unlockWave": 50
+    },
+    {
+      "level": 6,
+      "nameKey": "dread.level6",
+      "enemyMult": 12.0,
+      "rewardMult": 12.0,
+      "color": "#7f1d1d",
+      "unlockWave": 60
+    },
+    {
+      "level": 7,
+      "nameKey": "dread.level7",
+      "enemyMult": 20.0,
+      "rewardMult": 20.0,
+      "color": "#a855f7",
+      "unlockWave": 70
+    },
+    {
+      "level": 8,
+      "nameKey": "dread.level8",
+      "enemyMult": 30.0,
+      "rewardMult": 33.0,
+      "color": "#9333ea",
+      "unlockWave": 80
+    },
+    {
+      "level": 9,
+      "nameKey": "dread.level9",
+      "enemyMult": 40.0,
+      "rewardMult": 48.0,
+      "color": "#6b21a8",
+      "unlockWave": 90
+    },
+    {
+      "level": 10,
+      "nameKey": "dread.level10",
+      "enemyMult": 50.0,
+      "rewardMult": 65.0,
+      "color": "#000000",
+      "unlockWave": 100
+    }
+  ],
+  "bonusPerLevel": 0.25
+}

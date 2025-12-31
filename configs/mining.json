@@ -1,0 +1,51 @@
+{
+  "$schema": "./schemas/mining.schema.json",
+  "version": 1,
+  "resources": [
+    { "id": "copper", "nameKey": "mining.copper.name", "icon": "🟤", "baseRate": 1.0, "color": "#b87333", "tier": 1 },
+    { "id": "iron", "nameKey": "mining.iron.name", "icon": "⚫", "baseRate": 0.5, "color": "#71797E", "tier": 1 },
+    { "id": "crystal", "nameKey": "mining.crystal.name", "icon": "💎", "baseRate": 0.2, "color": "#22d3ee", "tier": 2 },
+    { "id": "gold_ore", "nameKey": "mining.gold_ore.name", "icon": "🟡", "baseRate": 0.1, "color": "#fbbf24", "tier": 2 },
+    { "id": "void_shard", "nameKey": "mining.void_shard.name", "icon": "🟣", "baseRate": 0.05, "color": "#a855f7", "tier": 3 },
+    { "id": "starlight", "nameKey": "mining.starlight.name", "icon": "✨", "baseRate": 0.02, "color": "#ffffff", "tier": 3 }
+  ],
+  "forgeRecipes": [
+    {
+      "id": "upgrade_relic",
+      "nameKey": "forge.upgrade.name",
+      "descKey": "forge.upgrade.desc",
+      "cost": { "crystal": 10, "void_shard": 2 },
+      "successRate": 0.6,
+      "type": "upgrade"
+    },
+    {
+      "id": "reroll_relic",
+      "nameKey": "forge.reroll.name",
+      "descKey": "forge.reroll.desc",
+      "cost": { "crystal": 5 },
+      "successRate": 1.0,
+      "type": "reroll"
+    },
+    {
+      "id": "fuse_relics",
+      "nameKey": "forge.fuse.name",
+      "descKey": "forge.fuse.desc",
+      "cost": { "crystal": 20, "void_shard": 5, "starlight": 1 },
+      "successRate": 0.4,
+      "type": "fuse"
+    },
+    {
+      "id": "legendary_forge",
+      "nameKey": "forge.legendary.name",
+      "descKey": "forge.legendary.desc",
+      "cost": { "crystal": 100, "void_shard": 25, "starlight": 10 },
+      "successRate": 0.2,
+      "type": "legendary"
+    }
+  ],
+  "miners": {
+    "maxSlots": 4,
+    "baseMiningTime": 60000,
+    "offlineEfficiency": 0.5
+  }
+}

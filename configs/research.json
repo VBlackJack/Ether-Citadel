@@ -1,0 +1,49 @@
+{
+  "$schema": "./schemas/research.schema.json",
+  "version": 1,
+  "branches": [
+    {
+      "id": "offense",
+      "nameKey": "research.offense.name",
+      "icon": "⚔️",
+      "color": "#ef4444",
+      "nodes": [
+        { "id": "dmg_1", "nameKey": "research.dmg_1.name", "descKey": "research.dmg_1.desc", "cost": 5, "effect": { "damageMult": 0.1 }, "requires": [] },
+        { "id": "dmg_2", "nameKey": "research.dmg_2.name", "descKey": "research.dmg_2.desc", "cost": 15, "effect": { "damageMult": 0.15 }, "requires": ["dmg_1"] },
+        { "id": "dmg_3", "nameKey": "research.dmg_3.name", "descKey": "research.dmg_3.desc", "cost": 50, "effect": { "damageMult": 0.25 }, "requires": ["dmg_2"] },
+        { "id": "crit_1", "nameKey": "research.crit_1.name", "descKey": "research.crit_1.desc", "cost": 10, "effect": { "critChance": 5 }, "requires": ["dmg_1"] },
+        { "id": "crit_2", "nameKey": "research.crit_2.name", "descKey": "research.crit_2.desc", "cost": 30, "effect": { "critDamage": 0.5 }, "requires": ["crit_1"] },
+        { "id": "speed_1", "nameKey": "research.speed_1.name", "descKey": "research.speed_1.desc", "cost": 20, "effect": { "fireRateMult": 0.1 }, "requires": ["dmg_1"] },
+        { "id": "speed_2", "nameKey": "research.speed_2.name", "descKey": "research.speed_2.desc", "cost": 60, "effect": { "fireRateMult": 0.15 }, "requires": ["speed_1"] }
+      ]
+    },
+    {
+      "id": "defense",
+      "nameKey": "research.defense.name",
+      "icon": "🛡️",
+      "color": "#3b82f6",
+      "nodes": [
+        { "id": "hp_1", "nameKey": "research.hp_1.name", "descKey": "research.hp_1.desc", "cost": 5, "effect": { "healthMult": 0.1 }, "requires": [] },
+        { "id": "hp_2", "nameKey": "research.hp_2.name", "descKey": "research.hp_2.desc", "cost": 15, "effect": { "healthMult": 0.15 }, "requires": ["hp_1"] },
+        { "id": "hp_3", "nameKey": "research.hp_3.name", "descKey": "research.hp_3.desc", "cost": 50, "effect": { "healthMult": 0.25 }, "requires": ["hp_2"] },
+        { "id": "regen_1", "nameKey": "research.regen_1.name", "descKey": "research.regen_1.desc", "cost": 10, "effect": { "regenMult": 0.2 }, "requires": ["hp_1"] },
+        { "id": "shield_1", "nameKey": "research.shield_1.name", "descKey": "research.shield_1.desc", "cost": 25, "effect": { "shieldMult": 0.2 }, "requires": ["hp_2"] },
+        { "id": "armor_1", "nameKey": "research.armor_1.name", "descKey": "research.armor_1.desc", "cost": 40, "effect": { "armorFlat": 0.05 }, "requires": ["shield_1"] }
+      ]
+    },
+    {
+      "id": "utility",
+      "nameKey": "research.utility.name",
+      "icon": "⚙️",
+      "color": "#22d3ee",
+      "nodes": [
+        { "id": "gold_1", "nameKey": "research.gold_1.name", "descKey": "research.gold_1.desc", "cost": 5, "effect": { "goldMult": 0.1 }, "requires": [] },
+        { "id": "gold_2", "nameKey": "research.gold_2.name", "descKey": "research.gold_2.desc", "cost": 20, "effect": { "goldMult": 0.15 }, "requires": ["gold_1"] },
+        { "id": "xp_1", "nameKey": "research.xp_1.name", "descKey": "research.xp_1.desc", "cost": 15, "effect": { "xpMult": 0.2 }, "requires": ["gold_1"] },
+        { "id": "mining_1", "nameKey": "research.mining_1.name", "descKey": "research.mining_1.desc", "cost": 10, "effect": { "miningSpeed": 0.25 }, "requires": [] },
+        { "id": "mining_2", "nameKey": "research.mining_2.name", "descKey": "research.mining_2.desc", "cost": 35, "effect": { "miningSpeed": 0.5 }, "requires": ["mining_1"] },
+        { "id": "forge_1", "nameKey": "research.forge_1.name", "descKey": "research.forge_1.desc", "cost": 50, "effect": { "forgeSuccess": 0.1 }, "requires": ["mining_2"] }
+      ]
+    }
+  ]
+}

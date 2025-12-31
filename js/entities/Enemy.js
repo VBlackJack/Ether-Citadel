@@ -14,107 +14,49 @@
  * limitations under the License.
  */
 
-import { CONFIG, MathUtils, formatNumber } from '../config.js';
-import { ENEMY_TYPES } from '../data.js';
-import { t } from '../i18n.js';
-import { FloatingText, Particle, Rune } from '../effects/index.js';
-import { COLORS, getEnemyDisplayColor } from '../constants/colors.js';
-import { ENEMY_BALANCE, COMBAT_BALANCE, PARTICLE_COUNTS } from '../constants/balance.js';
-import { sanitizeColor } from '../utils/HtmlSanitizer.js';
-
 /**
- * Enemy entity
+ * Enemy - Base enemy entity with type-specific behaviors
  */
+
+import { ENEMY_TYPES, CONFIG } from '../data.js';
+import { MathUtils } from '../config.js';
+import { t } from '../i18n.js';
+import { formatNumber } from '../utils.js';
+
 export class Enemy {
-    constructor(wave, typeKey = 'NORMAL', x, y, game) {
+    constructor(game, wave, typeKey = 'NORMAL', x, y) {
         this.game = game;
-        this.type = ENEMY_TYPES[typeKey] || ENEMY_TYPES['NORMAL'];
-        this.typeKey = this.type ? typeKey : 'NORMAL';
+        this.type = ENEMY_TYPES[typeKey];
+        this.typeKey = typeKey;
         this.radius = 12 * this.type.scale;
-        this.isElite = Math.random() < ENEMY_BALANCE.ELITE_SPAWN_CHANCE;
+        this.isElite = Math.random() < 0.05;
         this.x = x || game.width + 50;
         this.y = y || MathUtils.randomRange(game.height * 0.2, game.height * 0.8);
-
-        // Difficulty scaling: linear early game, soft exponential late game
-        // Maintains challenge without creating impossible walls
-        const earlyMult = Math.min(wave, 50) * 0.15;  // Linear up to wave 50: 0 → 7.5x
-        const lateMult = wave > 50 ? (Math.pow(1.05, wave - 50) - 1) : 0;  // +5% compound after 50
-        const diffMult = 1 + earlyMult + lateMult;
-
+        const diffMult = 1 + (wave * 0.20);
         const hpMod = game.activeChallenge && game.activeChallenge.id === 'glass' ? 0.1 : 1;
         const speedMod = game.activeChallenge && game.activeChallenge.id === 'speed' ? 2 : 1;
         const dread = game.getDreadMultipliers();
-        const eliteMult = this.isElite ? ENEMY_BALANCE.ELITE_HP_MULTIPLIER : 1;
-        this.maxHp = Math.floor(
-            CONFIG.baseEnemyHp * diffMult * this.type.hpMult * eliteMult * hpMod * dread.enemyHp
-        );
+        this.wave = wave;
+        this.maxHp = Math.floor(CONFIG.baseEnemyHp * diffMult * this.type.hpMult * (this.isElite ? 5 : 1) * hpMod * dread.enemyHp);
         this.hp = this.maxHp;
-
-        // Speed scales more gently - cap at 2x base speed
-        const speedScale = Math.min(1 + wave * 0.015, 2.0);
-        this.baseSpeed = CONFIG.baseEnemySpeed * speedScale *
-            this.type.speedMult * speedMod * dread.enemySpeed;
-
-        const bossDmgMult = typeKey === 'BOSS' ? ENEMY_BALANCE.BOSS_DAMAGE_MULT : 1;
-        // Damage scales with soft exponential to match HP scaling
-        const baseDmg = 5 + Math.floor(wave * 0.5);
-        const lateDmgMult = wave > 50 ? Math.pow(1.03, wave - 50) : 1;  // +3% compound after 50
-        this.damage = Math.floor(baseDmg * lateDmgMult * bossDmgMult * dread.enemyDamage);
-
-        // Gold scales with difficulty to keep rewards proportional
-        const lateGoldMult = wave > 50 ? Math.pow(1.02, wave - 50) : 1;  // +2% compound (slower than HP)
-        const baseGold = Math.max(1, Math.floor(2 * (1 + wave * 0.15) * lateGoldMult));
+        this.baseSpeed = CONFIG.baseEnemySpeed * (1 + wave * 0.03) * this.type.speedMult * speedMod * dread.enemySpeed;
+        this.damage = Math.floor((5 + Math.floor(wave * 0.8)) * (typeKey === 'BOSS' ? 5 : 1) * dread.enemyDamage);
+        const baseGold = Math.max(1, Math.floor(2 * (1 + wave * 0.18)));
         const goldMult = game.metaUpgrades.getEffectValue('goldMult') * (1 + (game.relicMults.gold || 0));
-        const catchupBonus = (wave > (game.stats?.maxWave || 0)) ? COMBAT_BALANCE.CATCHUP_BONUS_MULT : 1.0;
-        const typeGoldMult = typeKey === 'BOSS' ? ENEMY_BALANCE.BOSS_GOLD_MULT :
-            (typeKey === 'TANK' ? 2 : 1);
-        const eliteGoldMult = this.isElite ? ENEMY_BALANCE.ELITE_GOLD_MULTIPLIER : 1;
-        this.goldValue = Math.floor(
-            baseGold * goldMult * catchupBonus * typeGoldMult * eliteGoldMult * dread.crystalBonus
-        );
-        if (game.activeBuffs['midas'] > 0) this.goldValue *= COMBAT_BALANCE.MIDAS_GOLD_MULT;
-        const safeWave = Math.max(0, Math.floor(wave) || 0);
-        const hue = (safeWave * 15) % 360;
-        this.color = typeKey === 'NORMAL' ? `hsl(${hue}, 70%, 60%)` : sanitizeColor(this.type.color);
+        const catchupBonus = (wave > (game.stats?.maxWave || 0)) ? 1.5 : 1.0;
+        this.goldValue = Math.floor(baseGold * goldMult * catchupBonus * (typeKey === 'BOSS' ? 15 : (typeKey === 'TANK' ? 2 : 1)) * (this.isElite ? 10 : 1) * dread.crystalBonus);
+        if (game.activeBuffs['midas'] > 0) this.goldValue *= 5;
+        this.color = typeKey === 'NORMAL' ? `hsl(${(wave * 15) % 360}, 70%, 60%)` : this.type.color;
         this.status = { iceTimer: 0, poisonTimer: 0, poisonDmg: 0, stasisTimer: 0 };
         this.state = 'APPROACH';
         this.teleportTimer = 0;
         this.thermalShockCooldown = 0;
-        this.attackingTurret = null;
     }
 
     applyStatus(type, power, duration) {
         if (type === 'ice') this.status.iceTimer = duration;
-        if (type === 'poison') {
-            this.status.poisonTimer = duration;
-            this.status.poisonDmg = power;
-        }
+        if (type === 'poison') { this.status.poisonTimer = duration; this.status.poisonDmg = power; }
         if (type === 'stasis') this.status.stasisTimer = duration;
-    }
-
-    /**
-     * Find the nearest operational turret within attack consideration range
-     * @param {Object} game - Game instance
-     * @returns {Object|null} Nearest turret or null
-     */
-    findNearestTurret(game) {
-        if (!game.turrets || game.turrets.length === 0) return null;
-
-        let nearest = null;
-        let nearestDist = Infinity;
-
-        for (const turret of game.turrets) {
-            if (!turret.isOperational()) continue;
-
-            const dist = MathUtils.dist(this.x, this.y, turret.x, turret.y);
-            // Only consider turrets that are between enemy and castle
-            if (turret.x < this.x && dist < nearestDist) {
-                nearestDist = dist;
-                nearest = turret;
-            }
-        }
-
-        return nearest;
     }
 
     update(dt) {
@@ -130,70 +72,37 @@ export class Enemy {
             this.takeDamage(game.currentDamage * 0.1 * (dt / 16), false, false, true);
             return;
         }
-        if (this.status.stasisTimer > 0) {
-            this.status.stasisTimer -= dt * 16;
-            return;
-        }
+        if (this.status.stasisTimer > 0) { this.status.stasisTimer -= dt * 16; return; }
         if (this.status.iceTimer > 0 && this.status.poisonTimer > 0 && this.thermalShockCooldown <= 0) {
-            this.takeDamage(game.currentDamage * ENEMY_BALANCE.THERMAL_SHOCK_DAMAGE_MULT, true, false, false);
-            game.floatingTexts.push(new FloatingText(
-                this.x, this.y - 40, t('notifications.thermalShock'), COLORS.STATUS_THERMAL, 24
-            ));
-            this.thermalShockCooldown = ENEMY_BALANCE.THERMAL_SHOCK_COOLDOWN;
+            this.takeDamage(game.currentDamage * 2, true, false, false);
+            game.floatingTexts.push(game.createFloatingText(this.x, this.y - 40, t('notifications.thermalShock'), "#f97316", 24));
+            this.thermalShockCooldown = 1000;
         }
         if (this.thermalShockCooldown > 0) this.thermalShockCooldown -= dt;
         let currentSpeed = this.baseSpeed;
-        if (this.status.iceTimer > 0) {
-            this.status.iceTimer -= dt * 16;
-            currentSpeed *= ENEMY_BALANCE.ICE_SLOW_MULTIPLIER;
-        }
+        if (this.status.iceTimer > 0) { this.status.iceTimer -= dt * 16; currentSpeed *= 0.6; }
         if (this.status.poisonTimer > 0) {
             this.status.poisonTimer -= dt * 16;
             const tickDmg = (this.status.poisonDmg / 60) * (dt / 16);
             this.takeDamage(tickDmg, false, false, true);
         }
 
-        // Check for nearby turrets to attack first
-        const nearestTurret = this.findNearestTurret(game);
-
-        if (nearestTurret) {
-            const turretDist = MathUtils.dist(this.x, this.y, nearestTurret.x, nearestTurret.y);
-
-            if (turretDist <= ENEMY_BALANCE.TURRET_ATTACK_RANGE) {
-                // Attack turret - enemy slows down while attacking
-                currentSpeed *= ENEMY_BALANCE.TURRET_ATTACK_SLOW;
-                nearestTurret.takeDamage((this.damage * ENEMY_BALANCE.TURRET_DAMAGE_RATE) * (dt / 16));
-                this.attackingTurret = nearestTurret;
-            } else {
-                // Move toward turret
-                const angle = Math.atan2(nearestTurret.y - this.y, nearestTurret.x - this.x);
-                const moveStep = currentSpeed * (dt / 16);
-                this.x += Math.cos(angle) * moveStep;
-                this.y += Math.sin(angle) * moveStep;
-                this.attackingTurret = null;
-            }
+        const targetX = game.castle.x;
+        const targetY = game.height / 2;
+        const dist = MathUtils.dist(this.x, this.y, targetX, targetY);
+        if (dist > 80) {
+            const angle = Math.atan2(targetY - this.y, targetX - this.x);
+            const moveStep = currentSpeed * (dt / 16);
+            this.x += Math.cos(angle) * moveStep;
+            this.y += Math.sin(angle) * moveStep;
         } else {
-            // No turrets - attack castle
-            const targetX = game.castle.x;
-            const targetY = game.height / 2;
-            const dist = MathUtils.dist(this.x, this.y, targetX, targetY);
-
-            if (dist > 80) {
-                const angle = Math.atan2(targetY - this.y, targetX - this.x);
-                const moveStep = currentSpeed * (dt / 16);
-                this.x += Math.cos(angle) * moveStep;
-                this.y += Math.sin(angle) * moveStep;
-            } else {
-                game.castle.takeDamage((this.damage * COMBAT_BALANCE.CASTLE_DAMAGE_RATE) * (dt / 16));
-            }
-            this.attackingTurret = null;
+            game.castle.takeDamage((this.damage * 0.05) * (dt / 16));
         }
         if (this.typeKey === 'PHANTOM') {
             this.teleportTimer += dt;
-            if (this.teleportTimer > ENEMY_BALANCE.PHANTOM_TELEPORT_INTERVAL) {
-                this.x -= ENEMY_BALANCE.PHANTOM_TELEPORT_DISTANCE;
-                const afterTeleportX = this.x + ENEMY_BALANCE.PHANTOM_TELEPORT_DISTANCE;
-                game.particles.push(new Particle(afterTeleportX, this.y, COLORS.ENEMY_PHANTOM));
+            if (this.teleportTimer > 2000) {
+                this.x -= 100;
+                game.particles.push(game.createParticle(this.x + 100, this.y, '#fff'));
                 this.teleportTimer = 0;
             }
         }
@@ -201,69 +110,39 @@ export class Enemy {
             if (this.state === 'APPROACH') {
                 if (dist <= 90) {
                     this.state = 'FLEE';
-                    const stolen = Math.floor(game.gold * ENEMY_BALANCE.THIEF_STEAL_PERCENTAGE);
+                    const stolen = Math.floor(game.gold * 0.1);
                     game.gold -= stolen;
-                    game.floatingTexts.push(new FloatingText(
-                        this.x, this.y - 30, `-${stolen} 💰`, COLORS.DAMAGE_RED, 20
-                    ));
+                    game.floatingTexts.push(game.createFloatingText(this.x, this.y - 30, `-${stolen} 💰`, '#ef4444', 20));
                 }
             } else if (this.state === 'FLEE') {
-                this.x += currentSpeed * ENEMY_BALANCE.THIEF_FLEE_SPEED_MULT * (dt / 16);
+                this.x += currentSpeed * 1.5 * (dt / 16);
                 if (this.x > game.width + 100) this.hp = 0;
             }
             return;
         }
         if (this.typeKey === 'HEALER') {
-            this.tryHealNearbyAllies(game);
+            if (Math.random() < 0.05) {
+                game.enemies.forEach(e => {
+                    if (e !== this && e.hp < e.maxHp && MathUtils.dist(this.x, this.y, e.x, e.y) < 150) {
+                        e.hp = Math.min(e.maxHp, e.hp + (e.maxHp * 0.05));
+                        const beam = game.createParticle(this.x, this.y, '#4ade80');
+                        beam.tx = e.x;
+                        beam.ty = e.y;
+                        beam.life = 0.5;
+                        beam.draw = function(ctx) {
+                            ctx.globalAlpha = this.life;
+                            ctx.strokeStyle = '#4ade80';
+                            ctx.lineWidth = 2;
+                            ctx.beginPath();
+                            ctx.moveTo(this.x, this.y);
+                            ctx.lineTo(this.tx, this.ty);
+                            ctx.stroke();
+                        };
+                        game.particles.push(beam);
+                    }
+                });
+            }
         }
-    }
-
-    /**
-     * Attempt to heal nearby allied enemies
-     * @param {Object} game - Game instance
-     */
-    tryHealNearbyAllies(game) {
-        if (Math.random() >= ENEMY_BALANCE.HEALER_HEAL_CHANCE) return;
-
-        game.enemies.forEach(e => {
-            if (!this.canHealAlly(e)) return;
-
-            e.hp = Math.min(e.maxHp, e.hp + (e.maxHp * ENEMY_BALANCE.HEALER_HEAL_PERCENTAGE));
-            this.createHealBeam(e, game);
-        });
-    }
-
-    /**
-     * Check if enemy can be healed
-     * @param {Enemy} enemy - Target enemy
-     * @returns {boolean}
-     */
-    canHealAlly(enemy) {
-        return enemy !== this
-            && enemy.hp < enemy.maxHp
-            && MathUtils.dist(this.x, this.y, enemy.x, enemy.y) < ENEMY_BALANCE.HEALER_HEAL_RANGE;
-    }
-
-    /**
-     * Create heal beam particle effect
-     * @param {Enemy} target - Target enemy
-     * @param {Object} game - Game instance
-     */
-    createHealBeam(target, game) {
-        const beam = new Particle(this.x, this.y, COLORS.HEAL_BEAM);
-        beam.tx = target.x;
-        beam.ty = target.y;
-        beam.life = 0.5;
-        beam.draw = function(ctx) {
-            ctx.globalAlpha = this.life;
-            ctx.strokeStyle = COLORS.HEAL_BEAM;
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(this.x, this.y);
-            ctx.lineTo(this.tx, this.ty);
-            ctx.stroke();
-        };
-        game.particles.push(beam);
     }
 
     takeDamage(amount, isCrit, isSuperCrit, silent = false) {
@@ -273,87 +152,38 @@ export class Enemy {
             if (missingHpPct > 0) amount *= (1 + missingHpPct);
         }
         this.hp -= amount;
-
         if (!silent && game.settings.showDamageText) {
-            const textColor = this.getDamageTextColor(isCrit, isSuperCrit);
-            const textSize = this.getDamageTextSize(isCrit, isSuperCrit);
-            game.floatingTexts.push(new FloatingText(this.x, this.y - 20, formatNumber(amount), textColor, textSize));
+            game.floatingTexts.push(game.createFloatingText(
+                this.x, this.y - 20,
+                formatNumber(amount),
+                isSuperCrit ? '#d946ef' : (isCrit ? '#ef4444' : '#fff'),
+                isSuperCrit ? 40 : (isCrit ? 30 : 20)
+            ));
         }
-
         if (!silent) game.sound.play('hit');
-
         if (this.hp <= 0) {
-            this.onDeath(game, silent);
-        }
-    }
-
-    /**
-     * Get damage text color based on crit status
-     */
-    getDamageTextColor(isCrit, isSuperCrit) {
-        if (isSuperCrit) return COLORS.CRIT_PURPLE;
-        if (isCrit) return COLORS.DAMAGE_RED;
-        return COLORS.WHITE;
-    }
-
-    /**
-     * Get damage text size based on crit status
-     */
-    getDamageTextSize(isCrit, isSuperCrit) {
-        if (isSuperCrit) return COMBAT_BALANCE.SUPER_CRIT_TEXT_SIZE;
-        if (isCrit) return COMBAT_BALANCE.CRIT_TEXT_SIZE;
-        return COMBAT_BALANCE.NORMAL_TEXT_SIZE;
-    }
-
-    /**
-     * Handle enemy death
-     */
-    onDeath(game, silent) {
-        // Award gold if not fleeing
-        if (this.state !== 'FLEE') {
-            const rushBonus = game.isRushBonus ? Math.floor(this.goldValue * COMBAT_BALANCE.RUSH_BONUS_MULT) : 0;
-            game.addGold(this.goldValue + rushBonus);
-        }
-
-        game.stats.registerKill(this.typeKey === 'BOSS', this.x, this.y);
-        game.stats.registerEnemySeen(this.typeKey);
-        game.town.addXP(this.typeKey === 'BOSS' ? ENEMY_BALANCE.BOSS_XP_VALUE : ENEMY_BALANCE.NORMAL_XP_VALUE);
-
-        // Dark matter drop chance
-        const canDropDarkMatter = game.challenges.dmTech['siphon'] && this.typeKey !== 'BOSS';
-        if (canDropDarkMatter && Math.random() < ENEMY_BALANCE.DARK_MATTER_DROP_CHANCE) {
-            game.ether++;
-        }
-
-        // Splitter spawns mini enemies
-        if (this.typeKey === 'SPLITTER') {
-            game.enemies.push(new Enemy(game.wave, 'MINI', this.x, this.y - 10, game));
-            game.enemies.push(new Enemy(game.wave, 'MINI', this.x, this.y + 10, game));
-        }
-
-        // Rune drop
-        if (Math.random() < ENEMY_BALANCE.RUNE_DROP_CHANCE) {
-            game.runes.push(new Rune(this.x, this.y));
-        }
-
-        // Gold floating text
-        if (!silent && game.settings.showDamageText) {
-            const goldText = `+${formatNumber(this.goldValue)}`;
-            game.floatingTexts.push(new FloatingText(this.x, this.y - 40, goldText, COLORS.GOLD_TEXT, 16));
-        }
-
-        game.sound.play('coin');
-
-        // Death particles
-        if (this.typeKey === 'BOSS') {
-            for (let i = 0; i < PARTICLE_COUNTS.BOSS_DEATH; i++) {
-                game.particles.push(new Particle(this.x, this.y, COLORS.DAMAGE_RED));
+            if (this.state !== 'FLEE' || this.hp <= 0) {
+                game.addGold(this.goldValue + (game.isRushBonus ? Math.floor(this.goldValue * 0.25) : 0));
             }
-            game.tryDropRelic();
-            game.onBossKill();
-        } else if (game.particles.length < PARTICLE_COUNTS.MAX_PARTICLES) {
-            for (let i = 0; i < PARTICLE_COUNTS.ENEMY_DEATH; i++) {
-                game.particles.push(new Particle(this.x, this.y, this.color));
+            game.stats.registerKill(this.typeKey === 'BOSS', this.x, this.y);
+            game.stats.registerEnemySeen(this.typeKey);
+            game.town.addXP(this.typeKey === 'BOSS' ? 10 : 1);
+            if (game.challenges.dmTech['siphon'] && this.typeKey !== 'BOSS' && Math.random() < 0.01) game.ether++;
+            if (this.typeKey === 'SPLITTER') {
+                game.enemies.push(new Enemy(game, this.wave, 'MINI', this.x, this.y - 10));
+                game.enemies.push(new Enemy(game, this.wave, 'MINI', this.x, this.y + 10));
+            }
+            if (Math.random() < 0.05) game.runes.push(game.createRune(this.x, this.y));
+            if (!silent && game.settings.showDamageText) {
+                game.floatingTexts.push(game.createFloatingText(this.x, this.y - 40, `+${formatNumber(this.goldValue)}`, '#fbbf24', 16));
+            }
+            game.sound.play('coin');
+            if (this.typeKey === 'BOSS') {
+                for (let i = 0; i < 20; i++) game.particles.push(game.createParticle(this.x, this.y, '#ef4444'));
+                game.tryDropRelic();
+                game.onBossKill();
+            } else if (game.particles.length < 50) {
+                for (let i = 0; i < 3; i++) game.particles.push(game.createParticle(this.x, this.y, this.color));
             }
         }
     }
@@ -364,20 +194,8 @@ export class Enemy {
         ctx.translate(this.x, this.y);
         const angle = Math.atan2(game.height / 2 - this.y, game.castle.x - this.x);
         ctx.rotate(angle);
-        ctx.fillStyle = getEnemyDisplayColor(this.status, this.typeKey, this.color);
+        ctx.fillStyle = this.status.stasisTimer > 0 ? '#1e40af' : (this.status.iceTimer > 0 ? '#38bdf8' : (this.status.poisonTimer > 0 ? '#4ade80' : (this.typeKey === 'THIEF' ? '#94a3b8' : (this.typeKey === 'PHANTOM' ? '#fff' : this.color))));
         ctx.beginPath();
-
-        this.drawShape(ctx);
-        this.drawEliteEffect(ctx);
-
-        ctx.restore();
-        this.drawHealthBar(ctx);
-    }
-
-    /**
-     * Draw enemy shape based on type
-     */
-    drawShape(ctx) {
         if (this.typeKey === 'PHANTOM') {
             ctx.globalAlpha = 0.6;
             ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
@@ -385,7 +203,7 @@ export class Enemy {
             ctx.globalAlpha = 1.0;
         } else if (this.type.scale > 2) {
             ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
-            ctx.strokeStyle = COLORS.WHITE;
+            ctx.strokeStyle = '#fff';
             ctx.lineWidth = 2;
             ctx.stroke();
             ctx.fill();
@@ -397,30 +215,20 @@ export class Enemy {
             ctx.lineTo(-this.radius, this.radius);
             ctx.fill();
         }
-    }
-
-    /**
-     * Draw elite enemy glow effect
-     */
-    drawEliteEffect(ctx) {
-        if (!this.isElite) return;
-
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = COLORS.ELITE_GOLD;
-        ctx.strokeStyle = COLORS.ELITE_GOLD;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-    }
-
-    /**
-     * Draw enemy health bar
-     */
-    drawHealthBar(ctx) {
+        if (this.isElite) {
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#facc15';
+            ctx.strokeStyle = '#facc15';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+        ctx.restore();
         const hpPercent = Math.max(0, this.hp / this.maxHp);
-        ctx.fillStyle = COLORS.HEALTH_BG;
-        ctx.fillRect(this.x - 10, this.y - 20 - this.radius, 20, 4);
-        ctx.fillStyle = COLORS.HEALTH_FILL;
-        ctx.fillRect(this.x - 10, this.y - 20 - this.radius, 20 * hpPercent, 4);
+        ctx.fillStyle = 'red';
+        ctx.fillRect(this.x - 10, this.y - 20 - (this.radius), 20, 4);
+        ctx.fillStyle = '#4ade80';
+        ctx.fillRect(this.x - 10, this.y - 20 - (this.radius), 20 * hpPercent, 4);
     }
 }
+

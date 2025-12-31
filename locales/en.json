@@ -21,6 +21,7 @@
   },
   "hud": {
     "evolutionTier": "Evolution Tier",
+    "dreadLevel": "Dread",
     "activeChallenge": "ACTIVE CHALLENGE:",
     "autoAdvance": "Auto",
     "autoRetry": "Retry",
@@ -273,6 +274,18 @@
     "unlockDrone": {
       "name": "Sentinel Drone",
       "desc": "Activates companion."
+    },
+    "autoSkillQ": {
+      "name": "Auto Overdrive",
+      "desc": "Auto-cast Overdrive skill."
+    },
+    "autoSkillW": {
+      "name": "Auto Meteor",
+      "desc": "Auto-cast Meteor skill."
+    },
+    "autoSkillE": {
+      "name": "Auto Black Hole",
+      "desc": "Auto-cast Black Hole skill."
     }
   },
   "darkMatter": {
@@ -370,6 +383,7 @@
     }
   },
   "relics": {
+    "drop": "Drops",
     "dmg_boost": {
       "name": "King's Blade",
       "desc": "+20% Global damage"
@@ -516,7 +530,16 @@
     "invalidSave": "Invalid",
     "pasteSave": "Paste your save:",
     "autoSaved": "Game saved",
-    "importFailed": "Import failed"
+    "importFailed": "Import failed",
+    "noSaveFound": "No save found",
+    "clipboardError": "Copy failed",
+    "invalidSaveFormat": "Invalid save format",
+    "invalidSaveData": "Invalid save data",
+    "backupRestored": "Backup restored!",
+    "noBackup": "No backup found",
+    "saveFailed": "Save failed",
+    "loadFailed": "Load failed",
+    "networkError": "Network error"
   },
   "feedback": {
     "noStatPoints": "No stat points available",
@@ -1263,7 +1286,41 @@
     "summary": "Stats Summary",
     "crit": "Crit",
     "armor": "Armor",
-    "regen": "Regen"
+    "regen": "Regen",
+    "breakdown": {
+      "title": "Stats Breakdown",
+      "damage": "Damage",
+      "base": "Base Damage",
+      "final": "Final Damage",
+      "dps": "DPS",
+      "critDps": "Avg DPS (with crits)",
+      "gold": "Gold",
+      "baseGold": "Base Gold/Kill",
+      "finalGold": "Final Gold/Kill",
+      "defense": "Defense",
+      "maxHp": "Max HP",
+      "regen": "HP Regen/s",
+      "armor": "Armor",
+      "shield": "Shield",
+      "crit": "Critical",
+      "critChance": "Crit Chance",
+      "critMult": "Crit Multiplier",
+      "turrets": "Turrets",
+      "turretCount": "Active Turrets",
+      "fireRate": "Fire Rate",
+      "range": "Range"
+    },
+    "sources": {
+      "tier": "Evolution Tier",
+      "meta": "Meta Upgrades",
+      "relics": "Relics",
+      "research": "Research",
+      "passives": "Passives",
+      "prestige": "Prestige",
+      "darkMatter": "Dark Matter",
+      "dread": "Dread Mode",
+      "rune": "Active Rune"
+    }
   },
   "passives": {
     "title": "PASSIVES",

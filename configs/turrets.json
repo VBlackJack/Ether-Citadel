@@ -1,0 +1,104 @@
+{
+  "$schema": "./schemas/turrets.schema.json",
+  "version": 1,
+  "tiers": {
+    "1": {
+      "nameKey": "turretTiers.T1.name",
+      "damageMult": 1.0,
+      "rangeMult": 1.0,
+      "fireRateMult": 1.0,
+      "cost": 0,
+      "color": "#60a5fa",
+      "unlockWave": 1
+    },
+    "2": {
+      "nameKey": "turretTiers.T2.name",
+      "damageMult": 1.5,
+      "rangeMult": 1.1,
+      "fireRateMult": 1.2,
+      "cost": 10,
+      "color": "#a855f7",
+      "unlockWave": 10
+    },
+    "3": {
+      "nameKey": "turretTiers.T3.name",
+      "damageMult": 2.5,
+      "rangeMult": 1.2,
+      "fireRateMult": 1.4,
+      "cost": 50,
+      "color": "#f43f5e",
+      "unlockWave": 25
+    },
+    "4": {
+      "nameKey": "turretTiers.T4.name",
+      "damageMult": 4.0,
+      "rangeMult": 1.3,
+      "fireRateMult": 1.6,
+      "cost": 150,
+      "color": "#fbbf24",
+      "unlockWave": 50
+    },
+    "5": {
+      "nameKey": "turretTiers.T5.name",
+      "damageMult": 7.0,
+      "rangeMult": 1.5,
+      "fireRateMult": 2.0,
+      "cost": 500,
+      "color": "#22d3ee",
+      "unlockWave": 100
+    },
+    "6": {
+      "nameKey": "turretTiers.T6.name",
+      "damageMult": 12.0,
+      "rangeMult": 1.8,
+      "fireRateMult": 2.5,
+      "cost": 2000,
+      "color": "#ffffff",
+      "unlockWave": 200
+    }
+  },
+  "schoolTurrets": {
+    "sentry": {
+      "id": "sentry",
+      "nameKey": "school.sentry.name",
+      "descKey": "school.sentry.desc",
+      "icon": "🔫",
+      "targeting": "nearest",
+      "projectileType": "bullet"
+    },
+    "laser": {
+      "id": "laser",
+      "nameKey": "school.laser.name",
+      "descKey": "school.laser.desc",
+      "icon": "💫",
+      "targeting": "strongest",
+      "projectileType": "beam"
+    },
+    "rocket": {
+      "id": "rocket",
+      "nameKey": "school.rocket.name",
+      "descKey": "school.rocket.desc",
+      "icon": "🚀",
+      "targeting": "cluster",
+      "projectileType": "explosive"
+    },
+    "hallow": {
+      "id": "hallow",
+      "nameKey": "school.hallow.name",
+      "descKey": "school.hallow.desc",
+      "icon": "✨",
+      "targeting": "weakest",
+      "projectileType": "magic"
+    }
+  },
+  "slots": [
+    { "angle": 0, "radius": 100 },
+    { "angle": 90, "radius": 100 },
+    { "angle": 180, "radius": 100 },
+    { "angle": 270, "radius": 100 },
+    { "angle": 45, "radius": 130 },
+    { "angle": 135, "radius": 130 },
+    { "angle": 225, "radius": 130 },
+    { "angle": 315, "radius": 130 }
+  ]
+}

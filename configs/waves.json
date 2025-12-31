@@ -1,0 +1,38 @@
+{
+  "$schema": "./schemas/waves.schema.json",
+  "version": 1,
+  "generator": {
+    "baseEnemyCount": 5,
+    "countScaling": 1.05,
+    "countMax": 100,
+    "bossInterval": 10,
+    "megaBossInterval": 100,
+    "eliteChance": {
+      "base": 0.05,
+      "perWave": 0.001,
+      "max": 0.25
+    }
+  },
+  "scaling": {
+    "hpBase": 10,
+    "hpPerWave": 1.08,
+    "goldBase": 5,
+    "goldPerWave": 1.05,
+    "speedBase": 1.0,
+    "speedPerWave": 1.002
+  },
+  "compositions": {
+    "1": { "NORMAL": 100 },
+    "10": { "NORMAL": 70, "SPEEDY": 20, "TANK": 10 },
+    "25": { "NORMAL": 50, "SPEEDY": 20, "TANK": 15, "HEALER": 10, "FLYING": 5 },
+    "50": { "NORMAL": 30, "SPEEDY": 15, "TANK": 20, "HEALER": 10, "SPLITTER": 10, "ARMORED": 10, "SHIELDED": 5 },
+    "100": { "TANK": 20, "ARMORED": 20, "SHIELDED": 15, "NECRO": 15, "BERSERKER": 15, "SPLITTER": 15 },
+    "200": { "ARMORED": 25, "SHIELDED": 20, "NECRO": 20, "BERSERKER": 20, "PHANTOM": 15 }
+  },
+  "bossScaling": {
+    "hpMult": 12,
+    "hpPerBoss": 1.5,
+    "goldMult": 10,
+    "goldPerBoss": 1.3
+  }
+}

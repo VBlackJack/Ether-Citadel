@@ -1,24 +1,10 @@
 /*
  * Copyright 2025 Julien Bombled
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Apache-2.0 License
  */
 
-import { Projectile } from './Projectile.js';
+import { MathUtils } from '../config.js';
 
-/**
- * Drone entity that orbits and shoots enemies
- */
 export class Drone {
     constructor() {
         this.angle = 0;
@@ -31,7 +17,7 @@ export class Drone {
         this.damage = 10;
     }
 
-    update(dt, gameTime, game) {
+    update(dt, gameTime) {
         this.angle += 0.02 * (dt / 16);
         this.x = 100 + Math.cos(this.angle) * this.radius;
         this.y = game.height / 2 + Math.sin(this.angle) * this.radius;
@@ -41,10 +27,7 @@ export class Drone {
             const target = game.findTarget(this.x, this.y, 400);
             if (target) {
                 const dmg = Math.max(1, Math.floor(game.currentDamage * 0.1));
-                game.projectiles.push(Projectile.create(
-                    this.x, this.y, target, dmg, 20, '#06b6d4', 1,
-                    false, false, false, {}, {}
-                ));
+                game.projectiles.push(Projectile.create(this.x, this.y, target, dmg, 20, '#06b6d4', 1, false, false, false, {}, {}));
                 game.sound.play('shoot');
                 this.lastShotTime = gameTime;
             }

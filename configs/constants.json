@@ -1,0 +1,53 @@
+{
+  "$schema": "./schemas/constants.schema.json",
+  "version": 1,
+  "game": {
+    "baseEnemySpeed": 0.8,
+    "baseEnemyHp": 10,
+    "enemySpawnRate": 1500,
+    "evolutionInterval": 10,
+    "evolutionMultiplier": 1.5
+  },
+  "save": {
+    "saveKey": "defenderIdleSave_v2",
+    "saveIntervalMs": 30000,
+    "saveVersion": 2
+  },
+  "offline": {
+    "maxOfflineHours": 24,
+    "offlineEarningsMultiplier": 0.75
+  },
+  "crystals": {
+    "waveDivisor": 10,
+    "dreadBonusPerLevel": 0.25
+  },
+  "castle": {
+    "baseMaxHp": 100,
+    "width": 80,
+    "height": 100,
+    "radius": 60
+  },
+  "turret": {
+    "baseDamageMultiplier": 0.25,
+    "orbitSpeed": 0.001,
+    "orbitRadius": 100,
+    "projectileSpeed": 15
+  },
+  "particles": {
+    "explosion": 20,
+    "death": 6,
+    "impact": 3,
+    "levelUp": 30,
+    "prestige": 5
+  },
+  "ui": {
+    "toastDuration": 3000,
+    "floatingTextSize": 20,
+    "damageOverlayDuration": 200
+  },
+  "dread": {
+    "maxUnlockedLevels": 10,
+    "wavesPerUnlock": 10
+  },
+  "speeds": [1, 2, 3, 5, 10]
+}

@@ -14,32 +14,256 @@
  * limitations under the License.
  */
 
+/**
+ * PrestigeManager - Handles prestige/rebirth mechanics and prestige upgrades
+ * Includes auto-prestige functionality
+ */
+
 import { PRESTIGE_UPGRADES } from '../../data.js';
 import { t } from '../../i18n.js';
 import { formatNumber } from '../../config.js';
 
-/**
- * Prestige Manager - Handles prestige upgrades and rebirth mechanics
- */
 export class PrestigeManager {
+    /**
+     * @param {object} game - Game instance reference
+     */
     constructor(game) {
         this.game = game;
+        this.prestigePoints = 0;
+        this.totalPrestiges = 0;
         this.upgrades = {};
+
+        // Auto-prestige settings
+        this.autoPrestige = false;
+        this.autoPrestigeWave = 30;
+
         PRESTIGE_UPGRADES.forEach(u => {
             this.upgrades[u.id] = 0;
         });
     }
 
+    /**
+     * Calculate prestige points based on current run
+     * @returns {number}
+     */
+    calculatePrestigePoints() {
+        const baseWave = this.game.stats?.maxWave || 0;
+        const dreadMult = 1 + ((this.game.dreadLevel || 0) * 0.5);
+        const prestigeCountBonus = 1 + (this.totalPrestiges * 0.05);
+        return Math.floor(Math.pow(baseWave / 10, 1.5) * dreadMult * prestigeCountBonus);
+    }
+
+    /**
+     * Calculate prestige points for a given wave (for projection)
+     * @param {number} wave
+     * @param {number} dreadLevel
+     * @returns {number}
+     */
+    calculatePointsAtWave(wave, dreadLevel = this.game.dreadLevel) {
+        const dreadMult = 1 + ((dreadLevel || 0) * 0.5);
+        const prestigeCountBonus = 1 + (this.totalPrestiges * 0.05);
+        return Math.floor(Math.pow(wave / 10, 1.5) * dreadMult * prestigeCountBonus);
+    }
+
+    /**
+     * Get prestige calculator projections
+     * @returns {object}
+     */
+    getPrestigeProjections() {
+        const currentWave = this.game.stats?.maxWave || this.game.wave;
+        const currentPoints = this.calculatePrestigePoints();
+        const projections = [];
+
+        // Project points at various wave milestones
+        const milestones = [50, 75, 100, 150, 200, 300, 500];
+        for (const wave of milestones) {
+            if (wave > currentWave) {
+                const points = this.calculatePointsAtWave(wave);
+                const gain = points - currentPoints;
+                projections.push({
+                    wave,
+                    points,
+                    gain,
+                    efficiency: (gain / (wave - currentWave)).toFixed(2)
+                });
+            }
+        }
+
+        return {
+            current: {
+                wave: currentWave,
+                points: currentPoints,
+                dreadLevel: this.game.dreadLevel || 0
+            },
+            projections,
+            nextMilestone: projections[0] || null
+        };
+    }
+
+    /**
+     * Check if prestige is available
+     * @returns {boolean}
+     */
+    canPrestige() {
+        return (this.game.stats?.maxWave || this.game.wave) >= 25;
+    }
+
+    /**
+     * Get wave skip amount based on total prestiges
+     * @returns {number}
+     */
+    getWaveSkipAmount() {
+        if (this.totalPrestiges < 3) return 0;
+        let baseSkip = Math.min(50, Math.floor(this.totalPrestiges * 2));
+        const awakeningBonus = this.game.awakening?.getWaveSkipBonus?.() || 0;
+        return baseSkip + awakeningBonus;
+    }
+
+    /**
+     * Check and trigger auto-prestige if conditions are met
+     */
+    checkAutoPrestige() {
+        if (!this.autoPrestige || !this.canPrestige()) return;
+        if (this.game.wave >= this.autoPrestigeWave && this.game.isGameOver) {
+            this.doPrestige();
+        }
+    }
+
+    /**
+     * Set auto-prestige enabled state
+     * @param {boolean} enabled
+     */
+    setAutoPrestige(enabled) {
+        this.autoPrestige = enabled;
+        this.game.save();
+    }
+
+    /**
+     * Set auto-prestige wave threshold
+     * @param {number} wave
+     */
+    setAutoPrestigeWave(wave) {
+        this.autoPrestigeWave = Math.max(25, wave);
+        this.game.save();
+    }
+
+    /**
+     * Execute prestige/rebirth
+     * @returns {boolean} Success
+     */
+    doPrestige() {
+        if (!this.canPrestige()) return false;
+
+        const points = this.calculatePrestigePoints();
+        this.prestigePoints += points;
+        this.totalPrestiges++;
+
+        // Reset run progress
+        this.game.gold = 0;
+        this.game.wave = 1;
+        if (this.game.castle) {
+            this.game.castle.tier = 1;
+            this.game.castle.hp = this.game.castle.maxHp;
+        }
+        this.game.enemies = [];
+        this.game.projectiles = [];
+        this.game.relics = [];
+        this.game.isGameOver = false;
+
+        // Reset upgrades (keep base levels)
+        if (this.game.upgrades?.upgrades) {
+            this.game.upgrades.upgrades.forEach(u => {
+                const resetIds = ['regen', 'multishot', 'turret', 'crit', 'ice', 'poison', 'bounce', 'blast', 'leech', 'shield', 'stasis', 'orbital', 'artillery', 'rocket', 'tesla', 'armor'];
+                u.level = resetIds.includes(u.id) ? 0 : 1;
+            });
+        }
+
+        // Apply wave skip
+        const waveSkip = this.getWaveSkipAmount();
+        const startWaveBonus = this.getEffectValue('prestige_start_wave');
+        const finalStartWave = Math.max(waveSkip, startWaveBonus);
+        if (finalStartWave > 0) {
+            this.game.wave = finalStartWave + 1;
+        }
+
+        // Auto-Turrets from prestige upgrade
+        const autoTurrets = this.getEffectValue('prestige_auto_turrets');
+        if (autoTurrets > 0 && this.game.upgrades?.upgrades) {
+            const turretUpg = this.game.upgrades.upgrades.find(u => u.id === 'turret');
+            if (turretUpg) turretUpg.level = autoTurrets;
+        }
+
+        // Auto-buy starting upgrades based on prestige count
+        const autoBuyLevels = Math.min(10, Math.floor(this.totalPrestiges / 2));
+        if (autoBuyLevels > 0 && this.game.upgrades?.upgrades) {
+            const dmgUpg = this.game.upgrades.upgrades.find(u => u.id === 'damage');
+            const spdUpg = this.game.upgrades.upgrades.find(u => u.id === 'speed');
+            const hpUpg = this.game.upgrades.upgrades.find(u => u.id === 'health');
+            if (dmgUpg) dmgUpg.level = Math.max(dmgUpg.level, autoBuyLevels);
+            if (spdUpg) spdUpg.level = Math.max(spdUpg.level, Math.floor(autoBuyLevels / 2));
+            if (hpUpg) hpUpg.level = Math.max(hpUpg.level, Math.floor(autoBuyLevels / 2));
+        }
+
+        // Apply starting gold from meta upgrades
+        this.game.gold = this.game.metaUpgrades?.getEffectValue?.('startGold') || 0;
+
+        // Recalculate bonuses
+        this.game.recalcRelicBonuses?.();
+        this.game.updateStats?.();
+        this.game.save();
+
+        // Show notification
+        if (this.game.floatingTexts && typeof FloatingText !== 'undefined') {
+            this.game.floatingTexts.push(new FloatingText(
+                this.game.width / 2,
+                this.game.height / 2,
+                `${t('prestige.complete')} +${points} PP`,
+                '#fbbf24',
+                36
+            ));
+        }
+
+        // Restart game if was game over
+        const gameOverScreen = document.getElementById('game-over-screen');
+        if (gameOverScreen && !gameOverScreen.classList.contains('hidden')) {
+            this.game.restart?.();
+        }
+
+        return true;
+    }
+
+    /**
+     * Get upgrade level
+     * @param {string} id
+     * @returns {number}
+     */
     getLevel(id) {
         return this.upgrades[id] || 0;
     }
 
+    /**
+     * Get upgrade effect value
+     * @param {string} id
+     * @returns {number}
+     */
     getEffect(id) {
         const upgrade = PRESTIGE_UPGRADES.find(u => u.id === id);
         if (!upgrade) return 1;
         return upgrade.effect(this.getLevel(id));
     }
 
+    /**
+     * Alias for getEffect for compatibility
+     */
+    getEffectValue(id) {
+        return this.getEffect(id);
+    }
+
+    /**
+     * Get upgrade cost
+     * @param {string} id
+     * @returns {number}
+     */
     getCost(id) {
         const upgrade = PRESTIGE_UPGRADES.find(u => u.id === id);
         if (!upgrade) return Infinity;
@@ -47,10 +271,34 @@ export class PrestigeManager {
         return Math.floor(upgrade.baseCost * Math.pow(upgrade.costMult, level));
     }
 
-    canAfford(id) {
-        return this.game.crystals >= this.getCost(id);
+    /**
+     * Alias for getCost
+     */
+    getUpgradeCost(id) {
+        return this.getCost(id);
     }
 
+    /**
+     * Check if can afford upgrade
+     * @param {string} id
+     * @returns {boolean}
+     */
+    canAfford(id) {
+        return this.prestigePoints >= this.getCost(id);
+    }
+
+    /**
+     * Alias for canAfford
+     */
+    canAffordUpgrade(id) {
+        return this.canAfford(id);
+    }
+
+    /**
+     * Buy a prestige upgrade
+     * @param {string} id
+     * @returns {boolean} Success
+     */
     buy(id) {
         const upgrade = PRESTIGE_UPGRADES.find(u => u.id === id);
         if (!upgrade) return false;
@@ -59,28 +307,41 @@ export class PrestigeManager {
         if (level >= upgrade.maxLevel) return false;
 
         const cost = this.getCost(id);
-        if (this.game.crystals < cost) return false;
+        if (this.prestigePoints < cost) return false;
 
-        this.game.crystals -= cost;
+        this.prestigePoints -= cost;
         this.upgrades[id] = level + 1;
-        this.game.updateCrystalsUI();
         this.game.save();
         this.render();
         return true;
     }
 
+    /**
+     * Alias for buy
+     */
+    buyUpgrade(id) {
+        return this.buy(id);
+    }
+
+    /**
+     * Render prestige UI
+     */
     render() {
         const container = document.getElementById('prestige-grid');
         if (!container) return;
 
         container.innerHTML = '';
-        document.getElementById('prestige-crystals-display').innerText = formatNumber(this.game.crystals);
+
+        const crystalsDisplay = document.getElementById('prestige-crystals-display');
+        if (crystalsDisplay) {
+            crystalsDisplay.innerText = formatNumber(this.prestigePoints);
+        }
 
         PRESTIGE_UPGRADES.forEach(u => {
             const level = this.getLevel(u.id);
             const isMaxed = level >= u.maxLevel;
             const cost = this.getCost(u.id);
-            const canAfford = this.game.crystals >= cost && !isMaxed;
+            const canAfford = this.prestigePoints >= cost && !isMaxed;
             const effect = u.effect(level);
             const nextEffect = u.effect(level + 1);
 
@@ -114,20 +375,56 @@ export class PrestigeManager {
                 </div>
                 <div class="flex justify-between items-center text-sm">
                     <span class="text-slate-400">${t('lab.level')} ${level}/${u.maxLevel}</span>
-                    ${!isMaxed ? `<span class="font-mono font-bold text-cyan-400">${formatNumber(cost)} 💎</span>` : `<span class="text-yellow-400">${t('lab.max')}</span>`}
+                    ${!isMaxed ? `<span class="font-mono font-bold text-cyan-400">${formatNumber(cost)} PP</span>` : `<span class="text-yellow-400">${t('lab.max')}</span>`}
                 </div>
                 ${!isMaxed ? `<div class="text-xs text-slate-500 mt-1">${effectDisplay} → ${nextDisplay}</div>` : ''}
             `;
             container.appendChild(div);
         });
+
+        // Update auto-prestige UI
+        this.renderAutoPrestigeUI();
     }
 
+    /**
+     * Render auto-prestige settings UI
+     */
+    renderAutoPrestigeUI() {
+        const toggle = document.getElementById('toggle-auto-prestige');
+        const waveInput = document.getElementById('auto-prestige-wave');
+
+        if (toggle) {
+            toggle.checked = this.autoPrestige;
+        }
+        if (waveInput) {
+            waveInput.value = this.autoPrestigeWave;
+        }
+    }
+
+    /**
+     * Get save data
+     * @returns {object}
+     */
     getSaveData() {
-        return { ...this.upgrades };
+        return {
+            prestigePoints: this.prestigePoints,
+            totalPrestiges: this.totalPrestiges,
+            upgrades: { ...this.upgrades },
+            autoPrestige: this.autoPrestige,
+            autoPrestigeWave: this.autoPrestigeWave
+        };
     }
 
+    /**
+     * Load save data
+     * @param {object} data
+     */
     loadSaveData(data) {
         if (!data) return;
-        Object.assign(this.upgrades, data);
+        this.prestigePoints = data.prestigePoints || 0;
+        this.totalPrestiges = data.totalPrestiges || 0;
+        this.upgrades = data.upgrades || {};
+        this.autoPrestige = data.autoPrestige || false;
+        this.autoPrestigeWave = data.autoPrestigeWave || 30;
     }
 }

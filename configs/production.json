@@ -1,0 +1,52 @@
+{
+  "$schema": "./schemas/production.schema.json",
+  "version": 1,
+  "buildings": [
+    {
+      "id": "gold_mine",
+      "nameKey": "production.gold_mine.name",
+      "descKey": "production.gold_mine.desc",
+      "icon": "🏭",
+      "resource": "gold",
+      "baseRate": 1,
+      "baseCost": 100,
+      "costMult": 1.5,
+      "maxLevel": 50
+    },
+    {
+      "id": "crystal_extractor",
+      "nameKey": "production.crystal_extractor.name",
+      "descKey": "production.crystal_extractor.desc",
+      "icon": "💠",
+      "resource": "crystal",
+      "baseRate": 0.1,
+      "baseCost": 500,
+      "costMult": 1.8,
+      "maxLevel": 25
+    },
+    {
+      "id": "ether_condenser",
+      "nameKey": "production.ether_condenser.name",
+      "descKey": "production.ether_condenser.desc",
+      "icon": "⚗️",
+      "resource": "ether",
+      "baseRate": 0.05,
+      "baseCost": 1000,
+      "costMult": 2.0,
+      "maxLevel": 10
+    },
+    {
+      "id": "void_harvester",
+      "nameKey": "production.void_harvester.name",
+      "descKey": "production.void_harvester.desc",
+      "icon": "🌌",
+      "resource": "void_shard",
+      "baseRate": 0.02,
+      "baseCost": 5000,
+      "costMult": 2.5,
+      "maxLevel": 5
+    }
+  ],
+  "offlineMultiplier": 0.5,
+  "tickInterval": 1000
+}

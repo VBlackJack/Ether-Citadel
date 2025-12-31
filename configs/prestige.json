@@ -1,0 +1,99 @@
+{
+  "$schema": "./schemas/prestige.schema.json",
+  "version": 1,
+  "formula": {
+    "base": 10,
+    "waveDivisor": 10,
+    "exponent": 0.5
+  },
+  "upgrades": [
+    {
+      "id": "prestige_damage",
+      "nameKey": "prestige.damage.name",
+      "descKey": "prestige.damage.desc",
+      "icon": "⚔️",
+      "maxLevel": 100,
+      "baseCost": 1,
+      "costMult": 1.2,
+      "effect": { "type": "damageMult", "valuePerLevel": 0.02 }
+    },
+    {
+      "id": "prestige_health",
+      "nameKey": "prestige.health.name",
+      "descKey": "prestige.health.desc",
+      "icon": "❤️",
+      "maxLevel": 100,
+      "baseCost": 1,
+      "costMult": 1.2,
+      "effect": { "type": "healthMult", "valuePerLevel": 0.02 }
+    },
+    {
+      "id": "prestige_gold",
+      "nameKey": "prestige.gold.name",
+      "descKey": "prestige.gold.desc",
+      "icon": "💰",
+      "maxLevel": 50,
+      "baseCost": 2,
+      "costMult": 1.3,
+      "effect": { "type": "goldMult", "valuePerLevel": 0.03 }
+    },
+    {
+      "id": "prestige_crit",
+      "nameKey": "prestige.crit.name",
+      "descKey": "prestige.crit.desc",
+      "icon": "💥",
+      "maxLevel": 25,
+      "baseCost": 3,
+      "costMult": 1.4,
+      "effect": { "type": "critChance", "valuePerLevel": 1 }
+    },
+    {
+      "id": "prestige_speed",
+      "nameKey": "prestige.speed.name",
+      "descKey": "prestige.speed.desc",
+      "icon": "⚡",
+      "maxLevel": 25,
+      "baseCost": 3,
+      "costMult": 1.4,
+      "effect": { "type": "fireRateMult", "valuePerLevel": 0.02 }
+    },
+    {
+      "id": "prestige_ether",
+      "nameKey": "prestige.ether.name",
+      "descKey": "prestige.ether.desc",
+      "icon": "💎",
+      "maxLevel": 20,
+      "baseCost": 5,
+      "costMult": 1.5,
+      "effect": { "type": "etherMult", "valuePerLevel": 0.05 }
+    },
+    {
+      "id": "prestige_start_wave",
+      "nameKey": "prestige.startWave.name",
+      "descKey": "prestige.startWave.desc",
+      "icon": "🌊",
+      "maxLevel": 10,
+      "baseCost": 10,
+      "costMult": 2.0,
+      "effect": { "type": "startWave", "valuePerLevel": 5 }
+    },
+    {
+      "id": "prestige_start_gold",
+      "nameKey": "prestige.startGold.name",
+      "descKey": "prestige.startGold.desc",
+      "icon": "🪙",
+      "maxLevel": 10,
+      "baseCost": 5,
+      "costMult": 1.8,
+      "effect": { "type": "startGold", "valuePerLevel": 100 }
+    }
+  ],
+  "milestones": [
+    { "prestiges": 1, "reward": { "type": "unlock", "feature": "auto_upgrade" } },
+    { "prestiges": 5, "reward": { "type": "unlock", "feature": "speed_x2" } },
+    { "prestiges": 10, "reward": { "type": "unlock", "feature": "auto_prestige" } },
+    { "prestiges": 25, "reward": { "type": "bonus", "stat": "damageMult", "value": 0.5 } },
+    { "prestiges": 50, "reward": { "type": "unlock", "feature": "speed_x3" } },
+    { "prestiges": 100, "reward": { "type": "bonus", "stat": "allStats", "value": 1.0 } }
+  ]
+}

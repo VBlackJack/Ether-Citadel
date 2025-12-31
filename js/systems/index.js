@@ -24,14 +24,23 @@ export { SoundManager } from './audio/SoundManager.js';
 
 // Combat Systems
 export { SkillManager } from './combat/SkillManager.js';
+export { DamageSystem } from './combat/DamageSystem.js';
+export { TargetingSystem, TargetingMode } from './combat/TargetingSystem.js';
+export { AutoSkillManager } from './combat/AutoSkillManager.js';
+export { ProjectileSystem, Projectile, ProjectileType } from './combat/ProjectileSystem.js';
 
 // Economy Systems
 export { MiningManager } from './economy/MiningManager.js';
 export { UpgradeManager } from './economy/UpgradeManager.js';
+export { ProductionManager } from './economy/ProductionManager.js';
+export { ForgeManager } from './economy/ForgeManager.js';
 
 // Progression Systems
 export { PrestigeManager } from './progression/PrestigeManager.js';
 export { PassiveManager } from './progression/PassiveManager.js';
+export { MetaUpgradeManager } from './progression/MetaUpgradeManager.js';
+export { ResearchManager } from './progression/ResearchManager.js';
+export { SurrenderSystem } from './progression/SurrenderSystem.js';
 
 // UI Systems
 export { TutorialManager } from './ui/TutorialManager.js';

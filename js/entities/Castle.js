@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-import { CONFIG } from '../config.js';
-
 /**
- * Castle entity - The player's main base
+ * Castle - Player's base/turret entity
  */
+
 export class Castle {
     constructor(game) {
         this.game = game;
         this.x = 100;
         this.y = 0;
-        this.baseMaxHp = CONFIG.castle.baseMaxHp;
-        this.maxHp = CONFIG.castle.baseMaxHp;
-        this.hp = CONFIG.castle.baseMaxHp;
+        this.baseMaxHp = 100;
+        this.maxHp = 100;
+        this.hp = 100;
         this.regen = 0;
         this.tier = 1;
         this.shield = 0;
         this.maxShield = 0;
         this.shieldRegenTimer = 0;
-        this.width = CONFIG.castle.width;
-        this.height = CONFIG.castle.height;
-        this.radius = CONFIG.castle.radius;
+        this.width = 80;
+        this.height = 100;
+        this.radius = 60;
         this.armor = 0;
     }
 
     update(dt) {
         const game = this.game;
-        const noRegenActive = game.activeChallenge && game.activeChallenge.id === 'noregen';
-        if (!noRegenActive && this.hp < this.maxHp && this.hp > 0) {
+        if (game.activeChallenge && game.activeChallenge.id === 'noregen') {
+            // No regen
+        } else if (this.hp < this.maxHp && this.hp > 0) {
             this.hp += (this.regen / 60) * (dt / 16);
             if (this.hp > this.maxHp) this.hp = this.maxHp;
         }
@@ -71,11 +71,8 @@ export class Castle {
         }
         if (amount > 0) {
             this.hp -= amount;
-            const overlay = document.getElementById('damage-overlay');
-            if (overlay) {
-                overlay.classList.add('damage-effect');
-                setTimeout(() => overlay.classList.remove('damage-effect'), CONFIG.ui.damageOverlayDuration);
-            }
+            document.getElementById('damage-overlay').classList.add('damage-effect');
+            setTimeout(() => document.getElementById('damage-overlay').classList.remove('damage-effect'), 200);
             if (this.hp <= 0) {
                 this.hp = 0;
                 this.game.gameOver();
@@ -163,3 +160,4 @@ export class Castle {
         ctx.restore();
     }
 }
+
