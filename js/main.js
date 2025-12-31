@@ -4203,6 +4203,7 @@ class Game {
         this.speedIndex = 0;
         this.selectedForgeRelic = null;
         this.autoRetryEnabled = false;
+        this.autoAdvanceEnabled = false;
         this.autoBuyEnabled = false;
         this.isGameOver = false;
         this.retryTimeoutId = null;
@@ -4485,6 +4486,39 @@ class Game {
         this.speedIndex = (this.speedIndex + 1) % GAME_SPEEDS.length;
         this.speedMultiplier = GAME_SPEEDS[this.speedIndex].mult;
         document.getElementById('ui-speed').innerText = 'x' + this.speedMultiplier;
+    }
+
+    setSpeed(mult) {
+        this.speedMultiplier = mult;
+        this.speedIndex = GAME_SPEEDS.findIndex(s => s.mult === mult) || 0;
+        const speedEl = document.getElementById('ui-speed');
+        if (speedEl) speedEl.innerText = 'x' + mult;
+
+        // Update all speed buttons
+        document.querySelectorAll('[data-speed]').forEach(btn => {
+            const btnSpeed = parseInt(btn.dataset.speed);
+            if (btnSpeed === mult) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+
+    toggleAutoAdvance() {
+        this.autoAdvanceEnabled = !this.autoAdvanceEnabled;
+        // Sync both checkboxes
+        const labCheck = document.getElementById('lab-auto-advance');
+        if (labCheck) labCheck.checked = this.autoAdvanceEnabled;
+    }
+
+    toggleAutoRetry() {
+        this.autoRetryEnabled = !this.autoRetryEnabled;
+        // Sync all checkboxes
+        const labCheck = document.getElementById('lab-auto-retry');
+        const hudCheck = document.getElementById('toggle-retry');
+        if (labCheck) labCheck.checked = this.autoRetryEnabled;
+        if (hudCheck) hudCheck.checked = this.autoRetryEnabled;
     }
 
     activateSkill(id) {

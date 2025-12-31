@@ -22,7 +22,8 @@
   "hud": {
     "evolutionTier": "Évolution Tier",
     "activeChallenge": "DÉFI ACTIF :",
-    "autoRetry": "AUTO RETRY",
+    "autoAdvance": "Auto",
+    "autoRetry": "Relance",
     "autoBuy": "AUTO BUY",
     "aiActive": "IA ACTIVE"
   },
