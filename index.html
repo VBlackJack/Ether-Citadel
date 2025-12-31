@@ -60,9 +60,6 @@
                     <span data-i18n="game.gold">Gold</span>: <span id="ui-gold">0</span>
                 </div>
                 <button id="btn-pause" onclick="game.togglePause()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-3 rounded border border-slate-500 backdrop-blur-sm transition text-sm">⏸️</button>
-                <button id="btn-speed" onclick="game.toggleSpeed()" class="pointer-events-auto bg-blue-600/80 hover:bg-blue-500 text-white font-bold py-1 px-3 rounded border border-blue-400 backdrop-blur-sm transition flex items-center gap-1 text-sm">
-                    <span>⏩</span> <span id="ui-speed">x1</span>
-                </button>
                 <button id="btn-sound" onclick="game.sound.toggle()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-2 rounded border border-slate-500 backdrop-blur-sm transition text-sm">🔊</button>
             </div>
             <div class="flex items-center gap-2 text-2xl font-bold drop-shadow-lg">
@@ -129,54 +126,31 @@
             <!-- Speed Controls -->
             <div class="p-2 bg-amber-950 border-b-2 border-amber-800 flex items-center justify-between">
                 <div class="flex gap-1">
-                    <button onclick="game.setSpeed(1)" class="speed-btn" data-speed="1">1X</button>
-                    <button onclick="game.setSpeed(2)" class="speed-btn" data-speed="2">3X</button>
-                    <button onclick="game.setSpeed(4)" class="speed-btn active" data-speed="4">6X</button>
-                    <button onclick="game.setSpeed(8)" class="speed-btn" data-speed="8">10X</button>
+                    <button onclick="game.setSpeed(1)" class="speed-btn active" data-speed="1">1X</button>
+                    <button onclick="game.setSpeed(3)" class="speed-btn" data-speed="3">3X</button>
+                    <button onclick="game.setSpeed(6)" class="speed-btn" data-speed="6">6X</button>
+                    <button onclick="game.setSpeed(10)" class="speed-btn" data-speed="10">10X</button>
                 </div>
             </div>
-            <!-- Auto Controls -->
-            <div class="p-2 bg-amber-900/50 border-b-2 border-amber-800 flex items-center justify-between text-xs">
-                <div class="flex items-center gap-2">
-                    <button id="side-auto-bless" class="auto-btn locked">🔒<br>AUTO<br>BLESS</button>
-                    <button id="side-compression" class="auto-btn locked">🔒<br>COMP<br>RESSION</button>
-                    <button id="side-auto-off" class="auto-btn">AUTO<br>OFF</button>
-                </div>
+            <!-- Auto Controls with tooltips -->
+            <div class="p-2 bg-amber-900/50 border-b-2 border-amber-800 flex flex-col gap-2 text-xs">
                 <div class="flex flex-col gap-1 text-amber-300">
-                    <label class="flex items-center gap-1 cursor-pointer">
-                        <input type="checkbox" id="side-auto-advance" class="w-3 h-3"> <span class="text-[10px]">AUTO ADVANCE</span>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white transition" title="Automatically start next wave when current wave ends">
+                        <input type="checkbox" id="side-auto-advance" class="w-4 h-4 accent-amber-500" onchange="game.toggleAutoAdvance && game.toggleAutoAdvance()">
+                        <span>AUTO ADVANCE</span>
                     </label>
-                    <label class="flex items-center gap-1 cursor-pointer">
-                        <input type="checkbox" id="side-auto-retry" class="w-3 h-3"> <span class="text-[10px]">AUTO RETRY</span>
-                    </label>
-                    <label class="flex items-center gap-1 cursor-pointer">
-                        <input type="checkbox" id="side-skip-off" class="w-3 h-3"> <span class="text-[10px]">SKIP OFF</span>
+                    <label class="flex items-center gap-2 cursor-pointer hover:text-white transition" title="Automatically restart game after defeat">
+                        <input type="checkbox" id="side-auto-retry" class="w-4 h-4 accent-amber-500" onchange="game.toggleAutoRetry && game.toggleAutoRetry()">
+                        <span>AUTO RETRY</span>
                     </label>
                 </div>
             </div>
-            <!-- Resources Display -->
+            <!-- Resources Display (Main resources only) -->
             <div class="p-2 bg-black/30 border-b border-amber-800 grid grid-cols-2 gap-1 text-xs">
-                <div class="res-item"><span class="res-icon">💰</span> <span id="side-gold">0</span></div>
-                <div class="res-item"><span class="res-icon">💎</span> <span id="side-gems">0</span></div>
-                <div class="res-item"><span class="res-icon">📜</span> <span id="side-blueprints">0</span></div>
-                <div class="res-item"><span class="res-icon">RP</span> <span id="side-rp">0</span></div>
-                <div class="res-item"><span class="res-icon">⚡</span> <span id="side-energy">0</span></div>
-                <div class="res-item"><span class="res-icon">🔮</span> <span id="side-ether">0</span></div>
-                <div class="res-item"><span class="res-icon">🔋</span> <span id="side-batteries">0</span></div>
-                <div class="res-item"><span class="res-icon">⚙️</span> <span id="side-gears">0</span></div>
-                <div class="res-item"><span class="res-icon">🏭</span> <span id="side-matter">0</span></div>
-                <div class="res-item"><span class="res-icon">🎯</span> <span id="side-tokens">0</span></div>
-            </div>
-            <!-- Quick Menu Buttons -->
-            <div class="p-2 bg-black/20 border-b border-amber-800 grid grid-cols-4 gap-1">
-                <button onclick="game.renderStatsUI(); document.getElementById('stats-modal').classList.remove('hidden')" class="side-menu-btn" title="Stats">📊</button>
-                <button onclick="game.renderPassivesUI(); document.getElementById('passives-modal').classList.remove('hidden')" class="side-menu-btn" title="Passives">🎭</button>
-                <button onclick="game.renderTechTreeUI(); document.getElementById('techtree-modal').classList.remove('hidden')" class="side-menu-btn" title="Technology">🔬</button>
-                <button onclick="game.renderSchoolUI(); document.getElementById('school-modal').classList.remove('hidden')" class="side-menu-btn" title="School">🎓</button>
-                <button onclick="game.renderResearchUI(); document.getElementById('research-modal').classList.remove('hidden')" class="side-menu-btn" title="Research">📚</button>
-                <button onclick="game.renderProductionUI(); document.getElementById('production-modal').classList.remove('hidden')" class="side-menu-btn" title="Production">🏭</button>
-                <button onclick="game.renderMiningUI(); document.getElementById('mining-modal').classList.remove('hidden')" class="side-menu-btn" title="Mining">⛏️</button>
-                <button onclick="document.getElementById('relic-modal').classList.remove('hidden')" class="side-menu-btn" title="Relics">🎒</button>
+                <div class="res-item res-gold"><span class="res-icon">💰</span> <span id="side-gold">0</span></div>
+                <div class="res-item res-ether"><span class="res-icon">🔮</span> <span id="side-ether">0</span></div>
+                <div class="res-item res-crystals"><span class="res-icon">💎</span> <span id="side-gems">0</span></div>
+                <div class="res-item res-dm"><span class="res-icon">🌑</span> <span id="side-dm">0</span></div>
             </div>
             <!-- Level & XP -->
             <div class="p-2 bg-black/30 border-b border-amber-800">
@@ -252,7 +226,7 @@
                         <button onclick="game.renderMiningUI(); document.getElementById('mining-modal').classList.remove('hidden')" class="menu-item">⛏️ <span data-i18n="mining.title">Mining</span></button>
                         <button onclick="game.renderForgeUI(); document.getElementById('forge-modal').classList.remove('hidden')" class="menu-item">🔥 <span data-i18n="forge.title">Forge</span></button>
                         <button onclick="game.renderProductionUI(); document.getElementById('production-modal').classList.remove('hidden')" class="menu-item">🏭 <span data-i18n="production.title">Production</span></button>
-                        <button id="btn-office" onclick="game.renderOfficeUI(); document.getElementById('office-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="office">🏢 <span data-i18n="office.title">Office</span></button>
+                        <button id="btn-office" onclick="game.renderOfficeUI(); document.getElementById('office-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="office" title="Unlocks at Wave 50">🏢 <span data-i18n="office.title">Office</span> <span class="unlock-req text-amber-400 text-xs ml-auto">(W50)</span></button>
                     </div>
                 </div>
 
@@ -262,12 +236,12 @@
                         <span>📈</span><span data-i18n="ux.menu.progression">Progression</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-progression">
-                        <button id="btn-school" onclick="game.renderSchoolUI(); document.getElementById('school-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="school">🎓 <span data-i18n="school.title">School</span></button>
+                        <button id="btn-school" onclick="game.renderSchoolUI(); document.getElementById('school-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="school" title="Unlocks at Wave 100">🎓 <span data-i18n="school.title">School</span> <span class="unlock-req text-amber-400 text-xs ml-auto">(W100)</span></button>
                         <button onclick="game.renderResearchUI(); document.getElementById('research-modal').classList.remove('hidden')" class="menu-item">🔬 <span data-i18n="research.title">Research</span></button>
                         <button id="btn-prestige-menu" onclick="game.renderPrestigeUI(); document.getElementById('prestige-modal').classList.remove('hidden')" class="menu-item">👑 <span data-i18n="prestige.title">Prestige</span></button>
                         <button onclick="game.renderTownUI(); document.getElementById('town-modal').classList.remove('hidden')" class="menu-item">🏰 <span data-i18n="town.title">Town</span></button>
                         <button onclick="document.getElementById('mastery-modal').classList.remove('hidden')" class="menu-item">🎓 <span data-i18n="modals.mastery.title">Mastery</span> <span id="ui-mastery-pts" class="text-cyan-400 ml-1">0</span></button>
-                        <button id="btn-awakening" onclick="game.renderAwakeningUI(); document.getElementById('awakening-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="awakening">✨ <span data-i18n="awakening.title">Awaken</span></button>
+                        <button id="btn-awakening" onclick="game.renderAwakeningUI(); document.getElementById('awakening-modal').classList.remove('hidden')" class="menu-item menu-locked" data-unlock="awakening" title="Unlocks after 1st Prestige">✨ <span data-i18n="awakening.title">Awaken</span> <span class="unlock-req text-amber-400 text-xs ml-auto">(P1)</span></button>
                     </div>
                 </div>
 
@@ -357,9 +331,9 @@
             <div class="h-2 bg-slate-800 rounded-full border border-slate-600 overflow-hidden relative">
                 <div id="ui-shield-bar" class="h-full bg-blue-400 shadow-[0_0_5px_#60a5fa]" style="width: 0%;"></div>
             </div>
-            <div class="h-4 bg-slate-800 rounded-full border border-slate-600 overflow-hidden relative">
-                <div id="ui-health-bar" class="h-full bg-gradient-to-r from-red-600 to-red-500" style="width: 100%;"></div>
-                <div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white drop-shadow">
+            <div class="h-6 bg-slate-800 rounded-full border-2 border-slate-600 overflow-hidden relative shadow-lg">
+                <div id="ui-health-bar" class="h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-300" style="width: 100%;"></div>
+                <div class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white drop-shadow-lg">
                     <span data-i18n="game.hp">HP</span>: <span id="ui-hp-text">100/100</span>
                 </div>
             </div>
@@ -385,7 +359,7 @@
                         <span data-i18n="modals.collection.title">Collection</span>
                         <span class="help-icon" data-help="collection">?</span>
                     </h2>
-                    <button onclick="document.getElementById('relic-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('relic-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div id="relic-grid" class="p-4 grid grid-cols-2 md:grid-cols-3 gap-4 overflow-y-auto"></div>
             </div>
@@ -399,7 +373,7 @@
                         <span data-i18n="modals.codex.title">Codex</span>
                         <span class="help-icon" data-help="codex">?</span>
                     </h2>
-                    <button onclick="document.getElementById('codex-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('codex-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div id="codex-grid" class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto"></div>
             </div>
@@ -413,7 +387,7 @@
                         <span data-i18n="statistics.title">Statistics</span>
                         <span class="help-icon" data-help="statistics">?</span>
                     </h2>
-                    <button onclick="document.getElementById('statistics-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('statistics-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div id="statistics-grid" class="p-4 grid grid-cols-1 gap-2 overflow-y-auto"></div>
             </div>
@@ -427,7 +401,7 @@
                         <span data-i18n="mining.title">Mining</span>
                         <span class="help-icon" data-help="mining">?</span>
                     </h2>
-                    <button onclick="document.getElementById('mining-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('mining-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 bg-cyan-900/30 p-3 rounded border border-cyan-800 text-center">
@@ -447,7 +421,7 @@
                         <span data-i18n="forge.title">Relic Forge</span>
                         <span class="help-icon" data-help="forge">?</span>
                     </h2>
-                    <button onclick="document.getElementById('forge-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('forge-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="forge.desc">Upgrade, reroll, or fuse your relics using mining resources.</div>
@@ -466,7 +440,7 @@
                     </h2>
                     <div class="flex items-center gap-4">
                         <span class="text-cyan-400">💎 <span id="research-crystals">0</span></span>
-                        <button onclick="document.getElementById('research-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                        <button onclick="document.getElementById('research-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                     </div>
                 </div>
                 <div class="p-4 overflow-y-auto">
@@ -483,7 +457,7 @@
                         <span data-i18n="modals.challenges.title">Hardcore Mode</span>
                         <span class="help-icon" data-help="challenges">?</span>
                     </h2>
-                    <button onclick="document.getElementById('challenges-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('challenges-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <!-- Dread Mode Section -->
@@ -519,7 +493,7 @@
             <div class="w-full max-w-2xl bg-slate-800 border border-cyan-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 class="text-2xl text-cyan-400 font-bold uppercase" data-i18n="modals.mastery.title">Mastery</h2>
-                    <button onclick="document.getElementById('mastery-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('mastery-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4">
                     <div class="text-center mb-4 text-white">
@@ -535,7 +509,7 @@
             <div class="w-full max-w-2xl bg-slate-800 border border-green-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]" onclick="event.stopPropagation()">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 class="text-2xl text-green-400 font-bold uppercase" data-i18n="modals.achievements.title">Achievements</h2>
-                    <button onclick="document.getElementById('achieve-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('achieve-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="grid grid-cols-2 gap-2 mb-6 text-sm text-slate-300 font-mono bg-black/20 p-2 rounded">
@@ -554,7 +528,7 @@
             <div class="bg-slate-800 border border-slate-500 p-8 rounded-2xl max-w-md w-full shadow-2xl" onclick="event.stopPropagation()">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl text-white font-bold" data-i18n="modals.settings.title">Settings</h2>
-                    <button onclick="document.getElementById('settings-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('settings-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="space-y-4">
                     <!-- Language Selector -->
@@ -601,7 +575,7 @@
                         <span data-i18n="production.title">Production</span>
                         <span class="help-icon" data-help="production">?</span>
                     </h2>
-                    <button onclick="document.getElementById('production-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('production-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="production.desc">Build passive resource generators to earn resources over time.</div>
@@ -622,7 +596,7 @@
                     <div class="flex items-center gap-4">
                         <span class="text-xs text-slate-400" data-i18n="quests.resetIn">Reset in</span>
                         <span id="quests-timer" class="text-emerald-300 font-mono text-sm">--:--:--</span>
-                        <button onclick="document.getElementById('quests-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                        <button onclick="document.getElementById('quests-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                     </div>
                 </div>
                 <div class="p-4 overflow-y-auto">
@@ -639,7 +613,7 @@
                         <span data-i18n="prestige.title">Prestige</span>
                         <span class="help-icon" data-help="prestige">?</span>
                     </h2>
-                    <button onclick="document.getElementById('prestige-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('prestige-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-6 bg-amber-900/30 p-4 rounded border border-amber-800 text-center">
@@ -701,7 +675,7 @@
                         <span data-i18n="chips.title">Turret Chips</span>
                         <span class="help-icon" data-help="chips">?</span>
                     </h2>
-                    <button onclick="document.getElementById('chips-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('chips-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="chips.desc">Equip chips to turrets for bonus effects. Chips drop from bosses.</div>
@@ -725,7 +699,7 @@
                         <span data-i18n="town.title">Town</span>
                         <span class="help-icon" data-help="town">?</span>
                     </h2>
-                    <button onclick="document.getElementById('town-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('town-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-6 bg-teal-900/30 p-4 rounded border border-teal-800 text-center">
@@ -761,7 +735,7 @@
                         <span data-i18n="school.title">School</span>
                         <span class="help-icon" data-help="school">?</span>
                     </h2>
-                    <button onclick="document.getElementById('school-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('school-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="school.desc">Unlock and upgrade turret types. Costs crystals.</div>
@@ -781,7 +755,7 @@
                         <span data-i18n="office.title">Office</span>
                         <span class="help-icon" data-help="office">?</span>
                     </h2>
-                    <button onclick="document.getElementById('office-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('office-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="office.desc">Activate temporary boosts using gems.</div>
@@ -804,7 +778,7 @@
                         <span data-i18n="awakening.title">Awakening</span>
                         <span class="help-icon" data-help="awakening">?</span>
                     </h2>
-                    <button onclick="document.getElementById('awakening-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('awakening-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-6 bg-fuchsia-900/30 p-4 rounded border border-fuchsia-800 text-center">
@@ -828,7 +802,7 @@
                         <span data-i18n="slots.title">Turret Slot</span>
                         <span class="help-icon" data-help="turrets">?</span>
                     </h2>
-                    <button onclick="document.getElementById('slots-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('slots-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="slots.desc">Select a turret to place in this slot.</div>
@@ -850,7 +824,7 @@
                         <span data-i18n="modes.title">Game Modes</span>
                         <span class="help-icon" data-help="modes">?</span>
                     </h2>
-                    <button onclick="document.getElementById('modes-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('modes-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 bg-violet-900/30 p-3 rounded border border-violet-800 text-center">
@@ -870,7 +844,7 @@
                         <span data-i18n="campaign.title">Campaign</span>
                         <span class="help-icon" data-help="campaign">?</span>
                     </h2>
-                    <button onclick="document.getElementById('campaign-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('campaign-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div id="campaign-chapters" class="space-y-6"></div>
@@ -886,7 +860,7 @@
                         <span data-i18n="leaderboard.title">Leaderboards</span>
                         <span class="help-icon" data-help="leaderboard">?</span>
                     </h2>
-                    <button onclick="document.getElementById('leaderboard-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('leaderboard-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="flex gap-2 mb-4 flex-wrap justify-center">
@@ -904,7 +878,7 @@
                     <h2 class="text-2xl text-stone-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="presets.title">Build Presets</span>
                     </h2>
-                    <button onclick="document.getElementById('presets-modal').classList.add('hidden')" class="text-slate-400 text-2xl">&times;</button>
+                    <button onclick="document.getElementById('presets-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="presets.desc">Save and load your turret configurations.</div>

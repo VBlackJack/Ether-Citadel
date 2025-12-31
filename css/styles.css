@@ -57,6 +57,39 @@ body {
     border-radius: 3px;
 }
 
+/* Modal close button standardization */
+.modal-close-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(239, 68, 68, 0.2);
+    border: 2px solid rgba(239, 68, 68, 0.5);
+    border-radius: 8px;
+    color: #f87171;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modal-close-btn:hover {
+    background: rgba(239, 68, 68, 0.4);
+    border-color: #f87171;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Unlock requirements on locked menu items */
+.menu-item.menu-locked .unlock-req {
+    opacity: 1;
+}
+
+.menu-item:not(.menu-locked) .unlock-req {
+    display: none;
+}
+
 .btn-upgrade:active {
     transform: scale(0.98);
 }
