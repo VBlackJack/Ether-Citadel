@@ -2770,7 +2770,7 @@ class Game {
         this.waveInProgress = false;
         this.wave++;
         this.enemiesToSpawn += (5 + Math.floor(this.wave * 1.5));
-        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, `${t('game.wave')} ${this.wave}`, '#fff', 40));
+        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, `${t('game.wave')} ${this.wave}`, COLORS.WHITE, 40));
         this.checkEvolution();
         this.save();
     }
@@ -2884,7 +2884,7 @@ class Game {
         if (Math.random() * 100 < this.multiShotChance) {
             setTimeout(() => {
                 if (target && target.hp > 0) {
-                    this.projectiles.push(Projectile.create(100, this.height / 2, target, Math.floor(dmg * 0.5), 15, '#fff', this.castle.tier, true, isCrit, isSuperCrit, this.currentEffects, this.currentProps));
+                    this.projectiles.push(Projectile.create(100, this.height / 2, target, Math.floor(dmg * 0.5), 15, COLORS.WHITE, this.castle.tier, true, isCrit, isSuperCrit, this.currentEffects, this.currentProps));
                 }
             }, 100 / this.speedMultiplier);
         }

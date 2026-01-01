@@ -8,6 +8,7 @@ import { formatNumber } from '../../config.js';
 import { t } from '../../i18n.js';
 import { sanitizeColor } from '../../utils/HtmlSanitizer.js';
 import { FloatingText } from '../../entities/FloatingText.js';
+import { COLORS } from '../../constants/colors.js';
 
 export class StatsManager {
     constructor() {
@@ -32,7 +33,7 @@ export class StatsManager {
             this.xp -= this.getNextLevelXp();
             this.level++;
             this.masteryPoints++;
-            game.floatingTexts.push(FloatingText.create(100, game.height / 2 - 50, t('notifications.levelUp'), "#22d3ee", 30));
+            game.floatingTexts.push(FloatingText.create(100, game.height / 2 - 50, t('notifications.levelUp'), COLORS.CRYSTAL, 30));
         }
         this.checkAchievements();
 
