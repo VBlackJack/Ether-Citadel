@@ -21,6 +21,7 @@
 
 import { FORGE_RECIPES, RELIC_DB } from '../../data.js';
 import { t } from '../../i18n.js';
+import { BigNumService, formatNumber } from '../../config.js';
 
 export class ForgeManager {
     /**
@@ -51,7 +52,11 @@ export class ForgeManager {
      */
     canAfford(recipe) {
         for (const [resource, amount] of Object.entries(recipe.cost)) {
-            if ((this.game.miningResources?.[resource] || 0) < amount) {
+            const current = this.game.miningResources?.[resource] || BigNumService.create(0);
+            const required = BigNumService.create(amount);
+            // Ensure current is a BigNum
+            const currentBigNum = BigNumService.create(current);
+            if (!BigNumService.gte(currentBigNum, required)) {
                 return false;
             }
         }
@@ -83,9 +88,14 @@ export class ForgeManager {
             return { success: false, reason: 'cost' };
         }
 
-        // Deduct resources
+        // Deduct resources (BigNum subtraction)
         for (const [resource, amount] of Object.entries(recipe.cost)) {
-            this.game.miningResources[resource] -= amount;
+            const current = this.game.miningResources[resource] || BigNumService.create(0);
+            const deduction = BigNumService.create(amount);
+            this.game.miningResources[resource] = BigNumService.sub(
+                BigNumService.create(current),
+                deduction
+            );
         }
 
         // Calculate success chance with research bonus
@@ -289,7 +299,7 @@ export class ForgeManager {
             }
 
             const costHtml = Object.entries(recipe.cost)
-                .map(([res, amt]) => `${amt} ${t(`mining.${res}.name`) || res}`)
+                .map(([res, amt]) => `${formatNumber(amt)} ${t(`mining.${res}.name`) || res}`)
                 .join(', ');
 
             div.innerHTML = `
