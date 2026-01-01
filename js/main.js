@@ -3210,9 +3210,37 @@ class Game {
     confirmReset() {
         const message = t('modals.settings.confirmReset') || 'Are you sure you want to reset all progress?';
         gameConfirm(message, () => {
-            // Set flag to prevent beforeunload from re-saving
+            // 1. Stop the game loop and all intervals immediately
+            this.isPaused = true;
+            this._intervals.forEach(id => clearInterval(id));
+            this._intervals = [];
+            this.clearRetryTimers();
+
+            // 2. Set the global flag to prevent 'beforeunload' from saving
             window._isResetting = true;
-            localStorage.clear();
+
+            // 3. Explicitly remove all save-related keys
+            try {
+                const saveKey = CONFIG.saveKey;
+                localStorage.removeItem(saveKey);
+
+                // Remove backups
+                for (let i = 1; i <= 3; i++) {
+                    localStorage.removeItem(`${saveKey}_backup_${i}`);
+                }
+
+                // Remove UI preferences
+                localStorage.removeItem('aegis_ui_tab');
+                localStorage.removeItem('aegis_ui_buyMode');
+                localStorage.removeItem('aegis_tutorial_complete');
+                localStorage.removeItem('ether_citadel_save'); // Legacy key
+
+                console.log('[Reset] Save data wiped successfully.');
+            } catch (e) {
+                console.error('[Reset] Error during reset:', e);
+            }
+
+            // 4. Reload the page
             location.reload();
         });
     }
