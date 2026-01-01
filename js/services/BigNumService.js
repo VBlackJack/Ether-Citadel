@@ -55,6 +55,16 @@ export const BigNumService = {
     },
 
     /**
+     * Initialize the BigNumService (validates Decimal availability)
+     * Called once at game startup
+     */
+    init() {
+        if (!this.isAvailable()) {
+            console.error('BigNumService: break_infinity.js Decimal class not found!');
+        }
+    },
+
+    /**
      * Create a Decimal instance from any value
      * Handles null, undefined, and invalid values safely
      * @param {number|string|Decimal|null|undefined} value
