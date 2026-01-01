@@ -20,7 +20,7 @@
  */
 
 import { PRODUCTION_BUILDINGS } from '../../data.js';
-import { CONFIG } from '../../config.js';
+import { CONFIG, BigNumService } from '../../config.js';
 
 export class ProductionManager {
     /**
@@ -40,13 +40,15 @@ export class ProductionManager {
     /**
      * Get upgrade cost for a building
      * @param {string} buildingId
-     * @returns {number}
+     * @returns {Decimal}
      */
     getBuildingCost(buildingId) {
         const building = PRODUCTION_BUILDINGS.find(b => b.id === buildingId);
-        if (!building) return Infinity;
+        if (!building) return BigNumService.create(Infinity);
         const level = this.buildings[buildingId]?.level || 0;
-        return Math.floor(building.baseCost * Math.pow(building.costMult, level));
+        return BigNumService.floor(
+            BigNumService.mul(building.baseCost, BigNumService.pow(building.costMult, level))
+        );
     }
 
     /**
@@ -56,7 +58,7 @@ export class ProductionManager {
      */
     canAfford(buildingId) {
         const cost = this.getBuildingCost(buildingId);
-        return this.game.gold >= cost;
+        return BigNumService.gte(this.game.gold, cost);
     }
 
     /**
@@ -72,9 +74,9 @@ export class ProductionManager {
         if (data.level >= building.maxLevel) return false;
 
         const cost = this.getBuildingCost(buildingId);
-        if (this.game.gold < cost) return false;
+        if (!BigNumService.gte(this.game.gold, cost)) return false;
 
-        this.game.gold -= cost;
+        this.game.gold = BigNumService.sub(this.game.gold, cost);
         data.level++;
         this.game.save();
         return true;
@@ -83,29 +85,29 @@ export class ProductionManager {
     /**
      * Get production rate for a building
      * @param {string} buildingId
-     * @returns {number} Resources per second
+     * @returns {Decimal} Resources per second
      */
     getProductionRate(buildingId) {
         const building = PRODUCTION_BUILDINGS.find(b => b.id === buildingId);
-        if (!building) return 0;
+        if (!building) return BigNumService.create(0);
 
         const level = this.buildings[buildingId]?.level || 0;
-        if (level === 0) return 0;
+        if (level === 0) return BigNumService.create(0);
 
         const prestigeMult = this.game.prestige?.getEffectValue?.('prestige_production') || 1;
-        return building.baseRate * level * prestigeMult;
+        return BigNumService.mul(building.baseRate * level, prestigeMult);
     }
 
     /**
      * Get total production for all buildings of a resource type
      * @param {string} resourceType
-     * @returns {number}
+     * @returns {Decimal}
      */
     getTotalProductionRate(resourceType) {
-        let total = 0;
+        let total = BigNumService.create(0);
         PRODUCTION_BUILDINGS.forEach(building => {
             if (building.resource === resourceType) {
-                total += this.getProductionRate(building.id);
+                total = BigNumService.add(total, this.getProductionRate(building.id));
             }
         });
         return total;
@@ -121,14 +123,20 @@ export class ProductionManager {
 
         PRODUCTION_BUILDINGS.forEach(building => {
             const rate = this.getProductionRate(building.id);
-            if (rate <= 0) return;
+            if (BigNumService.lte(rate, 0)) return;
 
             const data = this.buildings[building.id];
-            data.accumulated += rate * elapsed;
+            // Accumulate production (rate is BigNum, elapsed is number)
+            const produced = BigNumService.mul(rate, elapsed);
+            data.accumulated = BigNumService.add(
+                BigNumService.create(data.accumulated || 0),
+                produced
+            );
 
-            const whole = Math.floor(data.accumulated);
-            if (whole > 0) {
-                data.accumulated -= whole;
+            // Extract whole units to add
+            const whole = BigNumService.floor(data.accumulated);
+            if (BigNumService.isPositive(whole)) {
+                data.accumulated = BigNumService.sub(data.accumulated, whole);
                 this.addResource(building.resource, whole);
             }
         });
@@ -137,21 +145,21 @@ export class ProductionManager {
     /**
      * Add resource to game state
      * @param {string} resourceType
-     * @param {number} amount
+     * @param {Decimal} amount
      */
     addResource(resourceType, amount) {
         switch (resourceType) {
             case 'gold':
-                this.game.gold += amount;
+                this.game.gold = BigNumService.add(this.game.gold, amount);
                 break;
             case 'crystal':
-                this.game.miningResources.crystal = (this.game.miningResources.crystal || 0) + amount;
+                this.game.miningResources.crystal = (this.game.miningResources.crystal || 0) + BigNumService.toNumber(amount);
                 break;
             case 'ether':
-                this.game.ether += amount;
+                this.game.ether = BigNumService.add(this.game.ether, amount);
                 break;
             case 'void_shard':
-                this.game.miningResources.void_shard = (this.game.miningResources.void_shard || 0) + amount;
+                this.game.miningResources.void_shard = (this.game.miningResources.void_shard || 0) + BigNumService.toNumber(amount);
                 break;
         }
     }
@@ -159,7 +167,7 @@ export class ProductionManager {
     /**
      * Calculate offline earnings
      * @param {number} offlineSeconds - Seconds player was offline
-     * @returns {object} Earnings by resource type
+     * @returns {object} Earnings by resource type (as BigNums)
      */
     calculateOfflineEarnings(offlineSeconds) {
         const earnings = {};
@@ -168,10 +176,15 @@ export class ProductionManager {
 
         PRODUCTION_BUILDINGS.forEach(building => {
             const rate = this.getProductionRate(building.id);
-            if (rate > 0) {
-                const earned = Math.floor(rate * cappedSeconds * offlineEfficiency);
-                if (earned > 0) {
-                    earnings[building.resource] = (earnings[building.resource] || 0) + earned;
+            if (BigNumService.isPositive(rate)) {
+                const earned = BigNumService.floor(
+                    BigNumService.mul(BigNumService.mul(rate, cappedSeconds), offlineEfficiency)
+                );
+                if (BigNumService.isPositive(earned)) {
+                    earnings[building.resource] = BigNumService.add(
+                        earnings[building.resource] || BigNumService.create(0),
+                        earned
+                    );
                 }
             }
         });
@@ -181,7 +194,7 @@ export class ProductionManager {
 
     /**
      * Apply offline earnings
-     * @param {object} earnings
+     * @param {object} earnings - Object with BigNum values
      */
     applyOfflineEarnings(earnings) {
         for (const [resource, amount] of Object.entries(earnings)) {
