@@ -23,6 +23,7 @@ import { CONFIG, MathUtils, formatNumber } from '../config.js';
 import { t } from '../i18n.js';
 import { SKILL, RUNE } from '../constants/skillIds.js';
 import { COLORS, getEnemyDisplayColor } from '../constants/colors.js';
+import { BALANCE } from '../constants/balance.js';
 
 export class Enemy {
     constructor(game, wave, typeKey = 'NORMAL', x, y) {
@@ -33,27 +34,44 @@ export class Enemy {
         this.isElite = Math.random() < 0.05;
         this.x = x || game.width + 50;
         this.y = y || MathUtils.randomRange(game.height * 0.2, game.height * 0.8);
-        // Accelerated HP scaling after wave 50 to maintain challenge
-        let diffMult = 1 + (wave * 0.35);
-        if (wave > 50) {
-            diffMult = (1 + (50 * 0.35)) + ((wave - 50) * 0.45);
-        }
-        const hpMod = game.activeChallenge && game.activeChallenge.id === 'glass' ? 0.1 : 1;
-        const speedMod = game.activeChallenge && game.activeChallenge.id === 'speed' ? 2 : 1;
-        const dread = game.getDreadMultipliers();
         this.wave = wave;
-        this.maxHp = Math.floor(CONFIG.baseEnemyHp * diffMult * this.type.hpMult * (this.isElite ? 5 : 1) * hpMod * dread.enemyHp);
-        this.hp = this.maxHp;
-        this.baseSpeed = CONFIG.baseEnemySpeed * (1 + wave * 0.03) * this.type.speedMult * speedMod * dread.enemySpeed;
-        this.damage = Math.floor((5 + Math.floor(wave * 0.8)) * (typeKey === 'BOSS' ? 5 : 1) * dread.enemyDamage);
-        // Increased base gold for smoother early game progression
-        const baseGold = Math.max(1, Math.floor(5 * (1 + wave * 0.20)));
+
+        // Calculate Wave Factor (Exponential) - Defender Idle 2 style
+        let growthFactor = Math.pow(BALANCE.SCALING.HP_GROWTH, wave - 1);
+
+        // Apply Late Game Scaling (if Wave > 50)
+        if (wave > 50) {
+            growthFactor *= Math.pow(BALANCE.SCALING.LATE_GAME_FACTOR, wave - 50);
+        }
+
+        // Challenge and Dread modifiers
+        const hpMod = game.activeChallenge?.id === 'glass' ? 0.1 : 1;
+        const speedMod = game.activeChallenge?.id === 'speed' ? 2 : 1;
+        const dread = game.getDreadMultipliers();
+
+        // Base Stats with exponential scaling
+        this.maxHp = Math.floor(BALANCE.BASE.ENEMY_HP * growthFactor * this.type.hpMult * (this.isElite ? 5 : 1) * hpMod * dread.enemyHp);
+        this.damage = Math.floor(BALANCE.BASE.ENEMY_DAMAGE * Math.pow(BALANCE.SCALING.DAMAGE_GROWTH, wave - 1) * dread.enemyDamage);
+        this.goldValue = Math.floor(BALANCE.BASE.GOLD_DROP * Math.pow(BALANCE.SCALING.GOLD_GROWTH, wave - 1));
+
+        // Boss Modifiers
+        if (typeKey === 'BOSS') {
+            this.maxHp *= BALANCE.SCALING.BOSS_HP_MULTIPLIER;
+            this.damage *= BALANCE.SCALING.BOSS_DAMAGE_MULTIPLIER;
+            this.goldValue *= Math.floor(BALANCE.SCALING.BOSS_HP_MULTIPLIER * 0.5);
+            this.radius *= 1.5; // Scale size for visual impact
+        }
+
+        // Apply gold multipliers from game systems
         const passiveGoldMult = game.passives?.getEffect('goldGain') || 1;
         const prestigeGoldMult = game.prestige?.getEffect('prestige_gold') || 1;
         const goldMult = game.metaUpgrades.getEffectValue('goldMult') * (1 + (game.relicMults.gold || 0)) * passiveGoldMult * prestigeGoldMult;
         const catchupBonus = (wave > (game.stats?.maxWave || 0)) ? 1.5 : 1.0;
-        this.goldValue = Math.floor(baseGold * goldMult * catchupBonus * (typeKey === 'BOSS' ? 15 : (typeKey === 'TANK' ? 2 : 1)) * (this.isElite ? 10 : 1) * dread.crystalBonus);
+        this.goldValue = Math.floor(this.goldValue * goldMult * catchupBonus * (typeKey === 'TANK' ? 2 : 1) * (this.isElite ? 10 : 1) * dread.crystalBonus);
         if (game.activeBuffs[RUNE.MIDAS] > 0) this.goldValue *= 5;
+
+        this.hp = this.maxHp;
+        this.baseSpeed = CONFIG.baseEnemySpeed * (1 + wave * 0.03) * this.type.speedMult * speedMod * dread.enemySpeed;
         this.color = typeKey === 'NORMAL' ? `hsl(${(wave * 15) % 360}, 70%, 60%)` : this.type.color;
         this.status = { iceTimer: 0, poisonTimer: 0, poisonDmg: 0, stasisTimer: 0 };
         this.state = 'APPROACH';

@@ -1,88 +1,31 @@
 /*
  * Copyright 2025 Julien Bombled
- * Game Balance Constants
+ * Game Balance Constants - Defender Idle Style Scaling
  */
 
-/**
- * Enemy balance constants
- */
-export const ENEMY_BALANCE = {
-    // Elite enemies
-    ELITE_SPAWN_CHANCE: 0.05,
-    ELITE_HP_MULTIPLIER: 5,
-    ELITE_GOLD_MULTIPLIER: 10,
+export const BALANCE = {
+    SCALING: {
+        // Exponential growth factors (1.10 = +10% per wave)
+        HP_GROWTH: 1.12,       // Enemies get tougher fast
+        DAMAGE_GROWTH: 1.05,   // Damage scales slower than HP
+        GOLD_GROWTH: 1.10,     // Gold keeps up with HP to allow upgrades
 
-    // Status effects
-    ICE_SLOW_MULTIPLIER: 0.6,
-    POISON_TICK_DIVISOR: 60,
+        // Wave management
+        BOSS_WAVE_INTERVAL: 10,
+        BOSS_HP_MULTIPLIER: 12, // Bosses are huge walls (12x normal HP)
+        BOSS_DAMAGE_MULTIPLIER: 2.5,
 
-    // Healer
-    HEALER_HEAL_CHANCE: 0.05,
-    HEALER_HEAL_PERCENTAGE: 0.05,
-    HEALER_HEAL_RANGE: 150,
-
-    // Thief
-    THIEF_STEAL_PERCENTAGE: 0.1,
-    THIEF_FLEE_SPEED_MULT: 1.5,
-
-    // Phantom
-    PHANTOM_TELEPORT_INTERVAL: 2000,
-    PHANTOM_TELEPORT_DISTANCE: 100,
-
-    // Boss
-    BOSS_DAMAGE_MULT: 5,
-    BOSS_GOLD_MULT: 15,
-    BOSS_XP_VALUE: 10,
-
-    // General
-    NORMAL_XP_VALUE: 1,
-    RUNE_DROP_CHANCE: 0.05,
-    DARK_MATTER_DROP_CHANCE: 0.01,
-    THERMAL_SHOCK_DAMAGE_MULT: 2,
-    THERMAL_SHOCK_COOLDOWN: 1000,
-
-    // Turret attack
-    TURRET_ATTACK_RANGE: 50,
-    TURRET_ATTACK_SLOW: 0.3,
-    TURRET_DAMAGE_RATE: 0.08
-};
-
-/**
- * Combat balance constants
- */
-export const COMBAT_BALANCE = {
-    // Damage calculation
-    BLACKHOLE_DAMAGE_MULT: 0.1,
-    RUSH_BONUS_MULT: 0.25,
-    CATCHUP_BONUS_MULT: 1.5,
-
-    // Castle
-    CASTLE_DAMAGE_RATE: 0.05,
-    MIDAS_GOLD_MULT: 5,
-
-    // Critical hits
-    CRIT_TEXT_SIZE: 30,
-    SUPER_CRIT_TEXT_SIZE: 40,
-    NORMAL_TEXT_SIZE: 20
-};
-
-/**
- * Particle system constants
- */
-export const PARTICLE_COUNTS = {
-    BOSS_DEATH: 20,
-    ENEMY_DEATH: 3,
-    MAX_PARTICLES: 50
-};
-
-/**
- * Forge error codes
- */
-export const FORGE_ERRORS = {
-    RECIPE_NOT_FOUND: 'not_found',
-    UNKNOWN_TYPE: 'unknown_type',
-    INSUFFICIENT_RELICS: 'not_enough_relics',
-    NO_UPGRADE_PATH: 'no_upgrade',
-    NO_OPTIONS: 'no_options',
-    CANNOT_PURCHASE: 'cannot_purchase'
+        // Late game scaling (Wave 50+)
+        LATE_GAME_FACTOR: 1.02 // Extra multiplier added per wave after wave 50
+    },
+    BASE: {
+        ENEMY_HP: 20,
+        ENEMY_DAMAGE: 5,
+        GOLD_DROP: 2,
+        CRYSTAL_DROP_CHANCE: 0.05
+    },
+    WAVE: {
+        ENEMIES_PER_WAVE_BASE: 5,
+        ENEMIES_GROWTH: 0.2 // +1 enemy every 5 waves
+    }
 };
