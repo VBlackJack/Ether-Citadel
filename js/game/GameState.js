@@ -1,6 +1,13 @@
 /*
  * Copyright 2025 Julien Bombled
  * Game State Management Module
+ *
+ * BigNum Architecture:
+ * - Core currencies (gold, ether, crystals) are stored as Decimal (BigNum)
+ * - Mining resources are stored as BigNum for infinite scaling
+ * - Save format: BigNum values are serialized as strings via .toString()
+ * - Load format: Strings are deserialized via BigNumService.create()
+ * - Legacy support: Old number formats are handled by safeBigNum()
  */
 
 import { CONFIG, BigNumService } from '../config.js';
@@ -166,6 +173,34 @@ export class GameStateManager {
     }
 
     /**
+     * Safely create BigNum from value with fallback
+     * Handles legacy number formats and new string formats
+     * @param {string|number|Decimal} value - Value from save data
+     * @param {number} fallback - Fallback value if invalid
+     * @returns {Decimal}
+     */
+    safeBigNum(value, fallback = 0) {
+        // Handle null/undefined
+        if (value === null || value === undefined) {
+            return BigNumService.create(fallback);
+        }
+        // Handle string "0" or empty string
+        if (value === '' || value === '0') {
+            return BigNumService.create(fallback);
+        }
+        // Handle number 0 explicitly (legacy format)
+        if (value === 0) {
+            return BigNumService.create(fallback);
+        }
+        // Create BigNum from value (handles strings, numbers, Decimals)
+        try {
+            return BigNumService.create(value);
+        } catch {
+            return BigNumService.create(fallback);
+        }
+    }
+
+    /**
      * Serialize miningResources BigNum values to strings
      */
     serializeMiningResources(resources) {
@@ -192,16 +227,23 @@ export class GameStateManager {
     applyLoadedData(data) {
         const g = this.game;
 
-        g.gold = BigNumService.create(data.gold || INITIAL_STATE.gold);
+        // Core currencies - use safeBigNum for legacy number format support
+        g.gold = this.safeBigNum(data.gold, INITIAL_STATE.gold);
+        g.ether = this.safeBigNum(data.ether, INITIAL_STATE.ether);
+        g.crystals = this.safeBigNum(data.crystals, INITIAL_STATE.crystals);
+
+        // Numeric values
         g.wave = this.safeNumber(data.wave, INITIAL_STATE.wave);
-        g.ether = BigNumService.create(data.ether || INITIAL_STATE.ether);
-        g.crystals = BigNumService.create(data.crystals || INITIAL_STATE.crystals);
         g.dreadLevel = this.safeNumber(data.dreadLevel, INITIAL_STATE.dreadLevel);
         g.speedIndex = this.safeNumber(data.speedIndex, INITIAL_STATE.speedIndex);
+        g.lastSaveTime = this.safeNumber(data.timestamp, Date.now());
+
+        // Objects and arrays
         g.settings = { ...INITIAL_STATE.settings, ...(typeof data.settings === 'object' ? data.settings : {}) };
         g.relics = Array.isArray(data.relics) ? data.relics : [];
+
+        // Mining resources - BigNum values
         g.miningResources = this.deserializeMiningResources(data.miningResources);
-        g.lastSaveTime = this.safeNumber(data.timestamp, Date.now());
 
         if (data.stats && g.stats?.loadSaveData) g.stats.loadSaveData(data.stats);
         if (data.upgrades && g.upgrades?.loadSaveData) g.upgrades.loadSaveData(data.upgrades);
