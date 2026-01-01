@@ -247,7 +247,9 @@ class Game {
             if (savedBuyMode === '1' || savedBuyMode === 'MAX') {
                 this.buyMode = savedBuyMode;
             }
-        } catch (e) { /* localStorage disabled */ }
+        } catch (e) {
+            console.warn('localStorage unavailable:', e.message);
+        }
 
         this.updateStats();
         this.switchTab(this.activeTab);
@@ -275,6 +277,9 @@ class Game {
 
         // Initialize event delegation for UI buttons
         this.eventDelegation = getEventDelegation(this);
+
+        // Add keyboard handlers for elements with role="button"
+        this.initKeyboardAccessibility();
 
         this._intervals.push(setInterval(() => {
             const miningModal = document.getElementById('mining-modal');
@@ -322,16 +327,73 @@ class Game {
     }
 
     async changeLanguage(locale) {
-        // Show loading state
+        // Show loading state with overlay
         const select = document.getElementById('language-select');
+        const loadingScreen = document.getElementById('loading-screen');
+
         if (select) select.disabled = true;
         document.body.style.cursor = 'wait';
+
+        // Show loading overlay
+        if (loadingScreen) {
+            loadingScreen.classList.remove('hidden');
+            loadingScreen.style.opacity = '0.8';
+        }
+
         try {
             await i18n.setLocale(locale);
+            // Announce language change for screen readers
+            this.announce(t('a11y.languageChanged') || `Language changed to ${locale}`);
         } finally {
             if (select) select.disabled = false;
             document.body.style.cursor = '';
+            if (loadingScreen) {
+                loadingScreen.classList.add('hidden');
+                loadingScreen.style.opacity = '';
+            }
         }
+    }
+
+    /**
+     * Announce message to screen readers via aria-live region
+     * @param {string} message
+     */
+    announce(message) {
+        const announcer = document.getElementById('game-announcer');
+        if (announcer) {
+            announcer.textContent = message;
+            // Clear after announcement to allow repeated messages
+            setTimeout(() => { announcer.textContent = ''; }, 1000);
+        }
+    }
+
+    /**
+     * Initialize keyboard accessibility for role=button elements
+     */
+    initKeyboardAccessibility() {
+        // Add keyboard support for elements with role="button"
+        document.addEventListener('keydown', (e) => {
+            const target = e.target;
+
+            // Only handle Enter/Space on role="button" elements
+            if (target.getAttribute('role') === 'button' && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                target.click();
+
+                // Toggle tooltip visibility for tooltip triggers
+                if (target.classList.contains('touch-tooltip-trigger')) {
+                    target.classList.toggle('tooltip-active');
+                }
+            }
+        });
+
+        // Close tooltips on blur
+        document.addEventListener('focusout', (e) => {
+            const target = e.target;
+            if (target.classList?.contains('tooltip-active')) {
+                target.classList.remove('tooltip-active');
+            }
+        });
     }
 
     triggerDevSecret() {
@@ -350,7 +412,9 @@ class Game {
         // Persist UI state
         try {
             localStorage.setItem('aegis_ui_buyMode', this.buyMode);
-        } catch (e) { /* Storage quota exceeded or disabled */ }
+        } catch (e) {
+            console.warn('localStorage write failed:', e.message);
+        }
     }
 
     togglePause() {
@@ -545,7 +609,9 @@ class Game {
         // Persist UI state
         try {
             localStorage.setItem('aegis_ui_tab', String(id));
-        } catch (e) { /* Storage quota exceeded or disabled */ }
+        } catch (e) {
+            console.warn('localStorage write failed:', e.message);
+        }
     }
 
     switchLabTab(tabId) {
@@ -3192,14 +3258,31 @@ class Game {
     }
 
     importSave() {
-        const str = prompt(t('notifications.pasteSave'));
-        if (!str || typeof str !== 'string' || str.trim().length === 0) return;
+        // Legacy method - now opens modal instead
+        document.getElementById('import-modal')?.classList.remove('hidden');
+    }
+
+    importSaveFromModal() {
+        const input = document.getElementById('import-save-input');
+        const errorEl = document.getElementById('import-error');
+        const str = input?.value;
+
+        if (!str || typeof str !== 'string' || str.trim().length === 0) {
+            if (errorEl) {
+                errorEl.textContent = t('import.errorEmpty') || 'Please paste your save data';
+                errorEl.classList.remove('hidden');
+            }
+            return;
+        }
 
         try {
             // Validate base64 format
             const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
             if (!base64Regex.test(str.trim())) {
-                this.ui.showToast(t('notifications.invalidSaveFormat') || 'Invalid save format', 'error');
+                if (errorEl) {
+                    errorEl.textContent = t('notifications.invalidSaveFormat') || 'Invalid save format';
+                    errorEl.classList.remove('hidden');
+                }
                 return;
             }
 
@@ -3208,7 +3291,10 @@ class Game {
             // Validate it's valid JSON before saving
             const parsed = JSON.parse(decoded);
             if (!parsed || typeof parsed !== 'object') {
-                this.ui.showToast(t('notifications.invalidSaveData') || 'Invalid save data', 'error');
+                if (errorEl) {
+                    errorEl.textContent = t('notifications.invalidSaveData') || 'Invalid save data';
+                    errorEl.classList.remove('hidden');
+                }
                 return;
             }
 
@@ -3217,10 +3303,16 @@ class Game {
             const sanitizedJson = JSON.stringify(sanitized);
 
             localStorage.setItem(CONFIG.saveKey, sanitizedJson);
+
+            // Close modal and reload
+            document.getElementById('import-modal')?.classList.add('hidden');
             location.reload();
         } catch (e) {
             getErrorHandler().handleImportError(e);
-            this.ui.showToast(t('notifications.importFailed') || 'Import failed', 'error');
+            if (errorEl) {
+                errorEl.textContent = t('notifications.importFailed') || 'Import failed - invalid data';
+                errorEl.classList.remove('hidden');
+            }
         }
     }
 

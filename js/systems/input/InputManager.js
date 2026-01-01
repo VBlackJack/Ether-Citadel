@@ -28,6 +28,12 @@ export class InputManager {
         window.addEventListener('keydown', this._boundKeydown);
         this.canvas.addEventListener('mousedown', this._boundMousedown);
 
+        // Touch events for mobile support
+        this._boundTouchstart = this.handleTouchstart.bind(this);
+        this._boundTouchend = this.handleTouchend.bind(this);
+        this.canvas.addEventListener('touchstart', this._boundTouchstart, { passive: false });
+        this.canvas.addEventListener('touchend', this._boundTouchend, { passive: false });
+
         // Initialize UI listeners (checkboxes etc)
         this.initUIListeners();
 
@@ -39,8 +45,8 @@ export class InputManager {
         window.removeEventListener('resize', this._boundResize);
         window.removeEventListener('keydown', this._boundKeydown);
         this.canvas.removeEventListener('mousedown', this._boundMousedown);
-
-        // Cleanup UI listeners if needed (optional for checkboxes usually)
+        this.canvas.removeEventListener('touchstart', this._boundTouchstart);
+        this.canvas.removeEventListener('touchend', this._boundTouchend);
     }
 
     initUIListeners() {
@@ -64,7 +70,7 @@ export class InputManager {
             }
         });
 
-        // Skill buttons
+        // Skill buttons with touch support
         const skillBindings = [
             { id: 'skill-overdrive', skill: SKILL.OVERDRIVE },
             { id: 'skill-nuke', skill: SKILL.NUKE },
@@ -74,10 +80,16 @@ export class InputManager {
         skillBindings.forEach(bind => {
             const btn = document.getElementById(bind.id);
             if (btn) {
+                // Click event for desktop
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     this.game.activateSkill(bind.skill);
                 });
+                // Touch event for mobile (faster response, no 300ms delay)
+                btn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    this.game.activateSkill(bind.skill);
+                }, { passive: false });
             }
         });
 
@@ -343,11 +355,55 @@ export class InputManager {
         const clickX = e.clientX - rect.left;
         const clickY = e.clientY - rect.top;
 
+        this._processCanvasInteraction(clickX, clickY);
+    }
+
+    handleTouchstart(e) {
+        // Prevent default to avoid 300ms delay and double-tap zoom
+        e.preventDefault();
+
+        // Store touch start position for tap detection
+        if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            this._touchStart = {
+                x: touch.clientX,
+                y: touch.clientY,
+                time: Date.now()
+            };
+        }
+    }
+
+    handleTouchend(e) {
+        e.preventDefault();
+        if (this.game.isPaused) return;
+
+        // Only process if we have a valid touch start
+        if (!this._touchStart) return;
+
+        const touch = e.changedTouches[0];
+        const rect = this.canvas.getBoundingClientRect();
+
+        // Calculate movement to detect tap vs drag
+        const dx = touch.clientX - this._touchStart.x;
+        const dy = touch.clientY - this._touchStart.y;
+        const timeDiff = Date.now() - this._touchStart.time;
+
+        // Tap: small movement (<20px) and quick (<300ms)
+        if (Math.abs(dx) < 20 && Math.abs(dy) < 20 && timeDiff < 300) {
+            const tapX = touch.clientX - rect.left;
+            const tapY = touch.clientY - rect.top;
+            this._processCanvasInteraction(tapX, tapY);
+        }
+
+        this._touchStart = null;
+    }
+
+    _processCanvasInteraction(x, y) {
         // 1. Turret Slots Interaction
         if (this.game.turretSlots) {
             for (const slot of this.game.turretSlots.slots) {
                 const pos = this.game.turretSlots.getSlotPosition(slot.id);
-                if (pos && MathUtils.dist(clickX, clickY, pos.x, pos.y) < 25) {
+                if (pos && MathUtils.dist(x, y, pos.x, pos.y) < 25) {
                     this.game.handleSlotClick(slot);
                     return; // Stop propagation
                 }
@@ -357,7 +413,7 @@ export class InputManager {
         // 2. Runes Interaction (Buffs)
         // Use filter to handle in-place removal
         this.game.runes = this.game.runes.filter(r => {
-            if (MathUtils.dist(clickX, clickY, r.x, r.y) < 30) {
+            if (MathUtils.dist(x, y, r.x, r.y) < 30) {
                 this.game.activateRune(r);
                 return false; // Remove rune
             }

@@ -46,7 +46,18 @@ export class ToastManager {
             this.container = document.createElement('div');
             this.container.id = 'toast-container';
             this.container.className = this.getPositionClasses();
+            // Accessibility: aria-live for screen reader announcements
+            this.container.setAttribute('role', 'status');
+            this.container.setAttribute('aria-live', 'polite');
+            this.container.setAttribute('aria-atomic', 'false');
             document.body.appendChild(this.container);
+        } else {
+            // Ensure existing container has a11y attributes
+            if (!this.container.hasAttribute('aria-live')) {
+                this.container.setAttribute('role', 'status');
+                this.container.setAttribute('aria-live', 'polite');
+                this.container.setAttribute('aria-atomic', 'false');
+            }
         }
     }
 

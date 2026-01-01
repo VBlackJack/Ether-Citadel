@@ -41,6 +41,9 @@
     <!-- Skip Link for Accessibility -->
     <a href="#game-container" class="skip-link" data-i18n="a11y.skipToMain">Skip to main content</a>
 
+    <!-- Game Announcer for Screen Readers -->
+    <div id="game-announcer" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
     <!-- Loading Screen -->
     <div id="loading-screen" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center">
         <div class="text-4xl font-bold text-cyan-400 mb-6">Ether Citadel</div>
@@ -166,7 +169,7 @@
             <div id="menu-groups" class="flex flex-col gap-2 transition-all duration-300">
                 <!-- Combat Group -->
                 <div class="menu-group" data-group="combat">
-                    <button onclick="game.toggleMenuGroup('combat')" class="menu-group-header bg-red-900/80 border-red-700 text-red-400" aria-expanded="false">
+                    <button onclick="game.toggleMenuGroup('combat')" class="menu-group-header bg-red-900/80 border-red-700 text-red-400" aria-expanded="false" aria-controls="menu-combat">
                         <span>⚔️</span><span data-i18n="ux.menu.combat">Combat</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-combat">
@@ -177,7 +180,7 @@
 
                 <!-- Economy Group -->
                 <div class="menu-group" data-group="economy">
-                    <button onclick="game.toggleMenuGroup('economy')" class="menu-group-header bg-amber-900/80 border-amber-700 text-amber-400" aria-expanded="false">
+                    <button onclick="game.toggleMenuGroup('economy')" class="menu-group-header bg-amber-900/80 border-amber-700 text-amber-400" aria-expanded="false" aria-controls="menu-economy">
                         <span>💰</span><span data-i18n="ux.menu.economy">Economy</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-economy">
@@ -190,7 +193,7 @@
 
                 <!-- Progression Group -->
                 <div class="menu-group" data-group="progression">
-                    <button onclick="game.toggleMenuGroup('progression')" class="menu-group-header bg-purple-900/80 border-purple-700 text-purple-400" aria-expanded="false">
+                    <button onclick="game.toggleMenuGroup('progression')" class="menu-group-header bg-purple-900/80 border-purple-700 text-purple-400" aria-expanded="false" aria-controls="menu-progression">
                         <span>📈</span><span data-i18n="ux.menu.progression">Progression</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-progression">
@@ -205,7 +208,7 @@
 
                 <!-- Meta/Modes Group -->
                 <div class="menu-group" data-group="meta">
-                    <button onclick="game.toggleMenuGroup('meta')" class="menu-group-header bg-violet-900/80 border-violet-700 text-violet-400" aria-expanded="false">
+                    <button onclick="game.toggleMenuGroup('meta')" class="menu-group-header bg-violet-900/80 border-violet-700 text-violet-400" aria-expanded="false" aria-controls="menu-meta">
                         <span>🎮</span><span data-i18n="ux.menu.meta">Modes</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-meta">
@@ -218,7 +221,7 @@
 
                 <!-- Info Group -->
                 <div class="menu-group" data-group="info">
-                    <button onclick="game.toggleMenuGroup('info')" class="menu-group-header bg-slate-700/80 border-slate-600 text-slate-300" aria-expanded="false">
+                    <button onclick="game.toggleMenuGroup('info')" class="menu-group-header bg-slate-700/80 border-slate-600 text-slate-300" aria-expanded="false" aria-controls="menu-info">
                         <span>📚</span><span data-i18n="ux.menu.info">Info</span><span class="menu-arrow">▼</span>
                     </button>
                     <div class="menu-group-content hidden" id="menu-info">
@@ -526,7 +529,7 @@
                     </div>
                     <div class="flex gap-2">
                         <button onclick="game.exportSave()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-sm font-bold" data-i18n="modals.settings.copy">COPY</button>
-                        <button onclick="game.importSave()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-sm font-bold" data-i18n="modals.settings.import">IMPORT</button>
+                        <button onclick="document.getElementById('import-modal').classList.remove('hidden')" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-sm font-bold" data-i18n="modals.settings.import">IMPORT</button>
                     </div>
                     <hr class="border-slate-700 my-4">
                     <button onclick="game.confirmReset()" class="w-full bg-red-900 hover:bg-red-700 text-red-200 py-2 rounded text-sm font-bold border border-red-700" data-i18n="modals.settings.reset">RESET</button>
@@ -561,6 +564,23 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Save Modal -->
+        <div id="import-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-[60] backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="import-modal-title">
+            <div class="w-full max-w-md bg-slate-800 border border-purple-600 rounded-2xl shadow-2xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="import-modal-title" class="text-xl text-purple-400 font-bold" data-i18n="import.title">Import Save</h2>
+                    <button onclick="document.getElementById('import-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                </div>
+                <p class="text-sm text-slate-400 mb-4" data-i18n="import.desc">Paste your save data below. This will overwrite your current progress.</p>
+                <textarea id="import-save-input" class="w-full h-32 bg-black/50 border border-slate-600 rounded p-3 text-sm text-slate-300 mb-4 focus:border-purple-500 focus:outline-none" placeholder="Paste save data here..." aria-label="Save data input"></textarea>
+                <div id="import-error" class="hidden text-red-400 text-sm mb-4"></div>
+                <div class="flex gap-3">
+                    <button onclick="document.getElementById('import-modal').classList.add('hidden')" class="flex-1 bg-slate-600 hover:bg-slate-500 text-white py-2 rounded font-bold" data-i18n="ui.cancel">Cancel</button>
+                    <button onclick="game.importSaveFromModal()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-2 rounded font-bold" data-i18n="import.confirm">Import</button>
                 </div>
             </div>
         </div>

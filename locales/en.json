@@ -4,7 +4,18 @@
     "fr": "Français"
   },
   "a11y": {
-    "skipToMain": "Skip to main content"
+    "skipToMain": "Skip to main content",
+    "languageChanged": "Language changed"
+  },
+  "import": {
+    "title": "Import Save",
+    "desc": "Paste your save data below. This will overwrite your current progress.",
+    "confirm": "Import",
+    "errorEmpty": "Please paste your save data"
+  },
+  "ui": {
+    "loading": "Loading...",
+    "cancel": "Cancel"
   },
   "game": {
     "title": "Ether Citadel",

@@ -3,6 +3,19 @@
  * UX Improvements and Accessibility
  */
 
+/* Screen Reader Only - visually hidden but accessible */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -291,6 +304,58 @@ select:focus-visible {
         width: 72px !important;
         height: 72px !important;
     }
+
+    /* Fix help icons touch target - minimum 44px */
+    .help-icon {
+        min-width: 44px;
+        min-height: 44px;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* Smooth Accordion Transitions */
+.menu-group-content {
+    max-height: 1000px;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
+    opacity: 1;
+}
+
+.menu-group-content.collapsed,
+.menu-group-content.hidden {
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.2s ease-in, opacity 0.15s ease-in;
+}
+
+/* Smooth Tab Transitions */
+.tab-content {
+    animation: tab-fade-in 0.2s ease-out;
+}
+
+@keyframes tab-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Menu item active/click feedback */
+.menu-item:active {
+    transform: scale(0.98);
+    background-color: rgba(59, 130, 246, 0.2);
+}
+
+.menu-btn-sm:active {
+    transform: scale(0.95);
 }
 
 /* Skill Hotkey Badge */
