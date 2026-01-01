@@ -43,14 +43,18 @@ const CACHE_PATTERNS = [
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(STATIC_CACHE)
-            .then((cache) => {
+            .then(async (cache) => {
                 console.log('[SW] Caching core assets');
-                return cache.addAll(CORE_ASSETS);
+                // Cache each asset individually to handle failures gracefully
+                for (const asset of CORE_ASSETS) {
+                    try {
+                        await cache.add(asset);
+                    } catch (err) {
+                        console.warn('[SW] Failed to cache:', asset);
+                    }
+                }
             })
             .then(() => self.skipWaiting())
-            .catch((err) => {
-                console.error('[SW] Cache install failed:', err);
-            })
     );
 });
 
