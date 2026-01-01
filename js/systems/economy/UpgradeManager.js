@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -29,6 +29,10 @@ export class UpgradeManager {
     constructor(game) {
         this.game = game;
         this.upgrades = createUpgrades();
+        // Ensure all upgrades have a level property initialized
+        this.upgrades.forEach(u => {
+            if (typeof u.level === 'undefined') u.level = 0;
+        });
         this._buildUpgradeMap();
     }
 
@@ -45,11 +49,45 @@ export class UpgradeManager {
 
     /**
      * Calculate cost of an upgrade at current level
+     * Formula: baseCost * (costFactor ^ level)
      * @param {object} upgrade
      * @returns {number}
      */
     getCost(upgrade) {
-        return Math.floor(upgrade.baseCost * Math.pow(upgrade.costMult, upgrade.level));
+        const factor = upgrade.costFactor || 1.15;
+        return Math.floor(upgrade.baseCost * Math.pow(factor, upgrade.level));
+    }
+
+    /**
+     * Get upgrade value at a specific level based on type
+     * @param {string} id
+     * @param {number} [level] - Optional level, defaults to current
+     * @returns {number}
+     */
+    getValue(id, level) {
+        const u = this.getById(id);
+        if (!u) return 0;
+
+        const lvl = level !== undefined ? level : u.level;
+
+        switch (u.type) {
+            case 'linear':
+                // base + (level * perLevel)
+                return u.baseValue + (lvl * u.valuePerLevel);
+
+            case 'decay':
+                // base * (perLevel ^ level) - used for speed/cooldowns
+                return u.baseValue * Math.pow(u.valuePerLevel, lvl);
+
+            case 'chance':
+                // base + (level * perLevel), capped
+                const val = u.baseValue + (lvl * u.valuePerLevel);
+                return u.cap ? Math.min(u.cap, val) : val;
+
+            default:
+                // Fallback for flat or unspecified types
+                return u.baseValue + (lvl * (u.valuePerLevel || 0));
+        }
     }
 
     /**
@@ -62,51 +100,80 @@ export class UpgradeManager {
         if (!this.game) return false;
 
         const u = this.getById(id);
-        if (!u || (u.maxLevel && u.level >= u.maxLevel)) return false;
+        if (!u) return false;
 
-        if (this.game.buyMode === 'MAX') {
-            let count = 0;
-            let totalCost = 0;
-            let currentLvl = u.level;
+        // Check max level if defined
+        if (u.maxLevel && u.level >= u.maxLevel) return false;
 
-            while (true) {
-                let nextCost = Math.floor(u.baseCost * Math.pow(u.costMult, currentLvl + count));
-                if (this.game.gold < totalCost + nextCost) break;
-                if (u.maxLevel && currentLvl + count >= u.maxLevel) break;
-                totalCost += nextCost;
-                count++;
-                if (count > 1000) break;
-            }
-
-            if (count > 0) {
-                this.game.gold -= totalCost;
-                u.level += count;
-                this.game.updateStats();
-                if (!silent) {
-                    this.render(this.game.activeTab);
-                    this.game.ui?.showToast(`${t(u.nameKey)} +${count}`, 'success');
-                }
-                this.game.save();
-                this.game.tutorial.check(this.game.gold);
-                return true;
-            }
-        } else {
-            const cost = this.getCost(u);
-            if (this.game.gold >= cost) {
-                this.game.gold -= cost;
-                u.level++;
-                this.game.updateStats();
-                if (!silent) {
-                    this.render(this.game.activeTab);
-                    this.game.ui?.showToast(`${t(u.nameKey)} +1`, 'success');
-                }
-                this.game.save();
-                this.game.tutorial.check(this.game.gold);
-                return true;
+        // Check value cap logic
+        const currentVal = this.getValue(id, u.level);
+        if (u.cap) {
+            if (u.type === 'decay') {
+                if (currentVal <= u.cap) return false;
+            } else {
+                if (currentVal >= u.cap) return false;
             }
         }
 
+        if (this.game.buyMode === 'MAX') {
+            return this._buyMax(u, silent);
+        } else {
+            return this._buySingle(u, silent);
+        }
+    }
+
+    _buySingle(u, silent) {
+        const cost = this.getCost(u);
+        if (this.game.gold >= cost) {
+            this.game.gold -= cost;
+            u.level++;
+            this._onPurchase(u, 1, silent);
+            return true;
+        }
         return false;
+    }
+
+    _buyMax(u, silent) {
+        let count = 0;
+        let totalCost = 0;
+        let currentLvl = u.level;
+        const factor = u.costFactor || 1.15;
+
+        while (true) {
+            let nextCost = Math.floor(u.baseCost * Math.pow(factor, currentLvl + count));
+
+            if (this.game.gold < totalCost + nextCost) break;
+            if (u.maxLevel && currentLvl + count >= u.maxLevel) break;
+
+            // Check if next level hits cap
+            const nextVal = this.getValue(u.id, currentLvl + count + 1);
+            if (u.cap) {
+                if (u.type === 'decay' && nextVal < u.cap) break;
+                if (u.type !== 'decay' && nextVal > u.cap) break;
+            }
+
+            totalCost += nextCost;
+            count++;
+            if (count > 1000) break; // Safety break
+        }
+
+        if (count > 0) {
+            this.game.gold -= totalCost;
+            u.level += count;
+            this._onPurchase(u, count, silent);
+            return true;
+        }
+        return false;
+    }
+
+    _onPurchase(u, count, silent) {
+        this.game.updateStats();
+        if (!silent) {
+            this.render(this.game.activeTab);
+            this.game.ui?.showToast(`${t(u.nameKey)} +${count}`, 'success');
+        }
+        this.game.save();
+        this.game.tutorial.check(this.game.gold);
     }
 
     /**
@@ -116,28 +183,17 @@ export class UpgradeManager {
      * @returns {string}
      */
     formatValue(u, val) {
-        if (u.id === 'speed') return (1000 / val).toFixed(1) + t('units.perSecond');
-        if (u.id === 'crit') return `${val.chance}% / x${val.mult.toFixed(1)}`;
-        if (u.id === 'range' || u.id === 'blast') return val + 'px';
-
-        if (u.id === 'multishot' || u.id === 'armor' || u.id === 'stasis') {
-            if (u.id === 'armor') return '-' + (val * 100).toFixed(1) + '%';
-            return val + '%';
-        }
-
-        if (u.id === 'regen') return val + t('units.perSecond');
-        if (u.id === 'leech') return `+${val} ${t('game.hp')}`;
+        if (u.id === 'speed') return (1000 / val).toFixed(1) + '/s'; // Speed as attacks per second? Or just value
+        if (u.id === 'crit') return val.toFixed(1) + '%';
+        if (u.id === 'range' || u.id === 'blast') return Math.floor(val) + 'px';
+        if (u.id === 'multishot' || u.id === 'armor' || u.id === 'stasis') return val.toFixed(1) + '%';
+        if (u.id === 'regen') return val.toFixed(1) + '/s';
+        if (u.id === 'leech') return `+${val} HP`;
         if (u.id === 'shield') return formatNumber(val) + ' SP';
         if (u.id === 'turret') return val + ' ' + t('units.units');
         if (u.id === 'bounce') return val + ' ' + t('units.bounces');
 
-        if (u.id === 'orbital') {
-            return val > 0
-                ? (val / 1000).toFixed(1) + 's'
-                : `<span class="text-red-400">${t('status.inactive')}</span>`;
-        }
-
-        if (typeof val === 'boolean' || (u.maxLevel === 1 && u.level === 0)) {
+        if (typeof val === 'boolean') {
             return val
                 ? `<span class="text-green-400">${t('status.active')}</span>`
                 : `<span class="text-red-400">${t('status.inactive')}</span>`;
@@ -152,35 +208,46 @@ export class UpgradeManager {
      */
     canAffordAny() {
         if (!this.game) return false;
-        return this.upgrades.some(u =>
-            (!u.maxLevel || u.level < u.maxLevel) &&
-            this.game.gold >= this.getCost(u)
-        );
+        return this.upgrades.some(u => {
+            if (u.maxLevel && u.level >= u.maxLevel) return false;
+            return this.game.gold >= this.getCost(u);
+        });
     }
 
     /**
      * Render upgrades UI
-     * @param {number} activeTab - Current tab index (0=attack, 1=defense, 2=tech)
+     * @param {number} activeTab - Current tab index
      */
     render(activeTab) {
         const container = document.getElementById('upgrade-list');
         if (!container || !this.game) return;
 
         container.innerHTML = '';
-        const filtered = this.upgrades.filter(u => u.category === activeTab);
 
-        // Update tab notification states
+        // Filter by category if present in config, otherwise show all or specific logic
+        // Assuming new config might not have category, we show all or define a default
+        const filtered = this.upgrades.filter(u => {
+            // Default mapping if category is missing in new JSON
+            const cat = u.category !== undefined ? u.category : this._guessCategory(u.id);
+            return cat === activeTab;
+        });
+
         this.updateTabNotifications();
-
-        // Update bulk buy button
         this.updateBulkBuyButton();
 
-        // Render each upgrade
         filtered.forEach(u => this.renderUpgrade(container, u));
 
         if (filtered.length === 0) {
             container.innerHTML = `<div class="text-slate-500 text-center py-4">${t('lab.empty')}</div>`;
         }
+    }
+
+    _guessCategory(id) {
+        const defense = ['health', 'regen', 'armor', 'shield'];
+        const tech = ['turret', 'orbital', 'stasis'];
+        if (defense.includes(id)) return 1;
+        if (tech.includes(id)) return 2;
+        return 0; // Default Attack
     }
 
     /**
@@ -195,11 +262,12 @@ export class UpgradeManager {
 
         tabButtons.forEach((tabBtn, catId) => {
             if (!tabBtn) return;
-            const hasAffordable = this.upgrades.some(u =>
-                u.category === catId &&
-                this.game.gold >= this.getCost(u) &&
-                (!u.maxLevel || u.level < u.maxLevel)
-            );
+            const hasAffordable = this.upgrades.some(u => {
+                const cat = u.category !== undefined ? u.category : this._guessCategory(u.id);
+                return cat === catId &&
+                       this.game.gold >= this.getCost(u) &&
+                       (!u.maxLevel || u.level < u.maxLevel);
+            });
             tabBtn.classList.toggle('tab-notify', hasAffordable);
         });
     }
@@ -222,32 +290,31 @@ export class UpgradeManager {
      */
     renderUpgrade(container, u) {
         let cost = this.getCost(u);
+        const isMaxBuy = this.game.buyMode === 'MAX';
 
-        // Calculate MAX cost if in MAX mode
-        if (this.game.buyMode === 'MAX') {
+        if (isMaxBuy) {
             cost = this.calculateMaxCost(u);
         }
 
-        const isMaxed = u.maxLevel && u.level >= u.maxLevel;
-        const canAfford = this.game.gold >= cost && !isMaxed;
+        const isMaxed = (u.maxLevel && u.level >= u.maxLevel) ||
+                        (u.cap && u.type === 'chance' && this.getValue(u.id, u.level) >= u.cap);
 
-        // Calculate display values with multipliers
+        const canAfford = this.game.gold >= cost && !isMaxed && cost > 0;
+
+        // Calculate display values
         const { val, next } = this.calculateDisplayValues(u);
 
-        // Create element
         const div = document.createElement('div');
         div.className = this.getUpgradeClassName(isMaxed, canAfford);
 
         if (!isMaxed) {
             div.onclick = (e) => {
                 if (canAfford) {
-                    // Visual feedback animation
                     const target = e.currentTarget;
                     target.classList.add('purchase-success');
                     setTimeout(() => target.classList.remove('purchase-success'), 300);
                     this.buy(u.id);
                 } else {
-                    // Feedback for insufficient resources
                     this.game.ui?.showToast(t('feedback.notEnoughGold'), 'warning');
                 }
             };
@@ -258,24 +325,31 @@ export class UpgradeManager {
     }
 
     /**
-     * Calculate cost when buying max levels
-     * @param {object} u - Upgrade
-     * @returns {number}
+     * Calculate cost when buying max levels (UI helper)
      */
     calculateMaxCost(u) {
         let count = 0;
         let totalCost = 0;
         let currentLvl = u.level;
-        const safeCostMult = Math.max(1.01, u.costMult || 1.15);
+        const factor = u.costFactor || 1.15;
 
         for (let iter = 0; iter < 1000; iter++) {
-            let nextCost = Math.floor(u.baseCost * Math.pow(safeCostMult, currentLvl + count));
+            let nextCost = Math.floor(u.baseCost * Math.pow(factor, currentLvl + count));
+
             if (this.game.gold < totalCost + nextCost && count > 0) break;
             if (this.game.gold < nextCost && count === 0) {
                 totalCost = nextCost;
                 break;
             }
+
             if (u.maxLevel && currentLvl + count >= u.maxLevel) break;
+
+            const nextVal = this.getValue(u.id, currentLvl + count + 1);
+            if (u.cap) {
+                if (u.type === 'decay' && nextVal < u.cap) break;
+                if (u.type !== 'decay' && nextVal > u.cap) break;
+            }
+
             totalCost += nextCost;
             count++;
         }
@@ -285,8 +359,6 @@ export class UpgradeManager {
 
     /**
      * Calculate display values with tier and meta multipliers
-     * @param {object} u - Upgrade
-     * @returns {{ val: any, next: any }}
      */
     calculateDisplayValues(u) {
         const tm = Math.pow(CONFIG.evolutionMultiplier, this.game.castle.tier - 1);
@@ -295,8 +367,8 @@ export class UpgradeManager {
         const mhm = (this.game.metaUpgrades.getEffectValue('healthMult') || 1) *
                     (1 + (this.game.relicMults.health || 0));
 
-        let val = u.getValue(u.level);
-        let next = u.getValue(u.level + 1);
+        let val = this.getValue(u.id, u.level);
+        let next = this.getValue(u.id, u.level + 1);
 
         if (u.id === 'damage') {
             val = Math.floor(val * tm * mdm);
@@ -305,40 +377,21 @@ export class UpgradeManager {
             val = Math.floor(val * tm * mhm);
             next = Math.floor(next * tm * mhm);
         } else if (u.id === 'regen') {
-            val = (val * tm).toFixed(1);
-            next = (next * tm).toFixed(1);
+            // Regen might handle decimals
+            val = val * tm;
+            next = next * tm;
         }
 
         return { val, next };
     }
 
-    /**
-     * Get CSS class for upgrade element
-     * @param {boolean} isMaxed
-     * @param {boolean} canAfford
-     * @returns {string}
-     */
     getUpgradeClassName(isMaxed, canAfford) {
         const base = 'p-3 rounded-lg border-2 transition-all cursor-pointer select-none group';
-
-        if (isMaxed) {
-            return `${base} bg-slate-700 border-slate-600 opacity-75`;
-        }
-        if (canAfford) {
-            return `${base} bg-slate-800 border-blue-600 hover:bg-slate-700 active:scale-95`;
-        }
+        if (isMaxed) return `${base} bg-slate-700 border-slate-600 opacity-75`;
+        if (canAfford) return `${base} bg-slate-800 border-blue-600 hover:bg-slate-700 active:scale-95`;
         return `${base} bg-slate-900 border-slate-700 opacity-60 cursor-not-allowed`;
     }
 
-    /**
-     * Generate HTML for upgrade element
-     * @param {object} u - Upgrade
-     * @param {number} cost
-     * @param {boolean} isMaxed
-     * @param {any} val
-     * @param {any} next
-     * @returns {string}
-     */
     getUpgradeHTML(u, cost, isMaxed, val, next) {
         const nameText = t(u.nameKey);
         const maxBadge = isMaxed ? `<span class="text-xs text-yellow-400">${t('lab.max')}</span>` : '';
@@ -363,54 +416,23 @@ export class UpgradeManager {
         `;
     }
 
-    /**
-     * Get an upgrade by ID - O(1) lookup via Map
-     * @param {string} id
-     * @returns {object|undefined}
-     */
     getById(id) {
         return this.upgradeMap.get(id);
     }
 
-    /**
-     * Get upgrade level
-     * @param {string} id
-     * @returns {number}
-     */
     getLevel(id) {
         const u = this.getById(id);
         return u ? u.level : 0;
     }
 
-    /**
-     * Get upgrade value at current level
-     * @param {string} id
-     * @returns {any}
-     */
-    getValue(id) {
-        const u = this.getById(id);
-        return u ? u.getValue(u.level) : 0;
-    }
-
-    /**
-     * Reset all upgrades to level 0
-     */
     reset() {
         this.upgrades.forEach(u => { u.level = 0; });
     }
 
-    /**
-     * Get save data
-     * @returns {Array<{ id: string, level: number }>}
-     */
     getSaveData() {
         return this.upgrades.map(u => ({ id: u.id, level: u.level }));
     }
 
-    /**
-     * Load save data
-     * @param {Array<{ id: string, level: number }>} data
-     */
     loadSaveData(data) {
         if (!Array.isArray(data)) return;
         for (const s of data) {

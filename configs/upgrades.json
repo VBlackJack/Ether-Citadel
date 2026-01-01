@@ -1,229 +1,83 @@
-{
-  "$schema": "./schemas/upgrades.schema.json",
-  "version": 1,
-  "runUpgrades": {
-    "attack": [
-      {
+[
+    {
         "id": "damage",
-        "nameKey": "upgrades.damage.name",
-        "descKey": "upgrades.damage.desc",
+        "nameKey": "upgrades.damage",
         "icon": "⚔️",
-        "category": 0,
-        "baseCost": 10,
-        "costMult": 1.15,
-        "maxLevel": null,
-        "effect": { "type": "damage", "base": 5, "perLevel": 2 }
-      },
-      {
+        "baseCost": 15,
+        "costFactor": 1.07,
+        "baseValue": 5,
+        "valuePerLevel": 2,
+        "type": "linear",
+        "description": "Increases projectile damage."
+    },
+    {
         "id": "speed",
-        "nameKey": "upgrades.speed.name",
-        "descKey": "upgrades.speed.desc",
-        "icon": "⚡",
-        "category": 0,
-        "baseCost": 25,
-        "costMult": 1.18,
-        "maxLevel": 50,
-        "effect": { "type": "fireRate", "base": 1000, "perLevel": -15 }
-      },
-      {
-        "id": "crit",
-        "nameKey": "upgrades.crit.name",
-        "descKey": "upgrades.crit.desc",
-        "icon": "💥",
-        "category": 0,
+        "nameKey": "upgrades.speed",
+        "icon": "🔥",
         "baseCost": 50,
-        "costMult": 1.25,
-        "maxLevel": 25,
-        "effect": { "type": "crit", "chanceBase": 5, "chancePerLevel": 1, "multBase": 1.5, "multPerLevel": 0.05 }
-      },
-      {
-        "id": "multishot",
-        "nameKey": "upgrades.multishot.name",
-        "descKey": "upgrades.multishot.desc",
-        "icon": "🔱",
-        "category": 0,
-        "baseCost": 200,
-        "costMult": 1.5,
-        "maxLevel": 10,
-        "effect": { "type": "multishot", "base": 0, "perLevel": 5 }
-      },
-      {
-        "id": "bounce",
-        "nameKey": "upgrades.bounce.name",
-        "descKey": "upgrades.bounce.desc",
-        "icon": "↩️",
-        "category": 0,
-        "baseCost": 500,
-        "costMult": 2.0,
-        "maxLevel": 5,
-        "effect": { "type": "bounce", "base": 0, "perLevel": 1 }
-      }
-    ],
-    "defense": [
-      {
+        "costFactor": 1.12,
+        "baseValue": 1000,
+        "valuePerLevel": 0.98,
+        "type": "decay",
+        "cap": 100,
+        "description": "Reduces fire delay."
+    },
+    {
         "id": "health",
-        "nameKey": "upgrades.health.name",
-        "descKey": "upgrades.health.desc",
+        "nameKey": "upgrades.health",
         "icon": "❤️",
-        "category": 1,
-        "baseCost": 10,
-        "costMult": 1.12,
-        "maxLevel": null,
-        "effect": { "type": "health", "base": 100, "perLevel": 20 }
-      },
-      {
-        "id": "regen",
-        "nameKey": "upgrades.regen.name",
-        "descKey": "upgrades.regen.desc",
-        "icon": "💚",
-        "category": 1,
-        "baseCost": 30,
-        "costMult": 1.2,
-        "maxLevel": 50,
-        "effect": { "type": "regen", "base": 0, "perLevel": 0.5 }
-      },
-      {
-        "id": "armor",
-        "nameKey": "upgrades.armor.name",
-        "descKey": "upgrades.armor.desc",
-        "icon": "🛡️",
-        "category": 1,
-        "baseCost": 100,
-        "costMult": 1.3,
-        "maxLevel": 25,
-        "effect": { "type": "armor", "base": 0, "perLevel": 0.02 }
-      },
-      {
-        "id": "shield",
-        "nameKey": "upgrades.shield.name",
-        "descKey": "upgrades.shield.desc",
-        "icon": "🔷",
-        "category": 1,
-        "baseCost": 150,
-        "costMult": 1.25,
-        "maxLevel": 30,
-        "effect": { "type": "shield", "base": 0, "perLevel": 10 }
-      },
-      {
-        "id": "leech",
-        "nameKey": "upgrades.leech.name",
-        "descKey": "upgrades.leech.desc",
-        "icon": "🩸",
-        "category": 1,
-        "baseCost": 250,
-        "costMult": 1.4,
-        "maxLevel": 20,
-        "effect": { "type": "leech", "base": 0, "perLevel": 1 }
-      }
-    ],
-    "tech": [
-      {
-        "id": "range",
-        "nameKey": "upgrades.range.name",
-        "descKey": "upgrades.range.desc",
-        "icon": "🎯",
-        "category": 2,
         "baseCost": 20,
-        "costMult": 1.15,
-        "maxLevel": 30,
-        "effect": { "type": "range", "base": 150, "perLevel": 5 }
-      },
-      {
-        "id": "turret",
-        "nameKey": "upgrades.turret.name",
-        "descKey": "upgrades.turret.desc",
-        "icon": "🗼",
-        "category": 2,
+        "costFactor": 1.08,
+        "baseValue": 100,
+        "valuePerLevel": 20,
+        "type": "linear",
+        "description": "Increases castle health."
+    },
+    {
+        "id": "crit",
+        "nameKey": "upgrades.crit",
+        "icon": "💥",
         "baseCost": 100,
-        "costMult": 2.5,
-        "maxLevel": 8,
-        "effect": { "type": "turrets", "base": 1, "perLevel": 1 }
-      },
-      {
-        "id": "blast",
-        "nameKey": "upgrades.blast.name",
-        "descKey": "upgrades.blast.desc",
-        "icon": "💫",
-        "category": 2,
-        "baseCost": 75,
-        "costMult": 1.3,
-        "maxLevel": 20,
-        "effect": { "type": "blast", "base": 0, "perLevel": 3 }
-      },
-      {
-        "id": "orbital",
-        "nameKey": "upgrades.orbital.name",
-        "descKey": "upgrades.orbital.desc",
-        "icon": "🛰️",
-        "category": 2,
+        "costFactor": 1.15,
+        "baseValue": 0,
+        "valuePerLevel": 1,
+        "type": "chance",
+        "cap": 100,
+        "description": "Chance to deal double damage."
+    },
+    {
+        "id": "range",
+        "nameKey": "upgrades.range",
+        "icon": "🎯",
+        "baseCost": 50,
+        "costFactor": 1.10,
+        "baseValue": 150,
+        "valuePerLevel": 2,
+        "type": "linear",
+        "cap": 600,
+        "description": "Increases targeting range."
+    },
+    {
+        "id": "multishot",
+        "nameKey": "upgrades.multishot",
+        "icon": "🏹",
         "baseCost": 500,
-        "costMult": 1.8,
-        "maxLevel": 10,
-        "effect": { "type": "orbital", "base": 0, "perLevel": 500 }
-      },
-      {
-        "id": "stasis",
-        "nameKey": "upgrades.stasis.name",
-        "descKey": "upgrades.stasis.desc",
-        "icon": "❄️",
-        "category": 2,
-        "baseCost": 300,
-        "costMult": 1.5,
-        "maxLevel": 15,
-        "effect": { "type": "stasis", "base": 0, "perLevel": 3 }
-      }
-    ]
-  },
-  "metaUpgrades": [
-    {
-      "id": "meta_damage",
-      "nameKey": "meta.damage.name",
-      "descKey": "meta.damage.desc",
-      "icon": "⚔️",
-      "baseCost": 10,
-      "costMult": 1.5,
-      "maxLevel": 100,
-      "effect": { "type": "damageMult", "base": 1.0, "perLevel": 0.05 }
+        "costFactor": 1.25,
+        "baseValue": 0,
+        "valuePerLevel": 5,
+        "type": "chance",
+        "cap": 100,
+        "description": "Chance to fire an extra projectile."
     },
     {
-      "id": "meta_health",
-      "nameKey": "meta.health.name",
-      "descKey": "meta.health.desc",
-      "icon": "❤️",
-      "baseCost": 10,
-      "costMult": 1.5,
-      "maxLevel": 100,
-      "effect": { "type": "healthMult", "base": 1.0, "perLevel": 0.05 }
-    },
-    {
-      "id": "meta_gold",
-      "nameKey": "meta.gold.name",
-      "descKey": "meta.gold.desc",
-      "icon": "💰",
-      "baseCost": 15,
-      "costMult": 1.6,
-      "maxLevel": 50,
-      "effect": { "type": "goldMult", "base": 1.0, "perLevel": 0.1 }
-    },
-    {
-      "id": "meta_crit",
-      "nameKey": "meta.crit.name",
-      "descKey": "meta.crit.desc",
-      "icon": "💥",
-      "baseCost": 20,
-      "costMult": 1.7,
-      "maxLevel": 25,
-      "effect": { "type": "critMult", "base": 1.0, "perLevel": 0.1 }
-    },
-    {
-      "id": "meta_ether",
-      "nameKey": "meta.ether.name",
-      "descKey": "meta.ether.desc",
-      "icon": "💎",
-      "baseCost": 25,
-      "costMult": 1.8,
-      "maxLevel": 20,
-      "effect": { "type": "etherMult", "base": 1.0, "perLevel": 0.1 }
+        "id": "regen",
+        "nameKey": "upgrades.regen",
+        "icon": "❤️‍🩹",
+        "baseCost": 100,
+        "costFactor": 1.12,
+        "baseValue": 0,
+        "valuePerLevel": 0.5,
+        "type": "linear",
+        "description": "Health regeneration per second."
     }
-  ]
-}
+]
