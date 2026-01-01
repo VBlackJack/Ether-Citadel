@@ -1,411 +1,88 @@
 /*
  * Copyright 2025 Julien Bombled
- * Game Loop Module
+ * Game Loop - Handles the main game heartbeat, timing, and FPS
  */
 
-import { MathUtils } from '../config.js';
-import { logError, ErrorSeverity } from '../utils/ErrorHandler.js';
-import { t } from '../i18n.js';
-
-/**
- * Game Loop Manager
- * Handles the main game loop, timing, and speed control
- */
-export class GameLoopManager {
+export class GameLoop {
     constructor(game) {
         this.game = game;
-        this.lastTime = performance.now();
-        this.animationFrameId = null;
         this.isRunning = false;
-        this.targetFPS = 60;
-        this.frameInterval = 1000 / this.targetFPS;
-        this.then = performance.now();
-
-        // Cached grid canvas for performance
-        this.gridCanvas = null;
-        this.gridCtx = null;
-        this.lastGridWidth = 0;
-        this.lastGridHeight = 0;
+        this.lastTime = 0;
+        this.accumulator = 0;
+        this.rafId = null;
 
         // Debug stats
         this.debugStats = {
             fps: 0,
+            frames: 0,
+            lastFpsUpdate: 0,
             frameTime: 0,
             updateTime: 0,
-            renderTime: 0,
-            entityCounts: {}
+            renderTime: 0
         };
-        this.fpsHistory = [];
-        this.lastFpsUpdate = 0;
 
-        // Error handling
-        this.errorCount = 0;
-        this.maxErrors = 10;
-        this.lastErrorTime = 0;
+        // Bind the loop to keep 'this' context
+        this._boundLoop = this.loop.bind(this);
     }
 
-    /**
-     * Start the game loop
-     */
     start() {
         if (this.isRunning) return;
         this.isRunning = true;
         this.lastTime = performance.now();
-        this.then = performance.now();
-        this.loop();
+        this.rafId = requestAnimationFrame(this._boundLoop);
     }
 
-    /**
-     * Stop the game loop
-     */
     stop() {
         this.isRunning = false;
-        if (this.animationFrameId) {
-            cancelAnimationFrame(this.animationFrameId);
-            this.animationFrameId = null;
+        if (this.rafId) {
+            cancelAnimationFrame(this.rafId);
+            this.rafId = null;
         }
     }
 
-    /**
-     * Main game loop
-     */
-    loop() {
+    loop(currentTime) {
         if (!this.isRunning) return;
 
-        try {
-            const now = performance.now();
-            const delta = now - this.then;
+        // Request next frame immediately
+        this.rafId = requestAnimationFrame(this._boundLoop);
 
-            if (delta >= this.frameInterval) {
-                this.then = now - (delta % this.frameInterval);
+        // Calculate delta time
+        const dtRaw = currentTime - this.lastTime;
+        this.lastTime = currentTime;
 
-                const rawDt = now - this.lastTime;
-                this.lastTime = now;
-
-                const dt = Math.min(rawDt, 100) * this.game.speedMultiplier;
-
-                // Track update time
-                let updateStart = 0;
-                if (!this.game.isPaused && !this.game.isGameOver) {
-                    updateStart = performance.now();
-                    this.update(dt);
-                    this.debugStats.updateTime = performance.now() - updateStart;
-                }
-
-                // Track render time
-                const renderStart = performance.now();
-                this.render();
-                this.debugStats.renderTime = performance.now() - renderStart;
-
-                // Update FPS stats (smoothed average)
-                this.debugStats.frameTime = rawDt;
-                this.fpsHistory.push(rawDt);
-                if (this.fpsHistory.length > 30) this.fpsHistory.shift();
-                const avgFrameTime = this.fpsHistory.reduce((a, b) => a + b, 0) / this.fpsHistory.length;
-                this.debugStats.fps = Math.round(1000 / avgFrameTime);
-
-                // Update entity counts periodically
-                if (now - this.lastFpsUpdate > 500) {
-                    this.lastFpsUpdate = now;
-                    const g = this.game;
-                    this.debugStats.entityCounts = {
-                        enemies: g.enemies?.length || 0,
-                        projectiles: g.projectiles?.length || 0,
-                        particles: g.particles?.length || 0,
-                        turrets: g.turrets?.length || 0,
-                        floatingTexts: g.floatingTexts?.length || 0
-                    };
-                }
-
-                // Reset error count on successful frame
-                if (this.errorCount > 0 && now - this.lastErrorTime > 5000) {
-                    this.errorCount = 0;
-                }
-            }
-        } catch (error) {
-            this.errorCount++;
-            this.lastErrorTime = performance.now();
-            logError(error, 'GameLoop.loop', ErrorSeverity.ERROR);
-
-            // Stop loop if too many errors
-            if (this.errorCount >= this.maxErrors) {
-                logError('Too many errors, stopping game loop', 'GameLoop.loop', ErrorSeverity.CRITICAL);
-                this.stop();
-                if (this.game.ui) {
-                    this.game.ui.showToast(t('notifications.gameError') || 'Game error - please reload', 'error');
-                }
-                return;
-            }
+        // Debug: FPS Calculation (every 1 second)
+        this.debugStats.frames++;
+        if (currentTime - this.debugStats.lastFpsUpdate >= 1000) {
+            this.debugStats.fps = this.debugStats.frames;
+            this.debugStats.frames = 0;
+            this.debugStats.lastFpsUpdate = currentTime;
         }
 
-        if (this.isRunning) {
-            this.animationFrameId = requestAnimationFrame(() => this.loop());
-        }
-    }
+        // Performance monitoring
+        const startUpdate = performance.now();
 
-    /**
-     * Update game state
-     */
-    update(dt) {
-        const g = this.game;
+        // Game Logic Update
+        // Only update if not paused, OR if we want to allow some systems to run while paused (optional)
+        // Cap dt to prevent spiraling (e.g. if tab was inactive)
+        const safeDt = Math.min(dtRaw, 100);
 
-        g.gameTime += dt;
+        // Apply game speed multiplier
+        const dt = safeDt * (this.game.speedMultiplier || 1);
 
-        // Update wave spawning with burst support
-        if (g.waveInProgress && g.enemiesToSpawn > 0) {
-            g.spawnTimer -= dt;
-            if (g.spawnTimer <= 0) {
-                // Spawn multiple enemies per burst for late-game pressure
-                const burst = g.getSpawnBurst ? g.getSpawnBurst() : 1;
-                const toSpawn = Math.min(burst, g.enemiesToSpawn);
-                for (let i = 0; i < toSpawn; i++) {
-                    g.spawnEnemy();
-                    g.enemiesToSpawn--;
-                }
-                g.spawnTimer = g.getSpawnInterval();
-            }
+        if (!this.game.isPaused) {
+            this.game.gameTime += dt;
+            this.game.update(dt);
         }
 
-        // Update entities - using filter instead of splice for better performance
-        // Update enemies and compact in-place (avoid filter allocation)
-        let writeIdx = 0;
-        for (let i = 0; i < g.enemies.length; i++) {
-            const enemy = g.enemies[i];
-            enemy.update(dt);
-            if (enemy.hp > 0 && !enemy.reachedEnd) {
-                g.enemies[writeIdx++] = enemy;
-            }
-        }
-        g.enemies.length = writeIdx;
+        const endUpdate = performance.now();
+        this.debugStats.updateTime = endUpdate - startUpdate;
 
-        // Update projectiles and compact in-place
-        writeIdx = 0;
-        for (let i = 0; i < g.projectiles.length; i++) {
-            const proj = g.projectiles[i];
-            if (proj.update) proj.update(dt, g);
-            if (proj.active && !proj.dead) {
-                g.projectiles[writeIdx++] = proj;
-            }
-        }
-        g.projectiles.length = writeIdx;
+        // Rendering
+        // Always draw, even when paused
+        this.game.draw();
 
-        // Update particles and compact in-place
-        writeIdx = 0;
-        for (let i = 0; i < g.particles.length; i++) {
-            const p = g.particles[i];
-            p.update(dt);
-            if (p.life > 0) {
-                g.particles[writeIdx++] = p;
-            }
-        }
-        g.particles.length = writeIdx;
-
-        // Update floating texts and compact in-place (single pass)
-        writeIdx = 0;
-        for (let i = 0; i < g.floatingTexts.length; i++) {
-            const ft = g.floatingTexts[i];
-            ft.update(dt);
-            if (ft.life > 0) {
-                g.floatingTexts[writeIdx++] = ft;
-            } else {
-                ft.release?.();
-            }
-        }
-        g.floatingTexts.length = writeIdx;
-
-        // Update runes and compact in-place
-        writeIdx = 0;
-        for (let i = 0; i < g.runes.length; i++) {
-            const rune = g.runes[i];
-            if (rune.update) rune.update(dt);
-            if (!rune.expired && rune.life > 0) {
-                g.runes[writeIdx++] = rune;
-            }
-        }
-        g.runes.length = writeIdx;
-
-        // Update turrets
-        for (const turret of g.turrets) {
-            if (turret.update) turret.update(dt, g.gameTime, g);
-        }
-
-        // Update drone
-        if (g.drone?.update) {
-            g.drone.update(dt, g.gameTime, g);
-        }
-
-        // Update castle
-        if (g.castle?.update) {
-            g.castle.update(dt);
-        }
-
-        // Update skills
-        if (g.skills?.update) {
-            g.skills.update(dt, g);
-        }
-
-        // Update buffs
-        for (const key in g.activeBuffs) {
-            if (g.activeBuffs[key] > 0) {
-                g.activeBuffs[key] -= dt;
-                if (g.activeBuffs[key] <= 0) {
-                    g.activeBuffs[key] = 0;
-                }
-            }
-        }
-
-        // Update managers
-        if (g.mining?.update) g.mining.update();
-        if (g.production?.update) g.production.update(dt);
-        if (g.weather?.update) g.weather.update(dt);
-        if (g.combo?.update) g.combo.update(dt);
-        if (g.events?.update) g.events.update(dt);
-        if (g.auras?.update) g.auras.update(dt);
-        if (g.visualEffects?.update) g.visualEffects.update(dt);
-        if (g.music?.update) g.music.update(dt);
-        if (g.seasonalEvents?.update) g.seasonalEvents.update(dt);
-        if (g.bossMechanics?.update) g.bossMechanics.update(dt);
-
-        // Check wave completion
-        if (g.waveInProgress && g.enemiesToSpawn <= 0 && g.enemies.length === 0) {
-            g.completeWave();
-        }
-
-        // Auto-save (with dirty check)
-        if (g.isDirty && Date.now() - g.lastSaveTime > 30000) {
-            g.save();
-        }
-    }
-
-    /**
-     * Render game
-     */
-    render() {
-        const g = this.game;
-        const ctx = g.ctx;
-
-        ctx.clearRect(0, 0, g.width, g.height);
-
-        // Draw background
-        this.drawBackground(ctx);
-
-        // Draw turret slots
-        if (g.turretSlots?.draw) {
-            g.turretSlots.draw(ctx);
-        }
-
-        // Draw castle
-        if (g.castle?.draw) {
-            g.castle.draw(ctx, g.width, g.height);
-        }
-
-        // Draw turrets
-        for (const turret of g.turrets) {
-            if (turret.draw) turret.draw(ctx, g);
-        }
-
-        // Draw drone
-        if (g.drone?.draw) {
-            g.drone.draw(ctx);
-        }
-
-        // Draw enemies
-        for (const enemy of g.enemies) {
-            if (enemy.draw) enemy.draw(ctx);
-        }
-
-        // Draw projectiles
-        for (const proj of g.projectiles) {
-            if (proj.draw) proj.draw(ctx);
-        }
-
-        // Draw particles
-        for (const p of g.particles) {
-            if (p.draw) p.draw(ctx);
-        }
-
-        // Draw floating texts
-        for (const ft of g.floatingTexts) {
-            if (ft.draw) ft.draw(ctx);
-        }
-
-        // Draw runes
-        for (const rune of g.runes) {
-            if (rune.draw) rune.draw(ctx);
-        }
-
-        // Draw visual effects
-        if (g.visualEffects?.draw) {
-            g.visualEffects.draw(ctx);
-        }
-
-        // Draw weather effects
-        if (g.weather?.draw) {
-            g.weather.draw(ctx);
-        }
-
-        // Draw combo indicator
-        if (g.combo?.draw) {
-            g.combo.draw(ctx);
-        }
-    }
-
-    /**
-     * Draw background with cached grid
-     */
-    drawBackground(ctx) {
-        const g = this.game;
-
-        ctx.fillStyle = '#0f172a';
-        ctx.fillRect(0, 0, g.width, g.height);
-
-        // Use cached grid for performance
-        if (this.lastGridWidth !== g.width || this.lastGridHeight !== g.height) {
-            this.updateGridCache(g.width, g.height);
-        }
-
-        if (this.gridCanvas) {
-            ctx.drawImage(this.gridCanvas, 0, 0);
-        }
-    }
-
-    /**
-     * Update cached grid canvas
-     */
-    updateGridCache(width, height) {
-        if (!this.gridCanvas) {
-            this.gridCanvas = document.createElement('canvas');
-        }
-
-        this.gridCanvas.width = width;
-        this.gridCanvas.height = height;
-        this.gridCtx = this.gridCanvas.getContext('2d');
-        this.lastGridWidth = width;
-        this.lastGridHeight = height;
-
-        const ctx = this.gridCtx;
-        ctx.strokeStyle = 'rgba(51, 65, 85, 0.3)';
-        ctx.lineWidth = 1;
-
-        const gridSize = 50;
-        ctx.beginPath();
-        for (let x = 0; x < width; x += gridSize) {
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, height);
-        }
-        for (let y = 0; y < height; y += gridSize) {
-            ctx.moveTo(0, y);
-            ctx.lineTo(width, y);
-        }
-        ctx.stroke();
-    }
-
-    /**
-     * Get current FPS
-     */
-    getCurrentFPS() {
-        const now = performance.now();
-        const delta = now - this.lastTime;
-        return delta > 0 ? Math.round(1000 / delta) : 0;
+        const endRender = performance.now();
+        this.debugStats.renderTime = endRender - endUpdate;
+        this.debugStats.frameTime = dtRaw;
     }
 }

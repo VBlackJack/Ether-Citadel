@@ -94,6 +94,7 @@ import { TutorialManager, StatisticsManager, LeaderboardManager, VisualEffectsMa
 import { SoundManager, MusicManager } from './systems/audio/index.js';
 import { InputManager } from './systems/input/InputManager.js';
 import { RenderSystem } from './systems/graphics/RenderSystem.js';
+import { GameLoop } from './game/GameLoop.js';
 
 class Game {
     constructor() {
@@ -101,7 +102,7 @@ class Game {
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
         this.renderSystem = new RenderSystem(this);
-        this.lastTime = performance.now();
+        this.gameLoop = new GameLoop(this);
         this.gameTime = 0;
         this.speedMultiplier = 1;
         this.ether = 0;
@@ -272,7 +273,7 @@ class Game {
         if (!this.waveInProgress && document.getElementById('game-over-screen').classList.contains('hidden')) {
             this.startWave();
         }
-        requestAnimationFrame((t) => this.loop(t));
+        this.gameLoop.start();
 
         this._intervals.push(setInterval(() => {
             const autoStatus = document.getElementById('auto-status');
@@ -339,7 +340,6 @@ class Game {
             btn.classList.add('bg-yellow-600');
         } else {
             btn.classList.remove('bg-yellow-600');
-            this.lastTime = performance.now();
         }
     }
 
@@ -2843,18 +2843,6 @@ class Game {
             setTimeout(() => div.remove(), 500);
             this.floatingTexts.push(FloatingText.create(target.x, target.y - 60, t('notifications.orbital'), COLORS.ORBITAL, 36));
         }
-    }
-
-    loop(currentTime) {
-        if (!this.isPaused) {
-            const dtRaw = currentTime - this.lastTime;
-            this.lastTime = currentTime;
-            const dt = Math.min(dtRaw, 100) * this.speedMultiplier;
-            this.gameTime += dt;
-            this.update(dt);
-        }
-        this.draw();
-        requestAnimationFrame((t) => this.loop(t));
     }
 
     update(dt) {
