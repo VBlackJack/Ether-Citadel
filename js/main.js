@@ -211,6 +211,9 @@ class Game {
         this.input.init();
 
         this.load();
+
+        // Initialize Ascension UI after load
+        this.ascensionMgr?.initUI();
         this.recalcRelicBonuses();
         this.updateDroneStatus();
         this.checkOfflineEarnings();
@@ -268,6 +271,7 @@ class Game {
             this.updateSeasonalBanner();
             this.updateSuggestedAction();
             this.updateMenuUnlocks();
+            this.ascensionMgr.updateButtonVisibility();
         }, 500));
 
         if (!this.waveInProgress && document.getElementById('game-over-screen').classList.contains('hidden')) {
@@ -3079,6 +3083,7 @@ class Game {
         this.updateEtherUI();
         this.updateChallengeUI();
         document.getElementById('game-over-screen').classList.add('hidden');
+        this.ascensionMgr?.updateButtonVisibility();
         this.startWave();
         this.tutorial.check(this.gold);
     }
