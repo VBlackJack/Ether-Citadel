@@ -3208,13 +3208,9 @@ class Game {
     }
 
     confirmReset() {
-        console.log('[RESET] confirmReset called');
         const message = t('modals.settings.confirmReset') || 'Are you sure you want to reset all progress?';
         gameConfirm(message, () => {
-            console.log('[RESET] Confirmed - clearing localStorage');
-            // Clear ALL localStorage for complete reset (new player experience)
             localStorage.clear();
-            console.log('[RESET] localStorage cleared, reloading...');
             location.reload();
         });
     }
