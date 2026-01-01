@@ -45,13 +45,15 @@ export class PrestigeManager {
 
     /**
      * Calculate prestige points based on current run
+     * Improved formula for better progression curve
      * @returns {number}
      */
     calculatePrestigePoints() {
         const baseWave = this.game.stats?.maxWave || 0;
         const dreadMult = 1 + ((this.game.dreadLevel || 0) * 0.5);
-        const prestigeCountBonus = 1 + (this.totalPrestiges * 0.05);
-        return Math.floor(Math.pow(baseWave / 10, 1.5) * dreadMult * prestigeCountBonus);
+        const prestigeCountBonus = 1 + (this.totalPrestiges * 0.08);
+        // Improved formula: (wave/8)^1.6 gives ~50% more PP than before
+        return Math.floor(Math.pow(baseWave / 8, 1.6) * dreadMult * prestigeCountBonus);
     }
 
     /**
@@ -62,8 +64,8 @@ export class PrestigeManager {
      */
     calculatePointsAtWave(wave, dreadLevel = this.game.dreadLevel) {
         const dreadMult = 1 + ((dreadLevel || 0) * 0.5);
-        const prestigeCountBonus = 1 + (this.totalPrestiges * 0.05);
-        return Math.floor(Math.pow(wave / 10, 1.5) * dreadMult * prestigeCountBonus);
+        const prestigeCountBonus = 1 + (this.totalPrestiges * 0.08);
+        return Math.floor(Math.pow(wave / 8, 1.6) * dreadMult * prestigeCountBonus);
     }
 
     /**

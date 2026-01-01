@@ -319,14 +319,14 @@ export const DAILY_QUEST_TYPES = [
  * Prestige upgrade definitions for permanent bonuses
  */
 export const PRESTIGE_UPGRADES = [
-    { id: 'prestige_damage', nameKey: 'prestige.damage.name', descKey: 'prestige.damage.desc', icon: '🗡️', baseCost: 1, costMult: 2.0, maxLevel: 100, effect: (lvl) => 1 + lvl * 0.05 },
-    { id: 'prestige_health', nameKey: 'prestige.health.name', descKey: 'prestige.health.desc', icon: '❤️', baseCost: 1, costMult: 2.0, maxLevel: 100, effect: (lvl) => 1 + lvl * 0.05 },
-    { id: 'prestige_gold', nameKey: 'prestige.gold.name', descKey: 'prestige.gold.desc', icon: '🥇', baseCost: 2, costMult: 1.8, maxLevel: 50, effect: (lvl) => 1 + lvl * 0.1 },
-    { id: 'prestige_crystals', nameKey: 'prestige.crystals.name', descKey: 'prestige.crystals.desc', icon: '💎', baseCost: 3, costMult: 2.2, maxLevel: 25, effect: (lvl) => 1 + lvl * 0.15 },
-    { id: 'prestige_start_wave', nameKey: 'prestige.start_wave.name', descKey: 'prestige.start_wave.desc', icon: '⏩', baseCost: 5, costMult: 3.0, maxLevel: 10, effect: (lvl) => lvl * 5 },
-    { id: 'prestige_auto_turrets', nameKey: 'prestige.auto_turrets.name', descKey: 'prestige.auto_turrets.desc', icon: '🤖', baseCost: 10, costMult: 5.0, maxLevel: 4, effect: (lvl) => lvl },
-    { id: 'prestige_production', nameKey: 'prestige.production.name', descKey: 'prestige.production.desc', icon: '🏭', baseCost: 5, costMult: 2.5, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.2 },
-    { id: 'prestige_skill_cd', nameKey: 'prestige.skill_cd.name', descKey: 'prestige.skill_cd.desc', icon: '⏰', baseCost: 8, costMult: 3.0, maxLevel: 10, effect: (lvl) => 1 - lvl * 0.05 }
+    { id: 'prestige_damage', nameKey: 'prestige.damage.name', descKey: 'prestige.damage.desc', icon: '🗡️', baseCost: 1, costMult: 1.7, maxLevel: 30, effect: (lvl) => 1 + lvl * 0.08 },
+    { id: 'prestige_health', nameKey: 'prestige.health.name', descKey: 'prestige.health.desc', icon: '❤️', baseCost: 1, costMult: 1.7, maxLevel: 30, effect: (lvl) => 1 + lvl * 0.08 },
+    { id: 'prestige_gold', nameKey: 'prestige.gold.name', descKey: 'prestige.gold.desc', icon: '🥇', baseCost: 2, costMult: 1.6, maxLevel: 25, effect: (lvl) => 1 + lvl * 0.12 },
+    { id: 'prestige_crystals', nameKey: 'prestige.crystals.name', descKey: 'prestige.crystals.desc', icon: '💎', baseCost: 3, costMult: 1.8, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.15 },
+    { id: 'prestige_start_wave', nameKey: 'prestige.start_wave.name', descKey: 'prestige.start_wave.desc', icon: '⏩', baseCost: 5, costMult: 2.5, maxLevel: 10, effect: (lvl) => lvl * 5 },
+    { id: 'prestige_auto_turrets', nameKey: 'prestige.auto_turrets.name', descKey: 'prestige.auto_turrets.desc', icon: '🤖', baseCost: 10, costMult: 4.0, maxLevel: 4, effect: (lvl) => lvl },
+    { id: 'prestige_production', nameKey: 'prestige.production.name', descKey: 'prestige.production.desc', icon: '🏭', baseCost: 5, costMult: 2.0, maxLevel: 15, effect: (lvl) => 1 + lvl * 0.25 },
+    { id: 'prestige_skill_cd', nameKey: 'prestige.skill_cd.name', descKey: 'prestige.skill_cd.desc', icon: '⏰', baseCost: 8, costMult: 2.5, maxLevel: 8, effect: (lvl) => 1 - lvl * 0.06 }
 ];
 
 /**
@@ -583,11 +583,11 @@ export const COMBO_TIERS = [
  */
 export function createUpgrades() {
     return [
-        { id: 'damage', nameKey: 'upgrades.damage.name', descKey: 'upgrades.damage.desc', category: 0, baseCost: 10, costMult: 1.5, level: 1, getValue: (lvl) => Math.floor(7 * Math.pow(1.2, lvl - 1)), icon: '\u2694\ufe0f' },
+        { id: 'damage', nameKey: 'upgrades.damage.name', descKey: 'upgrades.damage.desc', category: 0, baseCost: 8, costMult: 1.5, level: 1, getValue: (lvl) => Math.floor(7 * Math.pow(1.2, lvl - 1)), icon: '\u2694\ufe0f' },
         { id: 'speed', nameKey: 'upgrades.speed.name', descKey: 'upgrades.speed.desc', category: 0, baseCost: 25, costMult: 1.6, level: 1, getValue: (lvl) => 1000 * Math.pow(0.88, lvl - 1), icon: '\u26a1' },
-        { id: 'crit', nameKey: 'upgrades.crit.name', descKey: 'upgrades.crit.desc', category: 0, baseCost: 100, costMult: 1.8, level: 0, getValue: (lvl) => ({ chance: Math.min(150, lvl * 2), mult: 2 + (lvl * 0.1) }), icon: '\ud83d\udca5' },
+        { id: 'crit', nameKey: 'upgrades.crit.name', descKey: 'upgrades.crit.desc', category: 0, baseCost: 50, costMult: 1.7, level: 0, getValue: (lvl) => ({ chance: Math.min(150, lvl * 2), mult: 2 + (lvl * 0.1) }), icon: '\ud83d\udca5' },
         { id: 'range', nameKey: 'upgrades.range.name', descKey: 'upgrades.range.desc', category: 0, baseCost: 30, costMult: 1.5, level: 1, getValue: (lvl) => 300 + (lvl * 60), icon: '\ud83c\udfaf' },
-        { id: 'multishot', nameKey: 'upgrades.multishot.name', descKey: 'upgrades.multishot.desc', category: 0, baseCost: 200, costMult: 2.2, level: 0, getValue: (lvl) => Math.min(60, lvl * 6), icon: '\ud83c\udff9' },
+        { id: 'multishot', nameKey: 'upgrades.multishot.name', descKey: 'upgrades.multishot.desc', category: 0, baseCost: 100, costMult: 2.0, level: 0, getValue: (lvl) => Math.min(60, lvl * 6), icon: '\ud83c\udff9' },
         { id: 'health', nameKey: 'upgrades.health.name', descKey: 'upgrades.health.desc', category: 1, baseCost: 15, costMult: 1.4, level: 1, getValue: (lvl) => Math.floor(100 * Math.pow(1.25, lvl - 1)), icon: '\u2764\ufe0f' },
         { id: 'regen', nameKey: 'upgrades.regen.name', descKey: 'upgrades.regen.desc', category: 1, baseCost: 50, costMult: 1.8, level: 0, getValue: (lvl) => lvl === 0 ? 0 : Math.floor(2 * Math.pow(1.4, lvl - 1)), icon: '\ud83d\udd27' },
         { id: 'leech', nameKey: 'upgrades.leech.name', descKey: 'upgrades.leech.desc', category: 1, baseCost: 2000, costMult: 2.5, level: 0, getValue: (lvl) => lvl * 2, icon: '\ud83e\ude78' },

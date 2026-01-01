@@ -31,7 +31,11 @@ export class Enemy {
         this.isElite = Math.random() < 0.05;
         this.x = x || game.width + 50;
         this.y = y || MathUtils.randomRange(game.height * 0.2, game.height * 0.8);
-        const diffMult = 1 + (wave * 0.35);
+        // Accelerated HP scaling after wave 50 to maintain challenge
+        let diffMult = 1 + (wave * 0.35);
+        if (wave > 50) {
+            diffMult = (1 + (50 * 0.35)) + ((wave - 50) * 0.45);
+        }
         const hpMod = game.activeChallenge && game.activeChallenge.id === 'glass' ? 0.1 : 1;
         const speedMod = game.activeChallenge && game.activeChallenge.id === 'speed' ? 2 : 1;
         const dread = game.getDreadMultipliers();
@@ -40,7 +44,8 @@ export class Enemy {
         this.hp = this.maxHp;
         this.baseSpeed = CONFIG.baseEnemySpeed * (1 + wave * 0.03) * this.type.speedMult * speedMod * dread.enemySpeed;
         this.damage = Math.floor((5 + Math.floor(wave * 0.8)) * (typeKey === 'BOSS' ? 5 : 1) * dread.enemyDamage);
-        const baseGold = Math.max(1, Math.floor(2 * (1 + wave * 0.18)));
+        // Increased base gold for smoother early game progression
+        const baseGold = Math.max(1, Math.floor(5 * (1 + wave * 0.20)));
         const passiveGoldMult = game.passives?.getEffect('goldGain') || 1;
         const prestigeGoldMult = game.prestige?.getEffect('prestige_gold') || 1;
         const goldMult = game.metaUpgrades.getEffectValue('goldMult') * (1 + (game.relicMults.gold || 0)) * passiveGoldMult * prestigeGoldMult;
