@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { SKILL } from '../../constants/skillIds.js';
+
 /**
  * Skill Manager - Handles player skills and cooldowns
  */
@@ -21,14 +23,14 @@ export class SkillManager {
     constructor(game) {
         this.game = game;
         this.skills = {
-            overdrive: { duration: 5000, cooldown: 30000, activeTime: 0, cdTime: 0 },
-            nuke: { duration: 0, cooldown: 60000, activeTime: 0, cdTime: 0 },
-            blackhole: { duration: 4000, cooldown: 45000, activeTime: 0, cdTime: 0 }
+            [SKILL.OVERDRIVE]: { duration: 5000, cooldown: 30000, activeTime: 0, cdTime: 0 },
+            [SKILL.NUKE]: { duration: 0, cooldown: 60000, activeTime: 0, cdTime: 0 },
+            [SKILL.BLACKHOLE]: { duration: 4000, cooldown: 45000, activeTime: 0, cdTime: 0 }
         };
         this.autoSkills = {
-            overdrive: false,
-            nuke: false,
-            blackhole: false
+            [SKILL.OVERDRIVE]: false,
+            [SKILL.NUKE]: false,
+            [SKILL.BLACKHOLE]: false
         };
         this._cachedElements = {};
     }
@@ -91,7 +93,7 @@ export class SkillManager {
         if (s.cdTime <= 0) {
             s.activeTime = s.duration;
             s.cdTime = maxCd;
-            if (id === 'nuke') {
+            if (id === SKILL.NUKE) {
                 game.enemies.forEach(e => {
                     if (e.typeKey !== 'BOSS') e.takeDamage(e.maxHp * 20, false, false, true);
                     else e.takeDamage(game.currentDamage * 50, false, false, true);
@@ -146,9 +148,9 @@ export class SkillManager {
             }
 
             if (this.autoSkills[key] && s.cdTime <= 0 && game.enemies.length > 0 && !game.isGameOver) {
-                const canAuto = (key === 'overdrive' && game.metaUpgrades?.getEffectValue?.('autoSkillQ')) ||
-                               (key === 'nuke' && game.metaUpgrades?.getEffectValue?.('autoSkillW')) ||
-                               (key === 'blackhole' && game.metaUpgrades?.getEffectValue?.('autoSkillE')) ||
+                const canAuto = (key === SKILL.OVERDRIVE && game.metaUpgrades?.getEffectValue?.('autoSkillQ')) ||
+                               (key === SKILL.NUKE && game.metaUpgrades?.getEffectValue?.('autoSkillW')) ||
+                               (key === SKILL.BLACKHOLE && game.metaUpgrades?.getEffectValue?.('autoSkillE')) ||
                                (game.relicMults?.autoSkill || false);
                 if (canAuto) {
                     this.activate(key);

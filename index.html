@@ -230,7 +230,7 @@
         </div>
 
         <div class="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-6 pointer-events-auto z-20">
-            <button id="skill-overdrive" onclick="game.activateSkill('overdrive')" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-blue-500 transition shadow-lg group overflow-hidden" data-skill="overdrive" aria-label="Overdrive skill (Press Q) - Speed x3 for 5 seconds" role="button">
+            <button id="skill-overdrive" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-blue-500 transition shadow-lg group overflow-hidden" data-skill="overdrive" aria-label="Overdrive skill (Press Q) - Speed x3 for 5 seconds" role="button">
                 <div class="absolute inset-0 flex items-center justify-center text-3xl" aria-hidden="true">⚡</div>
                 <div class="skill-hotkey absolute top-0 left-0 bg-blue-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-br-lg" aria-hidden="true">Q</div>
                 <div id="cd-overdrive" class="cooldown-overlay absolute bottom-0 left-0 w-full bg-black/80 h-0" aria-hidden="true"></div>
@@ -239,7 +239,7 @@
                     <span data-i18n="skills.overdrive.desc">Speed x3 for 5s.</span>
                 </div>
             </button>
-            <button id="skill-nuke" onclick="game.activateSkill('nuke')" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-red-500 transition shadow-lg group overflow-hidden" data-skill="nuke" aria-label="Meteor skill (Press W) - Massive area damage" role="button">
+            <button id="skill-nuke" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-red-500 transition shadow-lg group overflow-hidden" data-skill="nuke" aria-label="Meteor skill (Press W) - Massive area damage" role="button">
                 <div class="absolute inset-0 flex items-center justify-center text-3xl" aria-hidden="true">☄️</div>
                 <div class="skill-hotkey absolute top-0 left-0 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-br-lg" aria-hidden="true">W</div>
                 <div id="cd-nuke" class="cooldown-overlay absolute bottom-0 left-0 w-full bg-black/80 h-0" aria-hidden="true"></div>
@@ -248,7 +248,7 @@
                     <span data-i18n="skills.nuke.desc">Massive area damage.</span>
                 </div>
             </button>
-            <button id="skill-blackhole" onclick="game.activateSkill('blackhole')" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-purple-500 transition shadow-lg group overflow-hidden" data-skill="blackhole" aria-label="Black Hole skill (Press E) - Pulls and crushes enemies" role="button">
+            <button id="skill-blackhole" class="skill-btn relative w-16 h-16 bg-slate-900/90 border-2 border-slate-600 rounded-xl cursor-pointer hover:border-purple-500 transition shadow-lg group overflow-hidden" data-skill="blackhole" aria-label="Black Hole skill (Press E) - Pulls and crushes enemies" role="button">
                 <div class="absolute inset-0 flex items-center justify-center text-3xl" aria-hidden="true">🌀</div>
                 <div class="skill-hotkey absolute top-0 left-0 bg-purple-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-br-lg" aria-hidden="true">E</div>
                 <div id="cd-blackhole" class="cooldown-overlay absolute bottom-0 left-0 w-full bg-black/80 h-0" aria-hidden="true"></div>

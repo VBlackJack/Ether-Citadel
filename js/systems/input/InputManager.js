@@ -41,22 +41,39 @@ export class InputManager {
     }
 
     initUIListeners() {
-        const bindings = [
+        // Toggle checkboxes
+        const toggleBindings = [
             { id: 'toggle-damage', prop: 'showDamageText', type: 'settings' },
             { id: 'toggle-range', prop: 'showRange', type: 'settings' },
             { id: 'toggle-buy', prop: 'autoBuyEnabled', type: 'game' }
         ];
 
-        bindings.forEach(bind => {
+        toggleBindings.forEach(bind => {
             const el = document.getElementById(bind.id);
             if (el) {
-                // Remove old listeners to be safe (cloning node is a quick hack, but simple addEventListener is fine here as we initialize once)
                 el.addEventListener('change', (e) => {
                     if (bind.type === 'settings') {
                         this.game.settings[bind.prop] = e.target.checked;
                     } else {
                         this.game[bind.prop] = e.target.checked;
                     }
+                });
+            }
+        });
+
+        // Skill buttons
+        const skillBindings = [
+            { id: 'skill-overdrive', skill: SKILL.OVERDRIVE },
+            { id: 'skill-nuke', skill: SKILL.NUKE },
+            { id: 'skill-blackhole', skill: SKILL.BLACKHOLE }
+        ];
+
+        skillBindings.forEach(bind => {
+            const btn = document.getElementById(bind.id);
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.game.activateSkill(bind.skill);
                 });
             }
         });

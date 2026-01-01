@@ -15,11 +15,19 @@
  */
 
 import { sanitizeJsonObject } from '../../utils/HtmlSanitizer.js';
+import { SKILL } from '../../constants/skillIds.js';
 
 /**
  * AutoSkillManager - Handles automatic skill casting
  * Skills auto-cast when off cooldown if enabled
  */
+
+// Map keyboard keys to skill constants
+const KEY_TO_SKILL = {
+    Q: SKILL.OVERDRIVE,
+    W: SKILL.NUKE,
+    E: SKILL.BLACKHOLE
+};
 
 export class AutoSkillManager {
     /**
@@ -108,8 +116,9 @@ export class AutoSkillManager {
 
         // Must not be on cooldown
         if (!this.game.skills) return false;
-        const skill = this.game.skills.skills?.[skillKey];
-        if (!skill || skill.currentCooldown > 0) return false;
+        const skillId = KEY_TO_SKILL[skillKey];
+        const skill = this.game.skills.skills?.[skillId];
+        if (!skill || skill.cdTime > 0) return false;
 
         // Must have enough enemies
         const enemyCount = this.game.enemies?.filter(e => !e.dead)?.length || 0;
@@ -131,9 +140,10 @@ export class AutoSkillManager {
             .filter(key => this.canAutoCast(key))
             .sort((a, b) => this.priority[a] - this.priority[b]);
 
-        // Cast first available skill
+        // Cast first available skill (convert key to skill ID)
         if (skillKeys.length > 0) {
-            this.game.skills?.use?.(skillKeys[0]);
+            const skillId = KEY_TO_SKILL[skillKeys[0]];
+            this.game.skills?.activate?.(skillId);
         }
     }
 
