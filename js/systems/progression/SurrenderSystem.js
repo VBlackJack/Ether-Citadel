@@ -20,7 +20,7 @@
  */
 
 import { t } from '../../i18n.js';
-import { formatNumber } from '../../config.js';
+import { formatNumber, BigNumService } from '../../config.js';
 import { FloatingText } from '../../entities/FloatingText.js';
 
 export class SurrenderSystem {
@@ -100,9 +100,9 @@ export class SurrenderSystem {
 
         const bonuses = this.calculateBonuses();
 
-        // Apply bonuses
-        this.game.ether += bonuses.ether;
-        this.game.crystals = (this.game.crystals || 0) + bonuses.crystals;
+        // Apply bonuses (use BigNumService for currency operations)
+        this.game.ether = BigNumService.add(this.game.ether, bonuses.ether);
+        this.game.crystals = BigNumService.add(this.game.crystals || BigNumService.create(0), bonuses.crystals);
         this.surrenderGoldBonus = bonuses.gold;
 
         // Show notification
@@ -156,7 +156,7 @@ export class SurrenderSystem {
      */
     applyGoldBonus() {
         if (this.surrenderGoldBonus > 0) {
-            this.game.gold += this.surrenderGoldBonus;
+            this.game.gold = BigNumService.add(this.game.gold, this.surrenderGoldBonus);
             this.surrenderGoldBonus = 0;
         }
     }

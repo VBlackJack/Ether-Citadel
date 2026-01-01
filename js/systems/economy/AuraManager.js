@@ -19,7 +19,7 @@
  */
 
 import { AURA_TYPES } from '../../data.js';
-import { MathUtils } from '../../config.js';
+import { MathUtils, BigNumService } from '../../config.js';
 
 export class AuraManager {
     /**
@@ -36,7 +36,7 @@ export class AuraManager {
      * @returns {Array}
      */
     getAvailableAuras() {
-        return AURA_TYPES.filter(a => this.game.crystals >= a.cost);
+        return AURA_TYPES.filter(a => BigNumService.gte(this.game.crystals, a.cost));
     }
 
     /**
@@ -51,9 +51,9 @@ export class AuraManager {
 
         const auraType = AURA_TYPES.find(a => a.id === auraId);
         if (!auraType) return false;
-        if (this.game.crystals < auraType.cost) return false;
+        if (BigNumService.lt(this.game.crystals, auraType.cost)) return false;
 
-        this.game.crystals -= auraType.cost;
+        this.game.crystals = BigNumService.sub(this.game.crystals, auraType.cost);
         this.placedAuras.push({
             id: auraId,
             x: x,

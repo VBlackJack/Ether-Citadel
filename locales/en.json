@@ -1,7 +1,10 @@
 {
   "locales": {
     "en": "English",
-    "fr": "Fran\u00e7ais"
+    "fr": "Français"
+  },
+  "a11y": {
+    "skipToMain": "Skip to main content"
   },
   "game": {
     "title": "Ether Citadel",
@@ -1184,6 +1187,7 @@
     }
   },
   "campaign": {
+    "title": "Campaign",
     "completed": "Mission Complete",
     "kills": "Kills",
     "time": "Time",
@@ -1235,6 +1239,7 @@
     }
   },
   "leaderboard": {
+    "title": "Leaderboards",
     "highestWave": "Highest Wave",
     "maxDps": "Max DPS",
     "fastestWave50": "Fastest Wave 50",
@@ -1466,7 +1471,8 @@
     }
   },
   "ui": {
-    "close": "CLOSE"
+    "close": "CLOSE",
+    "loading": "Loading..."
   },
   "unlock": {
     "office": {

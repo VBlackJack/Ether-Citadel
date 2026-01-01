@@ -434,7 +434,8 @@ class Game {
 
     setSpeed(mult) {
         this.speedMultiplier = mult;
-        this.speedIndex = GAME_SPEEDS.findIndex(s => s.mult === mult) || 0;
+        const idx = GAME_SPEEDS.findIndex(s => s.mult === mult);
+        this.speedIndex = idx === -1 ? 0 : idx;
         const speedEl = document.getElementById('ui-speed');
         if (speedEl) speedEl.innerText = 'x' + mult;
 
@@ -1173,16 +1174,20 @@ class Game {
             container.appendChild(div);
         });
 
-        container.querySelectorAll('.production-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const buildingId = e.target.dataset.building;
+        // Use event delegation to avoid duplicate listeners
+        if (!container._productionDelegated) {
+            container._productionDelegated = true;
+            container.addEventListener('click', (e) => {
+                const btn = e.target.closest('.production-btn');
+                if (!btn || btn.disabled) return;
+                const buildingId = btn.dataset.building;
                 if (this.production.upgrade(buildingId)) {
                     this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('production.upgraded'), COLORS.SUCCESS, 24));
                     this.sound.play('levelup');
                 }
                 this.renderProductionUI();
             });
-        });
+        }
     }
 
     renderDailyQuestsUI() {
@@ -2892,23 +2897,41 @@ class Game {
             }
         }
 
+        // Update buff timers
+        let hasActiveBuffs = false;
         for (let k in this.activeBuffs) {
-            if (this.activeBuffs[k] > 0) this.activeBuffs[k] -= dt;
+            if (this.activeBuffs[k] > 0) {
+                this.activeBuffs[k] -= dt;
+                hasActiveBuffs = true;
+            }
         }
+
+        // Only update buff container if we have active buffs (reduces DOM thrashing)
         const buffContainer = document.getElementById('buff-container');
         if (buffContainer) {
-            buffContainer.innerHTML = '';
-            for (let k in this.activeBuffs) {
-                if (this.activeBuffs[k] > 0) {
-                    const runeType = RUNE_TYPES.find(r => r.id === k);
-                    if (runeType) {
-                        const d = document.createElement('div');
-                        d.className = 'text-xs bg-black/50 px-2 py-1 rounded text-white border';
-                        d.style.borderColor = runeType.color;
-                        d.innerText = `${runeType.icon} ${(this.activeBuffs[k] / 1000).toFixed(1)}s`;
-                        buffContainer.appendChild(d);
+            if (!hasActiveBuffs) {
+                if (buffContainer.childNodes.length > 0) buffContainer.innerHTML = '';
+            } else {
+                // Build rune map cache once
+                if (!this._runeMap) {
+                    this._runeMap = new Map(RUNE_TYPES.map(r => [r.id, r]));
+                }
+                // Use DocumentFragment for batch DOM update
+                const fragment = document.createDocumentFragment();
+                for (let k in this.activeBuffs) {
+                    if (this.activeBuffs[k] > 0) {
+                        const runeType = this._runeMap.get(k);
+                        if (runeType) {
+                            const d = document.createElement('div');
+                            d.className = 'text-xs bg-black/50 px-2 py-1 rounded text-white border';
+                            d.style.borderColor = runeType.color;
+                            d.textContent = `${runeType.icon} ${(this.activeBuffs[k] / 1000).toFixed(1)}s`;
+                            fragment.appendChild(d);
+                        }
                     }
                 }
+                buffContainer.innerHTML = '';
+                buffContainer.appendChild(fragment);
             }
         }
 
@@ -3483,37 +3506,43 @@ async function init() {
         }
     });
 
-    // Quest timer auto-update
-    setInterval(() => {
-        if (window.game && !document.getElementById('quests-modal').classList.contains('hidden')) {
+    // Quest timer auto-update (store in game._intervals for cleanup)
+    const questTimerInterval = setInterval(() => {
+        const questsModal = document.getElementById('quests-modal');
+        if (window.game && questsModal && !questsModal.classList.contains('hidden')) {
             const timerEl = document.getElementById('quests-timer');
-            if (timerEl && game.dailyQuests) {
-                const timeLeft = game.dailyQuests.getTimeUntilReset();
+            if (timerEl && window.game.dailyQuests) {
+                const timeLeft = window.game.dailyQuests.getTimeUntilReset();
                 const hours = Math.floor(timeLeft / 3600000);
                 const minutes = Math.floor((timeLeft % 3600000) / 60000);
                 const seconds = Math.floor((timeLeft % 60000) / 1000);
-                timerEl.innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                timerEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
         }
     }, 1000);
 
-    // UI badge updates
-    setInterval(() => {
+    // UI badge updates (store in game._intervals for cleanup)
+    const badgeUpdateInterval = setInterval(() => {
         if (!window.game) return;
 
         // Quest badge - show only if there are incomplete quests
         const questBadge = document.getElementById('quest-badge');
-        if (questBadge && game.dailyQuests) {
-            const hasIncomplete = game.dailyQuests.quests.length > 0 && game.dailyQuests.quests.some(q => !q.completed);
+        if (questBadge && window.game.dailyQuests) {
+            const hasIncomplete = window.game.dailyQuests.quests.length > 0 && window.game.dailyQuests.quests.some(q => !q.completed);
             questBadge.classList.toggle('hidden', !hasIncomplete);
         }
 
         // Prestige button glow
         const prestigeBtn = document.getElementById('btn-prestige-menu');
-        if (prestigeBtn && game.prestige) {
-            prestigeBtn.classList.toggle('prestige-ready', game.prestige.canPrestige());
+        if (prestigeBtn && window.game.prestige) {
+            prestigeBtn.classList.toggle('prestige-ready', window.game.prestige.canPrestige());
         }
     }, 2000);
+
+    // Store global intervals in game for cleanup
+    if (window.game) {
+        window.game._intervals.push(questTimerInterval, badgeUpdateInterval);
+    }
 
     // Initialize help tooltips
     initHelpTooltips();
