@@ -21,7 +21,7 @@
 
 import { ASCENSION_PERKS } from '../../data.js';
 import { t } from '../../i18n.js';
-import { BigNumService } from '../../config.js';
+import { BigNumService, formatNumber } from '../../config.js';
 
 export class AscensionManager {
     constructor(game) {
@@ -227,5 +227,148 @@ export class AscensionManager {
         if (typeof data.points === 'number') {
             this.ascensionPoints = BigNumService.create(data.points);
         }
+    }
+
+    // ============ UI Methods ============
+
+    /**
+     * Initialize UI elements and event listeners
+     */
+    initUI() {
+        this.modal = document.getElementById('ascension-modal');
+        this.treeContainer = document.getElementById('ascension-tree');
+        this.pointsDisplay = document.getElementById('ascension-points-display');
+        this.openBtn = document.getElementById('btn-open-ascension');
+
+        if (this.openBtn) {
+            this.openBtn.addEventListener('click', () => this.openModal());
+        }
+
+        // Show button if player has ascended at least once
+        this.updateButtonVisibility();
+    }
+
+    /**
+     * Show/hide the ascension button based on progress
+     */
+    updateButtonVisibility() {
+        if (!this.openBtn) return;
+
+        // Show if player has any AP or has ascended before
+        const hasAP = BigNumService.gt(this.ascensionPoints, 0);
+        const hasAscended = this.totalAscensions > 0;
+
+        if (hasAP || hasAscended) {
+            this.openBtn.classList.remove('hidden');
+        }
+    }
+
+    /**
+     * Open the ascension modal
+     */
+    openModal() {
+        if (!this.modal) return;
+        this.modal.classList.remove('hidden');
+        this.renderTree();
+        this.updateUI();
+    }
+
+    /**
+     * Close the ascension modal
+     */
+    closeModal() {
+        if (!this.modal) return;
+        this.modal.classList.add('hidden');
+    }
+
+    /**
+     * Render the perk tree
+     */
+    renderTree() {
+        if (!this.treeContainer) return;
+
+        this.treeContainer.innerHTML = '';
+
+        ASCENSION_PERKS.forEach(perk => {
+            const card = this.createPerkCard(perk);
+            this.treeContainer.appendChild(card);
+        });
+    }
+
+    /**
+     * Create a perk card element
+     */
+    createPerkCard(perk) {
+        const div = document.createElement('div');
+        div.className = 'perk-card';
+        div.dataset.perkId = perk.id;
+
+        const level = this.getPerkLevel(perk.id);
+        const cost = this.getPerkCost(perk.id);
+        const isLocked = !this.meetsRequirement(perk.id);
+        const isMaxed = this.isMaxed(perk.id);
+        const canAfford = this.canAfford(perk.id);
+
+        // Apply state classes
+        if (isLocked) {
+            div.classList.add('locked');
+        } else if (isMaxed) {
+            div.classList.add('maxed');
+        } else if (canAfford) {
+            div.classList.add('can-afford');
+        } else {
+            div.classList.add('unlocked');
+        }
+
+        // Build level text
+        let levelText = `${t('ascension.level')} ${level}`;
+        if (perk.maxLevel > 0) {
+            levelText += ` / ${perk.maxLevel}`;
+        }
+
+        // Build cost text
+        let costText = '';
+        if (isMaxed) {
+            costText = `<span class="text-green-400">${t('ascension.maxed')}</span>`;
+        } else if (isLocked) {
+            const reqPerk = this.getPerk(perk.req);
+            costText = `<span class="perk-locked-msg">${t('ascension.locked')}</span>`;
+            if (reqPerk) {
+                costText += `<div class="perk-req">${t('ascension.requires')} ${t(reqPerk.nameKey + '.name')}</div>`;
+            }
+        } else {
+            costText = `${formatNumber(cost)} AP`;
+        }
+
+        div.innerHTML = `
+            <div class="perk-icon">${perk.icon}</div>
+            <div class="perk-name">${t(perk.nameKey + '.name')}</div>
+            <div class="perk-desc">${t(perk.descKey + '.desc')}</div>
+            <div class="perk-level"><span class="perk-level-value">${levelText}</span></div>
+            <div class="perk-cost">${costText}</div>
+        `;
+
+        // Add click handler
+        if (!isLocked && !isMaxed) {
+            div.addEventListener('click', () => {
+                if (this.purchasePerk(perk.id)) {
+                    this.renderTree();
+                    this.updateUI();
+                }
+            });
+        }
+
+        return div;
+    }
+
+    /**
+     * Update UI displays
+     */
+    updateUI() {
+        if (this.pointsDisplay) {
+            this.pointsDisplay.textContent = formatNumber(this.ascensionPoints);
+        }
+
+        this.updateButtonVisibility();
     }
 }
