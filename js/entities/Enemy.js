@@ -19,7 +19,7 @@
  */
 
 import { ENEMY_TYPES } from '../data.js';
-import { CONFIG, MathUtils, formatNumber } from '../config.js';
+import { CONFIG, MathUtils, formatNumber, BigNumService } from '../config.js';
 import { t } from '../i18n.js';
 import { SKILL, RUNE } from '../constants/skillIds.js';
 import { COLORS, getEnemyDisplayColor } from '../constants/colors.js';
@@ -37,11 +37,11 @@ export class Enemy {
         this.wave = wave;
 
         // Calculate Wave Factor (Exponential) - Defender Idle 2 style
-        let growthFactor = Math.pow(BALANCE.SCALING.HP_GROWTH, wave - 1);
+        let growthFactor = BigNumService.pow(BALANCE.SCALING.HP_GROWTH, wave - 1);
 
         // Apply Late Game Scaling (if Wave > 50)
         if (wave > 50) {
-            growthFactor *= Math.pow(BALANCE.SCALING.LATE_GAME_FACTOR, wave - 50);
+            growthFactor = BigNumService.mul(growthFactor, BigNumService.pow(BALANCE.SCALING.LATE_GAME_FACTOR, wave - 50));
         }
 
         // Challenge and Dread modifiers
@@ -49,16 +49,33 @@ export class Enemy {
         const speedMod = game.activeChallenge?.id === 'speed' ? 2 : 1;
         const dread = game.getDreadMultipliers();
 
-        // Base Stats with exponential scaling
-        this.maxHp = Math.floor(BALANCE.BASE.ENEMY_HP * growthFactor * this.type.hpMult * (this.isElite ? 5 : 1) * hpMod * dread.enemyHp);
-        this.damage = Math.floor(BALANCE.BASE.ENEMY_DAMAGE * Math.pow(BALANCE.SCALING.DAMAGE_GROWTH, wave - 1) * dread.enemyDamage);
-        this.goldValue = Math.floor(BALANCE.BASE.GOLD_DROP * Math.pow(BALANCE.SCALING.GOLD_GROWTH, wave - 1));
+        // Base Stats with exponential scaling (BigNum)
+        this.maxHp = BigNumService.floor(
+            BigNumService.mul(
+                BigNumService.mul(
+                    BigNumService.mul(BALANCE.BASE.ENEMY_HP, growthFactor),
+                    this.type.hpMult * (this.isElite ? 5 : 1)
+                ),
+                hpMod * dread.enemyHp
+            )
+        );
+
+        this.damage = BigNumService.floor(
+            BigNumService.mul(
+                BigNumService.mul(BALANCE.BASE.ENEMY_DAMAGE, BigNumService.pow(BALANCE.SCALING.DAMAGE_GROWTH, wave - 1)),
+                dread.enemyDamage
+            )
+        );
+
+        this.goldValue = BigNumService.floor(
+            BigNumService.mul(BALANCE.BASE.GOLD_DROP, BigNumService.pow(BALANCE.SCALING.GOLD_GROWTH, wave - 1))
+        );
 
         // Boss Modifiers
         if (typeKey === 'BOSS') {
-            this.maxHp *= BALANCE.SCALING.BOSS_HP_MULTIPLIER;
-            this.damage *= BALANCE.SCALING.BOSS_DAMAGE_MULTIPLIER;
-            this.goldValue *= Math.floor(BALANCE.SCALING.BOSS_HP_MULTIPLIER * 0.5);
+            this.maxHp = BigNumService.mul(this.maxHp, BALANCE.SCALING.BOSS_HP_MULTIPLIER);
+            this.damage = BigNumService.mul(this.damage, BALANCE.SCALING.BOSS_DAMAGE_MULTIPLIER);
+            this.goldValue = BigNumService.mul(this.goldValue, Math.floor(BALANCE.SCALING.BOSS_HP_MULTIPLIER * 0.5));
             this.radius *= 1.5; // Scale size for visual impact
         }
 
@@ -67,8 +84,11 @@ export class Enemy {
         const prestigeGoldMult = game.prestige?.getEffect('prestige_gold') || 1;
         const goldMult = game.metaUpgrades.getEffectValue('goldMult') * (1 + (game.relicMults.gold || 0)) * passiveGoldMult * prestigeGoldMult;
         const catchupBonus = (wave > (game.stats?.maxWave || 0)) ? 1.5 : 1.0;
-        this.goldValue = Math.floor(this.goldValue * goldMult * catchupBonus * (typeKey === 'TANK' ? 2 : 1) * (this.isElite ? 10 : 1) * dread.crystalBonus);
-        if (game.activeBuffs[RUNE.MIDAS] > 0) this.goldValue *= 5;
+        const goldModifiers = goldMult * catchupBonus * (typeKey === 'TANK' ? 2 : 1) * (this.isElite ? 10 : 1) * dread.crystalBonus;
+        this.goldValue = BigNumService.floor(BigNumService.mul(this.goldValue, goldModifiers));
+        if (game.activeBuffs[RUNE.MIDAS] > 0) {
+            this.goldValue = BigNumService.mul(this.goldValue, 5);
+        }
 
         this.hp = this.maxHp;
         this.baseSpeed = CONFIG.baseEnemySpeed * (1 + wave * 0.03) * this.type.speedMult * speedMod * dread.enemySpeed;
@@ -123,7 +143,7 @@ export class Enemy {
             this.x += Math.cos(angle) * moveStep;
             this.y += Math.sin(angle) * moveStep;
         } else {
-            game.castle.takeDamage((this.damage * 0.05) * (dt / 16));
+            game.castle.takeDamage(BigNumService.toNumber(this.damage) * 0.05 * (dt / 16));
         }
         if (this.typeKey === 'PHANTOM') {
             this.teleportTimer += dt;
@@ -137,13 +157,13 @@ export class Enemy {
             if (this.state === 'APPROACH') {
                 if (distSq <= 8100) { // 90² = 8100
                     this.state = 'FLEE';
-                    const stolen = Math.floor(game.gold * 0.1);
-                    game.gold -= stolen;
-                    game.floatingTexts.push(game.createFloatingText(this.x, this.y - 30, `-${stolen} 💰`, '#ef4444', 20));
+                    const stolen = BigNumService.floor(BigNumService.mul(game.gold, 0.1));
+                    game.gold = BigNumService.sub(game.gold, stolen);
+                    game.floatingTexts.push(game.createFloatingText(this.x, this.y - 30, `-${formatNumber(stolen)} 💰`, '#ef4444', 20));
                 }
             } else if (this.state === 'FLEE') {
                 this.x += currentSpeed * 1.5 * (dt / 16);
-                if (this.x > game.width + 100) this.hp = 0;
+                if (this.x > game.width + 100) this.hp = BigNumService.create(0);
             }
             return;
         }
@@ -151,8 +171,9 @@ export class Enemy {
             if (Math.random() < 0.05) {
                 const healRangeSq = 150 * 150;
                 game.enemies.forEach(e => {
-                    if (e !== this && e.hp < e.maxHp && MathUtils.distSq(this.x, this.y, e.x, e.y) < healRangeSq) {
-                        e.hp = Math.min(e.maxHp, e.hp + (e.maxHp * 0.05));
+                    if (e !== this && BigNumService.lt(e.hp, e.maxHp) && MathUtils.distSq(this.x, this.y, e.x, e.y) < healRangeSq) {
+                        const healAmount = BigNumService.mul(e.maxHp, 0.05);
+                        e.hp = BigNumService.min(e.maxHp, BigNumService.add(e.hp, healAmount));
                         const beam = game.createParticle(this.x, this.y, COLORS.HEAL_BEAM);
                         beam.tx = e.x;
                         beam.ty = e.y;
@@ -175,28 +196,38 @@ export class Enemy {
 
     takeDamage(amount, isCrit, isSuperCrit, silent = false) {
         const game = this.game;
+        let dmg = BigNumService.create(amount);
+
         if (game.challenges.dmTech['berserk']) {
             const missingHpPct = 1 - (game.castle.hp / game.castle.maxHp);
-            if (missingHpPct > 0) amount *= (1 + missingHpPct);
+            if (missingHpPct > 0) {
+                dmg = BigNumService.mul(dmg, 1 + missingHpPct);
+            }
         }
-        this.hp -= amount;
+
+        this.hp = BigNumService.sub(this.hp, dmg);
+
         if (!silent && game.settings.showDamageText) {
             game.floatingTexts.push(game.createFloatingText(
                 this.x, this.y - 20,
-                formatNumber(amount),
+                formatNumber(dmg),
                 isSuperCrit ? '#d946ef' : (isCrit ? '#ef4444' : '#fff'),
                 isSuperCrit ? 40 : (isCrit ? 30 : 20)
             ));
         }
         if (!silent) game.sound.play('hit');
-        if (this.hp <= 0) {
-            if (this.state !== 'FLEE' || this.hp <= 0) {
-                game.addGold(this.goldValue + (game.isRushBonus ? Math.floor(this.goldValue * 0.25) : 0));
+
+        if (BigNumService.lte(this.hp, 0)) {
+            if (this.state !== 'FLEE' || BigNumService.lte(this.hp, 0)) {
+                const rushBonus = game.isRushBonus ? BigNumService.floor(BigNumService.mul(this.goldValue, 0.25)) : BigNumService.create(0);
+                game.addGold(BigNumService.add(this.goldValue, rushBonus));
             }
             game.stats.registerKill(this.typeKey === 'BOSS', this.x, this.y);
             game.stats.registerEnemySeen(this.typeKey);
             game.town.addXP(this.typeKey === 'BOSS' ? 10 : 1);
-            if (game.challenges.dmTech['siphon'] && this.typeKey !== 'BOSS' && Math.random() < 0.01) game.ether++;
+            if (game.challenges.dmTech['siphon'] && this.typeKey !== 'BOSS' && Math.random() < 0.01) {
+                game.ether = BigNumService.add(game.ether, 1);
+            }
             if (this.typeKey === 'SPLITTER') {
                 game.enemies.push(new Enemy(game, this.wave, 'MINI', this.x, this.y - 10));
                 game.enemies.push(new Enemy(game, this.wave, 'MINI', this.x, this.y + 10));
@@ -252,7 +283,8 @@ export class Enemy {
             ctx.shadowBlur = 0;
         }
         ctx.restore();
-        const hpPercent = Math.max(0, this.hp / this.maxHp);
+        // Convert BigNum to standard Number for canvas operations
+        const hpPercent = Math.max(0, BigNumService.toNumber(BigNumService.div(this.hp, this.maxHp)));
         ctx.fillStyle = COLORS.HEALTH_BG;
         ctx.fillRect(this.x - 10, this.y - 20 - (this.radius), 20, 4);
         ctx.fillStyle = COLORS.HEALTH_FILL;
