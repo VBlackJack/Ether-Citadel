@@ -96,6 +96,7 @@ import { SoundManager, MusicManager } from './systems/audio/index.js';
 import { InputManager } from './systems/input/InputManager.js';
 import { RenderSystem } from './systems/graphics/RenderSystem.js';
 import { GameLoop } from './game/GameLoop.js';
+import { eventBus, GameEvents } from './core/index.js';
 
 class Game {
     constructor() {
@@ -114,6 +115,7 @@ class Game {
         this.showDebugPanel = false;
         this.devClickCount = 0;
         this.config = ConfigRegistry;
+        this.events = eventBus;
         this.sound = new SoundManager();
         this.metaUpgrades = new MetaUpgradeManager(this);
         this.skills = new SkillManager(this);
@@ -424,8 +426,10 @@ class Game {
         const btn = document.getElementById('btn-pause');
         if (this.isPaused) {
             btn.classList.add('bg-yellow-600');
+            this.events.emit(GameEvents.GAME_PAUSE);
         } else {
             btn.classList.remove('bg-yellow-600');
+            this.events.emit(GameEvents.GAME_RESUME);
         }
     }
 
@@ -532,13 +536,16 @@ class Game {
     activateSkill(id) {
         this.skills.activate(id);
         this.tutorial.check();
+        this.events.emit(GameEvents.SKILL_ACTIVATE, { id });
     }
 
     addGold(amount) {
+        const oldGold = this.gold;
         this.gold = BigNumService.add(this.gold, amount);
         this.stats.registerGold(BigNumService.toNumber(amount));
         this.upgrades.render(this.activeTab);
         this.tutorial.check();
+        this.events.emit(GameEvents.GOLD_CHANGE, { oldValue: oldGold, newValue: this.gold, delta: amount });
     }
 
     createFloatingText(x, y, text, color, size = 20) {
@@ -2812,6 +2819,7 @@ class Game {
             const notif = document.getElementById('boss-notification');
             notif.classList.remove('hidden');
             setTimeout(() => notif.classList.add('hidden'), 3000);
+            this.events.emit(GameEvents.BOSS_SPAWN, { wave: this.wave });
         }
         this.checkEvolution();
         this.floatingTexts.push(FloatingText.create(
@@ -2821,6 +2829,7 @@ class Game {
             this.isBossWave ? COLORS.ERROR : COLORS.WHITE,
             40
         ));
+        this.events.emit(GameEvents.WAVE_START, { wave: this.wave, isBoss: this.isBossWave });
     }
 
     spawnEnemy(forcedType = null, forcedX = null, forcedY = null) {
@@ -3098,6 +3107,7 @@ class Game {
 
     gameOver() {
         this.isGameOver = true;
+        this.events.emit(GameEvents.GAME_OVER, { wave: this.wave, highestWave: this.highestWave });
         const dreadMult = this.getDreadMultipliers();
         const earnedEther = Math.max(1, Math.floor(this.wave / 1.5)) * (1 + (this.stats.mastery['ether_gain'] || 0) * 0.05) * dreadMult.etherBonus;
         this.ether = BigNumService.add(this.ether, earnedEther);
@@ -3194,6 +3204,7 @@ class Game {
         this.ascensionMgr?.updateButtonVisibility();
         this.startWave();
         this.tutorial.check();
+        this.events.emit(GameEvents.GAME_RESTART, { isAuto });
     }
 
     performAutoBuy() {
