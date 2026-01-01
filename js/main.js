@@ -3210,7 +3210,20 @@ class Game {
     confirmReset() {
         const message = t('modals.settings.confirmReset') || 'Are you sure you want to reset all progress?';
         gameConfirm(message, () => {
-            localStorage.removeItem(CONFIG.saveKey);
+            // Clear all game-related localStorage keys for full reset
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && (
+                    key.startsWith('ether_citadel') ||
+                    key.startsWith('aegis_') ||
+                    key.startsWith('seen_') ||
+                    key.startsWith('unlock_seen_')
+                )) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(key => localStorage.removeItem(key));
             location.reload();
         });
     }
