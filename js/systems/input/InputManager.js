@@ -6,6 +6,7 @@
 import { SKILL } from '../../constants/skillIds.js';
 import { MathUtils } from '../../config.js';
 import { NOTATIONS, BigNumService } from '../../services/BigNumService.js';
+import { CloudSaveService } from '../../services/CloudSaveService.js';
 import { t } from '../../i18n.js';
 
 export class InputManager {
@@ -82,6 +83,9 @@ export class InputManager {
 
         // Notation selector
         this.initNotationSelector();
+
+        // Cloud save modal
+        this.initCloudModal();
     }
 
     initNotationSelector() {
@@ -118,6 +122,145 @@ export class InputManager {
             this.game.updateEtherUI?.();
             this.game.updateCrystalsUI?.();
         });
+    }
+
+    initCloudModal() {
+        const btnCloud = document.getElementById('btn-cloud');
+        const modal = document.getElementById('modal-cloud');
+        const loginView = document.getElementById('cloud-login-view');
+        const dashboardView = document.getElementById('cloud-dashboard-view');
+        const btnLogin = document.getElementById('cloud-btn-login');
+        const btnLogout = document.getElementById('cloud-btn-logout');
+        const btnSave = document.getElementById('cloud-btn-save');
+        const btnLoad = document.getElementById('cloud-btn-load');
+        const usernameInput = document.getElementById('cloud-username');
+        const passwordInput = document.getElementById('cloud-password');
+        const loginError = document.getElementById('cloud-login-error');
+        const statusText = document.getElementById('cloud-status-text');
+        const lastSyncEl = document.getElementById('cloud-last-sync');
+        const messageEl = document.getElementById('cloud-message');
+
+        if (!btnCloud || !modal) return;
+
+        // Update cloud button style based on login state
+        const updateButtonStyle = () => {
+            if (CloudSaveService.isLoggedIn) {
+                btnCloud.classList.add('cloud-logged-in');
+            } else {
+                btnCloud.classList.remove('cloud-logged-in');
+            }
+        };
+
+        // Switch between login and dashboard views
+        const updateView = () => {
+            if (CloudSaveService.isLoggedIn) {
+                loginView?.classList.add('hidden');
+                dashboardView?.classList.remove('hidden');
+                if (statusText) {
+                    statusText.textContent = t('cloud.status.online').replace('{name}', CloudSaveService.username);
+                }
+                if (lastSyncEl) {
+                    lastSyncEl.textContent = CloudSaveService.getLastSyncFormatted();
+                }
+            } else {
+                loginView?.classList.remove('hidden');
+                dashboardView?.classList.add('hidden');
+            }
+            updateButtonStyle();
+        };
+
+        // Show temporary message
+        const showMessage = (msg, isError = false) => {
+            if (!messageEl) return;
+            messageEl.textContent = msg;
+            messageEl.className = isError ? 'cloud-error' : 'cloud-success';
+            messageEl.classList.remove('hidden');
+            setTimeout(() => messageEl.classList.add('hidden'), 3000);
+        };
+
+        // Open modal
+        btnCloud.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            updateView();
+            if (loginError) loginError.classList.add('hidden');
+        });
+
+        // Login button
+        btnLogin?.addEventListener('click', async () => {
+            const username = usernameInput?.value?.trim() || '';
+            const password = passwordInput?.value || '';
+
+            btnLogin.disabled = true;
+            btnLogin.textContent = '...';
+
+            const result = await CloudSaveService.login(username, password);
+
+            btnLogin.disabled = false;
+            btnLogin.textContent = t('cloud.login');
+
+            if (result.success) {
+                if (usernameInput) usernameInput.value = '';
+                if (passwordInput) passwordInput.value = '';
+                updateView();
+            } else {
+                if (loginError) {
+                    loginError.textContent = t('cloud.messages.loginFailed');
+                    loginError.classList.remove('hidden');
+                }
+            }
+        });
+
+        // Logout button
+        btnLogout?.addEventListener('click', async () => {
+            btnLogout.disabled = true;
+            await CloudSaveService.logout();
+            btnLogout.disabled = false;
+            updateView();
+        });
+
+        // Force Save button
+        btnSave?.addEventListener('click', async () => {
+            btnSave.disabled = true;
+            const saveData = this.game.getSaveDataString?.() || JSON.stringify(this.game.getSaveData?.() || {});
+            const result = await CloudSaveService.save(saveData);
+            btnSave.disabled = false;
+
+            if (result.success) {
+                showMessage(t('cloud.messages.saveSuccess'));
+                if (lastSyncEl) {
+                    lastSyncEl.textContent = CloudSaveService.getLastSyncFormatted();
+                }
+            } else {
+                showMessage(t('cloud.messages.saveFailed'), true);
+            }
+        });
+
+        // Force Load button
+        btnLoad?.addEventListener('click', async () => {
+            btnLoad.disabled = true;
+            const result = await CloudSaveService.load();
+            btnLoad.disabled = false;
+
+            if (result.success && result.data) {
+                try {
+                    const saveData = JSON.parse(result.data);
+                    this.game.loadSaveData?.(saveData);
+                    showMessage(t('cloud.messages.loadSuccess'));
+                    if (lastSyncEl) {
+                        lastSyncEl.textContent = CloudSaveService.getLastSyncFormatted();
+                    }
+                } catch (e) {
+                    showMessage(t('cloud.messages.loadFailed'), true);
+                }
+            } else {
+                showMessage(result.error === 'no_cloud_save'
+                    ? t('cloud.messages.noCloudSave')
+                    : t('cloud.messages.loadFailed'), true);
+            }
+        });
+
+        // Initial button style
+        updateButtonStyle();
     }
 
     handleResize() {

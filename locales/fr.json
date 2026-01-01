@@ -1589,5 +1589,42 @@
       "title": "Aucune fonctionnalité débloquée",
       "hint": "Montez en niveau pour débloquer des fonctionnalités !"
     }
+  },
+  "cloud": {
+    "title": "Sauvegarde Cloud",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "register": "Pas de compte ? S'inscrire",
+    "status": {
+      "online": "Connecté en tant que {name}",
+      "offline": "Hors ligne"
+    },
+    "actions": {
+      "save": "Sauvegarder sur le Cloud",
+      "load": "Charger du Cloud",
+      "forceSave": "Forcer l'envoi",
+      "forceLoad": "Forcer le téléchargement"
+    },
+    "lastSync": "Dernière sauvegarde Cloud",
+    "messages": {
+      "saveSuccess": "Sauvegarde Cloud réussie !",
+      "loadSuccess": "Récupération Cloud réussie !",
+      "loginSuccess": "Connexion réussie !",
+      "logoutSuccess": "Déconnexion réussie",
+      "conflict": "Conflit détecté : La sauvegarde Cloud est plus récente.",
+      "noCloudSave": "Aucune sauvegarde Cloud trouvée",
+      "loginFailed": "Échec de connexion. Le nom d'utilisateur doit faire au moins 4 caractères.",
+      "saveFailed": "Échec de la sauvegarde Cloud",
+      "loadFailed": "Échec du chargement Cloud"
+    },
+    "conflict": {
+      "title": "Conflit de Sauvegarde Détecté",
+      "cloudNewer": "La sauvegarde Cloud est plus récente que votre sauvegarde locale.",
+      "localNewer": "Votre sauvegarde locale est plus récente que la sauvegarde Cloud.",
+      "useCloud": "Utiliser Cloud",
+      "useLocal": "Utiliser Local"
+    }
   }
 }

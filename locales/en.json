@@ -1513,5 +1513,42 @@
       "title": "No features unlocked",
       "hint": "Level up your town to unlock features!"
     }
+  },
+  "cloud": {
+    "title": "Cloud Save",
+    "username": "Username",
+    "password": "Password",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "No account? Register",
+    "status": {
+      "online": "Connected as {name}",
+      "offline": "Offline"
+    },
+    "actions": {
+      "save": "Save to Cloud",
+      "load": "Load from Cloud",
+      "forceSave": "Force Upload",
+      "forceLoad": "Force Download"
+    },
+    "lastSync": "Last Cloud Save",
+    "messages": {
+      "saveSuccess": "Cloud save successful!",
+      "loadSuccess": "Cloud load successful!",
+      "loginSuccess": "Successfully logged in!",
+      "logoutSuccess": "Successfully logged out",
+      "conflict": "Conflict detected: Cloud save is newer.",
+      "noCloudSave": "No cloud save found",
+      "loginFailed": "Login failed. Username must be at least 4 characters.",
+      "saveFailed": "Failed to save to cloud",
+      "loadFailed": "Failed to load from cloud"
+    },
+    "conflict": {
+      "title": "Save Conflict Detected",
+      "cloudNewer": "The cloud save is more recent than your local save.",
+      "localNewer": "Your local save is more recent than the cloud save.",
+      "useCloud": "Use Cloud",
+      "useLocal": "Use Local"
+    }
   }
 }
