@@ -18,12 +18,12 @@ const CACHE_NAME = 'ether-citadel-v1';
 const STATIC_CACHE = 'ether-citadel-static-v1';
 const DYNAMIC_CACHE = 'ether-citadel-dynamic-v1';
 
-// Core assets to cache immediately
+// Core assets to cache immediately (relative to SW scope)
 const CORE_ASSETS = [
-    '/',
-    '/index.html',
-    '/favicon.svg',
-    '/manifest.json'
+    './',
+    './index.html',
+    './favicon.svg',
+    './manifest.json'
 ];
 
 // Assets to cache on first use
