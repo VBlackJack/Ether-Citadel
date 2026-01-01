@@ -3210,6 +3210,8 @@ class Game {
     confirmReset() {
         const message = t('modals.settings.confirmReset') || 'Are you sure you want to reset all progress?';
         gameConfirm(message, () => {
+            // Set flag to prevent beforeunload from re-saving
+            window._isResetting = true;
             localStorage.clear();
             location.reload();
         });
@@ -3598,6 +3600,8 @@ async function init() {
 
     // Save and cleanup on window unload
     window.addEventListener('beforeunload', () => {
+        // Skip save if resetting (localStorage.clear was called)
+        if (window._isResetting) return;
         if (window.game) {
             window.game.save();
             window.game.cleanup();
