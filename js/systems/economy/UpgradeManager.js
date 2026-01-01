@@ -61,10 +61,10 @@ export class UpgradeManager {
     }
 
     /**
-     * Get upgrade value at a specific level based on type
+     * Get upgrade value at a specific level
      * @param {string} id
      * @param {number} [level] - Optional level, defaults to current
-     * @returns {number}
+     * @returns {number|object}
      */
     getValue(id, level) {
         const u = this.getById(id);
@@ -72,23 +72,30 @@ export class UpgradeManager {
 
         const lvl = level !== undefined ? level : u.level;
 
+        // Use upgrade's own getValue function if defined
+        if (typeof u.getValue === 'function') {
+            const result = u.getValue(lvl);
+            // Handle NaN/undefined
+            if (result === undefined || (typeof result === 'number' && isNaN(result))) {
+                return 0;
+            }
+            return result;
+        }
+
+        // Legacy format with type/baseValue/valuePerLevel
         switch (u.type) {
             case 'linear':
-                // base + (level * perLevel)
-                return u.baseValue + (lvl * u.valuePerLevel);
+                return (u.baseValue || 0) + (lvl * (u.valuePerLevel || 0));
 
             case 'decay':
-                // base * (perLevel ^ level) - used for speed/cooldowns
-                return u.baseValue * Math.pow(u.valuePerLevel, lvl);
+                return (u.baseValue || 0) * Math.pow(u.valuePerLevel || 1, lvl);
 
             case 'chance':
-                // base + (level * perLevel), capped
-                const val = u.baseValue + (lvl * u.valuePerLevel);
+                const val = (u.baseValue || 0) + (lvl * (u.valuePerLevel || 0));
                 return u.cap ? Math.min(u.cap, val) : val;
 
             default:
-                // Fallback for flat or unspecified types
-                return u.baseValue + (lvl * (u.valuePerLevel || 0));
+                return (u.baseValue || 0) + (lvl * (u.valuePerLevel || 0));
         }
     }
 
@@ -187,16 +194,42 @@ export class UpgradeManager {
      * @returns {string}
      */
     formatValue(u, val) {
-        if (u.id === 'speed') return (1000 / val).toFixed(1) + '/s'; // Speed as attacks per second? Or just value
-        if (u.id === 'crit') return val.toFixed(1) + '%';
-        if (u.id === 'range' || u.id === 'blast') return Math.floor(val) + 'px';
-        if (u.id === 'multishot' || u.id === 'armor' || u.id === 'stasis') return val.toFixed(1) + '%';
-        if (u.id === 'regen') return val.toFixed(1) + '/s';
-        if (u.id === 'leech') return `+${val} HP`;
-        if (u.id === 'shield') return formatNumber(val) + ' SP';
-        if (u.id === 'turret') return val + ' ' + t('units.units');
-        if (u.id === 'bounce') return val + ' ' + t('units.bounces');
+        // Handle null/undefined/NaN
+        if (val === null || val === undefined) return '0';
+        if (typeof val === 'number' && isNaN(val)) return '0';
 
+        // Handle objects (e.g., crit returns {chance, mult})
+        if (typeof val === 'object' && val !== null) {
+            if (u.id === 'crit' && val.chance !== undefined) {
+                return `${val.chance.toFixed(1)}% (x${val.mult.toFixed(1)})`;
+            }
+            return JSON.stringify(val);
+        }
+
+        // Speed: attacks per second (avoid division by zero)
+        if (u.id === 'speed') {
+            const numVal = Number(val) || 1000;
+            return (1000 / numVal).toFixed(1) + '/s';
+        }
+
+        // Percentage-based stats
+        if (u.id === 'crit') return Number(val).toFixed(1) + '%';
+        if (u.id === 'multishot' || u.id === 'stasis') return Number(val).toFixed(1) + '%';
+        if (u.id === 'armor') return (Number(val) * 100).toFixed(1) + '%';
+
+        // Pixel-based stats
+        if (u.id === 'range' || u.id === 'blast') return Math.floor(Number(val) || 0) + 'px';
+
+        // Rate-based stats
+        if (u.id === 'regen') return Number(val).toFixed(1) + '/s';
+
+        // Flat value stats
+        if (u.id === 'leech') return `+${Number(val) || 0} HP`;
+        if (u.id === 'shield') return formatNumber(val) + ' SP';
+        if (u.id === 'turret') return (Number(val) || 0) + ' ' + t('units.units');
+        if (u.id === 'bounce') return (Number(val) || 0) + ' ' + t('units.bounces');
+
+        // Boolean stats
         if (typeof val === 'boolean') {
             return val
                 ? `<span class="text-green-400">${t('status.active')}</span>`
