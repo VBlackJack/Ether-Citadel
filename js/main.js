@@ -93,12 +93,14 @@ import { SKILL, RUNE, UPGRADE, PRESTIGE_RESET_UPGRADES } from './constants/skill
 import { TutorialManager, StatisticsManager, LeaderboardManager, VisualEffectsManager } from './systems/ui/index.js';
 import { SoundManager, MusicManager } from './systems/audio/index.js';
 import { InputManager } from './systems/input/InputManager.js';
+import { RenderSystem } from './systems/graphics/RenderSystem.js';
 
 class Game {
     constructor() {
         window.game = this;
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
+        this.renderSystem = new RenderSystem(this);
         this.lastTime = performance.now();
         this.gameTime = 0;
         this.speedMultiplier = 1;
@@ -2989,44 +2991,9 @@ class Game {
     }
 
     draw() {
-        this.ctx.fillStyle = document.body.style.backgroundColor || COLORS.BG_DARK;
-        this.ctx.fillRect(0, 0, this.width, this.height);
-        this.ctx.fillStyle = COLORS.BG_SLATE;
-        this.ctx.fillRect(0, 0, 120, this.height);
-        const fx = document.getElementById('fx-container');
-        if (this.skills.isActive(SKILL.BLACKHOLE)) {
-            fx.innerHTML = `<div class="absolute top-1/2 left-[70%] transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border-4 border-purple-600 shadow-[0_0_50px_#9333ea] opacity-80 black-hole-visual bg-black"></div>`;
-        } else {
-            if (!document.querySelector('.orbital-laser')) fx.innerHTML = '';
+        if (this.renderSystem) {
+            this.renderSystem.draw();
         }
-        const laserColor = getCastleTierColor(this.castle.tier);
-        this.ctx.shadowBlur = 15;
-        this.ctx.shadowColor = laserColor;
-        this.ctx.strokeStyle = laserColor;
-        this.ctx.lineWidth = 4;
-        this.ctx.beginPath();
-        this.ctx.moveTo(120, 0);
-        this.ctx.lineTo(120, this.height);
-        this.ctx.stroke();
-        this.ctx.shadowBlur = 0;
-        this.turrets.forEach(t => t.draw(this.ctx));
-        this.castle.draw(this.ctx, this.width, this.height);
-        this.turretSlots.draw(this.ctx);
-        if (this.drone) this.drone.draw(this.ctx);
-        this.runes.forEach(r => r.draw(this.ctx));
-        this.enemies.forEach(e => e.draw(this.ctx));
-        this.projectiles.forEach(p => p.draw(this.ctx));
-        this.particles.forEach(p => p.draw(this.ctx));
-        this.floatingTexts.forEach(t => t.draw(this.ctx));
-        this.weather.draw(this.ctx);
-        this.combo.draw(this.ctx);
-        this.events.draw(this.ctx);
-        this.synergies.draw(this.ctx);
-        this.gameModes.draw(this.ctx);
-        this.seasonalEvents.draw(this.ctx);
-        this.campaign.draw(this.ctx);
-        this.visualEffects.draw(this.ctx);
-        this.bossMechanics.draw(this.ctx);
     }
 
     gameOver() {
