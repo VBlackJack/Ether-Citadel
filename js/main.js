@@ -117,7 +117,7 @@ class Game {
         this.showDebugPanel = false;
         this.devClickCount = 0;
         this.config = ConfigRegistry;
-        this.events = eventBus;
+        this.eventBus = eventBus;
         this.swipe = new SwipeManager(this);
         this.haptics = new HapticManager(this);
         this.sound = new SoundManager();
@@ -463,10 +463,10 @@ class Game {
         const btn = document.getElementById('btn-pause');
         if (this.isPaused) {
             btn.classList.add('bg-yellow-600');
-            this.events.emit(GameEvents.GAME_PAUSE);
+            this.eventBus.emit(GameEvents.GAME_PAUSE);
         } else {
             btn.classList.remove('bg-yellow-600');
-            this.events.emit(GameEvents.GAME_RESUME);
+            this.eventBus.emit(GameEvents.GAME_RESUME);
         }
     }
 
@@ -573,7 +573,7 @@ class Game {
     activateSkill(id) {
         this.skills.activate(id);
         this.tutorial.check();
-        this.events.emit(GameEvents.SKILL_ACTIVATE, { id });
+        this.eventBus.emit(GameEvents.SKILL_ACTIVATE, { id });
     }
 
     addGold(amount) {
@@ -582,7 +582,7 @@ class Game {
         this.stats.registerGold(BigNumService.toNumber(amount));
         this.upgrades.render(this.activeTab);
         this.tutorial.check();
-        this.events.emit(GameEvents.GOLD_CHANGE, { oldValue: oldGold, newValue: this.gold, delta: amount });
+        this.eventBus.emit(GameEvents.GOLD_CHANGE, { oldValue: oldGold, newValue: this.gold, delta: amount });
     }
 
     createFloatingText(x, y, text, color, size = 20) {
@@ -2856,7 +2856,7 @@ class Game {
             const notif = document.getElementById('boss-notification');
             notif.classList.remove('hidden');
             setTimeout(() => notif.classList.add('hidden'), 3000);
-            this.events.emit(GameEvents.BOSS_SPAWN, { wave: this.wave });
+            this.eventBus.emit(GameEvents.BOSS_SPAWN, { wave: this.wave });
         }
         this.checkEvolution();
         this.floatingTexts.push(FloatingText.create(
@@ -2866,7 +2866,7 @@ class Game {
             this.isBossWave ? COLORS.ERROR : COLORS.WHITE,
             40
         ));
-        this.events.emit(GameEvents.WAVE_START, { wave: this.wave, isBoss: this.isBossWave });
+        this.eventBus.emit(GameEvents.WAVE_START, { wave: this.wave, isBoss: this.isBossWave });
     }
 
     spawnEnemy(forcedType = null, forcedX = null, forcedY = null) {
@@ -3144,7 +3144,7 @@ class Game {
 
     gameOver() {
         this.isGameOver = true;
-        this.events.emit(GameEvents.GAME_OVER, { wave: this.wave, highestWave: this.highestWave });
+        this.eventBus.emit(GameEvents.GAME_OVER, { wave: this.wave, highestWave: this.highestWave });
         const dreadMult = this.getDreadMultipliers();
         const earnedEther = Math.max(1, Math.floor(this.wave / 1.5)) * (1 + (this.stats.mastery['ether_gain'] || 0) * 0.05) * dreadMult.etherBonus;
         this.ether = BigNumService.add(this.ether, earnedEther);
@@ -3241,7 +3241,7 @@ class Game {
         this.ascensionMgr?.updateButtonVisibility();
         this.startWave();
         this.tutorial.check();
-        this.events.emit(GameEvents.GAME_RESTART, { isAuto });
+        this.eventBus.emit(GameEvents.GAME_RESTART, { isAuto });
     }
 
     performAutoBuy() {
@@ -3637,7 +3637,9 @@ async function init() {
 
     // Register Service Worker for offline support
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
+        // Use location-relative path for GitHub Pages compatibility
+        const basePath = location.pathname.replace(/\/[^/]*$/, '/');
+        navigator.serviceWorker.register(basePath + 'sw.js')
             .then((reg) => console.log('[SW] Registered:', reg.scope))
             .catch((err) => console.warn('[SW] Registration failed:', err));
     }

@@ -165,7 +165,7 @@ export class SwipeManager {
         }
 
         // Emit event via game's event bus
-        this.game.events?.emit('swipe', { direction, target, ...data });
+        this.game.eventBus?.emit('swipe', { direction, target, ...data });
     }
 
     /**

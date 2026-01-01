@@ -65,9 +65,9 @@ export class HapticManager {
      * Setup automatic haptic feedback for game events
      */
     _setupEventListeners() {
-        if (!this.game.events) return;
+        if (!this.game.eventBus) return;
 
-        const events = this.game.events;
+        const events = this.game.eventBus;
 
         // Wave events
         events.on('wave:start', (data) => {
