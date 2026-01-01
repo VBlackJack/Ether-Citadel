@@ -21,7 +21,7 @@
 
 import { PRESTIGE_UPGRADES } from '../../data.js';
 import { t } from '../../i18n.js';
-import { formatNumber } from '../../config.js';
+import { formatNumber, BigNumService } from '../../config.js';
 import { FloatingText } from '../../entities/FloatingText.js';
 import { PRESTIGE_RESET_UPGRADES } from '../../constants/skillIds.js';
 import { COLORS } from '../../constants/colors.js';
@@ -32,7 +32,7 @@ export class PrestigeManager {
      */
     constructor(game) {
         this.game = game;
-        this.prestigePoints = 0;
+        this.prestigePoints = BigNumService.create(0);
         this.totalPrestiges = 0;
         this.upgrades = {};
 
@@ -48,26 +48,36 @@ export class PrestigeManager {
     /**
      * Calculate prestige points based on current run
      * Improved formula for better progression curve
-     * @returns {number}
+     * @returns {Decimal}
      */
     calculatePrestigePoints() {
         const baseWave = this.game.stats?.maxWave || 0;
         const dreadMult = 1 + ((this.game.dreadLevel || 0) * 0.5);
         const prestigeCountBonus = 1 + (this.totalPrestiges * 0.08);
         // Improved formula: (wave/8)^1.6 gives ~50% more PP than before
-        return Math.floor(Math.pow(baseWave / 8, 1.6) * dreadMult * prestigeCountBonus);
+        return BigNumService.floor(
+            BigNumService.mul(
+                BigNumService.pow(baseWave / 8, 1.6),
+                dreadMult * prestigeCountBonus
+            )
+        );
     }
 
     /**
      * Calculate prestige points for a given wave (for projection)
      * @param {number} wave
      * @param {number} dreadLevel
-     * @returns {number}
+     * @returns {Decimal}
      */
     calculatePointsAtWave(wave, dreadLevel = this.game.dreadLevel) {
         const dreadMult = 1 + ((dreadLevel || 0) * 0.5);
         const prestigeCountBonus = 1 + (this.totalPrestiges * 0.08);
-        return Math.floor(Math.pow(wave / 8, 1.6) * dreadMult * prestigeCountBonus);
+        return BigNumService.floor(
+            BigNumService.mul(
+                BigNumService.pow(wave / 8, 1.6),
+                dreadMult * prestigeCountBonus
+            )
+        );
     }
 
     /**
@@ -84,12 +94,13 @@ export class PrestigeManager {
         for (const wave of milestones) {
             if (wave > currentWave) {
                 const points = this.calculatePointsAtWave(wave);
-                const gain = points - currentPoints;
+                const gain = BigNumService.sub(points, currentPoints);
+                const gainNum = BigNumService.toNumber(gain);
                 projections.push({
                     wave,
                     points,
                     gain,
-                    efficiency: (gain / (wave - currentWave)).toFixed(2)
+                    efficiency: (gainNum / (wave - currentWave)).toFixed(2)
                 });
             }
         }
@@ -160,11 +171,11 @@ export class PrestigeManager {
         if (!this.canPrestige()) return false;
 
         const points = this.calculatePrestigePoints();
-        this.prestigePoints += points;
+        this.prestigePoints = BigNumService.add(this.prestigePoints, points);
         this.totalPrestiges++;
 
         // Reset run progress
-        this.game.gold = 0;
+        this.game.gold = BigNumService.create(0);
         this.game.wave = 1;
         if (this.game.castle) {
             this.game.castle.tier = 1;
@@ -209,7 +220,7 @@ export class PrestigeManager {
         }
 
         // Apply starting gold from meta upgrades
-        this.game.gold = this.game.metaUpgrades?.getEffectValue?.('startGold') || 0;
+        this.game.gold = BigNumService.create(this.game.metaUpgrades?.getEffectValue?.('startGold') || 0);
 
         // Recalculate bonuses
         this.game.recalcRelicBonuses?.();
@@ -221,7 +232,7 @@ export class PrestigeManager {
             this.game.floatingTexts.push(FloatingText.create(
                 this.game.width / 2,
                 this.game.height / 2,
-                `${t('prestige.complete')} +${points} PP`,
+                `${t('prestige.complete')} +${formatNumber(points)} PP`,
                 COLORS.GOLD,
                 36
             ));
@@ -268,13 +279,15 @@ export class PrestigeManager {
     /**
      * Get upgrade cost
      * @param {string} id
-     * @returns {number}
+     * @returns {Decimal}
      */
     getCost(id) {
         const upgrade = PRESTIGE_UPGRADES.find(u => u.id === id);
-        if (!upgrade) return Infinity;
+        if (!upgrade) return BigNumService.create(Infinity);
         const level = this.getLevel(id);
-        return Math.floor(upgrade.baseCost * Math.pow(upgrade.costMult, level));
+        return BigNumService.floor(
+            BigNumService.mul(upgrade.baseCost, BigNumService.pow(upgrade.costMult, level))
+        );
     }
 
     /**
@@ -290,7 +303,7 @@ export class PrestigeManager {
      * @returns {boolean}
      */
     canAfford(id) {
-        return this.prestigePoints >= this.getCost(id);
+        return BigNumService.gte(this.prestigePoints, this.getCost(id));
     }
 
     /**
@@ -313,9 +326,9 @@ export class PrestigeManager {
         if (level >= upgrade.maxLevel) return false;
 
         const cost = this.getCost(id);
-        if (this.prestigePoints < cost) return false;
+        if (!BigNumService.gte(this.prestigePoints, cost)) return false;
 
-        this.prestigePoints -= cost;
+        this.prestigePoints = BigNumService.sub(this.prestigePoints, cost);
         this.upgrades[id] = level + 1;
         this.game.save();
         this.render();
@@ -347,7 +360,7 @@ export class PrestigeManager {
             const level = this.getLevel(u.id);
             const isMaxed = level >= u.maxLevel;
             const cost = this.getCost(u.id);
-            const canAfford = this.prestigePoints >= cost && !isMaxed;
+            const canAfford = BigNumService.gte(this.prestigePoints, cost) && !isMaxed;
             const effect = u.effect(level);
             const nextEffect = u.effect(level + 1);
 
@@ -413,7 +426,7 @@ export class PrestigeManager {
      */
     getSaveData() {
         return {
-            prestigePoints: this.prestigePoints,
+            prestigePoints: this.prestigePoints.toString(),
             totalPrestiges: this.totalPrestiges,
             upgrades: { ...this.upgrades },
             autoPrestige: this.autoPrestige,
@@ -427,7 +440,7 @@ export class PrestigeManager {
      */
     loadSaveData(data) {
         if (!data) return;
-        this.prestigePoints = data.prestigePoints || 0;
+        this.prestigePoints = BigNumService.create(data.prestigePoints || 0);
         this.totalPrestiges = data.totalPrestiges || 0;
         this.upgrades = data.upgrades || {};
         this.autoPrestige = data.autoPrestige || false;
