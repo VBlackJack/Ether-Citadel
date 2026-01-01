@@ -5,7 +5,7 @@
 
 import { TURRET_SLOTS, SCHOOL_TURRETS } from '../../data.js';
 import { t } from '../../i18n.js';
-import { formatNumber } from '../../config.js';
+import { formatNumber, BigNumService } from '../../config.js';
 import { Projectile } from '../../entities/Projectile.js';
 
 export class TurretSlotManager {
@@ -35,14 +35,15 @@ export class TurretSlotManager {
     canPurchaseSlot(slotId) {
         const slot = this.slots[slotId];
         if (!slot || slot.purchased) return false;
-        return this.game.gold >= slot.cost;
+        const gold = this.game.gold || BigNumService.create(0);
+        return BigNumService.gte(gold, BigNumService.create(slot.cost));
     }
 
     purchaseSlot(slotId) {
         const slot = this.slots[slotId];
         if (!this.canPurchaseSlot(slotId)) return false;
 
-        this.game.gold -= slot.cost;
+        this.game.gold = BigNumService.sub(this.game.gold, BigNumService.create(slot.cost));
         slot.purchased = true;
         this.game.save();
         return true;

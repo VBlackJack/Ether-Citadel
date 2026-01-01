@@ -19,6 +19,7 @@
  */
 
 import { SCHOOL_TURRETS } from '../../data.js';
+import { BigNumService } from '../../config.js';
 
 export class SchoolManager {
     constructor(game) {
@@ -45,15 +46,18 @@ export class SchoolManager {
     getLevelUpCost(turretId) {
         const turret = SCHOOL_TURRETS.find(t => t.id === turretId);
         const level = this.getLevel(turretId);
-        return Math.floor(turret.levelCost * Math.pow(1.5, level));
+        return BigNumService.floor(
+            BigNumService.mul(turret.levelCost, BigNumService.pow(1.5, level))
+        );
     }
 
     unlock(turretId) {
-        const cost = this.getUnlockCost(turretId);
-        if (this.game.crystals < cost) return false;
+        const cost = BigNumService.create(this.getUnlockCost(turretId));
+        const crystals = this.game.crystals || BigNumService.create(0);
+        if (!BigNumService.gte(crystals, cost)) return false;
         if (this.isUnlocked(turretId)) return false;
 
-        this.game.crystals -= cost;
+        this.game.crystals = BigNumService.sub(this.game.crystals, cost);
         this.turrets[turretId] = { unlocked: true, level: 1 };
         this.game.updateCrystalsUI();
         this.game.save();
@@ -67,9 +71,10 @@ export class SchoolManager {
         if (level >= turret.maxLevel) return false;
 
         const cost = this.getLevelUpCost(turretId);
-        if (this.game.crystals < cost) return false;
+        const crystals = this.game.crystals || BigNumService.create(0);
+        if (!BigNumService.gte(crystals, cost)) return false;
 
-        this.game.crystals -= cost;
+        this.game.crystals = BigNumService.sub(this.game.crystals, cost);
         this.turrets[turretId].level++;
         this.game.updateCrystalsUI();
         this.game.save();

@@ -16,7 +16,7 @@
 
 import { PASSIVES, getAllPassives, getPassiveById } from '../../data.js';
 import { t } from '../../i18n.js';
-import { formatNumber } from '../../config.js';
+import { formatNumber, BigNumService } from '../../config.js';
 import { sanitizeJsonObject } from '../../utils/HtmlSanitizer.js';
 
 /**
@@ -57,20 +57,23 @@ export class PassiveManager {
     }
 
     /**
-     * Calculate cost for next level
+     * Calculate cost for next level (returns BigNum)
      */
     getCost(id) {
         const passive = this.getPassive(id);
-        if (!passive) return Infinity;
+        if (!passive) return BigNumService.create(Infinity);
         const level = this.getLevel(id);
-        return Math.floor(passive.baseCost * Math.pow(passive.costMult, level));
+        return BigNumService.floor(
+            BigNumService.mul(passive.baseCost, BigNumService.pow(passive.costMult, level))
+        );
     }
 
     /**
      * Check if player can afford passive
      */
     canAfford(id) {
-        return this.game.crystals >= this.getCost(id);
+        const crystals = this.game.crystals || BigNumService.create(0);
+        return BigNumService.gte(crystals, this.getCost(id));
     }
 
     /**
@@ -122,9 +125,10 @@ export class PassiveManager {
         if (this.isMaxed(id)) return false;
 
         const cost = this.getCost(id);
-        if (this.game.crystals < cost) return false;
+        const crystals = this.game.crystals || BigNumService.create(0);
+        if (!BigNumService.gte(crystals, cost)) return false;
 
-        this.game.crystals -= cost;
+        this.game.crystals = BigNumService.sub(this.game.crystals, cost);
         this.levels[id] = this.getLevel(id) + 1;
         this.game.updateCrystalsUI();
         this.game.sound?.play('upgrade');
@@ -151,17 +155,21 @@ export class PassiveManager {
      * Refund all passives (returns crystals)
      */
     refundAll() {
-        let totalRefund = 0;
+        let totalRefund = BigNumService.create(0);
 
         getAllPassives().forEach(p => {
             const level = this.getLevel(p.id);
             for (let i = 0; i < level; i++) {
-                totalRefund += Math.floor(p.baseCost * Math.pow(p.costMult, i));
+                const levelCost = BigNumService.floor(
+                    BigNumService.mul(p.baseCost, BigNumService.pow(p.costMult, i))
+                );
+                totalRefund = BigNumService.add(totalRefund, levelCost);
             }
             this.levels[p.id] = 0;
         });
 
-        this.game.crystals += Math.floor(totalRefund * 0.8);
+        const refundAmount = BigNumService.floor(BigNumService.mul(totalRefund, 0.8));
+        this.game.crystals = BigNumService.add(this.game.crystals, refundAmount);
         this.game.updateCrystalsUI();
         this.game.sound?.play('sell');
         this.game.save();
