@@ -6,6 +6,8 @@
 import { TURRET_SLOTS, SCHOOL_TURRETS, TURRET_TIERS } from '../data.js';
 import { MathUtils } from '../config.js';
 import { Projectile } from './Projectile.js';
+import { SKILL, RUNE } from '../constants/skillIds.js';
+import { COLORS } from '../constants/colors.js';
 
 export class Turret {
     constructor(id, offsetIndex, total, type = 'NORMAL', tier = 1) {
@@ -68,7 +70,7 @@ export class Turret {
             }
         }
 
-        const baseFireRate = (window.game.skills?.isActive('overdrive') || window.game.activeBuffs?.['rage'] > 0) ? window.game.currentFireRate / 3 : window.game.currentFireRate;
+        const baseFireRate = (window.game.skills?.isActive(SKILL.OVERDRIVE) || window.game.activeBuffs?.[RUNE.RAGE] > 0) ? window.game.currentFireRate / 3 : window.game.currentFireRate;
         const fireInterval = baseFireRate / this.fireRateMult;
         const range = window.game.currentRange * this.rangeMult;
         this.cachedTarget = window.game.findTarget?.(this.x, this.y, range) || null;
@@ -83,11 +85,11 @@ export class Turret {
         const dmg = Math.max(1, Math.floor((window.game.currentDamage || 1) * this.damageMultiplier));
         let speed = 15;
         const tierData = TURRET_TIERS[this.tier] || TURRET_TIERS[1];
-        let color = tierData.color || '#a5b4fc';
+        let color = tierData.color || COLORS.TURRET_BASE;
         let props = { ...(window.game.currentProps || {}) };
-        if (this.type === 'ARTILLERY') { speed = 8; color = '#fca5a5'; props.blast = 100; }
-        if (this.type === 'ROCKET') { speed = 12; color = '#fdba74'; }
-        if (this.type === 'TESLA') { speed = 25; color = '#67e8f9'; props.bounce = (props.bounce || 0) + 3; }
+        if (this.type === 'ARTILLERY') { speed = 8; color = COLORS.TURRET_ARTILLERY; props.blast = 100; }
+        if (this.type === 'ROCKET') { speed = 12; color = COLORS.TURRET_ROCKET; }
+        if (this.type === 'TESLA') { speed = 25; color = COLORS.TURRET_TESLA; props.bounce = (props.bounce || 0) + 3; }
         window.game.projectiles?.push(Projectile.create(this.x, this.y, target, dmg, speed, color, this.tier, false, false, false, window.game.currentEffects || {}, props));
     }
 
@@ -100,20 +102,20 @@ export class Turret {
         ctx.shadowColor = tierData.color;
         ctx.shadowBlur = this.tier > 1 ? 5 + this.tier * 2 : 0;
 
-        if (this.type === 'ARTILLERY') { ctx.fillStyle = '#7f1d1d'; ctx.fillRect(0, -8, 24, 16); }
-        else if (this.type === 'ROCKET') { ctx.fillStyle = '#c2410c'; ctx.fillRect(0, -6, 20, 12); }
+        if (this.type === 'ARTILLERY') { ctx.fillStyle = COLORS.TURRET_ARTILLERY_BODY; ctx.fillRect(0, -8, 24, 16); }
+        else if (this.type === 'ROCKET') { ctx.fillStyle = COLORS.TURRET_ROCKET_BODY; ctx.fillRect(0, -6, 20, 12); }
         else if (this.type === 'TESLA') {
-            ctx.fillStyle = '#0e7490';
+            ctx.fillStyle = COLORS.TURRET_TESLA_BODY;
             ctx.fillRect(0, -4, 15, 8);
             ctx.beginPath();
             ctx.arc(0, 0, 8, 0, Math.PI * 2);
-            ctx.strokeStyle = '#67e8f9';
+            ctx.strokeStyle = COLORS.TURRET_TESLA;
             ctx.stroke();
         }
         else { ctx.fillStyle = tierData.color; ctx.fillRect(0, -6, 20, 12); }
         ctx.beginPath();
         ctx.arc(0, 0, 10, 0, Math.PI * 2);
-        ctx.fillStyle = '#312e81';
+        ctx.fillStyle = COLORS.TURRET_CORE;
         ctx.fill();
         ctx.shadowBlur = 0;
         ctx.restore();

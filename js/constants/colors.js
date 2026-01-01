@@ -46,11 +46,17 @@ export const COLORS = {
     CHAIN_LIGHTNING: '#67e8f9',
     ORBITAL: '#3b82f6',
 
-    // Turret colors
+    // Turret projectile colors
     TURRET_ARTILLERY: '#fca5a5',
     TURRET_ROCKET: '#fdba74',
     TURRET_TESLA: '#67e8f9',
     TURRET_BASE: '#a5b4fc',
+
+    // Turret body colors
+    TURRET_ARTILLERY_BODY: '#7f1d1d',
+    TURRET_ROCKET_BODY: '#c2410c',
+    TURRET_TESLA_BODY: '#0e7490',
+    TURRET_CORE: '#312e81',
 
     // Castle tier colors
     CASTLE_TIER_1: '#3b82f6',

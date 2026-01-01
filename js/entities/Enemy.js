@@ -21,6 +21,8 @@
 import { ENEMY_TYPES } from '../data.js';
 import { CONFIG, MathUtils, formatNumber } from '../config.js';
 import { t } from '../i18n.js';
+import { SKILL, RUNE } from '../constants/skillIds.js';
+import { COLORS, getEnemyDisplayColor } from '../constants/colors.js';
 
 export class Enemy {
     constructor(game, wave, typeKey = 'NORMAL', x, y) {
@@ -51,7 +53,7 @@ export class Enemy {
         const goldMult = game.metaUpgrades.getEffectValue('goldMult') * (1 + (game.relicMults.gold || 0)) * passiveGoldMult * prestigeGoldMult;
         const catchupBonus = (wave > (game.stats?.maxWave || 0)) ? 1.5 : 1.0;
         this.goldValue = Math.floor(baseGold * goldMult * catchupBonus * (typeKey === 'BOSS' ? 15 : (typeKey === 'TANK' ? 2 : 1)) * (this.isElite ? 10 : 1) * dread.crystalBonus);
-        if (game.activeBuffs['midas'] > 0) this.goldValue *= 5;
+        if (game.activeBuffs[RUNE.MIDAS] > 0) this.goldValue *= 5;
         this.color = typeKey === 'NORMAL' ? `hsl(${(wave * 15) % 360}, 70%, 60%)` : this.type.color;
         this.status = { iceTimer: 0, poisonTimer: 0, poisonDmg: 0, stasisTimer: 0 };
         this.state = 'APPROACH';
@@ -68,7 +70,7 @@ export class Enemy {
     update(dt) {
         const game = this.game;
         if (!game) return;
-        if (game.skills?.isActive?.('blackhole')) {
+        if (game.skills?.isActive?.(SKILL.BLACKHOLE)) {
             const cx = game.width * 0.7;
             const cy = game.height / 2;
             const dist = MathUtils.dist(this.x, this.y, cx, cy);
@@ -133,13 +135,13 @@ export class Enemy {
                 game.enemies.forEach(e => {
                     if (e !== this && e.hp < e.maxHp && MathUtils.distSq(this.x, this.y, e.x, e.y) < healRangeSq) {
                         e.hp = Math.min(e.maxHp, e.hp + (e.maxHp * 0.05));
-                        const beam = game.createParticle(this.x, this.y, '#4ade80');
+                        const beam = game.createParticle(this.x, this.y, COLORS.HEAL_BEAM);
                         beam.tx = e.x;
                         beam.ty = e.y;
                         beam.life = 0.5;
                         beam.draw = function(ctx) {
                             ctx.globalAlpha = this.life;
-                            ctx.strokeStyle = '#4ade80';
+                            ctx.strokeStyle = COLORS.HEAL_BEAM;
                             ctx.lineWidth = 2;
                             ctx.beginPath();
                             ctx.moveTo(this.x, this.y);
@@ -202,7 +204,7 @@ export class Enemy {
         ctx.translate(this.x, this.y);
         const angle = Math.atan2(game.height / 2 - this.y, game.castle.x - this.x);
         ctx.rotate(angle);
-        ctx.fillStyle = this.status.stasisTimer > 0 ? '#1e40af' : (this.status.iceTimer > 0 ? '#38bdf8' : (this.status.poisonTimer > 0 ? '#4ade80' : (this.typeKey === 'THIEF' ? '#94a3b8' : (this.typeKey === 'PHANTOM' ? '#fff' : this.color))));
+        ctx.fillStyle = getEnemyDisplayColor(this.status, this.typeKey, this.color);
         ctx.beginPath();
         if (this.typeKey === 'PHANTOM') {
             ctx.globalAlpha = 0.6;
@@ -233,9 +235,9 @@ export class Enemy {
         }
         ctx.restore();
         const hpPercent = Math.max(0, this.hp / this.maxHp);
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = COLORS.HEALTH_BG;
         ctx.fillRect(this.x - 10, this.y - 20 - (this.radius), 20, 4);
-        ctx.fillStyle = '#4ade80';
+        ctx.fillStyle = COLORS.HEALTH_FILL;
         ctx.fillRect(this.x - 10, this.y - 20 - (this.radius), 20 * hpPercent, 4);
     }
 }
