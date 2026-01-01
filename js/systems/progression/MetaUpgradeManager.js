@@ -29,6 +29,27 @@ export class MetaUpgradeManager {
     constructor(game) {
         this.game = game;
         this.upgrades = createMetaUpgrades();
+        this._buildUpgradeMap();
+    }
+
+    /**
+     * Build Map for O(1) upgrade lookups
+     * @private
+     */
+    _buildUpgradeMap() {
+        this.upgradeMap = new Map();
+        for (const u of this.upgrades) {
+            this.upgradeMap.set(u.id, u);
+        }
+    }
+
+    /**
+     * Get upgrade by ID - O(1) lookup
+     * @param {string} id
+     * @returns {object|undefined}
+     */
+    getById(id) {
+        return this.upgradeMap.get(id);
     }
 
     /**
@@ -46,7 +67,7 @@ export class MetaUpgradeManager {
      * @returns {number}
      */
     getEffectValue(id) {
-        const upgrade = this.upgrades.find(u => u.id === id);
+        const upgrade = this.getById(id);
         return upgrade ? upgrade.getEffect(upgrade.level) : 0;
     }
 
@@ -58,7 +79,7 @@ export class MetaUpgradeManager {
     buy(id) {
         if (!this.game) return false;
 
-        const upgrade = this.upgrades.find(u => u.id === id);
+        const upgrade = this.getById(id);
         if (!upgrade) return false;
         if (upgrade.maxLevel && upgrade.level >= upgrade.maxLevel) return false;
 

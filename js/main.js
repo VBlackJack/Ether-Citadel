@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { i18n, t } from './i18n.js';
+import { i18n, t, formatDate } from './i18n.js';
 import { CONFIG, SOUND_DB, MathUtils, formatNumber, BigNumService } from './config.js';
 import {
     CHALLENGES,
@@ -3396,12 +3396,13 @@ class Game {
             const backup = localStorage.getItem(`${CONFIG.saveKey}_backup_${i}`);
             if (backup) {
                 try {
-                    const data = JSON.parse(backup);
+                    const parsed = JSON.parse(backup);
+                    const data = sanitizeJsonObject(parsed);
                     backups.push({
                         slot: i,
                         wave: data.wave || 1,
                         gold: data.gold || 0,
-                        date: new Date(data.lastSaveTime || 0).toLocaleString()
+                        date: formatDate(data.lastSaveTime || 0)
                     });
                 } catch {
                     backups.push({ slot: i, wave: '?', gold: '?', date: t('common.unknown') });
@@ -3693,8 +3694,8 @@ function initHelpTooltips() {
         const tooltip = document.createElement('div');
         tooltip.className = 'help-tooltip';
         tooltip.innerHTML = `
-            <div class="help-tooltip-title">${title}</div>
-            <div class="help-tooltip-text">${text}</div>
+            <div class="help-tooltip-title">${escapeHtml(title)}</div>
+            <div class="help-tooltip-text">${escapeHtml(text)}</div>
         `;
         document.body.appendChild(tooltip);
 

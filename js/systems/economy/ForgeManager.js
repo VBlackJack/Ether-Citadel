@@ -28,6 +28,20 @@ export class ForgeManager {
      */
     constructor(game) {
         this.game = game;
+        // Build Map for O(1) RELIC_DB lookups
+        this._relicMap = new Map();
+        for (const r of RELIC_DB) {
+            this._relicMap.set(r.id, r);
+        }
+    }
+
+    /**
+     * Get relic by ID - O(1) lookup
+     * @param {string} id
+     * @returns {object|undefined}
+     */
+    getRelicById(id) {
+        return this._relicMap.get(id);
     }
 
     /**
@@ -137,7 +151,7 @@ export class ForgeManager {
             return { success: false, reason: 'not_found' };
         }
 
-        const relic = RELIC_DB.find(r => r.id === relicId);
+        const relic = this.getRelicById(relicId);
         if (!relic) {
             return { success: false, reason: 'not_found' };
         }
@@ -172,7 +186,7 @@ export class ForgeManager {
             return { success: false, reason: 'not_found' };
         }
 
-        const oldRelic = RELIC_DB.find(r => r.id === relicId);
+        const oldRelic = this.getRelicById(relicId);
         if (!oldRelic) {
             return { success: false, reason: 'not_found' };
         }
@@ -198,7 +212,7 @@ export class ForgeManager {
         }
 
         const relicObjects = this.game.relics
-            .map(id => RELIC_DB.find(r => r.id === id))
+            .map(id => this.getRelicById(id))
             .filter(Boolean);
 
         const maxTier = Math.max(...relicObjects.map(r => r.tier));

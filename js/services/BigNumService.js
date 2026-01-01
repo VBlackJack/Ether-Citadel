@@ -427,7 +427,15 @@ export function formatNumber(num) {
     // Fallback when Decimal is not available
     if (typeof Decimal === 'undefined') {
         const n = Number(num);
-        if (n < 1e6) return Math.floor(n).toLocaleString();
+        if (n < 1e6) {
+            try {
+                // Use app locale for consistent formatting
+                const locale = window.i18n?.getLocale?.() || 'en';
+                return new Intl.NumberFormat(locale).format(Math.floor(n));
+            } catch {
+                return Math.floor(n).toLocaleString();
+            }
+        }
         if (n < 1e9) return (n / 1e6).toFixed(2) + 'M';
         if (n < 1e12) return (n / 1e9).toFixed(2) + 'B';
         if (n < 1e15) return (n / 1e12).toFixed(2) + 'T';

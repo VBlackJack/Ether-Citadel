@@ -342,4 +342,34 @@ function formatRelativeTime(date) {
     }
 }
 
-export { i18n, t, formatDate, formatLocaleNumber, formatRelativeTime };
+/**
+ * Format duration in seconds to human-readable format
+ * @param {number} seconds - Duration in seconds
+ * @param {boolean} compact - Use compact format (1h 30m) vs verbose
+ * @returns {string}
+ */
+function formatDuration(seconds, compact = true) {
+    if (!Number.isFinite(seconds) || seconds < 0) return '0s';
+
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+
+    if (compact) {
+        if (days > 0) return `${days}d ${hours}h`;
+        if (hours > 0) return `${hours}h ${minutes}m`;
+        if (minutes > 0) return `${minutes}m ${secs}s`;
+        return `${secs}s`;
+    }
+
+    // Verbose format using i18n keys
+    const parts = [];
+    if (days > 0) parts.push(`${days} ${i18n.t('units.days')}`);
+    if (hours > 0) parts.push(`${hours} ${i18n.t('units.hours')}`);
+    if (minutes > 0) parts.push(`${minutes} ${i18n.t('units.minutes')}`);
+    if (secs > 0 || parts.length === 0) parts.push(`${secs} ${i18n.t('units.seconds')}`);
+    return parts.join(' ');
+}
+
+export { i18n, t, formatDate, formatLocaleNumber, formatRelativeTime, formatDuration };

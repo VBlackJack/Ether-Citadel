@@ -5,6 +5,7 @@
 
 import { CONFIG } from '../config.js';
 import { getErrorHandler, logError, ErrorSeverity } from '../utils/ErrorHandler.js';
+import { sanitizeJsonObject } from '../utils/HtmlSanitizer.js';
 
 /**
  * Validate base64 string format
@@ -138,7 +139,9 @@ export class GameStateManager {
             }
 
             const json = atob(encoded);
-            const data = JSON.parse(json);
+            const parsed = JSON.parse(json);
+            // Sanitize to prevent prototype pollution
+            const data = sanitizeJsonObject(parsed);
 
             if (!data || typeof data !== 'object') {
                 logError('Invalid save data structure', 'GameState.load', ErrorSeverity.WARNING);
@@ -233,7 +236,9 @@ export class GameStateManager {
             }
 
             const json = atob(saveString);
-            const data = JSON.parse(json);
+            const parsed = JSON.parse(json);
+            // Sanitize to prevent prototype pollution
+            const data = sanitizeJsonObject(parsed);
 
             if (!data || typeof data !== 'object') {
                 logError('Import failed: Invalid data structure', 'GameState.import', ErrorSeverity.WARNING);

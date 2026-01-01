@@ -189,17 +189,17 @@ export class PrestigeManager {
 
         // Auto-Turrets from prestige upgrade
         const autoTurrets = this.getEffectValue('prestige_auto_turrets');
-        if (autoTurrets > 0 && this.game.upgrades?.upgrades) {
-            const turretUpg = this.game.upgrades.upgrades.find(u => u.id === 'turret');
+        if (autoTurrets > 0 && this.game.upgrades) {
+            const turretUpg = this.game.upgrades.getById('turret');
             if (turretUpg) turretUpg.level = autoTurrets;
         }
 
         // Auto-buy starting upgrades based on prestige count
         const autoBuyLevels = Math.min(10, Math.floor(this.totalPrestiges / 2));
-        if (autoBuyLevels > 0 && this.game.upgrades?.upgrades) {
-            const dmgUpg = this.game.upgrades.upgrades.find(u => u.id === 'damage');
-            const spdUpg = this.game.upgrades.upgrades.find(u => u.id === 'speed');
-            const hpUpg = this.game.upgrades.upgrades.find(u => u.id === 'health');
+        if (autoBuyLevels > 0 && this.game.upgrades) {
+            const dmgUpg = this.game.upgrades.getById('damage');
+            const spdUpg = this.game.upgrades.getById('speed');
+            const hpUpg = this.game.upgrades.getById('health');
             if (dmgUpg) dmgUpg.level = Math.max(dmgUpg.level, autoBuyLevels);
             if (spdUpg) spdUpg.level = Math.max(spdUpg.level, Math.floor(autoBuyLevels / 2));
             if (hpUpg) hpUpg.level = Math.max(hpUpg.level, Math.floor(autoBuyLevels / 2));
