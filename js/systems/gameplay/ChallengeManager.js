@@ -20,12 +20,13 @@
 
 import { CHALLENGES, DARK_MATTER_UPGRADES } from '../../data.js';
 import { t } from '../../i18n.js';
+import { BigNumService, formatNumber } from '../../config.js';
 
 export class ChallengeManager {
     constructor() {
         this.challenges = CHALLENGES;
         this.dmTech = { berserk: 0, siphon: 0, overlord: 0 };
-        this.darkMatter = 0;
+        this.darkMatter = BigNumService.create(0);
     }
 
     startChallenge(id) {
@@ -45,8 +46,9 @@ export class ChallengeManager {
     buyTech(id) {
         const tech = DARK_MATTER_UPGRADES.find(t => t.id === id);
         const lvl = this.dmTech[id] || 0;
-        if (lvl < tech.max && this.darkMatter >= tech.cost) {
-            this.darkMatter -= tech.cost;
+        const cost = BigNumService.create(tech.cost);
+        if (lvl < tech.max && BigNumService.gte(this.darkMatter, cost)) {
+            this.darkMatter = BigNumService.sub(this.darkMatter, cost);
             this.dmTech[id] = lvl + 1;
             window.game?.save();
             this.render();
@@ -63,7 +65,7 @@ export class ChallengeManager {
             list.appendChild(div);
         });
 
-        document.getElementById('dm-total-display').innerText = this.darkMatter;
+        document.getElementById('dm-total-display').innerText = formatNumber(this.darkMatter);
         const shop = document.getElementById('dm-shop-grid');
         shop.innerHTML = '';
         DARK_MATTER_UPGRADES.forEach(tech => {
@@ -85,5 +87,18 @@ export class ChallengeManager {
             hud.classList.add('hidden');
             document.getElementById('btn-cancel-challenge').classList.add('hidden');
         }
+    }
+
+    getSaveData() {
+        return {
+            dm: BigNumService.serialize(this.darkMatter),
+            tech: this.dmTech
+        };
+    }
+
+    loadSaveData(data) {
+        if (!data) return;
+        this.darkMatter = BigNumService.deserialize(data.dm) || BigNumService.create(0);
+        this.dmTech = data.tech || { berserk: 0, siphon: 0, overlord: 0 };
     }
 }
