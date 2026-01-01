@@ -5,6 +5,8 @@
 
 import { SKILL } from '../../constants/skillIds.js';
 import { MathUtils } from '../../config.js';
+import { NOTATIONS, BigNumService } from '../../services/BigNumService.js';
+import { t } from '../../i18n.js';
 
 export class InputManager {
     constructor(game) {
@@ -76,6 +78,45 @@ export class InputManager {
                     this.game.activateSkill(bind.skill);
                 });
             }
+        });
+
+        // Notation selector
+        this.initNotationSelector();
+    }
+
+    initNotationSelector() {
+        const notationSelect = document.getElementById('setting-notation');
+        if (!notationSelect) return;
+
+        // Clear and populate options
+        notationSelect.innerHTML = '';
+        const options = [NOTATIONS.STANDARD, NOTATIONS.SCIENTIFIC, NOTATIONS.ENGINEERING, NOTATIONS.LETTERS];
+
+        options.forEach(type => {
+            const opt = document.createElement('option');
+            opt.value = type;
+            opt.textContent = t(`settings.notation.${type}`);
+            notationSelect.appendChild(opt);
+        });
+
+        // Set initial value from current setting
+        notationSelect.value = BigNumService.getNotation();
+
+        // Bind change event
+        notationSelect.addEventListener('change', (e) => {
+            const newVal = e.target.value;
+            BigNumService.setNotation(newVal);
+
+            // Update game settings and save
+            if (this.game?.settings) {
+                this.game.settings.notation = newVal;
+                this.game.save();
+            }
+
+            // Force UI refresh to show new format
+            this.game.updateGoldUI?.();
+            this.game.updateEtherUI?.();
+            this.game.updateCrystalsUI?.();
         });
     }
 
