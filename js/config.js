@@ -69,7 +69,12 @@ export const CONFIG = {
     ui: {
         toastDuration: 3000,
         floatingTextSize: 20,
-        damageOverlayDuration: 200
+        damageOverlayDuration: 200,
+        storageKeys: {
+            activeTab: 'aegis_ui_tab',
+            buyMode: 'aegis_ui_buyMode',
+            tutorialComplete: 'aegis_tutorial_complete'
+        }
     },
 
     // Dread system

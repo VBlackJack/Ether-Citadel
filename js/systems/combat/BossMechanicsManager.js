@@ -156,6 +156,7 @@ export class BossMechanicsManager {
         ctx.restore();
     }
 
+    // Boss fight state is transient - resets each encounter
     getSaveData() { return {}; }
-    loadSaveData(data) { }
+    loadSaveData() { }
 }

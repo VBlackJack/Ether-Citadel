@@ -19,6 +19,9 @@ export class InputManager {
         this._boundKeydown = this.handleKeydown.bind(this);
         this._boundMousedown = this.handleMousedown.bind(this);
 
+        // AbortController for bulk cleanup of UI listeners
+        this._uiAbortController = null;
+
         // Input state
         this.keys = {};
     }
@@ -47,9 +50,22 @@ export class InputManager {
         this.canvas.removeEventListener('mousedown', this._boundMousedown);
         this.canvas.removeEventListener('touchstart', this._boundTouchstart);
         this.canvas.removeEventListener('touchend', this._boundTouchend);
+
+        // Cleanup all UI listeners via AbortController
+        if (this._uiAbortController) {
+            this._uiAbortController.abort();
+            this._uiAbortController = null;
+        }
     }
 
     initUIListeners() {
+        // Cleanup previous listeners if re-initializing
+        if (this._uiAbortController) {
+            this._uiAbortController.abort();
+        }
+        this._uiAbortController = new AbortController();
+        const signal = this._uiAbortController.signal;
+
         // Toggle checkboxes
         const toggleBindings = [
             { id: 'toggle-damage', prop: 'showDamageText', type: 'settings' },
@@ -66,7 +82,7 @@ export class InputManager {
                     } else {
                         this.game[bind.prop] = e.target.checked;
                     }
-                });
+                }, { signal });
             }
         });
 
@@ -84,23 +100,23 @@ export class InputManager {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
                     this.game.activateSkill(bind.skill);
-                });
+                }, { signal });
                 // Touch event for mobile (faster response, no 300ms delay)
                 btn.addEventListener('touchend', (e) => {
                     e.preventDefault();
                     this.game.activateSkill(bind.skill);
-                }, { passive: false });
+                }, { passive: false, signal });
             }
         });
 
         // Notation selector
-        this.initNotationSelector();
+        this.initNotationSelector(signal);
 
         // Cloud save modal
-        this.initCloudModal();
+        this.initCloudModal(signal);
     }
 
-    initNotationSelector() {
+    initNotationSelector(signal) {
         const notationSelect = document.getElementById('setting-notation');
         if (!notationSelect) return;
 
@@ -133,10 +149,10 @@ export class InputManager {
             this.game.updateGoldUI?.();
             this.game.updateEtherUI?.();
             this.game.updateCrystalsUI?.();
-        });
+        }, { signal });
     }
 
-    initCloudModal() {
+    initCloudModal(signal) {
         const btnCloud = document.getElementById('btn-cloud');
         const modal = document.getElementById('modal-cloud');
         const loginView = document.getElementById('cloud-login-view');
@@ -195,7 +211,7 @@ export class InputManager {
             modal.classList.remove('hidden');
             updateView();
             if (loginError) loginError.classList.add('hidden');
-        });
+        }, { signal });
 
         // Handle cloud load (reusable)
         const handleCloudLoad = async () => {
@@ -272,7 +288,7 @@ export class InputManager {
                     loginError.classList.remove('hidden');
                 }
             }
-        });
+        }, { signal });
 
         // Logout button
         btnLogout?.addEventListener('click', async () => {
@@ -280,7 +296,7 @@ export class InputManager {
             await CloudSaveService.logout();
             btnLogout.disabled = false;
             updateView();
-        });
+        }, { signal });
 
         // Force Save button
         btnSave?.addEventListener('click', async () => {
@@ -297,7 +313,7 @@ export class InputManager {
             } else {
                 showMessage(t('cloud.messages.saveFailed'), true);
             }
-        });
+        }, { signal });
 
         // Force Load button
         btnLoad?.addEventListener('click', async () => {
@@ -308,7 +324,7 @@ export class InputManager {
             if (!success) {
                 showMessage(t('cloud.messages.noCloudSave'), true);
             }
-        });
+        }, { signal });
 
         // Initial button style
         updateButtonStyle();

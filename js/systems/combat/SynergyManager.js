@@ -58,5 +58,9 @@ export class SynergyManager {
     }
 
     getSaveData() { return { active: this.activeSynergies.map(s => s.id) }; }
-    loadSaveData(data) { }
+    loadSaveData(data) {
+        // Synergies are derived state based on placed turrets
+        // Recalculate after turret slots are restored
+        this.update();
+    }
 }

@@ -58,7 +58,7 @@ export const INITIAL_STATE = {
 export class GameStateManager {
     constructor(game) {
         this.game = game;
-        this.saveKey = 'ether_citadel_save';
+        this.saveKey = CONFIG.saveKey;
         this.version = CONFIG.SAVE_VERSION || 1;
     }
 

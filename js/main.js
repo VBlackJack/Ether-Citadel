@@ -60,9 +60,7 @@ import {
     BUILD_PRESET_SLOTS,
     LEADERBOARD_CATEGORIES,
     createUpgrades,
-    createMetaUpgrades,
-    getName,
-    getDesc
+    createMetaUpgrades
 } from './data.js';
 import { PassiveManager } from './systems/progression/PassiveManager.js';
 import { SurrenderSystem } from './systems/progression/SurrenderSystem.js';
@@ -76,7 +74,7 @@ import { ProductionManager } from './systems/economy/ProductionManager.js';
 import { AuraManager } from './systems/economy/AuraManager.js';
 import { ChipManager } from './systems/economy/ChipManager.js';
 import { AutoSkillManager } from './systems/combat/AutoSkillManager.js';
-import { ProjectileSystem, ProjectileType } from './systems/combat/ProjectileSystem.js';
+import { ProjectileSystem } from './systems/combat/ProjectileSystem.js';
 import { getEventDelegation } from './ui/EventDelegation.js';
 import { getErrorHandler, logError } from './utils/ErrorHandler.js';
 import { ConfigRegistry } from './services/ConfigRegistry.js';
@@ -228,16 +226,9 @@ class Game {
             if (this.ascensionMgr) {
                 console.log('Initializing Ascension UI...');
                 this.ascensionMgr.initUI();
-            } else {
-                console.warn('AscensionManager not initialized yet!');
-                // Fallback: create manager if missing
-                if (typeof AscensionManager !== 'undefined') {
-                    this.ascensionMgr = new AscensionManager(this);
-                    this.ascensionMgr.initUI();
-                }
             }
         } catch (e) {
-            console.error('CRITICAL: Failed to init Ascension UI:', e);
+            console.error('Failed to init Ascension UI:', e);
         }
         this.recalcRelicBonuses();
         this.updateDroneStatus();
@@ -247,14 +238,14 @@ class Game {
 
         // Restore UI state from localStorage
         try {
-            const savedTab = localStorage.getItem('aegis_ui_tab');
+            const savedTab = localStorage.getItem(CONFIG.ui.storageKeys.activeTab);
             if (savedTab !== null) {
                 const tabId = parseInt(savedTab, 10);
                 if (!isNaN(tabId) && tabId >= 0 && tabId <= 2) {
                     this.activeTab = tabId;
                 }
             }
-            const savedBuyMode = localStorage.getItem('aegis_ui_buyMode');
+            const savedBuyMode = localStorage.getItem(CONFIG.ui.storageKeys.buyMode);
             if (savedBuyMode === '1' || savedBuyMode === 'MAX') {
                 this.buyMode = savedBuyMode;
             }
@@ -452,7 +443,7 @@ class Game {
         this.upgrades.render(this.activeTab);
         // Persist UI state
         try {
-            localStorage.setItem('aegis_ui_buyMode', this.buyMode);
+            localStorage.setItem(CONFIG.ui.storageKeys.buyMode, this.buyMode);
         } catch (e) {
             console.warn('localStorage write failed:', e.message);
         }
@@ -654,7 +645,7 @@ class Game {
         this.upgrades.render(this.activeTab);
         // Persist UI state
         try {
-            localStorage.setItem('aegis_ui_tab', String(id));
+            localStorage.setItem(CONFIG.ui.storageKeys.activeTab, String(id));
         } catch (e) {
             console.warn('localStorage write failed:', e.message);
         }
@@ -3275,9 +3266,9 @@ class Game {
                 }
 
                 // Remove UI preferences
-                localStorage.removeItem('aegis_ui_tab');
-                localStorage.removeItem('aegis_ui_buyMode');
-                localStorage.removeItem('aegis_tutorial_complete');
+                localStorage.removeItem(CONFIG.ui.storageKeys.activeTab);
+                localStorage.removeItem(CONFIG.ui.storageKeys.buyMode);
+                localStorage.removeItem(CONFIG.ui.storageKeys.tutorialComplete);
                 localStorage.removeItem('ether_citadel_save'); // Legacy key
 
                 console.log('[Reset] Save data wiped successfully.');

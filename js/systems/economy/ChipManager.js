@@ -53,6 +53,7 @@ export class ChipManager {
         else if (rarityRoll > 0.6) maxRarity = 2;
 
         const available = CHIP_TYPES.filter(c => c.rarity <= maxRarity);
+        if (available.length === 0) return null;
         const chip = available[Math.floor(Math.random() * available.length)];
         return { ...chip, uid: this.generateUid() };
     }

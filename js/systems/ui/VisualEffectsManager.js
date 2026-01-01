@@ -100,6 +100,7 @@ export class VisualEffectsManager {
         return { x: this.screenShake.x, y: this.screenShake.y };
     }
 
+    // Visual effects are transient - no persistence needed
     getSaveData() { return {}; }
-    loadSaveData(data) { }
+    loadSaveData() { }
 }

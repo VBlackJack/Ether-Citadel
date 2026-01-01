@@ -58,7 +58,7 @@ class I18n {
      * @returns {string}
      */
     detectBrowserLocale() {
-        const browserLang = navigator.language || navigator.userLanguage;
+        const browserLang = navigator.language || navigator.userLanguage || this.fallbackLocale;
         const langCode = browserLang.split('-')[0].toLowerCase();
 
         if (this.supportedLocales.includes(langCode)) {
