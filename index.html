@@ -69,8 +69,12 @@
                 <span data-i18n="game.level">Level</span> <span id="ui-level">1</span>
             </div>
             <div class="flex items-center gap-4">
-                <div class="resource-display text-4xl font-bold text-yellow-400 drop-shadow-lg flex items-center gap-2 cursor-help" data-i18n-title="hud.tooltips.gold">
-                    <span class="text-3xl">🪙</span> <span id="ui-gold">0</span>
+                <div class="resource-display text-4xl font-bold text-yellow-400 drop-shadow-lg flex items-center gap-2 cursor-help relative" tabindex="0" role="button" aria-label="Gold">
+                    <span class="text-3xl" aria-hidden="true">🪙</span> <span id="ui-gold">0</span>
+                    <div class="resource-tooltip" role="tooltip">
+                        <div class="resource-tooltip-title text-yellow-400" data-i18n="resources.gold.name">Gold</div>
+                        <div class="resource-tooltip-desc" data-i18n="resources.gold.desc">Primary currency for upgrades and towers. Earned by defeating enemies.</div>
+                    </div>
                 </div>
                 <button id="btn-pause" onclick="game.togglePause()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-3 rounded border border-slate-500 backdrop-blur-sm transition text-sm" aria-label="Toggle pause" data-i18n-title="hud.buttons.pause">⏸️</button>
                 <button id="btn-sound" onclick="game.sound.toggle()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-2 rounded border border-slate-500 backdrop-blur-sm transition text-sm" aria-label="Toggle sound" data-i18n-title="hud.buttons.sound">🔊</button>
@@ -95,12 +99,20 @@
                 <button id="btn-surrender" onclick="if(game.canSurrender()) gameConfirm(game.t('surrender.confirm'), () => game.strategicSurrender())" class="hidden pointer-events-auto bg-amber-600/80 hover:bg-amber-500 text-white text-xs font-bold py-1 px-2 rounded border border-amber-400 backdrop-blur-sm transition flex items-center gap-1">
                     <span>🏳️</span> <span data-i18n="surrender.button">Surrender</span>
                 </button>
-                <span class="resource-display text-purple-400 text-xl flex items-center gap-1 ml-4 cursor-help" data-i18n-title="hud.tooltips.ether">
-                    <span class="text-2xl">🔮</span> <span id="ui-ether-hud" class="font-bold">0</span>
-                </span>
-                <span class="resource-display text-cyan-400 text-xl flex items-center gap-1 ml-2 cursor-help" data-i18n-title="hud.tooltips.crystals">
-                    <span class="text-2xl">💎</span> <span id="ui-crystals" class="font-bold">0</span>
-                </span>
+                <div class="resource-display text-purple-400 text-xl flex items-center gap-1 ml-4 cursor-help relative" tabindex="0" role="button" aria-label="Ether">
+                    <span class="text-2xl" aria-hidden="true">🔮</span> <span id="ui-ether-hud" class="font-bold">0</span>
+                    <div class="resource-tooltip" role="tooltip">
+                        <div class="resource-tooltip-title text-purple-400" data-i18n="resources.ether.name">Ether</div>
+                        <div class="resource-tooltip-desc" data-i18n="resources.ether.desc">Permanent currency for meta upgrades. Earned by dying past wave 10.</div>
+                    </div>
+                </div>
+                <div class="resource-display text-cyan-400 text-xl flex items-center gap-1 ml-2 cursor-help relative" tabindex="0" role="button" aria-label="Crystals">
+                    <span class="text-2xl" aria-hidden="true">💎</span> <span id="ui-crystals" class="font-bold">0</span>
+                    <div class="resource-tooltip" role="tooltip">
+                        <div class="resource-tooltip-title text-cyan-400" data-i18n="resources.crystals.name">Crystals</div>
+                        <div class="resource-tooltip-desc" data-i18n="resources.crystals.desc">Used for school upgrades and turret mastery.</div>
+                    </div>
+                </div>
                 <button id="btn-open-ascension" class="hidden pointer-events-auto bg-purple-900/50 hover:bg-purple-800 text-purple-200 text-xl p-1.5 rounded border border-purple-500 ml-2 transition" data-i18n-title="ascension.title" aria-label="Open Ascension Tree">
                     🌌
                 </button>
@@ -236,11 +248,15 @@
             </div>
         </div>
 
-        <div id="tutorial-overlay" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-900/90 border-2 border-blue-400 p-6 rounded-xl text-center shadow-2xl z-50 pointer-events-auto max-w-sm">
+        <div id="tutorial-overlay" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-900/95 border-2 border-blue-400 p-6 rounded-xl text-center shadow-2xl z-50 pointer-events-auto max-w-sm" role="dialog" aria-modal="true" aria-labelledby="tuto-title">
             <h2 class="text-2xl font-bold text-white mb-2" id="tuto-title" data-i18n="tutorial.welcome.title">Welcome!</h2>
-            <p class="text-blue-100 text-sm mb-4" id="tuto-text" data-i18n="tutorial.welcome.text">Defend the castle against enemy waves.</p>
+            <p class="text-blue-100 text-sm mb-3" id="tuto-text" data-i18n="tutorial.welcome.text">Defend the castle against enemy waves.</p>
+            <p id="tuto-tip" class="hidden text-xs text-yellow-300 bg-yellow-900/30 p-2 rounded mb-3 border border-yellow-600/50"></p>
             <div id="tuto-arrow" class="absolute hidden text-4xl text-yellow-400 tutorial-arrow">⬅️</div>
-            <button onclick="game.tutorial.next()" class="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded" data-i18n="tutorial.understood">Got it</button>
+            <div class="flex gap-2 justify-center">
+                <button onclick="game.tutorial.next()" class="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded" data-i18n="tutorial.understood">Got it</button>
+                <button onclick="game.tutorial.skip()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm rounded" data-i18n="tutorial.skip">Skip</button>
+            </div>
         </div>
 
         <div class="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-6 pointer-events-auto z-20">
@@ -282,6 +298,19 @@
                 <div class="absolute inset-0 flex items-center justify-center text-sm font-bold text-white drop-shadow-lg">
                     <span data-i18n="game.hp">HP</span>: <span id="ui-hp-text">100/100</span>
                 </div>
+            </div>
+        </div>
+
+        <!-- Next Goal Indicator -->
+        <div id="next-goal" class="hidden absolute bottom-28 left-4 bg-slate-900/90 border border-green-500 rounded-lg p-2 max-w-xs pointer-events-auto z-20" role="status" aria-live="polite">
+            <div class="flex items-center gap-2 mb-1">
+                <span class="text-green-400 text-sm" aria-hidden="true">🎯</span>
+                <span class="text-green-400 text-xs font-bold uppercase" data-i18n="goals.label">Next Goal</span>
+                <button type="button" id="dismiss-goal" onclick="game.goals?.dismissCurrent()" class="ml-auto text-slate-400 hover:text-white text-xs" aria-label="Dismiss goal">✕</button>
+            </div>
+            <div id="next-goal-text" class="text-slate-200 text-sm"></div>
+            <div class="mt-1 h-1 bg-slate-700 rounded-full overflow-hidden">
+                <div id="next-goal-progress" class="h-full bg-green-500 transition-all duration-300" style="width: 0%"></div>
             </div>
         </div>
 

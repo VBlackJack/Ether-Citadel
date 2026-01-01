@@ -60,6 +60,36 @@
     "spendPoints": "Spend Stat Points",
     "nextEvolution": "Next Evolution - Reach wave 250 to evolve"
   },
+  "resources": {
+    "gold": {
+      "name": "Gold",
+      "desc": "Primary currency for upgrades and towers. Earned by defeating enemies."
+    },
+    "ether": {
+      "name": "Ether",
+      "desc": "Permanent currency for meta upgrades. Earned by dying past wave 10."
+    },
+    "crystals": {
+      "name": "Crystals",
+      "desc": "Used for school upgrades and turret mastery."
+    }
+  },
+  "goals": {
+    "label": "Next Goal",
+    "firstWave": "Survive to wave 5",
+    "firstBoss": "Defeat first boss at wave 10",
+    "earnEther": "Earn your first Ether (die past wave 10)",
+    "firstMetaUpgrade": "Buy your first meta upgrade",
+    "wave25": "Reach wave 25",
+    "unlockResearch": "Unlock your first research node",
+    "wave50": "Reach wave 50",
+    "unlockDread": "Try Dread level 1 for bonus rewards",
+    "wave100": "Reach wave 100",
+    "evolution": "Evolve your castle (reach wave 250)",
+    "wave250": "Reach wave 250",
+    "dread5": "Reach Dread level 5",
+    "endgame": "Master the Citadel - Push your limits!"
+  },
   "confirm": {
     "title": "Confirm Action",
     "ok": "Confirm",
@@ -794,14 +824,67 @@
   },
   "tutorial": {
     "welcome": {
-      "title": "Welcome!",
-      "text": "Defend the castle against enemy waves."
+      "title": "Welcome, Commander!",
+      "text": "Defend the Ether Citadel against endless waves of enemies. Survive as long as possible!",
+      "tip": "Enemies spawn from the edges and move toward your castle."
     },
-    "upgrade": {
-      "title": "Upgrade",
-      "text": "Buy 'Damage' to survive."
+    "firstUpgrade": {
+      "title": "Power Up!",
+      "text": "Buy upgrades to increase your damage and survive longer waves.",
+      "tip": "Focus on Damage first, then Fire Rate for more DPS."
     },
-    "understood": "Got it"
+    "skills": {
+      "title": "Special Skills",
+      "text": "Use Q, W, E to activate powerful skills! Overdrive speeds you up, Nuke damages all enemies, Black Hole pulls them together.",
+      "tip": "Skills have cooldowns - use them wisely against tough waves!"
+    },
+    "rush": {
+      "title": "Rush for Bonus!",
+      "text": "Click RUSH to call the next wave early and earn +25% bonus gold!",
+      "tip": "Rushing is risky but rewarding. Only rush if you're confident!"
+    },
+    "firstBoss": {
+      "title": "Boss Incoming!",
+      "text": "Every 10 waves, a powerful boss appears. They have massive HP but drop great rewards!",
+      "tip": "Save your Nuke skill for bosses to deal massive damage."
+    },
+    "prestige": {
+      "title": "Death is Progress",
+      "text": "When defeated, you earn Ether based on your wave. Ether buys permanent upgrades!",
+      "tip": "Higher waves = more Ether. Don't fear defeat!"
+    },
+    "ether": {
+      "title": "Ether Currency",
+      "text": "Ether is your permanent currency. It persists across runs and unlocks powerful meta upgrades.",
+      "tip": "Check the Lab panel to spend your Ether!"
+    },
+    "metaUpgrades": {
+      "title": "Meta Upgrades",
+      "text": "Spend Ether on permanent bonuses that make every future run stronger!",
+      "tip": "Start Gold and Gold Multiplier are great early investments."
+    },
+    "research": {
+      "title": "Research Lab",
+      "text": "Unlock the Research tree for powerful permanent bonuses using Ether.",
+      "tip": "Research nodes unlock new abilities and multipliers."
+    },
+    "production": {
+      "title": "Production Buildings",
+      "text": "Build passive income generators that work even when you're offline!",
+      "tip": "Production stacks with your gold multipliers."
+    },
+    "dread": {
+      "title": "Dread Mode",
+      "text": "Ready for a challenge? Increase Dread level for harder enemies but better rewards!",
+      "tip": "Higher Dread = more Ether per wave. Master it to progress faster."
+    },
+    "complete": {
+      "title": "Tutorial Complete!",
+      "text": "You've learned the basics. Now explore and discover all the secrets of the Ether Citadel!",
+      "toast": "Tutorial complete! Good luck, Commander!"
+    },
+    "understood": "Got it",
+    "skip": "Skip Tutorial"
   },
   "town": {
     "title": "Town",

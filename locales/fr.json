@@ -46,6 +46,50 @@
     "spendPoints": "Dépenser les Points",
     "nextEvolution": "Prochaine Évolution - Atteindre vague 250"
   },
+  "a11y": {
+    "skipToMain": "Aller au contenu principal",
+    "languageChanged": "Langue modifiée"
+  },
+  "import": {
+    "title": "Importer Sauvegarde",
+    "desc": "Collez vos données de sauvegarde ci-dessous. Cela écrasera votre progression actuelle.",
+    "confirm": "Importer",
+    "errorEmpty": "Veuillez coller vos données de sauvegarde"
+  },
+  "ui": {
+    "loading": "Chargement...",
+    "cancel": "Annuler"
+  },
+  "resources": {
+    "gold": {
+      "name": "Or",
+      "desc": "Devise principale pour les améliorations et les tours. Gagné en tuant des ennemis."
+    },
+    "ether": {
+      "name": "Éther",
+      "desc": "Devise permanente pour les méta-améliorations. Gagné en mourant après la vague 10."
+    },
+    "crystals": {
+      "name": "Cristaux",
+      "desc": "Utilisés pour l'école et la maîtrise des tourelles."
+    }
+  },
+  "goals": {
+    "label": "Prochain Objectif",
+    "firstWave": "Survivre jusqu'à la vague 5",
+    "firstBoss": "Vaincre le premier boss à la vague 10",
+    "earnEther": "Gagner votre premier Éther (mourir après la vague 10)",
+    "firstMetaUpgrade": "Acheter votre première méta-amélioration",
+    "wave25": "Atteindre la vague 25",
+    "unlockResearch": "Débloquer votre premier nœud de recherche",
+    "wave50": "Atteindre la vague 50",
+    "unlockDread": "Essayer le niveau Terreur 1 pour des bonus",
+    "wave100": "Atteindre la vague 100",
+    "evolution": "Faire évoluer votre château (atteindre vague 250)",
+    "wave250": "Atteindre la vague 250",
+    "dread5": "Atteindre le niveau Terreur 5",
+    "endgame": "Maîtrisez la Citadelle - Repoussez vos limites !"
+  },
   "confirm": {
     "title": "Confirmer l'Action",
     "ok": "Confirmer",
@@ -779,15 +823,68 @@
     "x16": "x16"
   },
   "tutorial": {
+    "understood": "Compris",
+    "skip": "Passer",
     "welcome": {
       "title": "Bienvenue !",
-      "text": "D\u00e9fendez le ch\u00e2teau contre les vagues ennemies."
+      "text": "Défendez votre château contre des vagues d'ennemis. Votre but : survivre aussi longtemps que possible !",
+      "tip": "Les ennemis deviennent plus forts à chaque vague. Montez de niveau pour survivre !"
     },
-    "upgrade": {
-      "title": "Am\u00e9lioration",
-      "text": "Achetez 'D\u00e9g\u00e2ts' pour survivre."
+    "firstUpgrade": {
+      "title": "Première Amélioration",
+      "text": "Vous avez assez d'or ! Cliquez sur le panneau d'amélioration à droite pour acheter des upgrades.",
+      "tip": "Commencez par 'Dégâts' pour tuer les ennemis plus vite."
     },
-    "understood": "Compris"
+    "skills": {
+      "title": "Compétences",
+      "text": "Utilisez les compétences (Q, W, E) pour des effets puissants. Chaque compétence a un temps de recharge.",
+      "tip": "Surcharge accélère tout, Météore fait des dégâts massifs, Trou Noir regroupe les ennemis."
+    },
+    "rush": {
+      "title": "Mode Rush",
+      "text": "Cliquez sur RUSH pour appeler la vague suivante immédiatement et gagner +25% d'or bonus !",
+      "tip": "Utilisez Rush quand vous êtes confiant pour progresser plus vite."
+    },
+    "firstBoss": {
+      "title": "Boss à Venir !",
+      "text": "Un boss puissant apparaît toutes les 10 vagues. Préparez vos défenses !",
+      "tip": "Les boss lâchent des reliques qui donnent des bonus permanents."
+    },
+    "prestige": {
+      "title": "Prestige",
+      "text": "Vous avez atteint la vague 10 ! Mourir vous permet de recommencer avec de l'Éther permanent.",
+      "tip": "L'Éther est utilisé pour des méta-améliorations qui persistent entre les parties."
+    },
+    "ether": {
+      "title": "Éther Gagné !",
+      "text": "Vous avez gagné votre premier Éther ! Utilisez-le pour des améliorations permanentes.",
+      "tip": "Vérifiez le menu des méta-améliorations pour dépenser votre Éther."
+    },
+    "metaUpgrades": {
+      "title": "Méta-Améliorations",
+      "text": "Vous avez 5+ Éther ! Achetez des améliorations permanentes qui persistent entre les parties.",
+      "tip": "Or de départ et bonus de dégâts sont excellents pour les débutants."
+    },
+    "research": {
+      "title": "Recherche Débloquée",
+      "text": "Vous pouvez maintenant accéder au système de recherche. Débloquez de nouvelles technologies !",
+      "tip": "La recherche nécessite des ressources minières. Vérifiez l'onglet Mine."
+    },
+    "production": {
+      "title": "Système de Production",
+      "text": "Vous avez atteint la vague 20 ! Les bâtiments de production génèrent des ressources passivement.",
+      "tip": "Les revenus passifs vous aident à progresser même hors-ligne."
+    },
+    "dread": {
+      "title": "Mode Terreur",
+      "text": "Vous avez atteint la vague 50 ! Essayez le mode Terreur pour plus de défi et de récompenses.",
+      "tip": "Chaque niveau de Terreur augmente la difficulté mais aussi les récompenses."
+    },
+    "complete": {
+      "title": "Tutoriel Terminé !",
+      "text": "Vous maîtrisez les bases. Continuez à explorer et à vous améliorer !",
+      "toast": "Tutoriel terminé !"
+    }
   },
   "town": {
     "title": "Ville",

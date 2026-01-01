@@ -41,3 +41,4 @@ export { SurrenderSystem } from './progression/SurrenderSystem.js';
 
 // UI Systems
 export { TutorialManager } from './ui/TutorialManager.js';
+export { GoalManager } from './ui/GoalManager.js';

@@ -91,6 +91,7 @@ import { ComboManager, SynergyManager, BossMechanicsManager } from './systems/co
 import { COLORS, getCastleTierColor } from './constants/colors.js';
 import { SKILL, RUNE, UPGRADE, PRESTIGE_RESET_UPGRADES } from './constants/skillIds.js';
 import { TutorialManager, StatisticsManager, LeaderboardManager, VisualEffectsManager } from './systems/ui/index.js';
+import { GoalManager } from './systems/ui/GoalManager.js';
 import { SoundManager, MusicManager } from './systems/audio/index.js';
 import { InputManager } from './systems/input/InputManager.js';
 import { RenderSystem } from './systems/graphics/RenderSystem.js';
@@ -121,7 +122,8 @@ class Game {
         this.stats = new StatsManager();
         this.statsBreakdown = new StatsBreakdown(this);
         this.challenges = new ChallengeManager();
-        this.tutorial = new TutorialManager();
+        this.tutorial = new TutorialManager(this);
+        this.goals = new GoalManager(this);
         this.activeChallenge = null;
 
         this.relics = [];
@@ -232,7 +234,7 @@ class Game {
         this.updateDroneStatus();
         this.checkOfflineEarnings();
         if (this.wave === 1 && BigNumService.isZero(this.gold)) this.gold = BigNumService.create(this.metaUpgrades.getEffectValue('startGold'));
-        if (this.wave === 1) this.tutorial.check(BigNumService.toNumber(this.gold));
+        if (this.wave === 1) this.tutorial.check();
 
         // Restore UI state from localStorage
         try {
@@ -529,14 +531,14 @@ class Game {
 
     activateSkill(id) {
         this.skills.activate(id);
-        this.tutorial.check(0);
+        this.tutorial.check();
     }
 
     addGold(amount) {
         this.gold = BigNumService.add(this.gold, amount);
         this.stats.registerGold(BigNumService.toNumber(amount));
         this.upgrades.render(this.activeTab);
-        this.tutorial.check(BigNumService.toNumber(this.gold));
+        this.tutorial.check();
     }
 
     createFloatingText(x, y, text, color, size = 20) {
@@ -3085,6 +3087,7 @@ class Game {
             if (this.challenges.darkMatter > 0) document.getElementById('ui-dark-matter').classList.remove('hidden');
         }
         this.stats.render();
+        this.goals?.update();
     }
 
     draw() {
@@ -3190,7 +3193,7 @@ class Game {
         document.getElementById('game-over-screen').classList.add('hidden');
         this.ascensionMgr?.updateButtonVisibility();
         this.startWave();
-        this.tutorial.check(this.gold);
+        this.tutorial.check();
     }
 
     performAutoBuy() {
@@ -3346,7 +3349,9 @@ class Game {
             campaign: this.campaign,
             leaderboards: this.leaderboards,
             buildPresets: this.buildPresets,
-            music: this.music
+            music: this.music,
+            tutorial: this.tutorial,
+            goals: this.goals
         };
 
         for (const [name, handler] of Object.entries(subsystems)) {
@@ -3531,8 +3536,8 @@ class Game {
                 this.challenges.dmTech = data.challenges.tech || {};
             }
 
-            // Tutorial
-            if (data.tutorialStep !== undefined && this.tutorial) {
+            // Tutorial (legacy fallback - subsystem handles this if new format exists)
+            if (data.tutorialStep !== undefined && this.tutorial && !data.tutorial) {
                 this.tutorial.step = data.tutorialStep;
             }
 
