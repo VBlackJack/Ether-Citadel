@@ -6,22 +6,22 @@
 export const BALANCE = {
     SCALING: {
         // Exponential growth factors (1.10 = +10% per wave)
-        HP_GROWTH: 1.12,       // Enemies get tougher fast
-        DAMAGE_GROWTH: 1.05,   // Damage scales slower than HP
-        GOLD_GROWTH: 1.10,     // Gold keeps up with HP to allow upgrades
+        HP_GROWTH: 1.18,       // Enemies get tougher fast (+18%/wave)
+        DAMAGE_GROWTH: 1.08,   // Damage scales with HP
+        GOLD_GROWTH: 1.12,     // Gold keeps up with HP to allow upgrades
 
         // Wave management
         BOSS_WAVE_INTERVAL: 10,
-        BOSS_HP_MULTIPLIER: 12, // Bosses are huge walls (12x normal HP)
-        BOSS_DAMAGE_MULTIPLIER: 2.5,
+        BOSS_HP_MULTIPLIER: 15, // Bosses are huge walls (15x normal HP)
+        BOSS_DAMAGE_MULTIPLIER: 3.0,
 
         // Late game scaling (Wave 50+)
-        LATE_GAME_FACTOR: 1.02 // Extra multiplier added per wave after wave 50
+        LATE_GAME_FACTOR: 1.03 // Extra multiplier added per wave after wave 50
     },
     BASE: {
-        ENEMY_HP: 20,
-        ENEMY_DAMAGE: 5,
-        GOLD_DROP: 2,
+        ENEMY_HP: 25,
+        ENEMY_DAMAGE: 8,
+        GOLD_DROP: 3,
         CRYSTAL_DROP_CHANCE: 0.05
     },
     WAVE: {
