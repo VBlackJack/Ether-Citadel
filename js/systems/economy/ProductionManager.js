@@ -153,13 +153,19 @@ export class ProductionManager {
                 this.game.gold = BigNumService.add(this.game.gold, amount);
                 break;
             case 'crystal':
-                this.game.miningResources.crystal = (this.game.miningResources.crystal || 0) + BigNumService.toNumber(amount);
+                this.game.miningResources.crystal = BigNumService.add(
+                    this.game.miningResources.crystal || BigNumService.create(0),
+                    amount
+                );
                 break;
             case 'ether':
                 this.game.ether = BigNumService.add(this.game.ether, amount);
                 break;
             case 'void_shard':
-                this.game.miningResources.void_shard = (this.game.miningResources.void_shard || 0) + BigNumService.toNumber(amount);
+                this.game.miningResources.void_shard = BigNumService.add(
+                    this.game.miningResources.void_shard || BigNumService.create(0),
+                    amount
+                );
                 break;
         }
     }

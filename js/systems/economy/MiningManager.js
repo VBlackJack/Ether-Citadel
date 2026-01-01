@@ -15,6 +15,7 @@
  */
 
 import { MINING_RESOURCES } from '../../data.js';
+import { BigNumService } from '../../config.js';
 
 /**
  * Mining Manager - Handles resource mining operations
@@ -34,7 +35,10 @@ export class MiningManager {
         if (!resource) return false;
 
         const baseDuration = 60000 / resource.baseRate;
-        const speedMult = 1 + (this.game.researchEffects?.miningSpeed || 0) + (this.game.relicMults?.mining || 0);
+        // Safely convert potential BigNum values to numbers for speed calculation
+        const researchSpeed = BigNumService.toNumber(this.game.researchEffects?.miningSpeed || 0);
+        const relicMining = BigNumService.toNumber(this.game.relicMults?.mining || 0);
+        const speedMult = 1 + researchSpeed + relicMining;
 
         this.activeMiners.push({
             resourceId,
@@ -65,11 +69,14 @@ export class MiningManager {
 
         for (const miner of completed) {
             const resource = MINING_RESOURCES.find(r => r.id === miner.resourceId);
-            const relicBonus = 1 + (this.game.relicMults?.mining || 0);
-            const amount = Math.max(1, Math.floor(1 * relicBonus));
+            const relicBonus = 1 + BigNumService.toNumber(this.game.relicMults?.mining || 0);
+            const amount = BigNumService.create(Math.max(1, Math.floor(1 * relicBonus)));
 
-            this.game.miningResources[miner.resourceId] =
-                (this.game.miningResources[miner.resourceId] || 0) + amount;
+            const currentAmount = this.game.miningResources[miner.resourceId] || BigNumService.create(0);
+            this.game.miningResources[miner.resourceId] = BigNumService.add(
+                BigNumService.create(currentAmount),
+                amount
+            );
 
             const idx = this.activeMiners.indexOf(miner);
             if (idx !== -1) {

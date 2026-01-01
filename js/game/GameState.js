@@ -69,7 +69,7 @@ export class GameStateManager {
             speedIndex: g.speedIndex,
             settings: { ...g.settings },
             relics: [...g.relics],
-            miningResources: { ...g.miningResources },
+            miningResources: this.serializeMiningResources(g.miningResources),
             stats: g.stats?.getSaveData?.() || {},
             upgrades: g.upgrades?.getSaveData?.() || {},
             metaUpgrades: g.metaUpgrades?.getSaveData?.() || {},
@@ -165,6 +165,30 @@ export class GameStateManager {
         return Number.isFinite(value) ? value : fallback;
     }
 
+    /**
+     * Serialize miningResources BigNum values to strings
+     */
+    serializeMiningResources(resources) {
+        if (!resources || typeof resources !== 'object') return {};
+        const serialized = {};
+        for (const [key, value] of Object.entries(resources)) {
+            serialized[key] = value?.toString?.() || value;
+        }
+        return serialized;
+    }
+
+    /**
+     * Deserialize miningResources strings to BigNum values
+     */
+    deserializeMiningResources(data) {
+        if (!data || typeof data !== 'object') return {};
+        const resources = {};
+        for (const [key, value] of Object.entries(data)) {
+            resources[key] = BigNumService.create(value || 0);
+        }
+        return resources;
+    }
+
     applyLoadedData(data) {
         const g = this.game;
 
@@ -176,7 +200,7 @@ export class GameStateManager {
         g.speedIndex = this.safeNumber(data.speedIndex, INITIAL_STATE.speedIndex);
         g.settings = { ...INITIAL_STATE.settings, ...(typeof data.settings === 'object' ? data.settings : {}) };
         g.relics = Array.isArray(data.relics) ? data.relics : [];
-        g.miningResources = (data.miningResources && typeof data.miningResources === 'object') ? data.miningResources : {};
+        g.miningResources = this.deserializeMiningResources(data.miningResources);
         g.lastSaveTime = this.safeNumber(data.timestamp, Date.now());
 
         if (data.stats && g.stats?.loadSaveData) g.stats.loadSaveData(data.stats);
