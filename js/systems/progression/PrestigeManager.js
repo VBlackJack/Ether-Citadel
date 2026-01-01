@@ -226,11 +226,13 @@ export class PrestigeManager {
             ));
         }
 
-        // Restart game if was game over
+        // Hide game over screen and start new wave (don't call restart - it resets wave to 1)
         const gameOverScreen = document.getElementById('game-over-screen');
-        if (gameOverScreen && !gameOverScreen.classList.contains('hidden')) {
-            this.game.restart?.();
+        if (gameOverScreen) {
+            gameOverScreen.classList.add('hidden');
         }
+        this.game.isGameOver = false;
+        this.game.startWave?.();
 
         return true;
     }
