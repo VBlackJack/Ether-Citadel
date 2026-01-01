@@ -212,8 +212,22 @@ class Game {
 
         this.load();
 
-        // Initialize Ascension UI after load
-        this.ascensionMgr?.initUI();
+        // Initialize Ascension UI after load (defensive)
+        try {
+            if (this.ascensionMgr) {
+                console.log('Initializing Ascension UI...');
+                this.ascensionMgr.initUI();
+            } else {
+                console.warn('AscensionManager not initialized yet!');
+                // Fallback: create manager if missing
+                if (typeof AscensionManager !== 'undefined') {
+                    this.ascensionMgr = new AscensionManager(this);
+                    this.ascensionMgr.initUI();
+                }
+            }
+        } catch (e) {
+            console.error('CRITICAL: Failed to init Ascension UI:', e);
+        }
         this.recalcRelicBonuses();
         this.updateDroneStatus();
         this.checkOfflineEarnings();
@@ -296,6 +310,8 @@ class Game {
                 this.ui?.showToast(t('notifications.autoSaved') || 'Game saved', 'success', { duration: 1500 });
             }
         }, CONFIG.saveIntervalMs || 30000));
+
+        console.log('Game initialization complete.');
     }
 
     cleanup() {
