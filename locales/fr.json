@@ -943,19 +943,21 @@
   "ascension": {
     "title": "Ascension",
     "desc": "Transcendez et obtenez des pouvoirs cosmiques permanents.",
+    "currency": "Points d'Ascension",
     "points": "Points d'Ascension",
     "requirement": "Necessite 1000+ Ether pour ascensionner",
     "ascend": "ASCENSIONNER",
-    "perks": "Avantages Cosmiques",
-    "eternalDamage": { "name": "Degats Eternels", "desc": "+25% degats permanents." },
-    "eternalHealth": { "name": "Sante Eternelle", "desc": "+25% sante permanente." },
-    "eternalGold": { "name": "Or Eternel", "desc": "+25% or permanent." },
-    "etherMastery": { "name": "Maitrise de l'Ether", "desc": "+50% gain d'ether." },
-    "startingPower": { "name": "Puissance Initiale", "desc": "Commencez vague 10 avec 5000 or." },
-    "relicAffinity": { "name": "Affinite Relique", "desc": "+50% taux de drop de reliques." },
-    "timeDilation": { "name": "Dilatation Temporelle", "desc": "+50% progression hors ligne." },
-    "cosmicPower": { "name": "Pouvoir Cosmique", "desc": "+10% toutes les stats." },
-    "infiniteGrowth": { "name": "Croissance Infinie", "desc": "Les bonus ne plafonnent jamais." }
+    "perkList": "Avantages Cosmiques",
+    "level": "Niv.",
+    "maxed": "MAX",
+    "locked": "Verrouille",
+    "requires": "Requiert",
+    "perks": {
+      "ap_starter_damage": { "name": "Force Ancestrale", "desc": "+10% Degats globaux par niveau" },
+      "ap_mining_speed": { "name": "Pioche Etheree", "desc": "+5% Vitesse de minage par niveau" },
+      "ap_ether_boost": { "name": "Flux Arcanique", "desc": "+25% Gain d'Ether par niveau" },
+      "ap_start_wave": { "name": "Avant-Garde", "desc": "Commence +5 vagues plus loin par niveau" }
+    }
   },
   "statistics": {
     "title": "Statistiques",

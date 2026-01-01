@@ -550,17 +550,53 @@ export const RANDOM_EVENTS = [
 
 /**
  * Ascension system (prestige of prestige)
+ * Scalable perk tree with BigNum costs
  */
 export const ASCENSION_PERKS = [
-    { id: 'eternal_damage', nameKey: 'ascension.eternalDamage.name', descKey: 'ascension.eternalDamage.desc', icon: '🗡️', cost: 1, effect: { permanentDamage: 0.25 } },
-    { id: 'eternal_health', nameKey: 'ascension.eternalHealth.name', descKey: 'ascension.eternalHealth.desc', icon: '❤️', cost: 1, effect: { permanentHealth: 0.25 } },
-    { id: 'eternal_gold', nameKey: 'ascension.eternalGold.name', descKey: 'ascension.eternalGold.desc', icon: '💰', cost: 1, effect: { permanentGold: 0.25 } },
-    { id: 'ether_mastery', nameKey: 'ascension.etherMastery.name', descKey: 'ascension.etherMastery.desc', icon: '🔮', cost: 2, effect: { etherGainMult: 0.5 } },
-    { id: 'starting_power', nameKey: 'ascension.startingPower.name', descKey: 'ascension.startingPower.desc', icon: '🌠', cost: 2, effect: { startWave: 10, startGold: 5000 } },
-    { id: 'relic_affinity', nameKey: 'ascension.relicAffinity.name', descKey: 'ascension.relicAffinity.desc', icon: '🎁', cost: 3, effect: { relicDropMult: 1.5 } },
-    { id: 'time_dilation', nameKey: 'ascension.timeDilation.name', descKey: 'ascension.timeDilation.desc', icon: '⏳', cost: 3, effect: { offlineProgress: 0.5 } },
-    { id: 'cosmic_power', nameKey: 'ascension.cosmicPower.name', descKey: 'ascension.cosmicPower.desc', icon: '🌟', cost: 5, effect: { allStats: 0.1 } },
-    { id: 'infinite_growth', nameKey: 'ascension.infiniteGrowth.name', descKey: 'ascension.infiniteGrowth.desc', icon: '♾️', cost: 10, effect: { scalingBonus: true } }
+    {
+        id: 'ap_starter_damage',
+        nameKey: 'ascension.perks.ap_starter_damage.name',
+        descKey: 'ascension.perks.ap_starter_damage.desc',
+        icon: '🗡️',
+        maxLevel: 100,
+        costBase: '1',
+        costFactor: '1.5',
+        effectBase: 0.1,
+        req: null
+    },
+    {
+        id: 'ap_mining_speed',
+        nameKey: 'ascension.perks.ap_mining_speed.name',
+        descKey: 'ascension.perks.ap_mining_speed.desc',
+        icon: '⛏️',
+        maxLevel: 50,
+        costBase: '5',
+        costFactor: '2',
+        effectBase: 0.05,
+        req: 'ap_starter_damage'
+    },
+    {
+        id: 'ap_ether_boost',
+        nameKey: 'ascension.perks.ap_ether_boost.name',
+        descKey: 'ascension.perks.ap_ether_boost.desc',
+        icon: '🔮',
+        maxLevel: 0,
+        costBase: '10',
+        costFactor: '1.2',
+        effectBase: 0.25,
+        req: 'ap_starter_damage'
+    },
+    {
+        id: 'ap_start_wave',
+        nameKey: 'ascension.perks.ap_start_wave.name',
+        descKey: 'ascension.perks.ap_start_wave.desc',
+        icon: '🌠',
+        maxLevel: 10,
+        costBase: '50',
+        costFactor: '5',
+        effectBase: 5,
+        req: 'ap_ether_boost'
+    }
 ];
 
 /**

@@ -943,19 +943,21 @@
   "ascension": {
     "title": "Ascension",
     "desc": "Transcend and gain permanent cosmic powers.",
+    "currency": "Ascension Points",
     "points": "Ascension Points",
     "requirement": "Requires 1000+ Ether to ascend",
     "ascend": "ASCEND",
-    "perks": "Cosmic Perks",
-    "eternalDamage": { "name": "Eternal Damage", "desc": "+25% permanent damage." },
-    "eternalHealth": { "name": "Eternal Health", "desc": "+25% permanent health." },
-    "eternalGold": { "name": "Eternal Gold", "desc": "+25% permanent gold." },
-    "etherMastery": { "name": "Ether Mastery", "desc": "+50% ether gain." },
-    "startingPower": { "name": "Starting Power", "desc": "Start at wave 10 with 5000 gold." },
-    "relicAffinity": { "name": "Relic Affinity", "desc": "+50% relic drop rate." },
-    "timeDilation": { "name": "Time Dilation", "desc": "+50% offline progress." },
-    "cosmicPower": { "name": "Cosmic Power", "desc": "+10% all stats." },
-    "infiniteGrowth": { "name": "Infinite Growth", "desc": "Scaling bonuses never cap." }
+    "perkList": "Cosmic Perks",
+    "level": "Lv.",
+    "maxed": "MAX",
+    "locked": "Locked",
+    "requires": "Requires",
+    "perks": {
+      "ap_starter_damage": { "name": "Ancestral Might", "desc": "+10% Global Damage per level" },
+      "ap_mining_speed": { "name": "Ethereal Pickaxe", "desc": "+5% Mining Speed per level" },
+      "ap_ether_boost": { "name": "Arcane Flux", "desc": "+25% Ether Gain per level" },
+      "ap_start_wave": { "name": "Vanguard", "desc": "Start +5 waves further per level" }
+    }
   },
   "statistics": {
     "title": "Statistics",
