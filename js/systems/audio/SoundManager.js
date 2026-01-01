@@ -16,15 +16,56 @@ const SOUND_COOLDOWNS = {
 
 export class SoundManager {
     constructor() {
-        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        this.ctx = null;  // Lazy init to avoid autoplay policy warnings
+        this.masterGain = null;
         this.muted = false;
-        this.masterGain = this.ctx.createGain();
-        this.masterGain.connect(this.ctx.destination);
         this.lastPlayTime = {};  // Throttle tracking
     }
 
+    /**
+     * Initialize AudioContext on first user gesture
+     */
+    initContext() {
+        if (this.ctx) return true;
+        try {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            this.masterGain = this.ctx.createGain();
+            this.masterGain.connect(this.ctx.destination);
+            return true;
+        } catch (e) {
+            console.warn('AudioContext not available:', e.message);
+            return false;
+        }
+    }
+
+    /**
+     * Resume AudioContext if suspended (browser autoplay policy)
+     */
+    async ensureResumed() {
+        if (!this.ctx) return false;
+        if (this.ctx.state === 'suspended') {
+            try {
+                await this.ctx.resume();
+            } catch (e) {
+                // Silently fail - will retry on next gesture
+                return false;
+            }
+        }
+        return this.ctx.state === 'running';
+    }
+
     play(id) {
-        if (this.muted || !this.ctx) return;
+        if (this.muted) return;
+
+        // Lazy init on first play attempt
+        if (!this.ctx && !this.initContext()) return;
+
+        // Don't spam console if suspended - just skip silently
+        if (this.ctx.state === 'suspended') {
+            this.ensureResumed();
+            return;
+        }
+
         const s = SOUND_DB[id];
         if (!s) return;
 
@@ -50,6 +91,7 @@ export class SoundManager {
         osc.stop(this.ctx.currentTime + s.decay);
         if (s.melody) {
             setTimeout(() => {
+                if (!this.ctx || this.ctx.state !== 'running') return;
                 const osc2 = this.ctx.createOscillator();
                 const gain2 = this.ctx.createGain();
                 osc2.frequency.setValueAtTime(s.freq * 1.5, this.ctx.currentTime);
@@ -67,6 +109,11 @@ export class SoundManager {
         this.muted = !this.muted;
         const btn = document.getElementById('btn-sound');
         if (btn) btn.innerText = this.muted ? '🔇' : '🔊';
-        if (!this.muted && this.ctx.state === 'suspended') this.ctx.resume();
+
+        // Init and resume on unmute (user gesture)
+        if (!this.muted) {
+            this.initContext();
+            this.ensureResumed();
+        }
     }
 }
