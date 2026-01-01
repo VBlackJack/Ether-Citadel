@@ -11,6 +11,7 @@
  */
 
 import { CONFIG, BigNumService } from '../config.js';
+import { NOTATIONS } from '../services/BigNumService.js';
 import { getErrorHandler, logError, ErrorSeverity } from '../utils/ErrorHandler.js';
 import { sanitizeJsonObject } from '../utils/HtmlSanitizer.js';
 
@@ -45,7 +46,8 @@ export const INITIAL_STATE = {
     lastSaveTime: 0,
     settings: {
         showDamageText: true,
-        showRange: true
+        showRange: true,
+        notation: NOTATIONS.STANDARD
     }
 };
 
@@ -241,6 +243,11 @@ export class GameStateManager {
         // Objects and arrays
         g.settings = { ...INITIAL_STATE.settings, ...(typeof data.settings === 'object' ? data.settings : {}) };
         g.relics = Array.isArray(data.relics) ? data.relics : [];
+
+        // Apply notation setting
+        if (g.settings.notation) {
+            BigNumService.setNotation(g.settings.notation);
+        }
 
         // Mining resources - BigNum values
         g.miningResources = this.deserializeMiningResources(data.miningResources);
