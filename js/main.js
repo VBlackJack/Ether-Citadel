@@ -2695,7 +2695,7 @@ class Game {
                 const posIndex = this.turrets.length % turretPositions.length;
                 this.turrets.push(new Turret(this.turrets.length, turretPositions[posIndex], 0, type.toUpperCase()));
             }
-        });
+        }
 
         for (let i = 0; i < turretCount; i++) {
             const posIndex = this.turrets.length % turretPositions.length;
