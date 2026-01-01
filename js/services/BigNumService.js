@@ -91,12 +91,19 @@ export class BigNum {
     idiv(other) { this.value = this.value.div(BigNum.toDecimal(other)); return this; }
 
     // Utility
-    isFinite() { return this.value.isFinite(); }
-    isNaN() { return this.value.isNaN(); }
+    isFinite() {
+        return Number.isFinite(this.value.mantissa) && Number.isFinite(this.value.exponent);
+    }
+    isNaN() {
+        return Number.isNaN(this.value.mantissa) || Number.isNaN(this.value.exponent);
+    }
     isZero() { return this.value.eq(0); }
     isPositive() { return this.value.gt(0); }
     isNegative() { return this.value.lt(0); }
-    sign() { return this.value.sign(); }
+    sign() {
+        // break_infinity.js uses .sign as a property, not a method
+        return typeof this.value.sign === 'function' ? this.value.sign() : this.value.sign;
+    }
 
     // Conversion
     toNumber() { return this.value.toNumber(); }
