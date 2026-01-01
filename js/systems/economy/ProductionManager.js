@@ -20,6 +20,7 @@
  */
 
 import { PRODUCTION_BUILDINGS } from '../../data.js';
+import { CONFIG } from '../../config.js';
 
 export class ProductionManager {
     /**
@@ -162,9 +163,8 @@ export class ProductionManager {
      */
     calculateOfflineEarnings(offlineSeconds) {
         const earnings = {};
-        const maxOfflineHours = 8;
-        const cappedSeconds = Math.min(offlineSeconds, maxOfflineHours * 3600);
-        const offlineEfficiency = 0.5; // 50% efficiency while offline
+        const cappedSeconds = Math.min(offlineSeconds, CONFIG.maxOfflineHours * 3600);
+        const offlineEfficiency = CONFIG.offlineEarningsMultiplier;
 
         PRODUCTION_BUILDINGS.forEach(building => {
             const rate = this.getProductionRate(building.id);

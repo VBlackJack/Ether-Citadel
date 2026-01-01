@@ -2622,15 +2622,17 @@ class Game {
         const passiveHpMult = this.passives?.getEffect('health') || 1;
         const totalHpMult = metaHpMult * relicHpMult * prestigeHpMult * researchHpMult * passiveHpMult;
 
-        const dmgBase = this.upgrades.upgrades.find(u => u.id === 'damage');
+        // Use O(1) Map lookup via getById() instead of O(n) find()
+        const dmgBase = this.upgrades.getById('damage');
         this.currentDamage = Math.floor(dmgBase.getValue(dmgBase.level) * tierMult * totalDmgMult);
 
-        const spdBase = this.upgrades.upgrades.find(u => u.id === 'speed');
+        const spdBase = this.upgrades.getById('speed');
         const prestigeSkillCd = this.prestige?.getEffectValue('prestige_skill_cd') || 1;
         const slotSpeedMult = 1 + slotBonuses.speed;
         this.currentFireRate = (spdBase.getValue(spdBase.level) / (1 + this.relicMults.speed) * prestigeSkillCd) / slotSpeedMult;
 
-        const critStat = this.upgrades.upgrades.find(u => u.id === 'crit').getValue(this.upgrades.upgrades.find(u => u.id === 'crit').level);
+        const critUpg = this.upgrades.getById('crit');
+        const critStat = critUpg.getValue(critUpg.level);
         const researchCritChance = this.researchEffects?.critChance || 0;
         const researchCritDmg = this.researchEffects?.critDamage || 0;
         const passiveCritChance = this.passives?.getEffect('critChance') || 0;
@@ -2638,45 +2640,57 @@ class Game {
         this.critChance = critStat.chance + this.relicMults.critChance + researchCritChance + passiveCritChance;
         this.critMult = critStat.mult + (this.stats.mastery['crit_dmg'] || 0) * 0.1 + (this.relicMults.critDamage || 0) + researchCritDmg + passiveCritDamage;
 
-        const hpBase = this.upgrades.upgrades.find(u => u.id === 'health');
+        const hpBase = this.upgrades.getById('health');
         const hpMod = this.activeChallenge && this.activeChallenge.id === 'glass' ? 0.1 : 1;
         this.castle.maxHp = Math.floor(hpBase.getValue(hpBase.level) * tierMult * totalHpMult * hpMod);
 
-        const regBase = this.upgrades.upgrades.find(u => u.id === 'regen');
+        const regBase = this.upgrades.getById('regen');
         const researchRegenMult = 1 + (this.researchEffects?.regenMult || 0);
         const passiveRegenBonus = this.passives?.getEffect('regen') || 0;
         this.castle.regen = regBase.getValue(regBase.level) * tierMult * researchRegenMult + passiveRegenBonus;
 
         // Armor from upgrades + passives
-        const armorUpg = this.upgrades.upgrades.find(u => u.id === 'armor');
+        const armorUpg = this.upgrades.getById('armor');
         const upgradeArmor = armorUpg ? armorUpg.getValue(armorUpg.level) : 0;
         const passiveArmor = this.passives?.getEffect('armor') || 0;
         const researchArmor = this.researchEffects?.armorFlat || 0;
         this.castle.armor = Math.min(0.9, upgradeArmor + passiveArmor + researchArmor);
 
-        this.currentRange = this.upgrades.upgrades.find(u => u.id === 'range').getValue(this.upgrades.upgrades.find(u => u.id === 'range').level);
-        this.multiShotChance = this.upgrades.upgrades.find(u => u.id === 'multishot').getValue(this.upgrades.upgrades.find(u => u.id === 'multishot').level);
+        const rangeUpg = this.upgrades.getById('range');
+        this.currentRange = rangeUpg.getValue(rangeUpg.level);
+        const multishotUpg = this.upgrades.getById('multishot');
+        this.multiShotChance = multishotUpg.getValue(multishotUpg.level);
+
+        const iceUpg = this.upgrades.getById('ice');
+        const poisonUpg = this.upgrades.getById('poison');
         this.currentEffects = {
-            ice: this.upgrades.upgrades.find(u => u.id === 'ice').getValue(this.upgrades.upgrades.find(u => u.id === 'ice').level),
-            poison: this.upgrades.upgrades.find(u => u.id === 'poison').getValue(this.upgrades.upgrades.find(u => u.id === 'poison').level)
+            ice: iceUpg.getValue(iceUpg.level),
+            poison: poisonUpg.getValue(poisonUpg.level)
         };
+
+        const bounceUpg = this.upgrades.getById('bounce');
+        const blastUpg = this.upgrades.getById('blast');
+        const leechUpg = this.upgrades.getById('leech');
+        const stasisUpg = this.upgrades.getById('stasis');
+        const orbitalUpg = this.upgrades.getById('orbital');
         this.currentProps = {
-            bounce: this.upgrades.upgrades.find(u => u.id === 'bounce').getValue(this.upgrades.upgrades.find(u => u.id === 'bounce').level),
-            blast: this.upgrades.upgrades.find(u => u.id === 'blast').getValue(this.upgrades.upgrades.find(u => u.id === 'blast').level),
-            leech: this.upgrades.upgrades.find(u => u.id === 'leech').getValue(this.upgrades.upgrades.find(u => u.id === 'leech').level),
-            stasis: this.upgrades.upgrades.find(u => u.id === 'stasis').getValue(this.upgrades.upgrades.find(u => u.id === 'stasis').level),
-            orbital: this.upgrades.upgrades.find(u => u.id === 'orbital').getValue(this.upgrades.upgrades.find(u => u.id === 'orbital').level)
+            bounce: bounceUpg.getValue(bounceUpg.level),
+            blast: blastUpg.getValue(blastUpg.level),
+            leech: leechUpg.getValue(leechUpg.level),
+            stasis: stasisUpg.getValue(stasisUpg.level),
+            orbital: orbitalUpg.getValue(orbitalUpg.level)
         };
-        const shieldUpg = this.upgrades.upgrades.find(u => u.id === 'shield');
+        const shieldUpg = this.upgrades.getById('shield');
         this.castle.maxShield = shieldUpg.getValue(shieldUpg.level);
 
         const turretPositions = [{ x: -40, y: -60 }, { x: 40, y: -60 }, { x: -40, y: 60 }, { x: 40, y: 60 }];
-        const turretCount = this.upgrades.upgrades.find(u => u.id === 'turret').level;
+        const turretUpg = this.upgrades.getById('turret');
+        const turretCount = turretUpg.level;
         const specialTypes = ['artillery', 'rocket', 'tesla'];
 
         this.turrets = [];
-        specialTypes.forEach(type => {
-            const upg = this.upgrades.upgrades.find(u => u.id === type);
+        for (const type of specialTypes) {
+            const upg = this.upgrades.getById(type);
             if (upg && upg.level > 0) {
                 const posIndex = this.turrets.length % turretPositions.length;
                 this.turrets.push(new Turret(this.turrets.length, turretPositions[posIndex], 0, type.toUpperCase()));

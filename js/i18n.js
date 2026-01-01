@@ -276,4 +276,70 @@ function t(key, params = {}) {
     return i18n.t(key, params);
 }
 
-export { i18n, t };
+/**
+ * Format a date using the current locale
+ * @param {Date|number} date - Date object or timestamp
+ * @param {Intl.DateTimeFormatOptions} options - Formatting options
+ * @returns {string}
+ */
+function formatDate(date, options = {}) {
+    const defaultOptions = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    };
+    const mergedOptions = { ...defaultOptions, ...options };
+    const dateObj = typeof date === 'number' ? new Date(date) : date;
+    try {
+        return dateObj.toLocaleDateString(i18n.getLocale(), mergedOptions);
+    } catch {
+        return dateObj.toLocaleDateString('en', mergedOptions);
+    }
+}
+
+/**
+ * Format a number using the current locale
+ * @param {number} num - Number to format
+ * @param {Intl.NumberFormatOptions} options - Formatting options
+ * @returns {string}
+ */
+function formatLocaleNumber(num, options = {}) {
+    try {
+        return new Intl.NumberFormat(i18n.getLocale(), options).format(num);
+    } catch {
+        return new Intl.NumberFormat('en', options).format(num);
+    }
+}
+
+/**
+ * Format a relative time (e.g., "2 hours ago")
+ * @param {Date|number} date - Date object or timestamp
+ * @returns {string}
+ */
+function formatRelativeTime(date) {
+    const now = Date.now();
+    const timestamp = typeof date === 'number' ? date : date.getTime();
+    const diffMs = now - timestamp;
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHour = Math.floor(diffMin / 60);
+    const diffDay = Math.floor(diffHour / 24);
+
+    try {
+        const rtf = new Intl.RelativeTimeFormat(i18n.getLocale(), { numeric: 'auto' });
+        if (diffDay > 0) return rtf.format(-diffDay, 'day');
+        if (diffHour > 0) return rtf.format(-diffHour, 'hour');
+        if (diffMin > 0) return rtf.format(-diffMin, 'minute');
+        return rtf.format(-diffSec, 'second');
+    } catch {
+        // Fallback for browsers without RelativeTimeFormat
+        if (diffDay > 0) return `${diffDay}d ago`;
+        if (diffHour > 0) return `${diffHour}h ago`;
+        if (diffMin > 0) return `${diffMin}m ago`;
+        return `${diffSec}s ago`;
+    }
+}
+
+export { i18n, t, formatDate, formatLocaleNumber, formatRelativeTime };

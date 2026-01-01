@@ -29,6 +29,18 @@ export class UpgradeManager {
     constructor(game) {
         this.game = game;
         this.upgrades = createUpgrades();
+        this._buildUpgradeMap();
+    }
+
+    /**
+     * Build a Map for O(1) upgrade lookups by ID
+     * @private
+     */
+    _buildUpgradeMap() {
+        this.upgradeMap = new Map();
+        for (const u of this.upgrades) {
+            this.upgradeMap.set(u.id, u);
+        }
     }
 
     /**
@@ -49,7 +61,7 @@ export class UpgradeManager {
     buy(id, silent = false) {
         if (!this.game) return false;
 
-        const u = this.upgrades.find(upg => upg.id === id);
+        const u = this.getById(id);
         if (!u || (u.maxLevel && u.level >= u.maxLevel)) return false;
 
         if (this.game.buyMode === 'MAX') {
@@ -352,12 +364,12 @@ export class UpgradeManager {
     }
 
     /**
-     * Get an upgrade by ID
+     * Get an upgrade by ID - O(1) lookup via Map
      * @param {string} id
      * @returns {object|undefined}
      */
     getById(id) {
-        return this.upgrades.find(u => u.id === id);
+        return this.upgradeMap.get(id);
     }
 
     /**
@@ -401,9 +413,9 @@ export class UpgradeManager {
      */
     loadSaveData(data) {
         if (!Array.isArray(data)) return;
-        data.forEach(s => {
-            const u = this.upgrades.find(m => m.id === s.id);
+        for (const s of data) {
+            const u = this.getById(s.id);
             if (u) u.level = s.level;
-        });
+        }
     }
 }

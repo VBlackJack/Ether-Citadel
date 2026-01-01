@@ -32,6 +32,46 @@ export class SkillManager {
             blackhole: false
         };
         this.pendingTimers = [];
+        // Cache DOM element references to avoid repeated lookups
+        this._domCache = null;
+    }
+
+    /**
+     * Initialize or refresh DOM element cache
+     * Call this after DOM is ready or after dynamic UI changes
+     */
+    initDomCache() {
+        this._domCache = {
+            skillElements: {},
+            cdElements: {},
+            autoButtons: {}
+        };
+        for (const key of Object.keys(this.skills)) {
+            this._domCache.skillElements[key] = document.getElementById('skill-' + key);
+            this._domCache.cdElements[key] = document.getElementById('cd-' + key);
+            this._domCache.autoButtons[key] = document.getElementById('auto-' + key);
+        }
+    }
+
+    /**
+     * Get cached DOM element, with lazy initialization
+     * @param {string} type - 'skill', 'cd', or 'auto'
+     * @param {string} key - skill key
+     * @returns {HTMLElement|null}
+     */
+    _getElement(type, key) {
+        if (!this._domCache) {
+            this.initDomCache();
+        }
+        const cacheKey = type === 'skill' ? 'skillElements' : type === 'cd' ? 'cdElements' : 'autoButtons';
+        let el = this._domCache[cacheKey][key];
+        // Fallback if element not in cache (DOM may have changed)
+        if (!el) {
+            const id = type === 'skill' ? 'skill-' + key : type === 'cd' ? 'cd-' + key : 'auto-' + key;
+            el = document.getElementById(id);
+            this._domCache[cacheKey][key] = el;
+        }
+        return el;
     }
 
     /**
@@ -48,8 +88,8 @@ export class SkillManager {
     }
 
     updateAutoSkillUI() {
-        for (let key in this.autoSkills) {
-            const btn = document.getElementById(`auto-${key}`);
+        for (const key of Object.keys(this.autoSkills)) {
+            const btn = this._getElement('auto', key);
             if (btn) {
                 if (this.autoSkills[key]) {
                     btn.classList.add('bg-green-600');
@@ -96,9 +136,9 @@ export class SkillManager {
     }
 
     update(dt) {
-        for (let key in this.skills) {
+        for (const key of Object.keys(this.skills)) {
             const s = this.skills[key];
-            const skillEl = document.getElementById('skill-' + key);
+            const skillEl = this._getElement('skill', key);
 
             if (s.activeTime > 0) {
                 s.activeTime -= dt;
@@ -120,15 +160,15 @@ export class SkillManager {
                     }
                 }
             }
-            const btn = document.getElementById(`cd-${key}`);
+            const cdEl = this._getElement('cd', key);
             const maxCd = s.cooldown * (1 - (this.game.relicMults?.cooldown || 0));
-            if (btn) {
-                btn.style.height = `${Math.max(0, s.cdTime / maxCd) * 100}%`;
+            if (cdEl) {
+                cdEl.style.height = `${Math.max(0, s.cdTime / maxCd) * 100}%`;
                 // Show remaining cooldown time in seconds
                 if (s.cdTime > 0) {
-                    btn.setAttribute('data-cooldown', Math.ceil(s.cdTime / 1000) + 's');
+                    cdEl.setAttribute('data-cooldown', Math.ceil(s.cdTime / 1000) + 's');
                 } else {
-                    btn.removeAttribute('data-cooldown');
+                    cdEl.removeAttribute('data-cooldown');
                 }
             }
 

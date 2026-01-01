@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { t } from '../i18n.js';
+import { t, formatDate } from '../i18n.js';
+import { sanitizeJsonObject } from '../utils/HtmlSanitizer.js';
 
 /**
  * SaveService - Centralized save/load management with versioning and migrations
@@ -228,8 +229,11 @@ class SaveServiceClass {
                 data = parsed;
             }
 
+            // Sanitize loaded data to prevent prototype pollution
+            const sanitizedData = sanitizeJsonObject(data);
+
             // Run migrations if needed
-            const migratedData = this.migrate(data);
+            const migratedData = this.migrate(sanitizedData);
 
             // Load data into registered subsystems
             for (const [name, handler] of this.subsystems) {
@@ -338,13 +342,16 @@ class SaveServiceClass {
             if (backup) {
                 try {
                     const parsed = JSON.parse(backup);
-                    const data = parsed.data || parsed;
+                    const rawData = parsed.data || parsed;
+                    // Sanitize to prevent prototype pollution
+                    const data = sanitizeJsonObject(rawData);
+                    const timestamp = data.timestamp || data.lastSaveTime || 0;
                     backups.push({
                         slot: i,
                         wave: data.wave || 1,
                         gold: data.gold || 0,
-                        timestamp: data.timestamp || data.lastSaveTime || 0,
-                        date: new Date(data.timestamp || data.lastSaveTime || 0).toLocaleString()
+                        timestamp: timestamp,
+                        date: formatDate(timestamp)
                     });
                 } catch {
                     backups.push({ slot: i, wave: 0, gold: 0, timestamp: 0, date: t('common.unknown') });
@@ -388,13 +395,21 @@ class SaveServiceClass {
         try {
             const decoded = decodeURIComponent(atob(str));
 
-            // Validate JSON
-            const parsed = JSON.parse(decoded);
+            // Validate JSON and sanitize to prevent prototype pollution
+            let parsed;
+            try {
+                parsed = JSON.parse(decoded);
+            } catch (parseError) {
+                return { success: false, error: 'invalid_json' };
+            }
+
             if (!parsed || typeof parsed !== 'object') {
                 return { success: false, error: 'invalid_json' };
             }
 
-            localStorage.setItem(this.storageKey, decoded);
+            // Sanitize imported data to prevent prototype pollution
+            const sanitized = sanitizeJsonObject(parsed);
+            localStorage.setItem(this.storageKey, JSON.stringify(sanitized));
             return { success: true, error: null };
         } catch (e) {
             return { success: false, error: e.message };
