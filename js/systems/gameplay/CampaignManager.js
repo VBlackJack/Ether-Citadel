@@ -21,6 +21,7 @@
 import { CAMPAIGN_MISSIONS } from '../../data.js';
 import { t } from '../../i18n.js';
 import { FloatingText } from '../../entities/FloatingText.js';
+import { BigNumService } from '../../config.js';
 
 export class CampaignManager {
     constructor(game) {
@@ -85,9 +86,9 @@ export class CampaignManager {
     completeMission() {
         if (!this.activeMission) return;
         const reward = this.activeMission.reward;
-        if (reward.gold) this.game.gold += reward.gold;
-        if (reward.crystals) this.game.crystals += reward.crystals;
-        if (reward.ether) this.game.ether += reward.ether;
+        if (reward.gold) this.game.gold = BigNumService.add(this.game.gold, BigNumService.create(reward.gold));
+        if (reward.crystals) this.game.crystals = BigNumService.add(this.game.crystals, BigNumService.create(reward.crystals));
+        if (reward.ether) this.game.ether = BigNumService.add(this.game.ether, BigNumService.create(reward.ether));
 
         this.completedMissions[this.activeMission.id] = {
             time: this.missionProgress.time,
