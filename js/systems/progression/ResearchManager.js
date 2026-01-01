@@ -20,6 +20,7 @@
  */
 
 import { RESEARCH_TREE } from '../../data.js';
+import { BigNumService } from '../../config.js';
 
 export class ResearchManager {
     /**
@@ -37,7 +38,9 @@ export class ResearchManager {
      */
     canPurchase(node) {
         if (this.purchased[node.id]) return false;
-        if (this.game.crystals < node.cost) return false;
+        const crystals = this.game.crystals || BigNumService.create(0);
+        const cost = BigNumService.create(node.cost);
+        if (!BigNumService.gte(crystals, cost)) return false;
 
         if (node.requires) {
             for (const reqId of node.requires) {
@@ -57,7 +60,8 @@ export class ResearchManager {
         if (!node) return { success: false, reason: 'not_found' };
         if (!this.canPurchase(node)) return { success: false, reason: 'cannot_purchase' };
 
-        this.game.crystals -= node.cost;
+        const cost = BigNumService.create(node.cost);
+        this.game.crystals = BigNumService.sub(this.game.crystals, cost);
         this.purchased[nodeId] = true;
 
         this.applyEffects();

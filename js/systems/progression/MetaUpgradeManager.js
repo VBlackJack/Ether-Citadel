@@ -21,6 +21,7 @@
 
 import { t } from '../../i18n.js';
 import { createMetaUpgrades } from '../../data.js';
+import { BigNumService, formatNumber } from '../../config.js';
 
 export class MetaUpgradeManager {
     /**
@@ -83,10 +84,10 @@ export class MetaUpgradeManager {
         if (!upgrade) return false;
         if (upgrade.maxLevel && upgrade.level >= upgrade.maxLevel) return false;
 
-        const cost = this.getCost(upgrade);
-        if (this.game.ether < cost) return false;
+        const cost = BigNumService.create(this.getCost(upgrade));
+        if (!BigNumService.gte(this.game.ether, cost)) return false;
 
-        this.game.ether -= cost;
+        this.game.ether = BigNumService.sub(this.game.ether, cost);
         upgrade.level++;
         this.game.save();
         this.render();
@@ -108,8 +109,10 @@ export class MetaUpgradeManager {
 
         this.upgrades.forEach(u => {
             const cost = this.getCost(u);
+            const costBigNum = BigNumService.create(cost);
             const isMaxed = u.maxLevel && u.level >= u.maxLevel;
-            const canAfford = (this.game?.ether || 0) >= cost && !isMaxed;
+            const etherAmount = this.game?.ether || BigNumService.create(0);
+            const canAfford = BigNumService.gte(etherAmount, costBigNum) && !isMaxed;
 
             const div = document.createElement('div');
             div.className = `p-4 rounded-xl border flex justify-between items-center transition-all ${
@@ -136,7 +139,7 @@ export class MetaUpgradeManager {
                     </div>
                 </div>
                 <div class="text-right">
-                    ${!isMaxed ? `<div class="text-purple-300 font-bold font-mono text-xl">${cost} 🔮</div>` : ''}
+                    ${!isMaxed ? `<div class="text-purple-300 font-bold font-mono text-xl">${formatNumber(cost)} 🔮</div>` : ''}
                     <div class="text-xs text-slate-500">${t('lab.level')} ${u.level}</div>
                 </div>
             `;
@@ -153,7 +156,7 @@ export class MetaUpgradeManager {
         if (!this.game) return false;
         return this.upgrades.some(u =>
             (!u.maxLevel || u.level < u.maxLevel) &&
-            this.game.ether >= this.getCost(u)
+            BigNumService.gte(this.game.ether, BigNumService.create(this.getCost(u)))
         );
     }
 
