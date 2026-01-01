@@ -115,6 +115,13 @@
         "pause": "Pause",
         "closeModal": "Close Modal",
         "speed": "Game Speed"
+      },
+      "notation": {
+        "title": "Number Notation",
+        "standard": "Standard (1M, 1B)",
+        "scientific": "Scientific (1e6, 1e9)",
+        "engineering": "Engineering (1e6, 1e9)",
+        "letters": "Letters (1a, 1b)"
       }
     },
     "dev": {

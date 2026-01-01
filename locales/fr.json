@@ -115,6 +115,13 @@
         "pause": "Pause",
         "closeModal": "Fermer",
         "speed": "Vitesse"
+      },
+      "notation": {
+        "title": "Notation des Nombres",
+        "standard": "Standard (1M, 1B)",
+        "scientific": "Scientifique (1e6, 1e9)",
+        "engineering": "Ingénieur (1e6, 1e9)",
+        "letters": "Lettres (1a, 1b)"
       }
     },
     "dev": {

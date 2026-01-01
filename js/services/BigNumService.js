@@ -1,483 +1,175 @@
 /*
  * Copyright 2025 Julien Bombled
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed under the Apache License, Version 2.0
  */
 
-/**
- * BigNumService - Robust wrapper for break_infinity.js Decimal class
- * Provides formatting, arithmetic, and serialization for large numbers
- * Used as the mathematical foundation for the game economy
- */
+// Notation Types Enum
+export const NOTATIONS = {
+    STANDARD: 'standard', // K, M, B, T...
+    SCIENTIFIC: 'scientific', // 1.23e5
+    ENGINEERING: 'engineering', // 123.45e3
+    LETTERS: 'letters' // 10a, 10b... 1aa
+};
 
-// Standard suffixes for number formatting
-const SUFFIXES = [
+// Configuration state (Defaults to STANDARD)
+let currentNotation = NOTATIONS.STANDARD;
+
+const STANDARD_SUFFIXES = [
     '', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'Oc', 'No', 'Dc',
     'UDc', 'DDc', 'TDc', 'QaDc', 'QiDc', 'SxDc', 'SpDc', 'OcDc', 'NoDc', 'Vg',
     'UVg', 'DVg', 'TVg', 'QaVg', 'QiVg', 'SxVg', 'SpVg', 'OcVg', 'NoVg', 'Tg'
 ];
 
-/**
- * Get the Decimal class from window (provided by break_infinity.min.js)
- * @returns {typeof Decimal|null}
- */
+const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
+
 function getDecimal() {
-    if (typeof window !== 'undefined' && window.Decimal) {
-        return window.Decimal;
-    }
-    if (typeof Decimal !== 'undefined') {
-        return Decimal;
-    }
+    if (typeof window !== 'undefined' && window.Decimal) return window.Decimal;
+    if (typeof Decimal !== 'undefined') return Decimal;
     return null;
 }
 
-/**
- * BigNumService - Static service for big number operations
- * All methods are static for easy access throughout the codebase
- */
 export const BigNumService = {
-    /**
-     * Check if break_infinity.js is loaded
-     * @returns {boolean}
-     */
-    isAvailable() {
-        return getDecimal() !== null;
-    },
+    isAvailable() { return getDecimal() !== null; },
+    init() { if (!this.isAvailable()) console.error('BigNumService: break_infinity.js missing!'); },
 
-    /**
-     * Initialize the BigNumService (validates Decimal availability)
-     * Called once at game startup
-     */
-    init() {
-        if (!this.isAvailable()) {
-            console.error('BigNumService: break_infinity.js Decimal class not found!');
-        }
-    },
-
-    /**
-     * Create a Decimal instance from any value
-     * Handles null, undefined, and invalid values safely
-     * @param {number|string|Decimal|null|undefined} value
-     * @returns {Decimal}
-     */
     create(value) {
         const D = getDecimal();
-        if (!D) {
-            console.warn('BigNumService: Decimal not available');
-            return { toNumber: () => Number(value) || 0 };
-        }
-
-        // Safety checks
-        if (value === null || value === undefined) {
-            return new D(0);
-        }
-
-        // Already a Decimal
-        if (value instanceof D) {
-            return value;
-        }
-
-        // Handle serialized format { mantissa, exponent }
+        if (!D) return { toNumber: () => Number(value) || 0 };
+        if (value === null || value === undefined) return new D(0);
+        if (value instanceof D) return value;
         if (typeof value === 'object' && value !== null && 'mantissa' in value && 'exponent' in value) {
             return D.fromMantissaExponent(value.mantissa, value.exponent);
         }
-
-        // Handle NaN and Infinity
         if (typeof value === 'number') {
             if (Number.isNaN(value)) return new D(0);
             if (!Number.isFinite(value)) return new D(value > 0 ? Number.MAX_VALUE : -Number.MAX_VALUE);
         }
-
-        try {
-            return new D(value);
-        } catch (e) {
-            console.warn('BigNumService: Failed to create Decimal from', value);
-            return new D(0);
-        }
+        try { return new D(value); } catch (e) { return new D(0); }
     },
 
-    /**
-     * Add two values
-     * @param {number|string|Decimal} a
-     * @param {number|string|Decimal} b
-     * @returns {Decimal}
-     */
-    add(a, b) {
-        return this.create(a).add(this.create(b));
-    },
-
-    /**
-     * Subtract b from a
-     * @param {number|string|Decimal} a
-     * @param {number|string|Decimal} b
-     * @returns {Decimal}
-     */
-    sub(a, b) {
-        return this.create(a).sub(this.create(b));
-    },
-
-    /**
-     * Multiply two values
-     * @param {number|string|Decimal} a
-     * @param {number|string|Decimal} b
-     * @returns {Decimal}
-     */
-    mul(a, b) {
-        return this.create(a).mul(this.create(b));
-    },
-
-    /**
-     * Divide a by b
-     * @param {number|string|Decimal} a
-     * @param {number|string|Decimal} b
-     * @returns {Decimal}
-     */
+    add(a, b) { return this.create(a).add(this.create(b)); },
+    sub(a, b) { return this.create(a).sub(this.create(b)); },
+    mul(a, b) { return this.create(a).mul(this.create(b)); },
     div(a, b) {
         const divisor = this.create(b);
-        if (divisor.eq(0)) {
-            console.warn('BigNumService: Division by zero');
-            return this.create(0);
-        }
+        if (divisor.eq(0)) return this.create(0);
         return this.create(a).div(divisor);
     },
+    pow(a, b) { return this.create(a).pow(this.create(b)); },
+    sqrt(v) { return this.create(v).sqrt(); },
+    log10(v) { return this.create(v).log10(); },
+    ln(v) { return this.create(v).ln(); },
+    floor(v) { return this.create(v).floor(); },
+    ceil(v) { return this.create(v).ceil(); },
+    round(v) { return this.create(v).round(); },
+    abs(v) { return this.create(v).abs(); },
 
-    /**
-     * Raise base to exponent power
-     * Critical for exponential scaling formulas
-     * @param {number|string|Decimal} base
-     * @param {number|string|Decimal} exponent
-     * @returns {Decimal}
-     */
-    pow(base, exponent) {
-        return this.create(base).pow(this.create(exponent));
-    },
-
-    /**
-     * Square root
-     * @param {number|string|Decimal} value
-     * @returns {Decimal}
-     */
-    sqrt(value) {
-        return this.create(value).sqrt();
-    },
-
-    /**
-     * Log base 10
-     * @param {number|string|Decimal} value
-     * @returns {Decimal}
-     */
-    log10(value) {
-        return this.create(value).log10();
-    },
-
-    /**
-     * Natural log
-     * @param {number|string|Decimal} value
-     * @returns {Decimal}
-     */
-    ln(value) {
-        return this.create(value).ln();
-    },
-
-    /**
-     * Floor (round down)
-     * @param {number|string|Decimal} value
-     * @returns {Decimal}
-     */
-    floor(value) {
-        return this.create(value).floor();
-    },
-
-    /**
-     * Ceiling (round up)
-     * @param {number|string|Decimal} value
-     * @returns {Decimal}
-     */
-    ceil(value) {
-        return this.create(value).ceil();
-    },
-
-    /**
-     * Round to nearest integer
-     * @param {number|string|Decimal} value
-     * @returns {Decimal}
-     */
-    round(value) {
-        return this.create(value).round();
-    },
-
-    /**
-     * Absolute value
-     * @param {number|string|Decimal} value
-     * @returns {Decimal}
-     */
-    abs(value) {
-        return this.create(value).abs();
-    },
-
-    /**
-     * Maximum of two values
-     * @param {number|string|Decimal} a
-     * @param {number|string|Decimal} b
-     * @returns {Decimal}
-     */
     max(a, b) {
         const D = getDecimal();
-        if (!D) return this.create(Math.max(Number(a) || 0, Number(b) || 0));
-        return D.max(this.create(a), this.create(b));
+        return D ? D.max(this.create(a), this.create(b)) : this.create(0);
     },
-
-    /**
-     * Minimum of two values
-     * @param {number|string|Decimal} a
-     * @param {number|string|Decimal} b
-     * @returns {Decimal}
-     */
     min(a, b) {
         const D = getDecimal();
-        if (!D) return this.create(Math.min(Number(a) || 0, Number(b) || 0));
-        return D.min(this.create(a), this.create(b));
+        return D ? D.min(this.create(a), this.create(b)) : this.create(0);
     },
 
-    // ============ Comparison Methods ============
+    eq(a, b) { return this.create(a).eq(this.create(b)); },
+    gt(a, b) { return this.create(a).gt(this.create(b)); },
+    gte(a, b) { return this.create(a).gte(this.create(b)); },
+    lt(a, b) { return this.create(a).lt(this.create(b)); },
+    lte(a, b) { return this.create(a).lte(this.create(b)); },
 
-    /**
-     * Check if a equals b
-     * @param {number|string|Decimal} a
-     * @param {number|string|Decimal} b
-     * @returns {boolean}
-     */
-    eq(a, b) {
-        return this.create(a).eq(this.create(b));
-    },
-
-    /**
-     * Check if a is greater than b
-     * @param {number|string|Decimal} a
-     * @param {number|string|Decimal} b
-     * @returns {boolean}
-     */
-    gt(a, b) {
-        return this.create(a).gt(this.create(b));
-    },
-
-    /**
-     * Check if a is greater than or equal to b
-     * Critical for checking if player can afford costs
-     * @param {number|string|Decimal} a
-     * @param {number|string|Decimal} b
-     * @returns {boolean}
-     */
-    gte(a, b) {
-        return this.create(a).gte(this.create(b));
-    },
-
-    /**
-     * Check if a is less than b
-     * @param {number|string|Decimal} a
-     * @param {number|string|Decimal} b
-     * @returns {boolean}
-     */
-    lt(a, b) {
-        return this.create(a).lt(this.create(b));
-    },
-
-    /**
-     * Check if a is less than or equal to b
-     * @param {number|string|Decimal} a
-     * @param {number|string|Decimal} b
-     * @returns {boolean}
-     */
-    lte(a, b) {
-        return this.create(a).lte(this.create(b));
-    },
-
-    // ============ Utility Methods ============
-
-    /**
-     * Check if value is zero
-     * @param {number|string|Decimal} value
-     * @returns {boolean}
-     */
-    isZero(value) {
-        return this.create(value).eq(0);
-    },
-
-    /**
-     * Check if value is positive
-     * @param {number|string|Decimal} value
-     * @returns {boolean}
-     */
-    isPositive(value) {
-        return this.create(value).gt(0);
-    },
-
-    /**
-     * Check if value is negative
-     * @param {number|string|Decimal} value
-     * @returns {boolean}
-     */
-    isNegative(value) {
-        return this.create(value).lt(0);
-    },
-
-    /**
-     * Check if value is finite (not NaN or Infinity)
-     * @param {number|string|Decimal} value
-     * @returns {boolean}
-     */
-    isFinite(value) {
-        const d = this.create(value);
+    isZero(v) { return this.create(v).eq(0); },
+    isPositive(v) { return this.create(v).gt(0); },
+    isNegative(v) { return this.create(v).lt(0); },
+    isFinite(v) {
+        const d = this.create(v);
         return Number.isFinite(d.mantissa) && Number.isFinite(d.exponent);
     },
+    toNumber(v) { return this.create(v).toNumber(); },
+    serialize(d) { const val = this.create(d); return { mantissa: val.mantissa, exponent: val.exponent }; },
+    deserialize(d) { return this.create(d); },
 
-    /**
-     * Convert to regular JavaScript number
-     * Warning: precision loss for very large numbers
-     * @param {number|string|Decimal} value
-     * @returns {number}
-     */
-    toNumber(value) {
-        return this.create(value).toNumber();
+    setNotation(notation) {
+        if (Object.values(NOTATIONS).includes(notation)) {
+            currentNotation = notation;
+        } else {
+            console.warn(`BigNumService: Invalid notation '${notation}'`);
+        }
     },
 
-    // ============ Serialization ============
-
-    /**
-     * Serialize a Decimal for save data
-     * @param {Decimal} decimal
-     * @returns {{ mantissa: number, exponent: number }}
-     */
-    serialize(decimal) {
-        const d = this.create(decimal);
-        return {
-            mantissa: d.mantissa,
-            exponent: d.exponent
-        };
-    },
-
-    /**
-     * Deserialize from save data
-     * @param {{ mantissa: number, exponent: number }|number} data
-     * @returns {Decimal}
-     */
-    deserialize(data) {
-        return this.create(data);
+    getNotation() {
+        return currentNotation;
     }
 };
 
-/**
- * Format a number for display
- * Handles small numbers with locale formatting and large numbers with suffixes
- * @param {number|Decimal} value
- * @param {number} precision - Decimal places for large numbers (default 2)
- * @returns {string}
- */
+function getLetterSuffix(exponent) {
+    const letterIndex = Math.floor(exponent / 3) - 1;
+    if (letterIndex < 0) return '';
+    let suffix = '';
+    let remainder = letterIndex;
+    do {
+        suffix = ALPHABET[remainder % 26] + suffix;
+        remainder = Math.floor(remainder / 26) - 1;
+    } while (remainder >= 0);
+    return suffix;
+}
+
 export function formatNumber(value, precision = 2) {
-    // Safety check for null/undefined
-    if (value === null || value === undefined) {
-        return '0';
-    }
+    if (value === null || value === undefined) return '0';
 
-    // Convert Decimal to number for comparison
-    let num;
-    const D = getDecimal();
-    if (D && value instanceof D) {
-        num = value.toNumber();
-    } else {
-        num = Number(value);
-    }
+    let decimal = BigNumService.create(value);
 
-    // Handle NaN
-    if (Number.isNaN(num)) {
-        return '0';
-    }
+    if (decimal.eq(0)) return '0';
+    if (!Number.isFinite(decimal.mantissa) || !Number.isFinite(decimal.exponent)) return '∞';
 
-    // Handle Infinity
-    if (!Number.isFinite(num)) {
-        return num > 0 ? '∞' : '-∞';
-    }
-
-    // Small numbers: use locale formatting with commas
-    if (Math.abs(num) < 1000) {
-        if (Number.isInteger(num)) {
-            return num.toLocaleString();
-        }
+    if (decimal.abs().lt(1000)) {
+        const num = decimal.toNumber();
+        if (Number.isInteger(num)) return num.toLocaleString();
         return num.toFixed(precision).replace(/\.?0+$/, '');
     }
 
-    // Medium to large numbers: use suffixes
-    const exp = Math.floor(Math.log10(Math.abs(num)));
-    const suffixIndex = Math.floor(exp / 3);
+    const exponent = decimal.exponent;
 
-    if (suffixIndex < SUFFIXES.length) {
-        const divisor = Math.pow(10, suffixIndex * 3);
-        const scaled = num / divisor;
+    switch (currentNotation) {
+        case NOTATIONS.SCIENTIFIC:
+            return decimal.toExponential(precision).replace('+', '');
 
-        // Adjust precision based on magnitude
-        const displayPrecision = scaled >= 100 ? 1 : precision;
-        return scaled.toFixed(displayPrecision) + SUFFIXES[suffixIndex];
+        case NOTATIONS.ENGINEERING:
+            const engExponent = Math.floor(exponent / 3) * 3;
+            const engMantissa = decimal.div(Decimal.pow(10, engExponent)).toNumber();
+            return engMantissa.toFixed(precision) + 'e' + engExponent;
+
+        case NOTATIONS.LETTERS:
+             const letterExponent = Math.floor(exponent / 3) * 3;
+             const letterMantissa = decimal.div(Decimal.pow(10, letterExponent)).toNumber();
+             return letterMantissa.toFixed(precision) + getLetterSuffix(exponent);
+
+        case NOTATIONS.STANDARD:
+        default:
+            const suffixIndex = Math.floor(exponent / 3);
+            if (suffixIndex < STANDARD_SUFFIXES.length) {
+                const stdExponent = suffixIndex * 3;
+                const stdMantissa = decimal.div(Decimal.pow(10, stdExponent)).toNumber();
+                if (suffixIndex === 0) return stdMantissa.toFixed(precision);
+                return stdMantissa.toFixed(precision) + STANDARD_SUFFIXES[suffixIndex];
+            }
+            return decimal.toExponential(precision).replace('+', '');
     }
-
-    // Very large numbers: use scientific notation
-    const mantissa = num / Math.pow(10, exp);
-    return mantissa.toFixed(precision) + 'e' + exp;
 }
 
-/**
- * Format as currency (with gold symbol)
- * @param {number|Decimal} value
- * @returns {string}
- */
-export function formatCurrency(value) {
-    return formatNumber(value) + ' 💰';
-}
-
-/**
- * Format as percentage
- * @param {number} value - Value between 0 and 1 (or 0-100)
- * @param {number} precision
- * @returns {string}
- */
+export function formatCurrency(value) { return formatNumber(value) + ' 💰'; }
 export function formatPercent(value, precision = 1) {
-    // Auto-detect if value is already in percentage form
     const pct = value > 1 ? value : value * 100;
     return pct.toFixed(precision) + '%';
 }
-
-/**
- * Format as multiplier
- * @param {number|Decimal} value
- * @param {number} precision
- * @returns {string}
- */
 export function formatMultiplier(value, precision = 2) {
     const num = BigNumService.toNumber(value);
-    if (num < 10) {
-        return num.toFixed(precision) + 'x';
-    }
+    if (num < 10) return num.toFixed(precision) + 'x';
     return formatNumber(num) + 'x';
 }
-
-/**
- * Format time duration
- * @param {number} seconds
- * @returns {string}
- */
 export function formatTime(seconds) {
-    if (seconds < 60) {
-        return Math.floor(seconds) + 's';
-    }
+    if (seconds < 60) return Math.floor(seconds) + 's';
     if (seconds < 3600) {
         const m = Math.floor(seconds / 60);
         const s = Math.floor(seconds % 60);
@@ -488,27 +180,21 @@ export function formatTime(seconds) {
     return `${h}h ${m}m`;
 }
 
-// Legacy BigNum class for backward compatibility
+// Legacy support
 export class BigNum {
-    constructor(value = 0) {
-        this.value = BigNumService.create(value);
-    }
-
-    add(other) { return new BigNum(BigNumService.add(this.value, other)); }
-    sub(other) { return new BigNum(BigNumService.sub(this.value, other)); }
-    mul(other) { return new BigNum(BigNumService.mul(this.value, other)); }
-    div(other) { return new BigNum(BigNumService.div(this.value, other)); }
-    pow(other) { return new BigNum(BigNumService.pow(this.value, other)); }
-
-    eq(other) { return BigNumService.eq(this.value, other); }
-    gt(other) { return BigNumService.gt(this.value, other); }
-    gte(other) { return BigNumService.gte(this.value, other); }
-    lt(other) { return BigNumService.lt(this.value, other); }
-    lte(other) { return BigNumService.lte(this.value, other); }
-
+    constructor(value = 0) { this.value = BigNumService.create(value); }
+    add(o) { return new BigNum(BigNumService.add(this.value, o)); }
+    sub(o) { return new BigNum(BigNumService.sub(this.value, o)); }
+    mul(o) { return new BigNum(BigNumService.mul(this.value, o)); }
+    div(o) { return new BigNum(BigNumService.div(this.value, o)); }
+    pow(o) { return new BigNum(BigNumService.pow(this.value, o)); }
+    eq(o) { return BigNumService.eq(this.value, o); }
+    gt(o) { return BigNumService.gt(this.value, o); }
+    gte(o) { return BigNumService.gte(this.value, o); }
+    lt(o) { return BigNumService.lt(this.value, o); }
+    lte(o) { return BigNumService.lte(this.value, o); }
     toNumber() { return BigNumService.toNumber(this.value); }
     toString() { return this.value.toString(); }
-
     static zero() { return new BigNum(0); }
     static one() { return new BigNum(1); }
 }
