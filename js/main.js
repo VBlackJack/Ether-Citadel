@@ -94,6 +94,8 @@ import { TutorialManager, StatisticsManager, LeaderboardManager, VisualEffectsMa
 import { GoalManager } from './systems/ui/GoalManager.js';
 import { SoundManager, MusicManager } from './systems/audio/index.js';
 import { InputManager } from './systems/input/InputManager.js';
+import { SwipeManager, SwipeDirection } from './systems/input/SwipeManager.js';
+import { HapticManager, HapticPattern } from './systems/input/HapticManager.js';
 import { RenderSystem } from './systems/graphics/RenderSystem.js';
 import { GameLoop } from './game/GameLoop.js';
 import { eventBus, GameEvents } from './core/index.js';
@@ -116,6 +118,8 @@ class Game {
         this.devClickCount = 0;
         this.config = ConfigRegistry;
         this.events = eventBus;
+        this.swipe = new SwipeManager(this);
+        this.haptics = new HapticManager(this);
         this.sound = new SoundManager();
         this.metaUpgrades = new MetaUpgradeManager(this);
         this.skills = new SkillManager(this);
@@ -213,6 +217,9 @@ class Game {
         // Initialize input manager (handles resize, keyboard, mouse events)
         this.input = new InputManager(this);
         this.input.init();
+
+        // Setup swipe navigation for menu panel
+        this._setupSwipeNavigation();
 
         this.load();
 
@@ -328,6 +335,36 @@ class Game {
         this._intervals = [];
 
         if (this.input) this.input.cleanup();
+        if (this.swipe) this.swipe.destroy();
+    }
+
+    /**
+     * Setup swipe gestures for mobile navigation
+     */
+    _setupSwipeNavigation() {
+        if (!this.swipe) return;
+
+        // Swipe left/right on menu panel to switch tabs
+        this.swipe.on('#menu-panel', SwipeDirection.LEFT, () => {
+            const maxTab = 3; // 0-3 tabs
+            if (this.activeTab < maxTab) {
+                this.switchTab(this.activeTab + 1);
+                this.haptics?.tap();
+            }
+        });
+
+        this.swipe.on('#menu-panel', SwipeDirection.RIGHT, () => {
+            if (this.activeTab > 0) {
+                this.switchTab(this.activeTab - 1);
+                this.haptics?.tap();
+            }
+        });
+
+        // Swipe down on modals to close them
+        this.swipe.on('.modal-backdrop', SwipeDirection.DOWN, (data, el) => {
+            el.classList.add('hidden');
+            this.haptics?.tap();
+        });
     }
 
     async changeLanguage(locale) {
@@ -3362,7 +3399,8 @@ class Game {
             buildPresets: this.buildPresets,
             music: this.music,
             tutorial: this.tutorial,
-            goals: this.goals
+            goals: this.goals,
+            haptics: this.haptics
         };
 
         for (const [name, handler] of Object.entries(subsystems)) {
@@ -3568,6 +3606,12 @@ class Game {
             if (toggleAutoTurret) toggleAutoTurret.checked = this.settings.autoUpgradeTurrets;
             if (labAutoRetry) labAutoRetry.checked = this.autoRetryEnabled;
 
+            // Sync haptics toggle (defaults to enabled if supported)
+            const toggleHaptics = document.getElementById('toggle-haptics');
+            if (toggleHaptics && this.haptics) {
+                toggleHaptics.checked = this.haptics.enabled;
+            }
+
             // Note: Registered subsystems (production, auras, chips, etc.) are loaded
             // automatically by SaveService.load() via their loadSaveData() methods
 
@@ -3590,6 +3634,14 @@ async function init() {
 
     await i18n.init();
     i18n.translatePage();
+
+    // Register Service Worker for offline support
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+            .then((reg) => console.log('[SW] Registered:', reg.scope))
+            .catch((err) => console.warn('[SW] Registration failed:', err));
+    }
+
     new Game();
 
     // Save and cleanup on window unload

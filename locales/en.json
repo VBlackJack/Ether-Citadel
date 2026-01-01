@@ -145,6 +145,7 @@
       "title": "Settings",
       "showDamage": "Show Damage",
       "showRange": "Show Range",
+      "haptics": "Haptic Feedback",
       "save": "Save",
       "copy": "COPY",
       "import": "IMPORT",
