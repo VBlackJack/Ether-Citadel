@@ -92,6 +92,7 @@ import { COLORS, getCastleTierColor } from './constants/colors.js';
 import { SKILL, RUNE, UPGRADE, PRESTIGE_RESET_UPGRADES } from './constants/skillIds.js';
 import { TutorialManager, StatisticsManager, LeaderboardManager, VisualEffectsManager } from './systems/ui/index.js';
 import { SoundManager, MusicManager } from './systems/audio/index.js';
+import { InputManager } from './systems/input/InputManager.js';
 
 class Game {
     constructor() {
@@ -202,66 +203,9 @@ class Game {
             resetCooldowns: () => { for (let k in this.skills.skills) this.skills.skills[k].cdTime = 0; }
         };
 
-        this.resize();
-        this._boundResize = () => this.resize();
-        this._boundKeydown = (e) => {
-            if (e.key.toLowerCase() === 'q') this.activateSkill(SKILL.OVERDRIVE);
-            if (e.key.toLowerCase() === 'w') this.activateSkill(SKILL.NUKE);
-            if (e.key.toLowerCase() === 'e') this.activateSkill(SKILL.BLACKHOLE);
-            if (e.key.toLowerCase() === 'p') this.togglePause();
-            // Speed shortcuts 1-6
-            if (e.key === '1') this.setSpeed(1);
-            if (e.key === '2') this.setSpeed(2);
-            if (e.key === '3') this.setSpeed(3);
-            if (e.key === '4') this.setSpeed(5);
-            if (e.key === '5') this.setSpeed(10);
-            if (e.key === '6') this.setSpeed(20);
-            if (e.key === 'F3') {
-                e.preventDefault();
-                this.toggleDebugPanel();
-            }
-        };
-        window.addEventListener('resize', this._boundResize);
-        window.addEventListener('keydown', this._boundKeydown);
-
-        this._boundCanvasMousedown = (e) => {
-            if (this.isPaused) return;
-            const rect = this.canvas.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const clickY = e.clientY - rect.top;
-
-            for (const slot of this.turretSlots.slots) {
-                const pos = this.turretSlots.getSlotPosition(slot.id);
-                if (pos && MathUtils.dist(clickX, clickY, pos.x, pos.y) < 25) {
-                    this.handleSlotClick(slot);
-                    return;
-                }
-            }
-
-            this.runes = this.runes.filter(r => {
-                if (MathUtils.dist(clickX, clickY, r.x, r.y) < 30) {
-                    this.activateRune(r);
-                    return false;
-                }
-                return true;
-            });
-        };
-        this.canvas.addEventListener('mousedown', this._boundCanvasMousedown);
-
-        const dmgToggle = document.getElementById('toggle-damage');
-        if (dmgToggle) {
-            dmgToggle.addEventListener('change', (e) => { this.settings.showDamageText = e.target.checked; });
-        }
-
-        const rangeToggle = document.getElementById('toggle-range');
-        if (rangeToggle) {
-            rangeToggle.addEventListener('change', (e) => { this.settings.showRange = e.target.checked; });
-        }
-
-        const buyToggle = document.getElementById('toggle-buy');
-        if (buyToggle) {
-            buyToggle.addEventListener('change', (e) => { this.autoBuyEnabled = e.target.checked; });
-        }
+        // Initialize input manager (handles resize, keyboard, mouse events)
+        this.input = new InputManager(this);
+        this.input.init();
 
         this.load();
         this.recalcRelicBonuses();
@@ -351,18 +295,7 @@ class Game {
         this._intervals.forEach(id => clearInterval(id));
         this._intervals = [];
 
-        if (this._boundResize) {
-            window.removeEventListener('resize', this._boundResize);
-            this._boundResize = null;
-        }
-        if (this._boundKeydown) {
-            window.removeEventListener('keydown', this._boundKeydown);
-            this._boundKeydown = null;
-        }
-        if (this._boundCanvasMousedown && this.canvas) {
-            this.canvas.removeEventListener('mousedown', this._boundCanvasMousedown);
-            this._boundCanvasMousedown = null;
-        }
+        if (this.input) this.input.cleanup();
     }
 
     async changeLanguage(locale) {
@@ -469,15 +402,6 @@ class Game {
                 memEl.textContent = `Memory: ${mb} MB`;
             }
         }, 200));
-    }
-
-    resize() {
-        const container = document.getElementById('game-container');
-        if (!container) return;
-        this.canvas.width = container.clientWidth;
-        this.canvas.height = container.clientHeight;
-        this.width = this.canvas.width;
-        this.height = this.canvas.height;
     }
 
     toggleSpeed() {
