@@ -19,7 +19,7 @@
  */
 
 import { t } from '../../i18n.js';
-import { CONFIG, formatNumber } from '../../config.js';
+import { CONFIG, formatNumber, BigNumService } from '../../config.js';
 import { createUpgrades } from '../../data.js';
 
 export class UpgradeManager {
@@ -51,11 +51,13 @@ export class UpgradeManager {
      * Calculate cost of an upgrade at current level
      * Formula: baseCost * (costFactor ^ level)
      * @param {object} upgrade
-     * @returns {number}
+     * @returns {Decimal}
      */
     getCost(upgrade) {
         const factor = upgrade.costFactor || 1.15;
-        return Math.floor(upgrade.baseCost * Math.pow(factor, upgrade.level));
+        return BigNumService.floor(
+            BigNumService.mul(upgrade.baseCost, BigNumService.pow(factor, upgrade.level))
+        );
     }
 
     /**
@@ -124,8 +126,8 @@ export class UpgradeManager {
 
     _buySingle(u, silent) {
         const cost = this.getCost(u);
-        if (this.game.gold >= cost) {
-            this.game.gold -= cost;
+        if (BigNumService.gte(this.game.gold, cost)) {
+            this.game.gold = BigNumService.sub(this.game.gold, cost);
             u.level++;
             this._onPurchase(u, 1, silent);
             return true;
@@ -135,14 +137,16 @@ export class UpgradeManager {
 
     _buyMax(u, silent) {
         let count = 0;
-        let totalCost = 0;
+        let totalCost = BigNumService.create(0);
         let currentLvl = u.level;
         const factor = u.costFactor || 1.15;
 
         while (true) {
-            let nextCost = Math.floor(u.baseCost * Math.pow(factor, currentLvl + count));
+            const nextCost = BigNumService.floor(
+                BigNumService.mul(u.baseCost, BigNumService.pow(factor, currentLvl + count))
+            );
 
-            if (this.game.gold < totalCost + nextCost) break;
+            if (BigNumService.lt(this.game.gold, BigNumService.add(totalCost, nextCost))) break;
             if (u.maxLevel && currentLvl + count >= u.maxLevel) break;
 
             // Check if next level hits cap
@@ -152,13 +156,13 @@ export class UpgradeManager {
                 if (u.type !== 'decay' && nextVal > u.cap) break;
             }
 
-            totalCost += nextCost;
+            totalCost = BigNumService.add(totalCost, nextCost);
             count++;
             if (count > 1000) break; // Safety break
         }
 
         if (count > 0) {
-            this.game.gold -= totalCost;
+            this.game.gold = BigNumService.sub(this.game.gold, totalCost);
             u.level += count;
             this._onPurchase(u, count, silent);
             return true;
@@ -173,7 +177,7 @@ export class UpgradeManager {
             this.game.ui?.showToast(`${t(u.nameKey)} +${count}`, 'success');
         }
         this.game.save();
-        this.game.tutorial.check(this.game.gold);
+        this.game.tutorial.check(BigNumService.toNumber(this.game.gold));
     }
 
     /**
@@ -210,7 +214,7 @@ export class UpgradeManager {
         if (!this.game) return false;
         return this.upgrades.some(u => {
             if (u.maxLevel && u.level >= u.maxLevel) return false;
-            return this.game.gold >= this.getCost(u);
+            return BigNumService.gte(this.game.gold, this.getCost(u));
         });
     }
 
@@ -265,7 +269,7 @@ export class UpgradeManager {
             const hasAffordable = this.upgrades.some(u => {
                 const cat = u.category !== undefined ? u.category : this._guessCategory(u.id);
                 return cat === catId &&
-                       this.game.gold >= this.getCost(u) &&
+                       BigNumService.gte(this.game.gold, this.getCost(u)) &&
                        (!u.maxLevel || u.level < u.maxLevel);
             });
             tabBtn.classList.toggle('tab-notify', hasAffordable);
@@ -299,7 +303,7 @@ export class UpgradeManager {
         const isMaxed = (u.maxLevel && u.level >= u.maxLevel) ||
                         (u.cap && u.type === 'chance' && this.getValue(u.id, u.level) >= u.cap);
 
-        const canAfford = this.game.gold >= cost && !isMaxed && cost > 0;
+        const canAfford = BigNumService.gte(this.game.gold, cost) && !isMaxed && BigNumService.isPositive(cost);
 
         // Calculate display values
         const { val, next } = this.calculateDisplayValues(u);
@@ -326,18 +330,21 @@ export class UpgradeManager {
 
     /**
      * Calculate cost when buying max levels (UI helper)
+     * @returns {Decimal}
      */
     calculateMaxCost(u) {
         let count = 0;
-        let totalCost = 0;
+        let totalCost = BigNumService.create(0);
         let currentLvl = u.level;
         const factor = u.costFactor || 1.15;
 
         for (let iter = 0; iter < 1000; iter++) {
-            let nextCost = Math.floor(u.baseCost * Math.pow(factor, currentLvl + count));
+            const nextCost = BigNumService.floor(
+                BigNumService.mul(u.baseCost, BigNumService.pow(factor, currentLvl + count))
+            );
 
-            if (this.game.gold < totalCost + nextCost && count > 0) break;
-            if (this.game.gold < nextCost && count === 0) {
+            if (BigNumService.lt(this.game.gold, BigNumService.add(totalCost, nextCost)) && count > 0) break;
+            if (BigNumService.lt(this.game.gold, nextCost) && count === 0) {
                 totalCost = nextCost;
                 break;
             }
@@ -350,7 +357,7 @@ export class UpgradeManager {
                 if (u.type !== 'decay' && nextVal > u.cap) break;
             }
 
-            totalCost += nextCost;
+            totalCost = BigNumService.add(totalCost, nextCost);
             count++;
         }
 

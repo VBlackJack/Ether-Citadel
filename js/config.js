@@ -106,9 +106,9 @@ export {
     formatCurrency,
     formatPercent,
     formatMultiplier,
+    formatTime,
     BigNum,
-    BigNumService,
-    NotationType
+    BigNumService
 } from './services/BigNumService.js';
 
 export {

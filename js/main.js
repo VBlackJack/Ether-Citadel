@@ -105,7 +105,7 @@ class Game {
         this.gameLoop = new GameLoop(this);
         this.gameTime = 0;
         this.speedMultiplier = 1;
-        this.ether = 0;
+        this.ether = BigNumService.create(0);
         this.activeTab = 0;
         this.buyMode = '1';
         this._intervals = [];
@@ -126,7 +126,7 @@ class Game {
 
         this.relics = [];
         this.relicMults = { damage: 0, gold: 0, speed: 0, critChance: 0, health: 0, cooldown: 0, mining: 0, leech: 0, dreadReward: 0, critDamage: 0, revive: false, autoSkill: false };
-        this.crystals = 0;
+        this.crystals = BigNumService.create(0);
         this.miningResources = {};
         this.researchEffects = {};
         this.mining = new MiningManager(this);
@@ -173,7 +173,7 @@ class Game {
         this.isGameOver = false;
         this.retryTimeoutId = null;
         this.retryIntervalId = null;
-        this.gold = 0;
+        this.gold = BigNumService.create(0);
         this.wave = 1;
         this.lastSaveTime = Date.now();
         this.enemies = [];
@@ -201,7 +201,7 @@ class Game {
 
         this.dev = {
             addGold: (amt) => { this.addGold(amt); },
-            addEther: (amt) => { this.ether += amt; this.updateEtherUI(); },
+            addEther: (amt) => { this.ether = BigNumService.add(this.ether, amt); this.updateEtherUI(); },
             skipWaves: (amt) => { this.wave += amt; this.checkEvolution(); this.save(); },
             resetCooldowns: () => { for (let k in this.skills.skills) this.skills.skills[k].cdTime = 0; }
         };
@@ -214,8 +214,8 @@ class Game {
         this.recalcRelicBonuses();
         this.updateDroneStatus();
         this.checkOfflineEarnings();
-        if (this.wave === 1 && this.gold === 0) this.gold = this.metaUpgrades.getEffectValue('startGold');
-        if (this.wave === 1) this.tutorial.check(this.gold);
+        if (this.wave === 1 && BigNumService.isZero(this.gold)) this.gold = BigNumService.create(this.metaUpgrades.getEffectValue('startGold'));
+        if (this.wave === 1) this.tutorial.check(BigNumService.toNumber(this.gold));
 
         // Restore UI state from localStorage
         try {
@@ -448,10 +448,10 @@ class Game {
     }
 
     addGold(amount) {
-        this.gold += amount;
-        this.stats.registerGold(amount);
+        this.gold = BigNumService.add(this.gold, amount);
+        this.stats.registerGold(BigNumService.toNumber(amount));
         this.upgrades.render(this.activeTab);
-        this.tutorial.check(this.gold);
+        this.tutorial.check(BigNumService.toNumber(this.gold));
     }
 
     createFloatingText(x, y, text, color, size = 20) {
@@ -621,7 +621,7 @@ class Game {
             const earned = Math.floor((baseGold * (cappedDiffSec / 60) * totalMult) + productionEarnings);
 
             if (earned > 0) {
-                this.gold += earned;
+                this.gold = BigNumService.add(this.gold, earned);
                 this.stats.registerGold(earned);
                 document.getElementById('offline-gold').innerText = formatNumber(earned);
 
@@ -684,7 +684,7 @@ class Game {
         const dreadBonus = 1 + (this.dreadLevel * CONFIG.dreadBonusPerLevel);
         const crystalAffinity = 1 + (this.researchEffects.crystalGain || 0);
         const crystalsEarned = Math.floor(baseCrystals * dreadBonus * crystalAffinity);
-        this.crystals += crystalsEarned;
+        this.crystals = BigNumService.add(this.crystals, crystalsEarned);
         this.updateCrystalsUI();
         this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 3, `+${crystalsEarned} ${t('currency.crystals')}`, COLORS.CRYSTAL, 28));
 
@@ -832,10 +832,10 @@ class Game {
         const dreadMult = this.getDreadMultipliers();
 
         const bonusEther = Math.floor(this.wave * surrenderBonus * dreadMult.etherBonus);
-        const bonusGold = Math.floor(this.gold * 0.1);
+        const bonusGold = BigNumService.floor(BigNumService.mul(this.gold, 0.1));
 
-        this.ether += bonusEther;
-        this.gold += bonusGold;
+        this.ether = BigNumService.add(this.ether, bonusEther);
+        this.gold = BigNumService.add(this.gold, bonusGold);
 
         this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2 - 50, t('surrender.bonus'), COLORS.SUCCESS, 32));
         this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, `+${bonusEther} 🔮`, COLORS.ETHER, 28));
@@ -1124,7 +1124,7 @@ class Game {
             const level = data?.level || 0;
             const cost = this.production.getBuildingCost(building.id);
             const rate = this.production.getProductionRate(building.id);
-            const canAfford = this.gold >= cost;
+            const canAfford = BigNumService.gte(this.gold, cost);
             const isMaxed = level >= building.maxLevel;
 
             const div = document.createElement('div');
@@ -1425,13 +1425,13 @@ class Game {
                 </div>
                 <div class="text-xs text-slate-400 mb-2">${t(turret.descKey)}</div>
                 ${!unlocked ? `
-                    <button data-action="school.unlock" data-id="${turret.id}" class="w-full px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded ${this.crystals >= turret.unlockCost ? '' : 'opacity-50 cursor-not-allowed'}">
+                    <button data-action="school.unlock" data-id="${turret.id}" class="w-full px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded ${BigNumService.gte(this.crystals, turret.unlockCost) ? '' : 'opacity-50 cursor-not-allowed'}">
                         ${t('school.unlock')} (${turret.unlockCost} 💎)
                     </button>
                 ` : maxed ? `
                     <div class="text-center text-xs text-yellow-400">${t('school.maxed')}</div>
                 ` : `
-                    <button data-action="school.levelUp" data-id="${turret.id}" class="w-full px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded ${this.crystals >= this.school.getLevelUpCost(turret.id) ? '' : 'opacity-50 cursor-not-allowed'}">
+                    <button data-action="school.levelUp" data-id="${turret.id}" class="w-full px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded ${BigNumService.gte(this.crystals, this.school.getLevelUpCost(turret.id)) ? '' : 'opacity-50 cursor-not-allowed'}">
                         ${t('school.upgrade')} (${this.school.getLevelUpCost(turret.id)} 💎)
                     </button>
                 `}
@@ -1840,7 +1840,7 @@ class Game {
             const isMaxed = level >= passive.maxLevel;
             const isUnlocked = this.passives.isUnlocked(passive.id);
             const cost = this.passives.getCost(passive.id);
-            const canAfford = this.crystals >= cost && !isMaxed && isUnlocked;
+            const canAfford = BigNumService.gte(this.crystals, cost) && !isMaxed && isUnlocked;
 
             const div = document.createElement('div');
 
@@ -2356,7 +2356,7 @@ class Game {
             }};
         }
 
-        if (this.gold >= 100 && this.upgrades.canAffordAny()) {
+        if (BigNumService.gte(this.gold, 100) && this.upgrades.canAffordAny()) {
             return { text: t('ux.suggestion.buyUpgrade') || 'Buy an upgrade', action: () => {
                 const labPanel = document.getElementById('lab-panel');
                 if (labPanel) labPanel.scrollTop = 0;
@@ -2988,7 +2988,7 @@ class Game {
         this.isGameOver = true;
         const dreadMult = this.getDreadMultipliers();
         const earnedEther = Math.max(1, Math.floor(this.wave / 1.5)) * (1 + (this.stats.mastery['ether_gain'] || 0) * 0.05) * dreadMult.etherBonus;
-        this.ether += earnedEther;
+        this.ether = BigNumService.add(this.ether, earnedEther);
         if (this.activeChallenge) {
             const rewardDM = Math.floor(this.wave / 5) * this.activeChallenge.diff;
             this.challenges.darkMatter += rewardDM;
@@ -3066,7 +3066,7 @@ class Game {
         this.upgrades.upgrades.forEach(u => {
             u.level = PRESTIGE_RESET_UPGRADES.includes(u.id) ? 0 : 1;
         });
-        this.gold = this.metaUpgrades.getEffectValue('startGold');
+        this.gold = BigNumService.create(this.metaUpgrades.getEffectValue('startGold'));
         const autoStatusEl = document.getElementById('auto-status');
         if (isAuto && this.autoBuyEnabled && this.metaUpgrades.getEffectValue('unlockAI')) {
             autoStatusEl?.classList.remove('hidden');

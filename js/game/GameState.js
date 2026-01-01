@@ -3,7 +3,7 @@
  * Game State Management Module
  */
 
-import { CONFIG } from '../config.js';
+import { CONFIG, BigNumService } from '../config.js';
 import { getErrorHandler, logError, ErrorSeverity } from '../utils/ErrorHandler.js';
 import { sanitizeJsonObject } from '../utils/HtmlSanitizer.js';
 
@@ -61,10 +61,10 @@ export class GameStateManager {
         return {
             version: this.version,
             timestamp: Date.now(),
-            gold: g.gold,
+            gold: g.gold.toString(),
             wave: g.wave,
-            ether: g.ether,
-            crystals: g.crystals,
+            ether: g.ether.toString(),
+            crystals: g.crystals.toString(),
             dreadLevel: g.dreadLevel,
             speedIndex: g.speedIndex,
             settings: { ...g.settings },
@@ -168,10 +168,10 @@ export class GameStateManager {
     applyLoadedData(data) {
         const g = this.game;
 
-        g.gold = this.safeNumber(data.gold, INITIAL_STATE.gold);
+        g.gold = BigNumService.create(data.gold || INITIAL_STATE.gold);
         g.wave = this.safeNumber(data.wave, INITIAL_STATE.wave);
-        g.ether = this.safeNumber(data.ether, INITIAL_STATE.ether);
-        g.crystals = this.safeNumber(data.crystals, INITIAL_STATE.crystals);
+        g.ether = BigNumService.create(data.ether || INITIAL_STATE.ether);
+        g.crystals = BigNumService.create(data.crystals || INITIAL_STATE.crystals);
         g.dreadLevel = this.safeNumber(data.dreadLevel, INITIAL_STATE.dreadLevel);
         g.speedIndex = this.safeNumber(data.speedIndex, INITIAL_STATE.speedIndex);
         g.settings = { ...INITIAL_STATE.settings, ...(typeof data.settings === 'object' ? data.settings : {}) };
