@@ -6,6 +6,7 @@
 import { DAILY_QUEST_TYPES } from '../../data.js';
 import { t } from '../../i18n.js';
 import { FloatingText } from '../../entities/FloatingText.js';
+import { BigNumService, formatNumber } from '../../config.js';
 
 export class DailyQuestManager {
     constructor(game) {
@@ -29,8 +30,12 @@ export class DailyQuestManager {
 
         for (const quest of selected) {
             const difficultyMult = 1 + (this.game.stats?.maxWave || 0) * 0.05;
-            const target = Math.floor(quest.targetBase * quest.targetMult * difficultyMult);
-            const reward = Math.floor(quest.rewardBase * difficultyMult);
+            const target = BigNumService.floor(
+                BigNumService.mul(quest.targetBase * quest.targetMult, difficultyMult)
+            );
+            const reward = BigNumService.floor(
+                BigNumService.mul(quest.rewardBase, difficultyMult)
+            );
 
             this.quests.push({
                 ...quest,
@@ -38,7 +43,7 @@ export class DailyQuestManager {
                 reward,
                 completed: false
             });
-            this.progress[quest.id] = 0;
+            this.progress[quest.id] = BigNumService.create(0);
         }
         this.game.save();
     }
@@ -47,9 +52,11 @@ export class DailyQuestManager {
         const quest = this.quests.find(q => q.id === questType && !q.completed);
         if (!quest) return;
 
-        this.progress[questType] = (this.progress[questType] || 0) + amount;
+        const currentProgress = this.progress[questType] || BigNumService.create(0);
+        const addAmount = BigNumService.create(amount);
+        this.progress[questType] = BigNumService.add(currentProgress, addAmount);
 
-        if (this.progress[questType] >= quest.target) {
+        if (BigNumService.gte(this.progress[questType], quest.target)) {
             this.completeQuest(quest);
         }
     }
@@ -59,22 +66,22 @@ export class DailyQuestManager {
 
         switch (quest.rewardType) {
             case 'gold':
-                this.game.gold += quest.reward;
+                this.game.gold = BigNumService.add(this.game.gold, quest.reward);
                 break;
             case 'crystals':
-                this.game.crystals += quest.reward;
-                this.game.updateCrystalsUI();
+                this.game.crystals = BigNumService.add(this.game.crystals, quest.reward);
+                this.game.updateCrystalsUI?.();
                 break;
             case 'ether':
-                this.game.ether += quest.reward;
-                this.game.updateEtherUI();
+                this.game.ether = BigNumService.add(this.game.ether, quest.reward);
+                this.game.updateEtherUI?.();
                 break;
         }
 
         this.game.floatingTexts.push(FloatingText.create(
             this.game.width / 2,
             this.game.height / 2,
-            `${t('quests.completed')} +${quest.reward}`,
+            `${t('quests.completed')} +${formatNumber(quest.reward)}`,
             '#22c55e',
             28
         ));
@@ -91,7 +98,7 @@ export class DailyQuestManager {
     hasClaimableReward() {
         return this.quests.some(q =>
             !q.completed &&
-            (this.progress[q.id] || 0) >= q.target
+            BigNumService.gte(this.progress[q.id] || BigNumService.create(0), q.target)
         );
     }
 
@@ -100,17 +107,42 @@ export class DailyQuestManager {
     }
 
     getSaveData() {
+        // Serialize BigNum values to strings
+        const serializedQuests = this.quests.map(q => ({
+            ...q,
+            target: q.target?.toString?.() || q.target,
+            reward: q.reward?.toString?.() || q.reward
+        }));
+
+        const serializedProgress = {};
+        for (const [key, value] of Object.entries(this.progress)) {
+            serializedProgress[key] = value?.toString?.() || value;
+        }
+
         return {
-            quests: this.quests,
+            quests: serializedQuests,
             lastRefresh: this.lastRefresh,
-            progress: this.progress
+            progress: serializedProgress
         };
     }
 
     loadSaveData(data) {
         if (!data) return;
-        this.quests = data.quests || [];
+
+        // Deserialize BigNum values
+        this.quests = (data.quests || []).map(q => ({
+            ...q,
+            target: BigNumService.create(q.target || 0),
+            reward: BigNumService.create(q.reward || 0)
+        }));
+
         this.lastRefresh = data.lastRefresh;
-        this.progress = data.progress || {};
+
+        this.progress = {};
+        if (data.progress) {
+            for (const [key, value] of Object.entries(data.progress)) {
+                this.progress[key] = BigNumService.create(value || 0);
+            }
+        }
     }
 }
