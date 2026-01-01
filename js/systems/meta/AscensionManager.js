@@ -20,6 +20,7 @@
 
 import { ASCENSION_PERKS } from '../../data.js';
 import { t } from '../../i18n.js';
+import { BigNumService } from '../../config.js';
 
 export class AscensionManager {
     constructor(game) {
@@ -30,11 +31,13 @@ export class AscensionManager {
     }
 
     canAscend() {
-        return this.game.ether >= 1000;
+        const ether = this.game.ether || BigNumService.create(0);
+        return BigNumService.gte(ether, 1000);
     }
 
     getAscensionGain() {
-        return Math.floor(Math.sqrt(this.game.ether / 100));
+        const ether = this.game.ether || BigNumService.create(0);
+        return BigNumService.toNumber(BigNumService.floor(BigNumService.sqrt(BigNumService.div(ether, 100))));
     }
 
     doAscend() {
@@ -44,7 +47,7 @@ export class AscensionManager {
         this.totalAscensions++;
         this.game.statistics?.increment('totalAscensions');
         // Full reset including prestige
-        this.game.ether = 0;
+        this.game.ether = BigNumService.create(0);
         this.game.prestige?.fullReset();
         this.game.restart();
         this.game.save();
