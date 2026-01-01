@@ -80,6 +80,7 @@ import { ProjectileSystem, ProjectileType } from './systems/combat/ProjectileSys
 import { getEventDelegation } from './ui/EventDelegation.js';
 import { getErrorHandler, logError } from './utils/ErrorHandler.js';
 import { ConfigRegistry } from './services/ConfigRegistry.js';
+import { SaveService } from './services/SaveService.js';
 import { StatsBreakdown } from './ui/StatsBreakdown.js';
 import { escapeHtml, sanitizeColor, calculateChecksum, verifyChecksum, sanitizeJsonObject } from './utils/HtmlSanitizer.js';
 import { Enemy, Castle, FloatingText, Particle, Rune, Projectile, Turret, Drone } from './entities/index.js';
@@ -154,6 +155,11 @@ class Game {
         this.visualEffects = new VisualEffectsManager(this);
         this.music = new MusicManager(this);
         this.bossMechanics = new BossMechanicsManager(this);
+
+        // Initialize SaveService and register subsystems
+        SaveService.init(CONFIG.saveKey);
+        this._registerSaveSubsystems();
+
         this.dreadLevel = 0;
         this.speedIndex = 0;
         this.selectedForgeRelic = null;
@@ -3295,20 +3301,70 @@ class Game {
         }
     }
 
+    /**
+     * Register all subsystems with SaveService for automatic save/load
+     */
+    _registerSaveSubsystems() {
+        const subsystems = {
+            mining: this.mining,
+            research: this.research,
+            production: this.production,
+            auras: this.auras,
+            chips: this.chips,
+            dailyQuests: this.dailyQuests,
+            prestige: this.prestige,
+            passives: this.passives,
+            town: this.town,
+            school: this.school,
+            office: this.office,
+            awakening: this.awakening,
+            turretSlots: this.turretSlots,
+            weather: this.weather,
+            combo: this.combo,
+            events: this.events,
+            talents: this.talents,
+            statistics: this.statistics,
+            ascensionMgr: this.ascensionMgr,
+            synergies: this.synergies,
+            gameModes: this.gameModes,
+            seasonalEvents: this.seasonalEvents,
+            campaign: this.campaign,
+            leaderboards: this.leaderboards,
+            buildPresets: this.buildPresets,
+            music: this.music
+        };
+
+        for (const [name, handler] of Object.entries(subsystems)) {
+            if (handler && typeof handler.getSaveData === 'function' && typeof handler.loadSaveData === 'function') {
+                SaveService.registerSubsystem(name, handler);
+            }
+        }
+    }
+
     save() {
-        const data = {
+        // Core data (not managed by registered subsystems)
+        const coreData = {
             gold: this.gold,
             wave: this.wave,
             tier: this.castle.tier,
-            upgrades: this.upgrades.upgrades.map(u => ({ id: u.id, level: u.level })),
             ether: this.ether,
             crystals: this.crystals,
+            dreadLevel: this.dreadLevel,
+            speedIndex: this.speedIndex,
+            autoRetry: this.autoRetryEnabled,
+            autoBuy: this.autoBuyEnabled,
+            lastSaveTime: Date.now(),
+            settings: this.settings,
+            locale: i18n.getLocale(),
+            tutorialStep: this.tutorial?.step || 0,
+
+            // Legacy data structures (not yet migrated to subsystems)
+            upgrades: this.upgrades.upgrades.map(u => ({ id: u.id, level: u.level })),
+            metaUpgrades: this.metaUpgrades.upgrades.map(u => ({ id: u.id, level: u.level })),
             miningResources: this.miningResources,
             miningActiveMiners: this.mining.getSaveData(),
             researchPurchased: this.research.getSaveData(),
             researchEffects: this.researchEffects,
-            dreadLevel: this.dreadLevel,
-            metaUpgrades: this.metaUpgrades.upgrades.map(u => ({ id: u.id, level: u.level })),
             relics: this.relics,
             stats: {
                 kills: this.stats.kills,
@@ -3322,93 +3378,34 @@ class Game {
                 mastery: this.stats.mastery,
                 seenEnemies: this.stats.seenEnemies
             },
-            autoRetry: this.autoRetryEnabled,
-            autoBuy: this.autoBuyEnabled,
-            lastSaveTime: Date.now(),
-            settings: this.settings,
-            challenges: { dm: this.challenges.darkMatter, tech: this.challenges.dmTech },
-            locale: i18n.getLocale(),
-            production: this.production.getSaveData(),
-            auras: this.auras.getSaveData(),
-            chips: this.chips.getSaveData(),
-            dailyQuests: this.dailyQuests.getSaveData(),
-            prestige: this.prestige.getSaveData(),
-            passives: this.passives.getSaveData(),
-            speedIndex: this.speedIndex,
-            town: this.town.getSaveData(),
-            school: this.school.getSaveData(),
-            office: this.office.getSaveData(),
-            awakening: this.awakening.getSaveData(),
-            turretSlots: this.turretSlots.getSaveData(),
-            weather: this.weather.getSaveData(),
-            combo: this.combo.getSaveData(),
-            events: this.events.getSaveData(),
-            talents: this.talents.getSaveData(),
-            statistics: this.statistics.getSaveData(),
-            ascensionMgr: this.ascensionMgr.getSaveData(),
-            synergies: this.synergies.getSaveData(),
-            gameModes: this.gameModes.getSaveData(),
-            seasonalEvents: this.seasonalEvents.getSaveData(),
-            campaign: this.campaign.getSaveData(),
-            leaderboards: this.leaderboards.getSaveData(),
-            buildPresets: this.buildPresets.getSaveData(),
-            music: this.music.getSaveData(),
-            tutorialStep: this.tutorial?.step || 0
+            challenges: { dm: this.challenges.darkMatter, tech: this.challenges.dmTech }
         };
 
-        // Create rotating backups (keep 3 backups)
-        this.createSaveBackup();
+        // Create backup before saving
+        SaveService.createBackup(1);
 
-        // Add checksum for data integrity
-        const jsonData = JSON.stringify(data);
-        const checksum = calculateChecksum(jsonData);
-        const saveData = { data, checksum };
-        localStorage.setItem(CONFIG.saveKey, JSON.stringify(saveData));
-        this.isDirty = false;
-        this.lastSaveTime = Date.now();
-        const saveStringEl = document.getElementById('save-string');
-        if (saveStringEl) {
-            try {
-                saveStringEl.value = btoa(encodeURIComponent(JSON.stringify(data)));
-            } catch (e) {
-                logError(e, 'Save.exportString');
-                saveStringEl.value = '';
+        // Delegate save to SaveService (handles subsystems, checksum, storage)
+        const success = SaveService.save(coreData);
+
+        if (success) {
+            this.isDirty = false;
+            this.lastSaveTime = Date.now();
+
+            // Update export string UI
+            const saveStringEl = document.getElementById('save-string');
+            if (saveStringEl) {
+                saveStringEl.value = SaveService.exportSave();
             }
         }
     }
 
     /**
-     * Create rotating save backups (keeps 3 backups)
-     */
-    createSaveBackup() {
-        const currentSave = localStorage.getItem(CONFIG.saveKey);
-        if (!currentSave) return;
-
-        const backupKey = `${CONFIG.saveKey}_backup`;
-
-        // Rotate backups: 2 -> 3, 1 -> 2, current -> 1
-        const backup2 = localStorage.getItem(`${backupKey}_2`);
-        if (backup2) {
-            localStorage.setItem(`${backupKey}_3`, backup2);
-        }
-
-        const backup1 = localStorage.getItem(`${backupKey}_1`);
-        if (backup1) {
-            localStorage.setItem(`${backupKey}_2`, backup1);
-        }
-
-        localStorage.setItem(`${backupKey}_1`, currentSave);
-    }
-
-    /**
-     * Restore from backup slot (1-3)
+     * Restore from backup slot (1-3) - delegates to SaveService
      */
     restoreFromBackup(slot) {
-        const backupKey = `${CONFIG.saveKey}_backup_${slot}`;
-        const backup = localStorage.getItem(backupKey);
-        if (backup) {
-            localStorage.setItem(CONFIG.saveKey, backup);
-            this.load();
+        const result = SaveService.restoreBackup(slot);
+        if (result.success) {
+            this._loadFromData(result.data);
             this.ui.showToast(t('notifications.backupRestored') || 'Backup restored!', 'success');
             return true;
         }
@@ -3417,197 +3414,136 @@ class Game {
     }
 
     /**
-     * Get available backups info
+     * Get available backups info - delegates to SaveService
      */
     getBackupsInfo() {
-        const backups = [];
-        for (let i = 1; i <= 3; i++) {
-            const backup = localStorage.getItem(`${CONFIG.saveKey}_backup_${i}`);
-            if (backup) {
-                try {
-                    const parsed = JSON.parse(backup);
-                    const data = sanitizeJsonObject(parsed);
-                    backups.push({
-                        slot: i,
-                        wave: data.wave || 1,
-                        gold: data.gold || 0,
-                        date: formatDate(data.lastSaveTime || 0)
-                    });
-                } catch {
-                    backups.push({ slot: i, wave: '?', gold: '?', date: t('common.unknown') });
-                }
-            }
-        }
-        return backups;
+        return SaveService.getBackupsInfo();
     }
 
+    /**
+     * Load game state from SaveService
+     */
     load() {
-        const saved = localStorage.getItem(CONFIG.saveKey);
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
+        const result = SaveService.load();
 
-                // Handle new format with checksum
-                let data;
-                if (parsed.checksum !== undefined && parsed.data !== undefined) {
-                    const jsonData = JSON.stringify(parsed.data);
-                    if (!verifyChecksum(jsonData, parsed.checksum)) {
-                        logError('Save data checksum mismatch - data may be corrupted', 'Game.load', ErrorSeverity.ERROR);
-                        // Block loading corrupted data - suggest backup restoration
-                        this.ui?.showToast(t('notifications.saveCorruptedBlocked') || 'Save corrupted - use Settings > Restore Backup', 'error');
-                        return false;
-                    }
-                    data = parsed.data;
-                } else {
-                    // Legacy format without checksum
-                    data = parsed;
-                }
-
-                this.ether = data.ether || 0;
-                this.crystals = data.crystals || 0;
-                this.miningResources = data.miningResources || {};
-                this.researchEffects = data.researchEffects || {};
-                this.mining.loadSaveData(data.miningActiveMiners);
-                this.research.loadSaveData(data.researchPurchased);
-                this.dreadLevel = data.dreadLevel || 0;
-                this.lastSaveTime = data.lastSaveTime || Date.now();
-                this.relics = data.relics || [];
-                if (data.metaUpgrades) {
-                    data.metaUpgrades.forEach(s => {
-                        const u = this.metaUpgrades.upgrades.find(m => m.id === s.id);
-                        if (u) u.level = s.level;
-                    });
-                }
-                this.gold = data.gold || 0;
-                this.wave = data.wave || 1;
-                this.castle.tier = data.tier || 1;
-                if (data.upgrades) {
-                    data.upgrades.forEach(s => {
-                        const u = this.upgrades.upgrades.find(m => m.id === s.id);
-                        if (u) u.level = s.level;
-                    });
-                }
-                if (data.stats) {
-                    this.stats.kills = data.stats.kills || 0;
-                    this.stats.bosses = data.stats.bosses || 0;
-                    this.stats.totalGold = data.stats.totalGold || 0;
-                    this.stats.maxWave = data.stats.maxWave || 0;
-                    this.stats.unlockedAchievements = data.stats.achievements || [];
-                    this.stats.xp = data.stats.xp || 0;
-                    this.stats.level = data.stats.level || 1;
-                    this.stats.masteryPoints = data.stats.masteryPoints || 0;
-                    this.stats.mastery = data.stats.mastery || {};
-                    this.stats.seenEnemies = data.stats.seenEnemies || [];
-                }
-                if (data.challenges) {
-                    this.challenges.darkMatter = data.challenges.dm || 0;
-                    this.challenges.dmTech = data.challenges.tech || {};
-                }
-                this.autoRetryEnabled = data.autoRetry || false;
-                this.autoBuyEnabled = data.autoBuy || false;
-                this.settings = data.settings || { showDamageText: true, showRange: true, autoUpgradeTurrets: false };
-                // Ensure new settings have defaults
-                if (this.settings.autoUpgradeTurrets === undefined) {
-                    this.settings.autoUpgradeTurrets = false;
-                }
-
-                // Load tutorial progress
-                if (data.tutorialStep !== undefined && this.tutorial) {
-                    this.tutorial.step = data.tutorialStep;
-                }
-
-                const toggleDamage = document.getElementById('toggle-damage');
-                const toggleRange = document.getElementById('toggle-range');
-                const toggleAutoTurret = document.getElementById('toggle-auto-turret');
-                const labAutoRetry = document.getElementById('lab-auto-retry');
-
-                if (toggleDamage) toggleDamage.checked = this.settings.showDamageText;
-                if (toggleRange) toggleRange.checked = this.settings.showRange;
-                if (toggleAutoTurret) toggleAutoTurret.checked = this.settings.autoUpgradeTurrets;
-                if (labAutoRetry) labAutoRetry.checked = this.autoRetryEnabled;
-                if (data.locale) {
-                    i18n.setLocale(data.locale);
-                }
-                if (data.production) {
-                    this.production.loadSaveData(data.production);
-                }
-                if (data.auras) {
-                    this.auras.loadSaveData(data.auras);
-                }
-                if (data.chips) {
-                    this.chips.loadSaveData(data.chips);
-                }
-                if (data.dailyQuests) {
-                    this.dailyQuests.loadSaveData(data.dailyQuests);
-                }
-                if (data.prestige) {
-                    this.prestige.loadSaveData(data.prestige);
-                }
-                if (data.passives) {
-                    this.passives.loadSaveData(data.passives);
-                }
-                if (data.speedIndex !== undefined) {
-                    this.speedIndex = data.speedIndex;
-                    this.speedMultiplier = GAME_SPEEDS[this.speedIndex]?.mult || 1;
-                }
-                if (data.town) {
-                    this.town.loadSaveData(data.town);
-                }
-                if (data.school) {
-                    this.school.loadSaveData(data.school);
-                }
-                if (data.office) {
-                    this.office.loadSaveData(data.office);
-                }
-                if (data.awakening) {
-                    this.awakening.loadSaveData(data.awakening);
-                }
-                if (data.turretSlots) {
-                    this.turretSlots.loadSaveData(data.turretSlots);
-                }
-                if (data.weather) {
-                    this.weather.loadSaveData(data.weather);
-                }
-                if (data.combo) {
-                    this.combo.loadSaveData(data.combo);
-                }
-                if (data.events) {
-                    this.events.loadSaveData(data.events);
-                }
-                if (data.talents) {
-                    this.talents.loadSaveData(data.talents);
-                }
-                if (data.statistics) {
-                    this.statistics.loadSaveData(data.statistics);
-                }
-                if (data.ascensionMgr) {
-                    this.ascensionMgr.loadSaveData(data.ascensionMgr);
-                }
-                if (data.synergies) {
-                    this.synergies.loadSaveData(data.synergies);
-                }
-                if (data.gameModes) {
-                    this.gameModes.loadSaveData(data.gameModes);
-                }
-                if (data.seasonalEvents) {
-                    this.seasonalEvents.loadSaveData(data.seasonalEvents);
-                }
-                if (data.campaign) {
-                    this.campaign.loadSaveData(data.campaign);
-                }
-                if (data.leaderboards) {
-                    this.leaderboards.loadSaveData(data.leaderboards);
-                }
-                if (data.buildPresets) {
-                    this.buildPresets.loadSaveData(data.buildPresets);
-                }
-                if (data.music) {
-                    this.music.loadSaveData(data.music);
-                }
-            } catch (e) {
-                getErrorHandler().handleLoadError(e);
-            }
+        if (!result.success && result.error) {
+            this.ui?.showToast(t('notifications.saveCorruptedBlocked') || 'Save corrupted - use Settings > Restore Backup', 'error');
+            return false;
         }
+
+        if (!result.data) {
+            // No save data, start fresh
+            this.dailyQuests.generateQuests();
+            return true;
+        }
+
+        // Checksum warning (non-blocking)
+        if (result.error === 'checksum_mismatch') {
+            logError('Save data checksum mismatch - data may be corrupted', 'Game.load');
+        }
+
+        this._loadFromData(result.data);
+        return true;
+    }
+
+    /**
+     * Load game state from data object
+     * @param {object} data - Save data
+     */
+    _loadFromData(data) {
+        try {
+            // Core data
+            this.gold = data.gold || 0;
+            this.wave = data.wave || 1;
+            this.castle.tier = data.tier || 1;
+            this.ether = data.ether || 0;
+            this.crystals = data.crystals || 0;
+            this.dreadLevel = data.dreadLevel || 0;
+            this.lastSaveTime = data.lastSaveTime || Date.now();
+            this.autoRetryEnabled = data.autoRetry || false;
+            this.autoBuyEnabled = data.autoBuy || false;
+
+            // Speed settings
+            if (data.speedIndex !== undefined) {
+                this.speedIndex = data.speedIndex;
+                this.speedMultiplier = GAME_SPEEDS[this.speedIndex]?.mult || 1;
+            }
+
+            // Settings with defaults
+            this.settings = data.settings || { showDamageText: true, showRange: true, autoUpgradeTurrets: false };
+            if (this.settings.autoUpgradeTurrets === undefined) {
+                this.settings.autoUpgradeTurrets = false;
+            }
+
+            // Legacy data structures (not handled by subsystems)
+            this.miningResources = data.miningResources || {};
+            this.researchEffects = data.researchEffects || {};
+            this.relics = data.relics || [];
+            this.mining.loadSaveData(data.miningActiveMiners);
+            this.research.loadSaveData(data.researchPurchased);
+
+            // Upgrades
+            if (data.upgrades) {
+                data.upgrades.forEach(s => {
+                    const u = this.upgrades.upgrades.find(m => m.id === s.id);
+                    if (u) u.level = s.level;
+                });
+            }
+            if (data.metaUpgrades) {
+                data.metaUpgrades.forEach(s => {
+                    const u = this.metaUpgrades.upgrades.find(m => m.id === s.id);
+                    if (u) u.level = s.level;
+                });
+            }
+
+            // Stats
+            if (data.stats) {
+                this.stats.kills = data.stats.kills || 0;
+                this.stats.bosses = data.stats.bosses || 0;
+                this.stats.totalGold = data.stats.totalGold || 0;
+                this.stats.maxWave = data.stats.maxWave || 0;
+                this.stats.unlockedAchievements = data.stats.achievements || [];
+                this.stats.xp = data.stats.xp || 0;
+                this.stats.level = data.stats.level || 1;
+                this.stats.masteryPoints = data.stats.masteryPoints || 0;
+                this.stats.mastery = data.stats.mastery || {};
+                this.stats.seenEnemies = data.stats.seenEnemies || [];
+            }
+
+            // Challenges
+            if (data.challenges) {
+                this.challenges.darkMatter = data.challenges.dm || 0;
+                this.challenges.dmTech = data.challenges.tech || {};
+            }
+
+            // Tutorial
+            if (data.tutorialStep !== undefined && this.tutorial) {
+                this.tutorial.step = data.tutorialStep;
+            }
+
+            // Locale
+            if (data.locale) {
+                i18n.setLocale(data.locale);
+            }
+
+            // Sync UI toggles
+            const toggleDamage = document.getElementById('toggle-damage');
+            const toggleRange = document.getElementById('toggle-range');
+            const toggleAutoTurret = document.getElementById('toggle-auto-turret');
+            const labAutoRetry = document.getElementById('lab-auto-retry');
+
+            if (toggleDamage) toggleDamage.checked = this.settings.showDamageText;
+            if (toggleRange) toggleRange.checked = this.settings.showRange;
+            if (toggleAutoTurret) toggleAutoTurret.checked = this.settings.autoUpgradeTurrets;
+            if (labAutoRetry) labAutoRetry.checked = this.autoRetryEnabled;
+
+            // Note: Registered subsystems (production, auras, chips, etc.) are loaded
+            // automatically by SaveService.load() via their loadSaveData() methods
+
+        } catch (e) {
+            getErrorHandler().handleLoadError(e);
+        }
+
         this.dailyQuests.generateQuests();
     }
 }
