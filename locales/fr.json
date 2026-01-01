@@ -1599,7 +1599,10 @@
     "register": "Pas de compte ? S'inscrire",
     "status": {
       "online": "Connecté en tant que {name}",
-      "offline": "Hors ligne"
+      "offline": "Hors ligne",
+      "checking": "Vérification de la synchronisation...",
+      "localNewer": "Votre sauvegarde locale est plus récente.",
+      "synced": "Sauvegardes synchronisées."
     },
     "actions": {
       "save": "Sauvegarder sur le Cloud",
@@ -1621,7 +1624,7 @@
     },
     "conflict": {
       "title": "Conflit de Sauvegarde Détecté",
-      "cloudNewer": "La sauvegarde Cloud est plus récente que votre sauvegarde locale.",
+      "cloudNewer": "ATTENTION : La sauvegarde sur le Cloud est plus récente que votre version locale.\n\nVoulez-vous charger la version Cloud ? (Votre progression actuelle sera perdue)",
       "localNewer": "Votre sauvegarde locale est plus récente que la sauvegarde Cloud.",
       "useCloud": "Utiliser Cloud",
       "useLocal": "Utiliser Local"

@@ -1523,7 +1523,10 @@
     "register": "No account? Register",
     "status": {
       "online": "Connected as {name}",
-      "offline": "Offline"
+      "offline": "Offline",
+      "checking": "Checking synchronization...",
+      "localNewer": "Your local save is more recent.",
+      "synced": "Saves are synchronized."
     },
     "actions": {
       "save": "Save to Cloud",
@@ -1545,7 +1548,7 @@
     },
     "conflict": {
       "title": "Save Conflict Detected",
-      "cloudNewer": "The cloud save is more recent than your local save.",
+      "cloudNewer": "WARNING: The cloud save is more recent than your local version.\n\nDo you want to load the cloud version? (Your current progress will be lost)",
       "localNewer": "Your local save is more recent than the cloud save.",
       "useCloud": "Use Cloud",
       "useLocal": "Use Local"

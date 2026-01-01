@@ -131,6 +131,7 @@ class CloudSaveServiceClass {
 
     /**
      * Check for conflicts between local and cloud saves
+     * Uses 60s buffer to avoid minor timing differences
      * @param {number} localTimestamp - Local save timestamp
      * @returns {Promise<'cloud_newer' | 'local_newer' | 'synced' | 'no_cloud'>}
      */
@@ -144,13 +145,14 @@ class CloudSaveServiceClass {
         }
 
         const cloudTimestamp = cloudData.timestamp;
+        const BUFFER = 60000; // 60 seconds buffer
 
-        if (cloudTimestamp === localTimestamp) {
-            return 'synced';
-        } else if (cloudTimestamp > localTimestamp) {
+        if (cloudTimestamp > localTimestamp + BUFFER) {
             return 'cloud_newer';
-        } else {
+        } else if (localTimestamp > cloudTimestamp + BUFFER) {
             return 'local_newer';
+        } else {
+            return 'synced';
         }
     }
 

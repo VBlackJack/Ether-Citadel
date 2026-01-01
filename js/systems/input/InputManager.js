@@ -185,6 +185,55 @@ export class InputManager {
             if (loginError) loginError.classList.add('hidden');
         });
 
+        // Handle cloud load (reusable)
+        const handleCloudLoad = async () => {
+            const result = await CloudSaveService.load();
+            if (result.success && result.data) {
+                try {
+                    const saveData = JSON.parse(result.data);
+                    this.game.loadSaveData?.(saveData);
+                    showMessage(t('cloud.messages.loadSuccess'));
+                    if (lastSyncEl) {
+                        lastSyncEl.textContent = CloudSaveService.getLastSyncFormatted();
+                    }
+                    return true;
+                } catch (e) {
+                    showMessage(t('cloud.messages.loadFailed'), true);
+                }
+            }
+            return false;
+        };
+
+        // Smart sync after login - check for conflicts
+        const performSmartSync = async () => {
+            showMessage(t('cloud.status.checking'));
+
+            const localTimestamp = this.game.lastSaveTime || 0;
+            const conflictState = await CloudSaveService.checkConflict(localTimestamp);
+
+            if (conflictState === 'cloud_newer') {
+                // Cloud is newer - ask user via confirm dialog with i18n text
+                const msg = t('cloud.conflict.cloudNewer');
+                if (confirm(msg)) {
+                    await handleCloudLoad();
+                }
+            } else if (conflictState === 'local_newer') {
+                // Local is newer - inform user
+                this.game.ui?.showToast?.(t('cloud.status.localNewer'), 'info')
+                    || showMessage(t('cloud.status.localNewer'));
+            } else if (conflictState === 'no_cloud') {
+                // No cloud save exists
+                showMessage(t('cloud.messages.noCloudSave'));
+            } else {
+                // Synced
+                this.game.ui?.showToast?.(t('cloud.status.synced'), 'success')
+                    || showMessage(t('cloud.status.synced'));
+            }
+
+            // Refresh dashboard UI
+            updateView();
+        };
+
         // Login button
         btnLogin?.addEventListener('click', async () => {
             const username = usernameInput?.value?.trim() || '';
@@ -202,6 +251,9 @@ export class InputManager {
                 if (usernameInput) usernameInput.value = '';
                 if (passwordInput) passwordInput.value = '';
                 updateView();
+
+                // Perform smart sync after successful login
+                await performSmartSync();
             } else {
                 if (loginError) {
                     loginError.textContent = t('cloud.messages.loginFailed');
@@ -238,24 +290,11 @@ export class InputManager {
         // Force Load button
         btnLoad?.addEventListener('click', async () => {
             btnLoad.disabled = true;
-            const result = await CloudSaveService.load();
+            const success = await handleCloudLoad();
             btnLoad.disabled = false;
 
-            if (result.success && result.data) {
-                try {
-                    const saveData = JSON.parse(result.data);
-                    this.game.loadSaveData?.(saveData);
-                    showMessage(t('cloud.messages.loadSuccess'));
-                    if (lastSyncEl) {
-                        lastSyncEl.textContent = CloudSaveService.getLastSyncFormatted();
-                    }
-                } catch (e) {
-                    showMessage(t('cloud.messages.loadFailed'), true);
-                }
-            } else {
-                showMessage(result.error === 'no_cloud_save'
-                    ? t('cloud.messages.noCloudSave')
-                    : t('cloud.messages.loadFailed'), true);
+            if (!success) {
+                showMessage(t('cloud.messages.noCloudSave'), true);
             }
         });
 
