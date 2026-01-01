@@ -87,6 +87,8 @@ import { SkillManager, ChallengeManager, GameModeManager, CampaignManager, Stats
 import { TownManager, SchoolManager, OfficeManager } from './systems/town/index.js';
 import { AwakeningManager, TalentManager, AscensionManager } from './systems/meta/index.js';
 import { ComboManager, SynergyManager, BossMechanicsManager } from './systems/combat/index.js';
+import { COLORS, getCastleTierColor } from './constants/colors.js';
+import { SKILL, RUNE, UPGRADE, PRESTIGE_RESET_UPGRADES } from './constants/skillIds.js';
 import { TutorialManager, StatisticsManager, LeaderboardManager, VisualEffectsManager } from './systems/ui/index.js';
 import { SoundManager, MusicManager } from './systems/audio/index.js';
 
@@ -197,9 +199,9 @@ class Game {
         this.resize();
         this._boundResize = () => this.resize();
         this._boundKeydown = (e) => {
-            if (e.key.toLowerCase() === 'q') this.activateSkill('overdrive');
-            if (e.key.toLowerCase() === 'w') this.activateSkill('nuke');
-            if (e.key.toLowerCase() === 'e') this.activateSkill('blackhole');
+            if (e.key.toLowerCase() === 'q') this.activateSkill(SKILL.OVERDRIVE);
+            if (e.key.toLowerCase() === 'w') this.activateSkill(SKILL.NUKE);
+            if (e.key.toLowerCase() === 'e') this.activateSkill(SKILL.BLACKHOLE);
             if (e.key.toLowerCase() === 'p') this.togglePause();
             // Speed shortcuts 1-6
             if (e.key === '1') this.setSpeed(1);
@@ -376,7 +378,7 @@ class Game {
             this.devClickCount = 0;
             const btn = document.getElementById('btn-dev-menu');
             btn.classList.remove('hidden');
-            this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('notifications.devModeActivated'), "#ef4444", 40));
+            this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('notifications.devModeActivated'), COLORS.ERROR, 40));
         }
     }
 
@@ -752,12 +754,12 @@ class Game {
         const crystalsEarned = Math.floor(baseCrystals * dreadBonus * crystalAffinity);
         this.crystals += crystalsEarned;
         this.updateCrystalsUI();
-        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 3, `+${crystalsEarned} ${t('currency.crystals')}`, '#22d3ee', 28));
+        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 3, `+${crystalsEarned} ${t('currency.crystals')}`, COLORS.CRYSTAL, 28));
 
         if (this.town.hasUnlock('office') && Math.random() < 0.3) {
             const gemsEarned = Math.floor((this.wave / 20) + 1);
             this.office.addGems(gemsEarned);
-            this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 3 + 40, `+${gemsEarned} 💠`, '#e879f9', 24));
+            this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 3 + 40, `+${gemsEarned} 💠`, COLORS.GEM, 24));
         }
     }
 
@@ -903,9 +905,9 @@ class Game {
         this.ether += bonusEther;
         this.gold += bonusGold;
 
-        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2 - 50, t('surrender.bonus'), '#22c55e', 32));
-        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, `+${bonusEther} 🔮`, '#a855f7', 28));
-        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2 + 40, `+${formatNumber(bonusGold)} ${t('game.gold')}`, '#fbbf24', 24));
+        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2 - 50, t('surrender.bonus'), COLORS.SUCCESS, 32));
+        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, `+${bonusEther} 🔮`, COLORS.ETHER, 28));
+        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2 + 40, `+${formatNumber(bonusGold)} ${t('game.gold')}`, COLORS.GOLD, 24));
 
         this.sound.play('levelup');
         this.gameOver();
@@ -1064,7 +1066,7 @@ class Game {
                     const select = grid.querySelector(`.forge-relic-select[data-recipe="${recipeId}"]`);
                     relicId = select?.value;
                     if (!relicId) {
-                        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('forge.selectRelic'), '#ef4444', 24));
+                        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('forge.selectRelic'), COLORS.ERROR, 24));
                         return;
                     }
                 }
@@ -1072,16 +1074,16 @@ class Game {
                 const result = this.forge.execute(recipeId, relicId);
 
                 if (result.success) {
-                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('forge.success'), '#22c55e', 32));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('forge.success'), COLORS.SUCCESS, 32));
                     if (result.result) {
                         this.showLootPopup(result.result);
                     }
                     this.sound.play('levelup');
                 } else if (result.reason === 'failed') {
-                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('forge.failed'), '#ef4444', 32));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('forge.failed'), COLORS.ERROR, 32));
                     this.sound.play('gameover');
                 } else if (result.reason === 'cost') {
-                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('forge.notEnough'), '#ef4444', 24));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('forge.notEnough'), COLORS.ERROR, 24));
                 }
 
                 this.renderForgeUI();
@@ -1141,10 +1143,10 @@ class Game {
                 const result = this.research.purchase(nodeId);
 
                 if (result.success) {
-                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('research.unlocked'), '#22c55e', 32));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('research.unlocked'), COLORS.SUCCESS, 32));
                     this.sound.play('levelup');
                 } else {
-                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('research.cannotPurchase'), '#ef4444', 24));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('research.cannotPurchase'), COLORS.ERROR, 24));
                 }
 
                 this.renderResearchUI();
@@ -1223,7 +1225,7 @@ class Game {
             btn.addEventListener('click', (e) => {
                 const buildingId = e.target.dataset.building;
                 if (this.production.upgrade(buildingId)) {
-                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('production.upgraded'), '#22c55e', 24));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('production.upgraded'), COLORS.SUCCESS, 24));
                     this.sound.play('levelup');
                 }
                 this.renderProductionUI();
@@ -1366,7 +1368,7 @@ class Game {
             btn.addEventListener('click', (e) => {
                 const upgradeId = e.target.dataset.upgrade;
                 if (this.prestige.buyUpgrade(upgradeId)) {
-                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('prestige.upgraded'), '#fbbf24', 24));
+                    this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2, t('prestige.upgraded'), COLORS.GOLD, 24));
                     this.sound.play('levelup');
                 }
                 this.renderPrestigeUI();
@@ -2497,7 +2499,7 @@ class Game {
                     this.floatingTexts.push(FloatingText.create(
                         pos.x, pos.y,
                         t('slots.purchased'),
-                        '#22d3ee',
+                        COLORS.CRYSTAL,
                         24
                     ));
                 });
@@ -2505,7 +2507,7 @@ class Game {
                 this.floatingTexts.push(FloatingText.create(
                     pos.x, pos.y,
                     t('slots.notEnoughGold'),
-                    '#ef4444',
+                    COLORS.ERROR,
                     18
                 ));
             }
@@ -2717,14 +2719,14 @@ class Game {
                 notif.style.opacity = '0';
                 setTimeout(() => notif.classList.add('hidden'), 1000);
             }, 3000);
-            for (let i = 0; i < 30; i++) this.particles.push(new Particle(100, this.height / 2, '#a855f7'));
+            for (let i = 0; i < 30; i++) this.particles.push(new Particle(100, this.height / 2, COLORS.ETHER));
             this.sound.play('levelup');
         }
         if (this.castle.tier >= 4) {
             const hue = (Date.now() / 50) % 360;
             document.body.style.backgroundColor = `hsl(${hue}, 20%, 10%)`;
         } else {
-            const colors = ['#0f172a', '#1e1b4b', '#1a2e05', '#270a0a'];
+            const colors = COLORS.WAVE_EFFECTS;
             document.body.style.backgroundColor = colors[(newTier - 1) % colors.length];
         }
     }
@@ -2763,7 +2765,7 @@ class Game {
         if (this.isBossWave) return;
         this.isRushBonus = true;
         for (let i = 0; i < 5; i++) this.spawnEnemy();
-        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2 - 100, t('notifications.waveRush'), "#ef4444", 40));
+        this.floatingTexts.push(FloatingText.create(this.width / 2, this.height / 2 - 100, t('notifications.waveRush'), COLORS.ERROR, 40));
         this.enemiesToSpawn = 0;
         this.waveInProgress = false;
         this.wave++;
@@ -2791,7 +2793,7 @@ class Game {
             this.width / 2,
             this.height / 2,
             this.isBossWave ? `${t('notifications.bossWarning')} - ${t('game.wave')} ${this.wave}` : `${t('game.wave')} ${this.wave}`,
-            this.isBossWave ? '#ef4444' : '#fff',
+            this.isBossWave ? COLORS.ERROR : COLORS.WHITE,
             40
         ));
     }
@@ -2858,9 +2860,7 @@ class Game {
 
     shoot(target) {
         if (!target) return;
-        let color = '#60a5fa';
-        if (this.castle.tier === 2) color = '#a855f7';
-        if (this.castle.tier >= 3) color = '#f43f5e';
+        let color = getCastleTierColor(this.castle.tier) || COLORS.PROJECTILE_BASE;
         let isCrit = false;
         let isSuperCrit = false;
         let dmg = this.currentDamage;
@@ -2878,7 +2878,7 @@ class Game {
                 dmg = Math.floor(dmg * this.critMult);
             }
         }
-        const finalColor = isSuperCrit ? '#d946ef' : (isCrit ? '#fbbf24' : color);
+        const finalColor = isSuperCrit ? COLORS.SUPER_CRIT : (isCrit ? COLORS.GOLD : color);
         this.projectiles.push(Projectile.create(100, this.height / 2, target, dmg, 15, finalColor, this.castle.tier, false, isCrit, isSuperCrit, this.currentEffects, this.currentProps));
         this.sound.play('shoot');
         if (Math.random() * 100 < this.multiShotChance) {
@@ -2909,7 +2909,7 @@ class Game {
             div.style.height = (target.y) + 'px';
             document.getElementById('fx-container').appendChild(div);
             setTimeout(() => div.remove(), 500);
-            this.floatingTexts.push(FloatingText.create(target.x, target.y - 60, t('notifications.orbital'), "#3b82f6", 36));
+            this.floatingTexts.push(FloatingText.create(target.x, target.y - 60, t('notifications.orbital'), COLORS.ORBITAL, 36));
         }
     }
 
@@ -3009,7 +3009,7 @@ class Game {
         if (this.particles.length > 50) this.particles.shift();
         if (this.floatingTexts.length > 20) this.floatingTexts.shift();
 
-        const fireRate = (this.skills.isActive('overdrive') || this.activeBuffs['rage'] > 0) ? this.currentFireRate / 3 : this.currentFireRate;
+        const fireRate = (this.skills.isActive(SKILL.OVERDRIVE) || this.activeBuffs[RUNE.RAGE] > 0) ? this.currentFireRate / 3 : this.currentFireRate;
         if (this.gameTime - this.lastShotTime > fireRate) {
             const target = this.findTarget(this.castle.x, this.castle.y, this.currentRange);
             if (target) {
@@ -3059,17 +3059,17 @@ class Game {
     }
 
     draw() {
-        this.ctx.fillStyle = document.body.style.backgroundColor || '#0f172a';
+        this.ctx.fillStyle = document.body.style.backgroundColor || COLORS.BG_DARK;
         this.ctx.fillRect(0, 0, this.width, this.height);
-        this.ctx.fillStyle = '#1e293b';
+        this.ctx.fillStyle = COLORS.BG_SLATE;
         this.ctx.fillRect(0, 0, 120, this.height);
         const fx = document.getElementById('fx-container');
-        if (this.skills.isActive('blackhole')) {
+        if (this.skills.isActive(SKILL.BLACKHOLE)) {
             fx.innerHTML = `<div class="absolute top-1/2 left-[70%] transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border-4 border-purple-600 shadow-[0_0_50px_#9333ea] opacity-80 black-hole-visual bg-black"></div>`;
         } else {
             if (!document.querySelector('.orbital-laser')) fx.innerHTML = '';
         }
-        const laserColor = this.castle.tier === 1 ? '#3b82f6' : (this.castle.tier === 2 ? '#a855f7' : (this.castle.tier === 3 ? '#f43f5e' : '#fff'));
+        const laserColor = getCastleTierColor(this.castle.tier);
         this.ctx.shadowBlur = 15;
         this.ctx.shadowColor = laserColor;
         this.ctx.strokeStyle = laserColor;
@@ -3179,8 +3179,7 @@ class Game {
         this.runes = [];
         this.activeBuffs = { rage: 0, midas: 0 };
         this.upgrades.upgrades.forEach(u => {
-            const resetIds = ['regen', 'multishot', 'turret', 'crit', 'ice', 'poison', 'bounce', 'blast', 'leech', 'shield', 'stasis', 'orbital', 'artillery', 'rocket', 'tesla', 'armor'];
-            u.level = resetIds.includes(u.id) ? 0 : 1;
+            u.level = PRESTIGE_RESET_UPGRADES.includes(u.id) ? 0 : 1;
         });
         this.gold = this.metaUpgrades.getEffectValue('startGold');
         const autoStatusEl = document.getElementById('auto-status');

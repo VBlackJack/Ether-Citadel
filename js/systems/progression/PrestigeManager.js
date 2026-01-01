@@ -23,6 +23,8 @@ import { PRESTIGE_UPGRADES } from '../../data.js';
 import { t } from '../../i18n.js';
 import { formatNumber } from '../../config.js';
 import { FloatingText } from '../../entities/FloatingText.js';
+import { PRESTIGE_RESET_UPGRADES } from '../../constants/skillIds.js';
+import { COLORS } from '../../constants/colors.js';
 
 export class PrestigeManager {
     /**
@@ -176,8 +178,7 @@ export class PrestigeManager {
         // Reset upgrades (keep base levels)
         if (this.game.upgrades?.upgrades) {
             this.game.upgrades.upgrades.forEach(u => {
-                const resetIds = ['regen', 'multishot', 'turret', 'crit', 'ice', 'poison', 'bounce', 'blast', 'leech', 'shield', 'stasis', 'orbital', 'artillery', 'rocket', 'tesla', 'armor'];
-                u.level = resetIds.includes(u.id) ? 0 : 1;
+                u.level = PRESTIGE_RESET_UPGRADES.includes(u.id) ? 0 : 1;
             });
         }
 
@@ -221,7 +222,7 @@ export class PrestigeManager {
                 this.game.width / 2,
                 this.game.height / 2,
                 `${t('prestige.complete')} +${points} PP`,
-                '#fbbf24',
+                COLORS.GOLD,
                 36
             ));
         }
