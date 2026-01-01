@@ -4,7 +4,7 @@
  */
 
 import { ACHIEVEMENTS_DB, MASTERIES, ENEMY_TYPES } from '../../data.js';
-import { formatNumber } from '../../config.js';
+import { formatNumber, BigNumService } from '../../config.js';
 import { t } from '../../i18n.js';
 import { sanitizeColor } from '../../utils/HtmlSanitizer.js';
 import { FloatingText } from '../../entities/FloatingText.js';
@@ -14,7 +14,7 @@ export class StatsManager {
     constructor() {
         this.kills = 0;
         this.bosses = 0;
-        this.totalGold = 0;
+        this.totalGold = BigNumService.create(0);
         this.maxWave = 0;
         this.unlockedAchievements = [];
         this.xp = 0;
@@ -50,7 +50,7 @@ export class StatsManager {
     }
 
     registerGold(amount) {
-        this.totalGold += amount;
+        this.totalGold = BigNumService.add(this.totalGold, BigNumService.create(amount));
         this.checkAchievements();
         if (game.dailyQuests) {
             game.dailyQuests.updateProgress('collect_gold', amount);
@@ -64,8 +64,10 @@ export class StatsManager {
             // Set progress to current wave (tracks highest wave reached)
             const quest = game.dailyQuests.quests.find(q => q.id === 'reach_wave' && !q.completed);
             if (quest) {
-                game.dailyQuests.progress['reach_wave'] = Math.max(game.dailyQuests.progress['reach_wave'] || 0, wave);
-                if (game.dailyQuests.progress['reach_wave'] >= quest.target) {
+                const currentProgress = game.dailyQuests.progress['reach_wave'] || BigNumService.create(0);
+                const waveNum = BigNumService.create(wave);
+                game.dailyQuests.progress['reach_wave'] = BigNumService.max(currentProgress, waveNum);
+                if (BigNumService.gte(game.dailyQuests.progress['reach_wave'], quest.target)) {
                     game.dailyQuests.completeQuest(quest);
                 }
             }
@@ -130,7 +132,7 @@ export class StatsManager {
 
         document.getElementById('stat-kills').innerText = formatNumber(this.kills);
         document.getElementById('stat-bosses').innerText = formatNumber(this.bosses);
-        document.getElementById('stat-gold').innerText = formatNumber(Math.floor(this.totalGold));
+        document.getElementById('stat-gold').innerText = formatNumber(this.totalGold);
         document.getElementById('stat-wave').innerText = this.maxWave;
         const xpPct = (this.xp / this.getNextLevelXp()) * 100;
         document.getElementById('ui-xp-bar').style.width = `${xpPct}%`;
@@ -151,5 +153,34 @@ export class StatsManager {
                 : `<div class="w-8 h-8 rounded-full bg-black"></div><div><div class="font-bold text-slate-500">${t('modals.codex.unknown')}</div><div class="text-xs text-slate-600">${t('modals.codex.unknownDesc')}</div></div>`;
             cGrid.appendChild(div);
         }
+    }
+
+    getSaveData() {
+        return {
+            kills: this.kills,
+            bosses: this.bosses,
+            totalGold: this.totalGold.toString(),
+            maxWave: this.maxWave,
+            unlockedAchievements: [...this.unlockedAchievements],
+            xp: this.xp,
+            level: this.level,
+            masteryPoints: this.masteryPoints,
+            mastery: { ...this.mastery },
+            seenEnemies: [...this.seenEnemies]
+        };
+    }
+
+    loadSaveData(data) {
+        if (!data) return;
+        this.kills = data.kills || 0;
+        this.bosses = data.bosses || 0;
+        this.totalGold = BigNumService.create(data.totalGold || 0);
+        this.maxWave = data.maxWave || 0;
+        this.unlockedAchievements = data.unlockedAchievements || [];
+        this.xp = data.xp || 0;
+        this.level = data.level || 1;
+        this.masteryPoints = data.masteryPoints || 0;
+        this.mastery = data.mastery || { crit_dmg: 0, ether_gain: 0, drone_spd: 0, gold_drop: 0 };
+        this.seenEnemies = data.seenEnemies || [];
     }
 }
