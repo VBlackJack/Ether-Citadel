@@ -84,7 +84,7 @@ export class StatsManager {
         ACHIEVEMENTS_DB.forEach(ach => {
             if (!this.unlockedAchievements.includes(ach.id) && ach.cond(this)) {
                 this.unlockedAchievements.push(ach.id);
-                game.ether += ach.reward;
+                game.ether = BigNumService.add(game.ether, BigNumService.create(ach.reward));
                 game.save();
                 game.updateEtherUI();
                 this.showPopup(ach);
