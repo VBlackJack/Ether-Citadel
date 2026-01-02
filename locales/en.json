@@ -269,7 +269,7 @@
     },
     "turret": {
       "name": "Reinforcements",
-      "desc": "Auto turrets."
+      "desc": "Auto turrets. Efficiency: 100%/85%/75%/65% per turret (diminishing returns)."
     },
     "artillery": {
       "name": "Artillery",

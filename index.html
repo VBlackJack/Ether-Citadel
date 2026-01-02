@@ -592,7 +592,7 @@
                     </div>
                     <hr class="border-slate-700 my-4">
                     <div class="flex gap-2">
-                        <button type="button" onclick="game.tutorial?.reset(); document.getElementById('settings-modal').classList.add('hidden')" class="flex-1 bg-blue-900 hover:bg-blue-700 text-blue-200 py-2 rounded text-sm font-bold border border-blue-700" data-i18n="modals.settings.restartTutorial">Restart Tutorial</button>
+                        <button type="button" onclick="game.tutorial?.reset(); game.save(); game.tutorial?.check(); document.getElementById('settings-modal').classList.add('hidden')" class="flex-1 bg-blue-900 hover:bg-blue-700 text-blue-200 py-2 rounded text-sm font-bold border border-blue-700" data-i18n="modals.settings.restartTutorial">Restart Tutorial</button>
                         <button type="button" onclick="game.confirmReset()" class="flex-1 bg-red-900 hover:bg-red-700 text-red-200 py-2 rounded text-sm font-bold border border-red-700" data-i18n="modals.settings.reset">RESET</button>
                     </div>
                     <!-- Keyboard Shortcuts Section -->

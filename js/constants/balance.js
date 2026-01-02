@@ -31,7 +31,7 @@ export const BALANCE = {
         ENEMY_HP: 18,      // Easier early game (was 30)
         ENEMY_DAMAGE: 6,   // Less punishing early (was 12)
         GOLD_DROP: 3,      // More gold to upgrade faster (was 2)
-        CRYSTAL_DROP_CHANCE: 0.05
+        CRYSTAL_DROP_CHANCE: 0.08  // 8% crystal drop (was 5%)
     },
     ENTITY: {
         BASE_ENEMY_RADIUS: 12,    // Base radius for enemy collision/display

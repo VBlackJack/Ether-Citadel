@@ -269,7 +269,7 @@
     },
     "turret": {
       "name": "Renforts",
-      "desc": "Tourelles auto."
+      "desc": "Tourelles auto. Efficacité: 100%/85%/75%/65% par tourelle (rendements décroissants)."
     },
     "artillery": {
       "name": "Artillerie",
