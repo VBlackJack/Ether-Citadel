@@ -311,10 +311,10 @@ export class ForgeManager {
                     </div>
                 </div>
                 <div class="text-xs text-slate-400">
-                    ${t('forge.cost') || 'Cost'}: ${costHtml}
+                    ${t('forge.cost')}: ${costHtml}
                 </div>
                 <div class="text-xs text-slate-500 mt-1">
-                    ${Math.round(recipe.successRate * 100)}% ${t('forge.success') || 'success rate'}
+                    ${Math.round(recipe.successRate * 100)}% ${t('forge.success')}
                 </div>
             `;
 
@@ -347,7 +347,7 @@ export class ForgeManager {
             const result = this.execute(recipe.id, this.game.relics[0]);
             this.handleResult(result);
         } else {
-            this.game.ui?.showToast?.(t('forge.notEnough') || 'No relics available', 'warning');
+            this.game.ui?.showToast?.(t('forge.notEnough'), 'warning');
         }
     }
 
@@ -358,18 +358,18 @@ export class ForgeManager {
     handleResult(result) {
         if (result.success) {
             this.game.ui?.showToast?.(
-                `${t('forge.success') || 'Success!'} ${result.result?.icon || ''} ${t(result.result?.nameKey) || ''}`,
+                `${t('forge.success')} ${result.result?.icon || ''} ${t(result.result?.nameKey) || ''}`,
                 'success'
             );
         } else {
             const reasonMap = {
-                'cost': t('forge.notEnough') || 'Not enough resources',
-                'failed': t('forge.failed') || 'Forge failed!',
-                'not_found': t('forge.notFound') || 'Not found',
-                'max_tier': t('forge.maxTier') || 'Already max tier',
-                'not_enough_relics': t('forge.needRelics') || 'Need at least 2 relics'
+                'cost': t('forge.notEnough'),
+                'failed': t('forge.failed'),
+                'not_found': t('forge.notFound'),
+                'max_tier': t('forge.maxTier'),
+                'not_enough_relics': t('forge.needRelics')
             };
-            this.game.ui?.showToast?.(reasonMap[result.reason] || 'Failed', 'error');
+            this.game.ui?.showToast?.(reasonMap[result.reason] || t('forge.failed'), 'error');
         }
 
         this.render();

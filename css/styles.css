@@ -541,7 +541,7 @@ body {
 }
 
 .forge-recipe.disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
@@ -704,7 +704,7 @@ body {
 }
 
 .surrender-btn:disabled {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
 }
 
@@ -1213,7 +1213,7 @@ select:focus-visible {
 .prestige-btn:disabled {
     background: #475569;
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 /* Chip System Styles */
@@ -1743,7 +1743,7 @@ select:focus-visible {
     background: #78350f;
     border-color: #451a03;
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 /* Passives Tab Styles */
@@ -1825,7 +1825,7 @@ select:focus-visible {
 .passive-btn:disabled {
     background: #334155;
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .passive-locked {

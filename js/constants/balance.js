@@ -16,13 +16,21 @@ export const BALANCE = {
         BOSS_DAMAGE_MULTIPLIER: 3.0,
 
         // Late game scaling (Wave 50+)
-        LATE_GAME_FACTOR: 1.03 // Extra multiplier added per wave after wave 50
+        LATE_GAME_FACTOR: 1.03, // Extra multiplier added per wave after wave 50
+        LATE_GAME_THRESHOLD: 50 // Wave threshold for late game scaling
     },
     BASE: {
         ENEMY_HP: 25,
         ENEMY_DAMAGE: 8,
         GOLD_DROP: 3,
         CRYSTAL_DROP_CHANCE: 0.05
+    },
+    ENTITY: {
+        BASE_ENEMY_RADIUS: 12,    // Base radius for enemy collision/display
+        ELITE_SPAWN_CHANCE: 0.05, // 5% chance for elite variant
+        ELITE_HP_MULTIPLIER: 5,   // Elite enemies have 5x HP
+        BOSS_SIZE_SCALE: 1.5,     // Boss visual scale multiplier
+        SPAWN_OFFSET_X: 50        // Horizontal spawn offset from screen edge
     },
     WAVE: {
         ENEMIES_PER_WAVE_BASE: 5,

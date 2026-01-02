@@ -110,7 +110,7 @@ export class SurrenderSystem {
             this.game.floatingTexts.push(FloatingText.create(
                 this.game.width / 2,
                 this.game.height / 2 - 50,
-                t('surrender.bonus') || 'Strategic Bonus!',
+                t('surrender.bonus'),
                 '#22c55e',
                 32
             ));

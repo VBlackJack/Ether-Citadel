@@ -314,7 +314,7 @@ class Game {
         this._intervals.push(setInterval(() => {
             if (this.isDirty || Date.now() - this.lastSaveTime > CONFIG.saveIntervalMs) {
                 this.save();
-                this.ui?.showToast(t('notifications.autoSaved') || 'Game saved', 'success', { duration: 1500 });
+                this.ui?.showToast(t('notifications.autoSaved'), 'success', { duration: 1500 });
             }
         }, CONFIG.saveIntervalMs || 30000));
 
@@ -995,11 +995,11 @@ class Game {
             const baseCount = Math.ceil(nextWave * 1.5) + 3;
             const enemyTypes = [];
 
-            if (nextWave >= 1) enemyTypes.push({ icon: '👾', name: 'Basic' });
-            if (nextWave >= 5) enemyTypes.push({ icon: '🏃', name: 'Fast' });
-            if (nextWave >= 10) enemyTypes.push({ icon: '🛡️', name: 'Tank' });
-            if (nextWave >= 15) enemyTypes.push({ icon: '✨', name: 'Shielded' });
-            if (nextWave >= 20) enemyTypes.push({ icon: '💀', name: 'Elite' });
+            if (nextWave >= 1) enemyTypes.push({ icon: '👾', name: t('enemies.NORMAL.name') });
+            if (nextWave >= 5) enemyTypes.push({ icon: '🏃', name: t('enemies.SPEEDY.name') });
+            if (nextWave >= 10) enemyTypes.push({ icon: '🛡️', name: t('enemies.TANK.name') });
+            if (nextWave >= 15) enemyTypes.push({ icon: '✨', name: t('enemies.SHIELDED.name') });
+            if (nextWave >= 20) enemyTypes.push({ icon: '💀', name: t('enemies.ARMORED.name') });
 
             html = `<div>~${baseCount} ${t('game.enemies').toLowerCase()}</div>`;
             html += `<div class="flex gap-1 mt-1">${enemyTypes.map(e => `<span title="${e.name}">${e.icon}</span>`).join('')}</div>`;
@@ -1709,9 +1709,9 @@ class Game {
         if (summary) {
             summary.innerHTML = `
                 <div class="stat-summary-item"><span>DPS:</span> <span class="stat-summary-value">${formatNumber(this.getCurrentDPS())}</span></div>
-                <div class="stat-summary-item"><span>${t('stats.crit') || 'Crit'}:</span> <span class="stat-summary-value">${this.getCritChance()}%</span></div>
-                <div class="stat-summary-item"><span>${t('stats.armor') || 'Armor'}:</span> <span class="stat-summary-value">${(this.getArmor() * 100).toFixed(0)}%</span></div>
-                <div class="stat-summary-item"><span>${t('stats.regen') || 'Regen'}:</span> <span class="stat-summary-value">${this.getRegen()}/s</span></div>
+                <div class="stat-summary-item"><span>${t('stats.crit')}:</span> <span class="stat-summary-value">${this.getCritChance()}%</span></div>
+                <div class="stat-summary-item"><span>${t('stats.armor')}:</span> <span class="stat-summary-value">${(this.getArmor() * 100).toFixed(0)}%</span></div>
+                <div class="stat-summary-item"><span>${t('stats.regen')}:</span> <span class="stat-summary-value">${this.getRegen()}/s</span></div>
             `;
         }
     }
@@ -1722,13 +1722,13 @@ class Game {
         const availablePoints = statPoints - usedPoints;
 
         if (availablePoints <= 0) {
-            this.ui?.showToast(t('feedback.noStatPoints') || 'No stat points available', 'warning');
+            this.ui?.showToast(t('feedback.noStatPoints'), 'warning');
             return false;
         }
         if (!this.statLevels) this.statLevels = {};
         if (!this.statLevels[statId]) this.statLevels[statId] = 0;
         if (this.statLevels[statId] >= 100) {
-            this.ui?.showToast(t('feedback.maxLevel') || 'Already at max level', 'warning');
+            this.ui?.showToast(t('feedback.maxLevel'), 'warning');
             return false;
         }
 
@@ -2109,7 +2109,7 @@ class Game {
                     <button data-action="gameMode.set" data-id="${mode.id}"
                         class="w-full px-3 py-2 ${isActive ? 'bg-violet-600' : 'bg-slate-600 hover:bg-violet-600'} text-white text-sm rounded font-bold transition"
                         ${isActive ? 'disabled' : ''}>
-                        ${isActive ? t('status.active') : t('modes.select') || 'Select'}
+                        ${isActive ? t('status.active') : t('modes.select')}
                     </button>
                 ` : `<div class="text-center text-xs text-red-400">${t('slots.locked')}</div>`}
             `;
@@ -2167,7 +2167,7 @@ class Game {
                     ${!isCompleted && canAttempt ? `
                         <button data-action="campaign.start" data-id="${mission.id}"
                             class="mt-2 w-full px-3 py-1 bg-rose-600 hover:bg-rose-500 text-white text-sm rounded">
-                            ${t('modes.select') || 'Start'}
+                            ${t('modes.select')}
                         </button>
                     ` : ''}
                 `;
@@ -2350,7 +2350,7 @@ class Game {
         const bonuses = [];
         if (activeEvent.bonuses.goldMult) bonuses.push(`${t('game.gold')} x${activeEvent.bonuses.goldMult}`);
         if (activeEvent.bonuses.xpMult) bonuses.push(`XP x${activeEvent.bonuses.xpMult}`);
-        if (activeEvent.bonuses.dropMult) bonuses.push(`${t('relics.drop') || 'Drops'} x${activeEvent.bonuses.dropMult}`);
+        if (activeEvent.bonuses.dropMult) bonuses.push(`${t('relics.drop')} x${activeEvent.bonuses.dropMult}`);
 
         bonusEl.textContent = bonuses.join(' | ');
     }
@@ -2477,7 +2477,7 @@ class Game {
 
         // Priority-based suggestions
         if (this.dailyQuests && this.dailyQuests.hasIncompleteQuests() && !localStorage.getItem('seen_quests_today_' + new Date().toDateString())) {
-            return { text: t('ux.suggestion.checkQuests') || 'Check Daily Quests', action: () => {
+            return { text: t('ux.suggestion.checkQuests'), action: () => {
                 this.renderDailyQuestsUI();
                 document.getElementById('quests-modal').classList.remove('hidden');
                 localStorage.setItem('seen_quests_today_' + new Date().toDateString(), 'true');
@@ -2485,21 +2485,21 @@ class Game {
         }
 
         if (BigNumService.gte(this.gold, 100) && this.upgrades.canAffordAny()) {
-            return { text: t('ux.suggestion.buyUpgrade') || 'Buy an upgrade', action: () => {
+            return { text: t('ux.suggestion.buyUpgrade'), action: () => {
                 const labPanel = document.getElementById('lab-panel');
                 if (labPanel) labPanel.scrollTop = 0;
             }};
         }
 
         if (this.wave >= 5 && !localStorage.getItem('seen_intro_mining')) {
-            return { text: t('ux.suggestion.tryMining') || 'Try Mining', action: () => {
+            return { text: t('ux.suggestion.tryMining'), action: () => {
                 this.renderMiningUI();
                 document.getElementById('mining-modal').classList.remove('hidden');
             }};
         }
 
         if (this.wave >= 10 && !localStorage.getItem('seen_intro_research')) {
-            return { text: t('ux.suggestion.checkResearch') || 'Check Research', action: () => {
+            return { text: t('ux.suggestion.checkResearch'), action: () => {
                 this.renderResearchUI();
                 document.getElementById('research-modal').classList.remove('hidden');
             }};
@@ -2553,7 +2553,7 @@ class Game {
             if (!pos) return;
 
             if (this.turretSlots.canPurchaseSlot(slot.id)) {
-                const costText = t('slots.confirmBuy') || 'Buy slot for {{cost}}?';
+                const costText = t('slots.confirmBuy');
                 gameConfirm(costText.replace('{{cost}}', formatNumber(slot.cost)), () => {
                     this.turretSlots.purchaseSlot(slot.id);
                     this.floatingTexts.push(FloatingText.create(
@@ -3244,7 +3244,7 @@ class Game {
     }
 
     confirmReset() {
-        const message = t('modals.settings.confirmReset') || 'Are you sure you want to reset all progress?';
+        const message = t('modals.settings.confirmReset');
         gameConfirm(message, () => {
             // 1. Stop the game loop and all intervals immediately
             this.isPaused = true;
@@ -3284,18 +3284,18 @@ class Game {
     exportSave() {
         const saved = localStorage.getItem(CONFIG.saveKey);
         if (!saved) {
-            this.ui.showToast(t('notifications.noSaveFound') || 'No save found', 'error');
+            this.ui.showToast(t('notifications.noSaveFound'), 'error');
             return;
         }
         const str = btoa(encodeURIComponent(saved));
         document.getElementById('save-string').value = str;
         navigator.clipboard.writeText(str)
             .then(() => {
-                this.ui.showToast(t('notifications.saveCopied') || 'Save copied to clipboard', 'success');
+                this.ui.showToast(t('notifications.saveCopied'), 'success');
             })
             .catch(err => {
                 logError(err, 'Clipboard.write');
-                this.ui.showToast(t('notifications.clipboardError') || 'Copy failed', 'error');
+                this.ui.showToast(t('notifications.clipboardError'), 'error');
             });
     }
 
@@ -3311,7 +3311,7 @@ class Game {
 
         if (!str || typeof str !== 'string' || str.trim().length === 0) {
             if (errorEl) {
-                errorEl.textContent = t('import.errorEmpty') || 'Please paste your save data';
+                errorEl.textContent = t('import.errorEmpty');
                 errorEl.classList.remove('hidden');
             }
             return;
@@ -3322,7 +3322,7 @@ class Game {
             const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/;
             if (!base64Regex.test(str.trim())) {
                 if (errorEl) {
-                    errorEl.textContent = t('notifications.invalidSaveFormat') || 'Invalid save format';
+                    errorEl.textContent = t('notifications.invalidSaveFormat');
                     errorEl.classList.remove('hidden');
                 }
                 return;
@@ -3334,7 +3334,7 @@ class Game {
             const parsed = JSON.parse(decoded);
             if (!parsed || typeof parsed !== 'object') {
                 if (errorEl) {
-                    errorEl.textContent = t('notifications.invalidSaveData') || 'Invalid save data';
+                    errorEl.textContent = t('notifications.invalidSaveData');
                     errorEl.classList.remove('hidden');
                 }
                 return;
@@ -3352,7 +3352,7 @@ class Game {
         } catch (e) {
             getErrorHandler().handleImportError(e);
             if (errorEl) {
-                errorEl.textContent = t('notifications.importFailed') || 'Import failed - invalid data';
+                errorEl.textContent = t('notifications.importFailed');
                 errorEl.classList.remove('hidden');
             }
         }
@@ -3466,10 +3466,10 @@ class Game {
         const result = SaveService.restoreBackup(slot);
         if (result.success) {
             this._loadFromData(result.data);
-            this.ui.showToast(t('notifications.backupRestored') || 'Backup restored!', 'success');
+            this.ui.showToast(t('notifications.backupRestored'), 'success');
             return true;
         }
-        this.ui.showToast(t('notifications.noBackup') || 'No backup found', 'error');
+        this.ui.showToast(t('notifications.noBackup'), 'error');
         return false;
     }
 
@@ -3487,7 +3487,7 @@ class Game {
         const result = SaveService.load();
 
         if (!result.success && result.error) {
-            this.ui?.showToast(t('notifications.saveCorruptedBlocked') || 'Save corrupted - use Settings > Restore Backup', 'error');
+            this.ui?.showToast(t('notifications.saveCorruptedBlocked'), 'error');
             return false;
         }
 

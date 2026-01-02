@@ -274,7 +274,7 @@ export class TutorialManager {
         // Check if tutorial is complete
         if (this.step >= TUTORIAL_STEPS.length) {
             this.completed = true;
-            this.game.ui?.showToast?.(t('tutorial.complete.toast') || 'Tutorial complete!', 'success');
+            this.game.ui?.showToast?.(t('tutorial.complete.toast'), 'success');
         }
 
         this.game.save?.();

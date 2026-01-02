@@ -96,7 +96,7 @@
 }
 
 .menu-item.menu-locked {
-    opacity: 0.5;
+    opacity: 0.6;
     position: relative;
     pointer-events: none;
     cursor: not-allowed;

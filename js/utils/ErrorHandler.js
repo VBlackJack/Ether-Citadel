@@ -100,7 +100,7 @@ export class ErrorHandler {
         this.log(error, 'Import', ErrorSeverity.WARNING);
 
         if (showNotification) {
-            const message = t('notifications.invalidSave') || 'Invalid save data';
+            const message = t('notifications.invalidSave');
             if (window.game?.ui?.showToast) {
                 window.game.ui.showToast(message, 'error');
             } else {

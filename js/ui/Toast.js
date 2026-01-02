@@ -97,9 +97,11 @@ export class ToastManager {
 
         const toast = document.createElement('div');
         toast.className = `toast ${config.class}`;
+        toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
         toast.innerHTML = `
-            <span class="toast-icon">${this.escapeHtml(options.icon || config.icon)}</span>
+            <span class="toast-icon" aria-hidden="true">${this.escapeHtml(options.icon || config.icon)}</span>
             <span class="toast-message">${this.escapeHtml(message)}</span>
+            <button type="button" class="toast-close" aria-label="Dismiss notification">&times;</button>
         `;
 
         this.container.appendChild(toast);
@@ -108,6 +110,12 @@ export class ToastManager {
             element: toast,
             timeout: null
         };
+
+        // Add click handler for close button
+        const closeBtn = toast.querySelector('.toast-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => this.removeToast(toastData));
+        }
 
         this.toasts.push(toastData);
 

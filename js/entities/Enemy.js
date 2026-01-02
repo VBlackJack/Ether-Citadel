@@ -30,18 +30,18 @@ export class Enemy {
         this.game = game;
         this.type = ENEMY_TYPES[typeKey];
         this.typeKey = typeKey;
-        this.radius = 12 * this.type.scale;
-        this.isElite = Math.random() < 0.05;
-        this.x = x || game.width + 50;
+        this.radius = BALANCE.ENTITY.BASE_ENEMY_RADIUS * this.type.scale;
+        this.isElite = Math.random() < BALANCE.ENTITY.ELITE_SPAWN_CHANCE;
+        this.x = x || game.width + BALANCE.ENTITY.SPAWN_OFFSET_X;
         this.y = y || MathUtils.randomRange(game.height * 0.2, game.height * 0.8);
         this.wave = wave;
 
         // Calculate Wave Factor (Exponential) - Defender Idle 2 style
         let growthFactor = BigNumService.pow(BALANCE.SCALING.HP_GROWTH, wave - 1);
 
-        // Apply Late Game Scaling (if Wave > 50)
-        if (wave > 50) {
-            growthFactor = BigNumService.mul(growthFactor, BigNumService.pow(BALANCE.SCALING.LATE_GAME_FACTOR, wave - 50));
+        // Apply Late Game Scaling (if Wave > threshold)
+        if (wave > BALANCE.SCALING.LATE_GAME_THRESHOLD) {
+            growthFactor = BigNumService.mul(growthFactor, BigNumService.pow(BALANCE.SCALING.LATE_GAME_FACTOR, wave - BALANCE.SCALING.LATE_GAME_THRESHOLD));
         }
 
         // Challenge and Dread modifiers
@@ -54,7 +54,7 @@ export class Enemy {
             BigNumService.mul(
                 BigNumService.mul(
                     BigNumService.mul(BALANCE.BASE.ENEMY_HP, growthFactor),
-                    this.type.hpMult * (this.isElite ? 5 : 1)
+                    this.type.hpMult * (this.isElite ? BALANCE.ENTITY.ELITE_HP_MULTIPLIER : 1)
                 ),
                 hpMod * dread.enemyHp
             )
@@ -76,7 +76,7 @@ export class Enemy {
             this.maxHp = BigNumService.mul(this.maxHp, BALANCE.SCALING.BOSS_HP_MULTIPLIER);
             this.damage = BigNumService.mul(this.damage, BALANCE.SCALING.BOSS_DAMAGE_MULTIPLIER);
             this.goldValue = BigNumService.mul(this.goldValue, Math.floor(BALANCE.SCALING.BOSS_HP_MULTIPLIER * 0.5));
-            this.radius *= 1.5; // Scale size for visual impact
+            this.radius *= BALANCE.ENTITY.BOSS_SIZE_SCALE;
         }
 
         // Apply gold multipliers from game systems

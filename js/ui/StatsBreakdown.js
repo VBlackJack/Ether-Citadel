@@ -82,88 +82,88 @@ export class StatsBreakdown {
 
         container.innerHTML = `
             <div class="stats-breakdown-header">
-                <h3>${t('stats.breakdown.title') || 'Stats Breakdown'}</h3>
+                <h3>${t('stats.breakdown.title')}</h3>
                 <button onclick="game.statsBreakdown?.hide()" class="stats-breakdown-close">&times;</button>
             </div>
 
             <div class="stats-breakdown-section">
-                <h4>⚔️ ${t('stats.breakdown.damage') || 'Damage'}</h4>
+                <h4>⚔️ ${t('stats.breakdown.damage')}</h4>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.base') || 'Base Damage'}</span>
+                    <span>${t('stats.breakdown.base')}</span>
                     <span class="stats-value">${formatNumber(damageBreakdown.base)}</span>
                 </div>
                 ${this.renderMultipliers(damageBreakdown.multipliers)}
                 <div class="stats-breakdown-row stats-total">
-                    <span>${t('stats.breakdown.final') || 'Final Damage'}</span>
+                    <span>${t('stats.breakdown.final')}</span>
                     <span class="stats-value text-green-400">${formatNumber(damageBreakdown.final)}</span>
                 </div>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.dps') || 'DPS'}</span>
+                    <span>${t('stats.breakdown.dps')}</span>
                     <span class="stats-value text-cyan-400">${formatNumber(damageBreakdown.dps)}</span>
                 </div>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.critDps') || 'Avg DPS (with crits)'}</span>
+                    <span>${t('stats.breakdown.critDps')}</span>
                     <span class="stats-value text-purple-400">${formatNumber(damageBreakdown.critDps)}</span>
                 </div>
             </div>
 
             <div class="stats-breakdown-section">
-                <h4>💰 ${t('stats.breakdown.gold') || 'Gold'}</h4>
+                <h4>💰 ${t('stats.breakdown.gold')}</h4>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.baseGold') || 'Base Gold/Kill'}</span>
+                    <span>${t('stats.breakdown.baseGold')}</span>
                     <span class="stats-value">${formatNumber(goldBreakdown.base)}</span>
                 </div>
                 ${this.renderMultipliers(goldBreakdown.multipliers)}
                 <div class="stats-breakdown-row stats-total">
-                    <span>${t('stats.breakdown.finalGold') || 'Final Gold/Kill'}</span>
+                    <span>${t('stats.breakdown.finalGold')}</span>
                     <span class="stats-value text-yellow-400">${formatNumber(goldBreakdown.final)}</span>
                 </div>
             </div>
 
             <div class="stats-breakdown-section">
-                <h4>🛡️ ${t('stats.breakdown.defense') || 'Defense'}</h4>
+                <h4>🛡️ ${t('stats.breakdown.defense')}</h4>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.maxHp') || 'Max HP'}</span>
+                    <span>${t('stats.breakdown.maxHp')}</span>
                     <span class="stats-value text-red-400">${formatNumber(defenseBreakdown.maxHp)}</span>
                 </div>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.regen') || 'HP Regen/s'}</span>
+                    <span>${t('stats.breakdown.regen')}</span>
                     <span class="stats-value text-green-400">${defenseBreakdown.regen.toFixed(1)}</span>
                 </div>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.armor') || 'Armor'}</span>
+                    <span>${t('stats.breakdown.armor')}</span>
                     <span class="stats-value">${(defenseBreakdown.armor * 100).toFixed(1)}%</span>
                 </div>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.shield') || 'Shield'}</span>
+                    <span>${t('stats.breakdown.shield')}</span>
                     <span class="stats-value text-blue-400">${formatNumber(defenseBreakdown.shield)}</span>
                 </div>
             </div>
 
             <div class="stats-breakdown-section">
-                <h4>💥 ${t('stats.breakdown.crit') || 'Critical'}</h4>
+                <h4>💥 ${t('stats.breakdown.crit')}</h4>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.critChance') || 'Crit Chance'}</span>
+                    <span>${t('stats.breakdown.critChance')}</span>
                     <span class="stats-value">${damageBreakdown.critChance.toFixed(1)}%</span>
                 </div>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.critMult') || 'Crit Multiplier'}</span>
+                    <span>${t('stats.breakdown.critMult')}</span>
                     <span class="stats-value">x${damageBreakdown.critMult.toFixed(2)}</span>
                 </div>
             </div>
 
             <div class="stats-breakdown-section">
-                <h4>🎯 ${t('stats.breakdown.turrets') || 'Turrets'}</h4>
+                <h4>🎯 ${t('stats.breakdown.turrets')}</h4>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.turretCount') || 'Active Turrets'}</span>
+                    <span>${t('stats.breakdown.turretCount')}</span>
                     <span class="stats-value">${this.game.turrets?.length || 0}</span>
                 </div>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.fireRate') || 'Fire Rate'}</span>
+                    <span>${t('stats.breakdown.fireRate')}</span>
                     <span class="stats-value">${(1000 / (this.game.currentFireRate || 1000)).toFixed(1)}/s</span>
                 </div>
                 <div class="stats-breakdown-row">
-                    <span>${t('stats.breakdown.range') || 'Range'}</span>
+                    <span>${t('stats.breakdown.range')}</span>
                     <span class="stats-value">${this.game.currentRange || 150}px</span>
                 </div>
             </div>
@@ -199,49 +199,49 @@ export class StatsBreakdown {
         const tier = this.game.castle?.tier || 1;
         const tierMult = Math.pow(1.5, tier - 1);
         if (tierMult !== 1) {
-            multipliers.push({ label: t('stats.sources.tier') || `Tier ${tier}`, mult: tierMult });
+            multipliers.push({ label: t('stats.sources.tier'), mult: tierMult });
             total *= tierMult;
         }
 
         // Meta upgrades
         const metaMult = this.game.metaUpgrades?.getEffectValue('damageMult') || 1;
         if (metaMult !== 1) {
-            multipliers.push({ label: t('stats.sources.meta') || 'Meta Upgrades', mult: metaMult });
+            multipliers.push({ label: t('stats.sources.meta'), mult: metaMult });
             total *= metaMult;
         }
 
         // Relics
         const relicMult = 1 + (this.game.relicMults?.damage || 0);
         if (relicMult !== 1) {
-            multipliers.push({ label: t('stats.sources.relics') || 'Relics', mult: relicMult });
+            multipliers.push({ label: t('stats.sources.relics'), mult: relicMult });
             total *= relicMult;
         }
 
         // Research
         const researchMult = 1 + (this.game.researchEffects?.damageMult || 0);
         if (researchMult !== 1) {
-            multipliers.push({ label: t('stats.sources.research') || 'Research', mult: researchMult });
+            multipliers.push({ label: t('stats.sources.research'), mult: researchMult });
             total *= researchMult;
         }
 
         // Passives
         const passiveMult = this.game.passives?.getEffect('damage') || 1;
         if (passiveMult !== 1) {
-            multipliers.push({ label: t('stats.sources.passives') || 'Passives', mult: passiveMult });
+            multipliers.push({ label: t('stats.sources.passives'), mult: passiveMult });
             total *= passiveMult;
         }
 
         // Prestige
         const prestigeMult = this.game.prestige?.getEffect('prestige_damage') || 1;
         if (prestigeMult !== 1) {
-            multipliers.push({ label: t('stats.sources.prestige') || 'Prestige', mult: prestigeMult });
+            multipliers.push({ label: t('stats.sources.prestige'), mult: prestigeMult });
             total *= prestigeMult;
         }
 
         // Dark Matter tech
         const berserkMult = 1 + ((this.game.challenges?.dmTech?.berserk || 0) * 0.2);
         if (berserkMult !== 1) {
-            multipliers.push({ label: t('stats.sources.darkMatter') || 'Dark Matter', mult: berserkMult });
+            multipliers.push({ label: t('stats.sources.darkMatter'), mult: berserkMult });
             total *= berserkMult;
         }
 
@@ -278,28 +278,28 @@ export class StatsBreakdown {
         // Meta gold mult
         const metaMult = this.game.metaUpgrades?.getEffectValue('goldMult') || 1;
         if (metaMult !== 1) {
-            multipliers.push({ label: t('stats.sources.meta') || 'Meta Upgrades', mult: metaMult });
+            multipliers.push({ label: t('stats.sources.meta'), mult: metaMult });
             total *= metaMult;
         }
 
         // Relics
         const relicMult = 1 + (this.game.relicMults?.gold || 0);
         if (relicMult !== 1) {
-            multipliers.push({ label: t('stats.sources.relics') || 'Relics', mult: relicMult });
+            multipliers.push({ label: t('stats.sources.relics'), mult: relicMult });
             total *= relicMult;
         }
 
         // Research
         const researchMult = 1 + (this.game.researchEffects?.goldMult || 0);
         if (researchMult !== 1) {
-            multipliers.push({ label: t('stats.sources.research') || 'Research', mult: researchMult });
+            multipliers.push({ label: t('stats.sources.research'), mult: researchMult });
             total *= researchMult;
         }
 
         // Passives
         const passiveMult = this.game.passives?.getEffect('goldGain') || 1;
         if (passiveMult !== 1) {
-            multipliers.push({ label: t('stats.sources.passives') || 'Passives', mult: passiveMult });
+            multipliers.push({ label: t('stats.sources.passives'), mult: passiveMult });
             total *= passiveMult;
         }
 
@@ -308,14 +308,14 @@ export class StatsBreakdown {
         if (dreadLevel > 0) {
             const dreadData = this.game.getDreadData?.(dreadLevel);
             if (dreadData?.rewardMult > 1) {
-                multipliers.push({ label: t('stats.sources.dread') || `Dread ${dreadLevel}`, mult: dreadData.rewardMult });
+                multipliers.push({ label: t('stats.sources.dread'), mult: dreadData.rewardMult });
                 total *= dreadData.rewardMult;
             }
         }
 
         // Midas rune
         if (this.game.activeRune?.id === 'midas') {
-            multipliers.push({ label: t('stats.sources.rune') || 'Midas Rune', mult: 2 });
+            multipliers.push({ label: t('stats.sources.rune'), mult: 2 });
             total *= 2;
         }
 
