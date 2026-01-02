@@ -532,9 +532,30 @@ class Game {
         if (this.isPaused) {
             btn.classList.add('bg-yellow-600');
             this.eventBus.emit(GameEvents.GAME_PAUSE);
+            this.announce(t('a11y.gamePaused'));
         } else {
             btn.classList.remove('bg-yellow-600');
             this.eventBus.emit(GameEvents.GAME_RESUME);
+            this.announce(t('a11y.gameResumed'));
+        }
+    }
+
+    /**
+     * Announce a message to screen readers via the game-announcer element
+     * @param {string} message - Message to announce
+     * @param {boolean} assertive - Use assertive (immediate) announcement
+     */
+    announce(message, assertive = false) {
+        const announcer = assertive
+            ? document.getElementById('error-announcer')
+            : document.getElementById('game-announcer');
+        if (announcer && message) {
+            // Clear first, then set to trigger announcement
+            announcer.textContent = '';
+            // Use requestAnimationFrame to ensure DOM update
+            requestAnimationFrame(() => {
+                announcer.textContent = message;
+            });
         }
     }
 
@@ -2925,6 +2946,11 @@ class Game {
             notif.classList.remove('hidden');
             setTimeout(() => notif.classList.add('hidden'), 3000);
             this.eventBus.emit(GameEvents.BOSS_SPAWN, { wave: this.wave });
+            // Announce boss wave to screen readers (assertive for important event)
+            this.announce(t('a11y.bossWave', { wave: this.wave }), true);
+        } else {
+            // Announce regular wave to screen readers
+            this.announce(t('a11y.waveStart', { wave: this.wave, enemies: this.enemiesToSpawn }));
         }
         this.checkEvolution();
         this.floatingTexts.push(FloatingText.create(

@@ -94,6 +94,10 @@ class SaveServiceClass {
         this.subsystems = new Map();
         this.onSaveCallbacks = [];
         this.onLoadCallbacks = [];
+        // Mutex for preventing concurrent save operations
+        this._isSaving = false;
+        this._saveQueued = false;
+        this._queuedData = null;
     }
 
     /**
@@ -174,11 +178,21 @@ class SaveServiceClass {
     }
 
     /**
-     * Save data to localStorage
+     * Save data to localStorage with mutex protection
+     * Prevents race conditions from concurrent save operations
      * @param {object} data - Save data object
      * @returns {boolean} Success
      */
     save(data) {
+        // If already saving, queue this save for later
+        if (this._isSaving) {
+            this._saveQueued = true;
+            this._queuedData = data;
+            return true; // Will be saved when current save completes
+        }
+
+        this._isSaving = true;
+
         try {
             const saveData = this.createSaveData(data);
             const jsonData = JSON.stringify(saveData);
@@ -200,6 +214,17 @@ class SaveServiceClass {
         } catch (e) {
             console.error('SaveService: Save failed:', e);
             return false;
+        } finally {
+            this._isSaving = false;
+
+            // Process queued save if any
+            if (this._saveQueued) {
+                this._saveQueued = false;
+                const queuedData = this._queuedData;
+                this._queuedData = null;
+                // Use setTimeout to avoid stack overflow with rapid saves
+                setTimeout(() => this.save(queuedData), 0);
+            }
         }
     }
 

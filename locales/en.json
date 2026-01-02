@@ -5,7 +5,13 @@
   },
   "a11y": {
     "skipToMain": "Skip to main content",
-    "languageChanged": "Language changed"
+    "languageChanged": "Language changed",
+    "gamePaused": "Game paused",
+    "gameResumed": "Game resumed",
+    "waveStart": "Wave {{wave}} started. {{enemies}} enemies approaching.",
+    "bossWave": "Warning! Boss wave {{wave}}. Prepare for battle!",
+    "waveComplete": "Wave {{wave}} complete. {{gold}} gold earned.",
+    "gameOver": "Game over at wave {{wave}}. You earned {{ether}} ether."
   },
   "import": {
     "title": "Import Save",

@@ -109,11 +109,77 @@ export class InputManager {
             }
         });
 
+        // Global event delegation for data-action buttons
+        this.initEventDelegation(signal);
+
         // Notation selector
         this.initNotationSelector(signal);
 
         // Cloud save modal
         this.initCloudModal(signal);
+    }
+
+    /**
+     * Initialize event delegation for buttons with data-action attributes
+     * This reduces the number of inline onclick handlers and improves performance
+     */
+    initEventDelegation(signal) {
+        document.body.addEventListener('click', (e) => {
+            const target = e.target.closest('[data-action]');
+            if (!target) return;
+
+            const action = target.dataset.action;
+            const params = { ...target.dataset };
+            delete params.action;
+
+            // Handle common actions
+            switch (action) {
+                case 'setSpeed':
+                    this.game.setSpeed(parseInt(params.speed, 10));
+                    break;
+                case 'togglePause':
+                    this.game.togglePause();
+                    break;
+                case 'toggleSound':
+                    this.game.sound.toggle();
+                    break;
+                case 'rushWave':
+                    this.game.rushWave();
+                    break;
+                case 'openModal':
+                    const modal = document.getElementById(params.modal);
+                    if (modal) {
+                        // Call render function if specified
+                        if (params.render && this.game[params.render]) {
+                            this.game[params.render]();
+                        }
+                        modal.classList.remove('hidden');
+                    }
+                    break;
+                case 'closeModal':
+                    const closeModal = e.target.closest('.modal-backdrop');
+                    if (closeModal) {
+                        closeModal.classList.add('hidden');
+                    }
+                    break;
+                case 'toggleMenuGroup':
+                    this.game.toggleMenuGroup(params.group);
+                    break;
+                case 'surrender':
+                    if (this.game.canSurrender()) {
+                        window.gameConfirm(this.game.t('surrender.confirm'), () => this.game.strategicSurrender());
+                    }
+                    break;
+                case 'executeSuggestion':
+                    this.game.executeSuggestedAction();
+                    break;
+                default:
+                    // Check if action is a game method
+                    if (typeof this.game[action] === 'function') {
+                        this.game[action]();
+                    }
+            }
+        }, { signal });
     }
 
     initNotationSelector(signal) {
@@ -331,13 +397,33 @@ export class InputManager {
     }
 
     handleResize() {
-        const container = document.getElementById('game-container');
+        // Cache container element for performance
+        if (!this._gameContainer) {
+            this._gameContainer = document.getElementById('game-container');
+        }
+        const container = this._gameContainer;
         if (!container) return;
 
-        this.game.canvas.width = container.clientWidth;
-        this.game.canvas.height = container.clientHeight;
-        this.game.width = this.game.canvas.width;
-        this.game.height = this.game.canvas.height;
+        // High-DPI (Retina) scaling support
+        const dpr = window.devicePixelRatio || 1;
+        const displayWidth = container.clientWidth;
+        const displayHeight = container.clientHeight;
+
+        // Set canvas internal resolution to match device pixels
+        this.game.canvas.width = Math.floor(displayWidth * dpr);
+        this.game.canvas.height = Math.floor(displayHeight * dpr);
+
+        // Scale canvas back to CSS pixels for display
+        this.game.canvas.style.width = displayWidth + 'px';
+        this.game.canvas.style.height = displayHeight + 'px';
+
+        // Scale context to handle high-DPI drawing
+        this.game.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        // Store logical dimensions (CSS pixels) for game calculations
+        this.game.width = displayWidth;
+        this.game.height = displayHeight;
+        this.game.dpr = dpr;
     }
 
     handleKeydown(e) {

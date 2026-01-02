@@ -48,7 +48,13 @@
   },
   "a11y": {
     "skipToMain": "Aller au contenu principal",
-    "languageChanged": "Langue modifiée"
+    "languageChanged": "Langue modifiée",
+    "gamePaused": "Jeu en pause",
+    "gameResumed": "Jeu repris",
+    "waveStart": "Vague {{wave}} commencée. {{enemies}} ennemis approchent.",
+    "bossWave": "Attention! Vague boss {{wave}}. Préparez-vous au combat!",
+    "waveComplete": "Vague {{wave}} terminée. {{gold}} or gagné.",
+    "gameOver": "Fin de partie à la vague {{wave}}. Vous avez gagné {{ether}} éther."
   },
   "import": {
     "title": "Importer Sauvegarde",
