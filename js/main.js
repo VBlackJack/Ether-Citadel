@@ -81,6 +81,7 @@ import { ConfigRegistry } from './services/ConfigRegistry.js';
 import { SaveService } from './services/SaveService.js';
 import { StatsBreakdown } from './ui/StatsBreakdown.js';
 import { escapeHtml, sanitizeColor, calculateChecksum, verifyChecksum, sanitizeJsonObject } from './utils/HtmlSanitizer.js';
+import { createFocusTrap } from './utils/UIHelpers.js';
 import { Enemy, Castle, FloatingText, Particle, Rune, Projectile, Turret, Drone } from './entities/index.js';
 import { SkillManager, ChallengeManager, GameModeManager, CampaignManager, StatsManager, DailyQuestManager, TurretSlotManager, WeatherManager, EventManager, SeasonalEventManager, BuildPresetManager } from './systems/gameplay/index.js';
 import { TownManager, SchoolManager, OfficeManager } from './systems/town/index.js';
@@ -3691,18 +3692,35 @@ class Game {
 }
 
 async function init() {
+    // Loading progress helper
+    const updateLoadingProgress = (percent, status) => {
+        const progressBar = document.getElementById('loading-progress');
+        const statusText = document.getElementById('loading-status');
+        if (progressBar) {
+            progressBar.style.width = `${percent}%`;
+            progressBar.setAttribute('aria-valuenow', percent);
+        }
+        if (statusText && status) {
+            statusText.textContent = status;
+        }
+    };
+
     // Initialize services
+    updateLoadingProgress(10, 'Initializing...');
     BigNumService.init();
 
     // Load config files (optional - falls back to data.js if unavailable)
+    updateLoadingProgress(20, 'Loading configs...');
     await ConfigRegistry.loadAll().catch(e => {
         console.warn('ConfigRegistry: Using fallback data.js configs');
     });
 
+    updateLoadingProgress(40, 'Loading translations...');
     await i18n.init();
     i18n.translatePage();
 
     // Register Service Worker for offline support
+    updateLoadingProgress(50, 'Registering service worker...');
     if ('serviceWorker' in navigator) {
         // Use location-relative path for GitHub Pages compatibility
         const basePath = location.pathname.replace(/\/[^/]*$/, '/');
@@ -3711,7 +3729,12 @@ async function init() {
             .catch((err) => console.warn('[SW] Registration failed:', err));
     }
 
+    updateLoadingProgress(70, 'Initializing game...');
     new Game();
+
+    // Setup focus traps for static modals (accessibility)
+    updateLoadingProgress(90, 'Setting up UI...');
+    setupStaticModalFocusTraps();
 
     // Save and cleanup on window unload
     window.addEventListener('beforeunload', () => {
@@ -3787,10 +3810,13 @@ async function init() {
     }, 100);
 
     // Hide loading screen when game is ready
+    updateLoadingProgress(100, 'Ready!');
     const loadingScreen = document.getElementById('loading-screen');
     if (loadingScreen) {
-        loadingScreen.classList.add('fade-out');
-        setTimeout(() => loadingScreen.remove(), 500);
+        setTimeout(() => {
+            loadingScreen.classList.add('fade-out');
+            setTimeout(() => loadingScreen.remove(), 500);
+        }, 200);
     }
 }
 
@@ -3856,27 +3882,30 @@ function initHelpTooltips() {
     }, true);
 }
 
-// Modal Focus Management for Accessibility
-(function initModalFocusManagement() {
-    let previousActiveElement = null;
+// Static Modal Focus Trap Management for Accessibility
+const modalFocusTraps = new Map();
 
-    // Observer to detect when modals are shown
+function setupStaticModalFocusTraps() {
+    // Create focus traps for all static modals
+    document.querySelectorAll('.modal-backdrop').forEach(modal => {
+        if (!modalFocusTraps.has(modal.id)) {
+            modalFocusTraps.set(modal.id, createFocusTrap(modal));
+        }
+    });
+
+    // Observer to detect when modals are shown/hidden
     const observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 const target = mutation.target;
                 if (target.classList.contains('modal-backdrop')) {
+                    const trap = modalFocusTraps.get(target.id);
                     if (!target.classList.contains('hidden')) {
-                        // Modal opened - store previous focus and focus first focusable element
-                        previousActiveElement = document.activeElement;
-                        const focusable = target.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-                        if (focusable) {
-                            setTimeout(() => focusable.focus(), 100);
-                        }
-                    } else if (previousActiveElement) {
-                        // Modal closed - restore focus
-                        previousActiveElement.focus();
-                        previousActiveElement = null;
+                        // Modal opened - activate focus trap
+                        if (trap) trap.activate();
+                    } else {
+                        // Modal closed - deactivate focus trap
+                        if (trap) trap.deactivate();
                     }
                 }
             }
@@ -3893,15 +3922,13 @@ function initHelpTooltips() {
         if (e.key === 'Escape') {
             const openModal = document.querySelector('.modal-backdrop:not(.hidden)');
             if (openModal) {
+                const trap = modalFocusTraps.get(openModal.id);
+                if (trap) trap.deactivate();
                 openModal.classList.add('hidden');
-                if (previousActiveElement) {
-                    previousActiveElement.focus();
-                    previousActiveElement = null;
-                }
             }
         }
     });
-})();
+}
 
 // Global action handler for data-action buttons with visual feedback
 (function initActionHandler() {

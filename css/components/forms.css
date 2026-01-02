@@ -42,6 +42,25 @@ textarea::placeholder {
     opacity: 1; /* Firefox default is 0.54 */
 }
 
+/* Required field indicator */
+.required-field::after {
+    content: ' *';
+    color: #ef4444;
+    font-weight: bold;
+}
+
+/* Invalid input styling */
+input:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown) {
+    border-color: #ef4444;
+}
+
+input:invalid:not(:placeholder-shown):focus,
+textarea:invalid:not(:placeholder-shown):focus {
+    outline-color: #ef4444;
+    border-color: #ef4444;
+}
+
 .toggle-checkbox {
     appearance: none;
     width: 50px;

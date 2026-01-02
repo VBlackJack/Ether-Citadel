@@ -81,6 +81,41 @@
     cursor: pointer;
 }
 
+/* Mobile tooltip discovery hint */
+@media (hover: none) and (pointer: coarse) {
+    .touch-tooltip-trigger::before,
+    .help-icon::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 6px;
+        height: 6px;
+        background: #60a5fa;
+        border-radius: 50%;
+        opacity: 0;
+        animation: tooltip-hint 3s ease-in-out 2s 3;
+    }
+
+    .help-icon {
+        position: relative;
+    }
+
+    @keyframes tooltip-hint {
+        0%, 100% { opacity: 0; transform: scale(0.8); }
+        50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Tap instruction for first-time users */
+    .tooltip-tap-hint {
+        font-size: 0.65rem;
+        color: #94a3b8;
+        text-align: center;
+        padding: 4px;
+        opacity: 0.8;
+    }
+}
+
 .touch-tooltip-trigger .touch-tooltip {
     display: none;
     position: absolute;
@@ -437,15 +472,15 @@ label:has(> input[type="checkbox"].sr-only.peer:focus-visible) > div:first-of-ty
     }
 }
 
-/* Purchase animation */
+/* Purchase animation - extended duration for better visibility */
 @keyframes purchase-flash {
     0% { background-color: transparent; }
-    50% { background-color: rgba(34, 197, 94, 0.3); }
+    30% { background-color: rgba(34, 197, 94, 0.4); }
     100% { background-color: transparent; }
 }
 
 .purchase-success {
-    animation: purchase-flash 0.3s ease-out;
+    animation: purchase-flash 0.8s ease-out;
 }
 
 /* Wave progress indicator */

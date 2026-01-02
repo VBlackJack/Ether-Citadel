@@ -332,5 +332,5 @@ export function initTouchTooltips() {
 export function showPurchaseAnimation(element) {
     if (!element) return;
     element.classList.add('purchase-success');
-    setTimeout(() => element.classList.remove('purchase-success'), 300);
+    setTimeout(() => element.classList.remove('purchase-success'), 800);
 }

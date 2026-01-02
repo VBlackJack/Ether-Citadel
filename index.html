@@ -51,7 +51,10 @@
     <div id="loading-screen" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center">
         <div class="text-4xl font-bold text-cyan-400 mb-6" data-i18n="game.title">Ether Citadel</div>
         <div class="loading-spinner mb-4" role="status" aria-label="Loading game"></div>
-        <div class="text-slate-400 text-sm" data-i18n="ui.loading">Loading...</div>
+        <div class="w-48 h-2 bg-slate-700 rounded-full overflow-hidden mb-3">
+            <div id="loading-progress" class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-300" style="width: 0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div id="loading-status" class="text-slate-400 text-sm" data-i18n="ui.loading">Loading...</div>
     </div>
 
     <button type="button" class="fixed top-0 left-0 w-full h-1 bg-slate-900 z-50 pointer-events-auto cursor-help group touch-tooltip-trigger" aria-label="Experience bar" aria-describedby="xp-tooltip" data-i18n-title="hud.tooltips.xp">
@@ -1039,12 +1042,12 @@
                 <div id="cloud-login-view" class="cloud-login-view">
                     <div id="cloud-login-error" class="cloud-error hidden"></div>
                     <div class="cloud-input-group">
-                        <label for="cloud-username" data-i18n="cloud.username">Username</label>
-                        <input type="text" id="cloud-username" autocomplete="username" placeholder="username">
+                        <label for="cloud-username" class="required-field" data-i18n="cloud.username">Username</label>
+                        <input type="text" id="cloud-username" autocomplete="username" placeholder="username" required aria-required="true">
                     </div>
                     <div class="cloud-input-group">
-                        <label for="cloud-password" data-i18n="cloud.password">Password</label>
-                        <input type="password" id="cloud-password" autocomplete="current-password" placeholder="••••••••">
+                        <label for="cloud-password" class="required-field" data-i18n="cloud.password">Password</label>
+                        <input type="password" id="cloud-password" autocomplete="current-password" placeholder="••••••••" required aria-required="true">
                     </div>
                     <div class="cloud-login-actions">
                         <button id="cloud-btn-login" class="cloud-btn-login" data-i18n="cloud.login">Login</button>

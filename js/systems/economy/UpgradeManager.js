@@ -349,7 +349,7 @@ export class UpgradeManager {
                 if (canAfford) {
                     const target = e.currentTarget;
                     target.classList.add('purchase-success');
-                    setTimeout(() => target.classList.remove('purchase-success'), 300);
+                    setTimeout(() => target.classList.remove('purchase-success'), 800);
                     this.buy(u.id);
                 } else {
                     this.game.ui?.showToast(t('feedback.notEnoughGold'), 'warning');
