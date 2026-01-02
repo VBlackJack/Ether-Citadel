@@ -5,10 +5,11 @@
 
 export const BALANCE = {
     SCALING: {
-        // Exponential growth factors - tuned for multi-turret gameplay
-        HP_GROWTH: 1.22,       // Enemies get tougher fast (+22%/wave) - compensates for turret stacking
-        DAMAGE_GROWTH: 1.08,   // Damage scales with HP
-        GOLD_GROWTH: 1.14,     // Gold keeps up with HP to allow upgrades (+14%/wave)
+        // Exponential growth factors - tuned for challenging progression
+        // Key: HP grows faster (1.18) than player damage upgrades (1.10) forcing continuous investment
+        HP_GROWTH: 1.18,       // Enemies get tougher (+18%/wave) - outpaces player damage scaling
+        DAMAGE_GROWTH: 1.10,   // Enemy damage scales with HP
+        GOLD_GROWTH: 1.10,     // Gold scales slower than HP - forces strategic choices
 
         // Wave management
         BOSS_WAVE_INTERVAL: 10,

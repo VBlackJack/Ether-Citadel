@@ -619,8 +619,8 @@ export const COMBO_TIERS = [
  */
 export function createUpgrades() {
     return [
-        { id: 'damage', nameKey: 'upgrades.damage.name', descKey: 'upgrades.damage.desc', category: 0, baseCost: 8, costMult: 1.5, level: 1, getValue: (lvl) => Math.floor(7 * Math.pow(1.2, lvl - 1)), icon: '\u2694\ufe0f' },
-        { id: 'speed', nameKey: 'upgrades.speed.name', descKey: 'upgrades.speed.desc', category: 0, baseCost: 25, costMult: 1.6, level: 1, getValue: (lvl) => 1000 * Math.pow(0.88, lvl - 1), icon: '\u26a1' },
+        { id: 'damage', nameKey: 'upgrades.damage.name', descKey: 'upgrades.damage.desc', category: 0, baseCost: 10, costMult: 1.18, level: 1, getValue: (lvl) => Math.floor(5 * Math.pow(1.10, lvl - 1)), icon: '\u2694\ufe0f' },
+        { id: 'speed', nameKey: 'upgrades.speed.name', descKey: 'upgrades.speed.desc', category: 0, baseCost: 30, costMult: 1.20, level: 1, getValue: (lvl) => Math.max(50, 1000 * Math.pow(0.94, lvl - 1)), icon: '\u26a1' },
         { id: 'crit', nameKey: 'upgrades.crit.name', descKey: 'upgrades.crit.desc', category: 0, baseCost: 50, costMult: 1.7, level: 0, getValue: (lvl) => ({ chance: Math.min(150, lvl * 2), mult: 2 + (lvl * 0.1) }), icon: '\ud83d\udca5' },
         { id: 'range', nameKey: 'upgrades.range.name', descKey: 'upgrades.range.desc', category: 0, baseCost: 30, costMult: 1.5, level: 1, getValue: (lvl) => 300 + (lvl * 60), icon: '\ud83c\udfaf' },
         { id: 'multishot', nameKey: 'upgrades.multishot.name', descKey: 'upgrades.multishot.desc', category: 0, baseCost: 100, costMult: 2.0, level: 0, getValue: (lvl) => Math.min(60, lvl * 6), icon: '\ud83c\udff9' },
