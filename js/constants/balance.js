@@ -6,8 +6,8 @@
 export const BALANCE = {
     SCALING: {
         // Exponential growth factors - tuned for challenging progression
-        // Key: HP grows much faster (1.22) than player damage upgrades (1.08) forcing continuous investment
-        HP_GROWTH: 1.22,       // Enemies get tougher (+22%/wave) - significantly outpaces player scaling
+        // Key: HP grows much faster (1.25) than player damage upgrades (1.08) forcing continuous investment
+        HP_GROWTH: 1.25,       // Enemies get tougher (+25%/wave) - significantly outpaces player scaling
         DAMAGE_GROWTH: 1.15,   // Enemy damage scales aggressively
         GOLD_GROWTH: 1.06,     // Gold scales much slower than HP - forces hard choices
 

@@ -319,13 +319,13 @@ export const DAILY_QUEST_TYPES = [
  * Prestige upgrade definitions for permanent bonuses
  */
 export const PRESTIGE_UPGRADES = [
-    { id: 'prestige_damage', nameKey: 'prestige.damage.name', descKey: 'prestige.damage.desc', icon: '🗡️', baseCost: 1, costMult: 1.7, maxLevel: 30, effect: (lvl) => 1 + lvl * 0.08 },
-    { id: 'prestige_health', nameKey: 'prestige.health.name', descKey: 'prestige.health.desc', icon: '❤️', baseCost: 1, costMult: 1.7, maxLevel: 30, effect: (lvl) => 1 + lvl * 0.08 },
-    { id: 'prestige_gold', nameKey: 'prestige.gold.name', descKey: 'prestige.gold.desc', icon: '🥇', baseCost: 2, costMult: 1.6, maxLevel: 25, effect: (lvl) => 1 + lvl * 0.12 },
-    { id: 'prestige_crystals', nameKey: 'prestige.crystals.name', descKey: 'prestige.crystals.desc', icon: '💎', baseCost: 3, costMult: 1.8, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.15 },
+    { id: 'prestige_damage', nameKey: 'prestige.damage.name', descKey: 'prestige.damage.desc', icon: '🗡️', baseCost: 1, costMult: 1.7, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.05 },
+    { id: 'prestige_health', nameKey: 'prestige.health.name', descKey: 'prestige.health.desc', icon: '❤️', baseCost: 1, costMult: 1.7, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.05 },
+    { id: 'prestige_gold', nameKey: 'prestige.gold.name', descKey: 'prestige.gold.desc', icon: '🥇', baseCost: 2, costMult: 1.6, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.08 },
+    { id: 'prestige_crystals', nameKey: 'prestige.crystals.name', descKey: 'prestige.crystals.desc', icon: '💎', baseCost: 3, costMult: 1.8, maxLevel: 15, effect: (lvl) => 1 + lvl * 0.10 },
     { id: 'prestige_start_wave', nameKey: 'prestige.start_wave.name', descKey: 'prestige.start_wave.desc', icon: '⏩', baseCost: 5, costMult: 2.5, maxLevel: 10, effect: (lvl) => lvl * 5 },
     { id: 'prestige_auto_turrets', nameKey: 'prestige.auto_turrets.name', descKey: 'prestige.auto_turrets.desc', icon: '🤖', baseCost: 10, costMult: 4.0, maxLevel: 4, effect: (lvl) => lvl },
-    { id: 'prestige_production', nameKey: 'prestige.production.name', descKey: 'prestige.production.desc', icon: '🏭', baseCost: 5, costMult: 2.0, maxLevel: 15, effect: (lvl) => 1 + lvl * 0.25 },
+    { id: 'prestige_production', nameKey: 'prestige.production.name', descKey: 'prestige.production.desc', icon: '🏭', baseCost: 5, costMult: 2.0, maxLevel: 10, effect: (lvl) => 1 + lvl * 0.15 },
     { id: 'prestige_skill_cd', nameKey: 'prestige.skill_cd.name', descKey: 'prestige.skill_cd.desc', icon: '⏰', baseCost: 8, costMult: 2.5, maxLevel: 8, effect: (lvl) => 1 - lvl * 0.06 }
 ];
 
@@ -335,7 +335,7 @@ export const PRESTIGE_UPGRADES = [
  */
 export const PASSIVES = {
     offense: [
-        { id: 'damage', nameKey: 'passives.damage.name', descKey: 'passives.damage.desc', icon: '🗡️', baseCost: 1, costMult: 1.5, maxLevel: 100, effect: (lvl) => 1 + lvl * 0.05 },
+        { id: 'damage', nameKey: 'passives.damage.name', descKey: 'passives.damage.desc', icon: '🗡️', baseCost: 1, costMult: 1.5, maxLevel: 40, effect: (lvl) => 1 + lvl * 0.05 },
         { id: 'critChance', nameKey: 'passives.critChance.name', descKey: 'passives.critChance.desc', icon: '🎲', baseCost: 2, costMult: 1.8, maxLevel: 50, effect: (lvl) => lvl * 0.02 },
         { id: 'critDamage', nameKey: 'passives.critDamage.name', descKey: 'passives.critDamage.desc', icon: '💥', baseCost: 3, costMult: 2.0, maxLevel: 40, effect: (lvl) => 1.5 + lvl * 0.1 },
         { id: 'splash', nameKey: 'passives.splash.name', descKey: 'passives.splash.desc', icon: '💫', baseCost: 2, costMult: 1.6, maxLevel: 30, effect: (lvl) => lvl * 5 },
@@ -343,7 +343,7 @@ export const PASSIVES = {
         { id: 'firstStrike', nameKey: 'passives.firstStrike.name', descKey: 'passives.firstStrike.desc', icon: '⚡', baseCost: 10, costMult: 3.0, maxLevel: 10, effect: (lvl) => 1 + lvl * 0.25, unlockReq: { passive: 'critChance', level: 15 } }
     ],
     defense: [
-        { id: 'health', nameKey: 'passives.health.name', descKey: 'passives.health.desc', icon: '❤️', baseCost: 1, costMult: 1.5, maxLevel: 100, effect: (lvl) => 1 + lvl * 0.05 },
+        { id: 'health', nameKey: 'passives.health.name', descKey: 'passives.health.desc', icon: '❤️', baseCost: 1, costMult: 1.5, maxLevel: 40, effect: (lvl) => 1 + lvl * 0.05 },
         { id: 'armor', nameKey: 'passives.armor.name', descKey: 'passives.armor.desc', icon: '🛡️', baseCost: 2, costMult: 1.6, maxLevel: 50, effect: (lvl) => lvl * 0.01 },
         { id: 'barrier', nameKey: 'passives.barrier.name', descKey: 'passives.barrier.desc', icon: '🔮', baseCost: 3, costMult: 1.8, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.1 },
         { id: 'regen', nameKey: 'passives.regen.name', descKey: 'passives.regen.desc', icon: '💚', baseCost: 4, costMult: 2.0, maxLevel: 25, effect: (lvl) => lvl * 0.5 },
@@ -359,7 +359,7 @@ export const PASSIVES = {
         { id: 'autoPlay', nameKey: 'passives.autoPlay.name', descKey: 'passives.autoPlay.desc', icon: '🤖', baseCost: 20, costMult: 4.0, maxLevel: 5, effect: (lvl) => lvl, unlockReq: { passive: 'speed', level: 10 } }
     ],
     resources: [
-        { id: 'goldGain', nameKey: 'passives.goldGain.name', descKey: 'passives.goldGain.desc', icon: '🥇', baseCost: 1, costMult: 1.5, maxLevel: 50, effect: (lvl) => 1 + lvl * 0.1 },
+        { id: 'goldGain', nameKey: 'passives.goldGain.name', descKey: 'passives.goldGain.desc', icon: '🥇', baseCost: 1, costMult: 1.5, maxLevel: 25, effect: (lvl) => 1 + lvl * 0.08 },
         { id: 'startGold', nameKey: 'passives.startGold.name', descKey: 'passives.startGold.desc', icon: '💰', baseCost: 2, costMult: 1.8, maxLevel: 50, effect: (lvl) => lvl * 100 },
         { id: 'production', nameKey: 'passives.production.name', descKey: 'passives.production.desc', icon: '🏭', baseCost: 3, costMult: 2.0, maxLevel: 20, effect: (lvl) => 1 + lvl * 0.2 },
         { id: 'crystalGain', nameKey: 'passives.crystalGain.name', descKey: 'passives.crystalGain.desc', icon: '💎', baseCost: 5, costMult: 2.5, maxLevel: 25, effect: (lvl) => 1 + lvl * 0.15 },
@@ -649,9 +649,9 @@ export function createUpgrades() {
 export function createMetaUpgrades() {
     return [
         { id: 'startGold', nameKey: 'metaUpgrades.startGold.name', descKey: 'metaUpgrades.startGold.desc', baseCost: 1, costMult: 1.5, level: 0, maxLevel: 20, getEffect: (lvl) => lvl * 50, format: (v) => `+${v} ${t('game.gold')}`, icon: '\ud83d\udcb0' },
-        { id: 'goldMult', nameKey: 'metaUpgrades.goldMult.name', descKey: 'metaUpgrades.goldMult.desc', baseCost: 5, costMult: 2, level: 0, maxLevel: 10, getEffect: (lvl) => 1 + (lvl * 0.1), format: (v) => `x${v.toFixed(1)}`, icon: '\ud83e\udd11' },
-        { id: 'damageMult', nameKey: 'metaUpgrades.damageMult.name', descKey: 'metaUpgrades.damageMult.desc', baseCost: 3, costMult: 1.8, level: 0, maxLevel: 50, getEffect: (lvl) => 1 + (lvl * 0.1), format: (v) => `x${v.toFixed(1)}`, icon: '\ud83d\udcaa' },
-        { id: 'healthMult', nameKey: 'metaUpgrades.healthMult.name', descKey: 'metaUpgrades.healthMult.desc', baseCost: 2, costMult: 1.5, level: 0, maxLevel: 50, getEffect: (lvl) => 1 + (lvl * 0.1), format: (v) => `x${v.toFixed(1)}`, icon: '\ud83c\udff0' },
+        { id: 'goldMult', nameKey: 'metaUpgrades.goldMult.name', descKey: 'metaUpgrades.goldMult.desc', baseCost: 5, costMult: 2, level: 0, maxLevel: 6, getEffect: (lvl) => 1 + (lvl * 0.1), format: (v) => `x${v.toFixed(1)}`, icon: '\ud83e\udd11' },
+        { id: 'damageMult', nameKey: 'metaUpgrades.damageMult.name', descKey: 'metaUpgrades.damageMult.desc', baseCost: 3, costMult: 1.8, level: 0, maxLevel: 20, getEffect: (lvl) => 1 + (lvl * 0.1), format: (v) => `x${v.toFixed(1)}`, icon: '\ud83d\udcaa' },
+        { id: 'healthMult', nameKey: 'metaUpgrades.healthMult.name', descKey: 'metaUpgrades.healthMult.desc', baseCost: 2, costMult: 1.5, level: 0, maxLevel: 20, getEffect: (lvl) => 1 + (lvl * 0.1), format: (v) => `x${v.toFixed(1)}`, icon: '\ud83c\udff0' },
         { id: 'unlockAuto', nameKey: 'metaUpgrades.unlockAuto.name', descKey: 'metaUpgrades.unlockAuto.desc', baseCost: 10, costMult: 100, level: 0, maxLevel: 1, getEffect: (lvl) => lvl > 0, format: (v) => v ? t('status.on') : t('status.off'), icon: '\ud83d\udd04' },
         { id: 'unlockAI', nameKey: 'metaUpgrades.unlockAI.name', descKey: 'metaUpgrades.unlockAI.desc', baseCost: 25, costMult: 100, level: 0, maxLevel: 1, getEffect: (lvl) => lvl > 0, format: (v) => v ? t('status.on') : t('status.off'), icon: '\ud83e\udd16' },
         { id: 'unlockDrone', nameKey: 'metaUpgrades.unlockDrone.name', descKey: 'metaUpgrades.unlockDrone.desc', baseCost: 50, costMult: 100, level: 0, maxLevel: 1, getEffect: (lvl) => lvl > 0, format: (v) => v ? t('status.on') : t('status.off'), icon: '\ud83d\udef8' }

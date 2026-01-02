@@ -2833,7 +2833,8 @@ class Game {
 
         // Multiplicative stacking for damage (meta × relic × prestige × research × passive)
         const metaDmgMult = this.metaUpgrades.getEffectValue('damageMult');
-        const relicDmgMult = 1 + (this.relicMults.damage || 0);
+        // Cap relic damage bonus at +100% (2x max) to prevent infinite stacking
+        const relicDmgMult = 1 + Math.min(1.0, this.relicMults.damage || 0);
         const prestigeDmgMult = this.prestige?.getEffectValue('prestige_damage') || 1;
         const researchDmgMult = 1 + (this.researchEffects?.damageMult || 0);
         const passiveDmgMult = this.passives?.getEffect('damage') || 1;
@@ -2843,7 +2844,8 @@ class Game {
 
         // Multiplicative stacking for health (meta × relic × prestige × research × passive)
         const metaHpMult = this.metaUpgrades.getEffectValue('healthMult');
-        const relicHpMult = 1 + (this.relicMults.health || 0);
+        // Cap relic health bonus at +100% (2x max) to prevent infinite stacking
+        const relicHpMult = 1 + Math.min(1.0, this.relicMults.health || 0);
         const prestigeHpMult = this.prestige?.getEffectValue('prestige_health') || 1;
         const researchHpMult = 1 + (this.researchEffects?.healthMult || 0);
         const passiveHpMult = this.passives?.getEffect('health') || 1;
