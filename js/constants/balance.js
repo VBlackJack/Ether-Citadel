@@ -13,7 +13,7 @@ export const BALANCE = {
 
         // Wave management
         BOSS_WAVE_INTERVAL: 10,
-        BOSS_HP_MULTIPLIER: 20, // Bosses are huge walls (20x normal HP)
+        BOSS_HP_MULTIPLIER: 10, // Bosses are challenging but not walls (10x normal HP)
         BOSS_DAMAGE_MULTIPLIER: 3.0,
         BOSS_CC_RESIST: 0.5,        // Boss CC duration reduced by 50%
         BOSS_SLOW_CAP: 0.85,        // Boss minimum speed when slowed (85% instead of 60%)
