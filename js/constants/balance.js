@@ -28,9 +28,9 @@ export const BALANCE = {
         EFFICIENCY: [1.0, 0.85, 0.75, 0.65, 0.55, 0.50, 0.45, 0.40]
     },
     BASE: {
-        ENEMY_HP: 30,
-        ENEMY_DAMAGE: 12,
-        GOLD_DROP: 2,
+        ENEMY_HP: 18,      // Easier early game (was 30)
+        ENEMY_DAMAGE: 6,   // Less punishing early (was 12)
+        GOLD_DROP: 3,      // More gold to upgrade faster (was 2)
         CRYSTAL_DROP_CHANCE: 0.05
     },
     ENTITY: {

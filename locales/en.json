@@ -61,7 +61,8 @@
     },
     "buttons": {
       "pause": "Toggle pause",
-      "sound": "Toggle sound"
+      "sound": "Toggle sound",
+      "holdWave": "Hold wave - Farm current wave without advancing"
     }
   },
   "sideHud": {

@@ -178,6 +178,7 @@ class Game {
         this.autoRetryEnabled = false;
         this.autoAdvanceEnabled = false;
         this.autoBuyEnabled = false;
+        this.holdWaveEnabled = false;
         this.isGameOver = false;
         this.retryTimeoutId = null;
         this.retryIntervalId = null;
@@ -710,6 +711,16 @@ class Game {
         this.autoRetryEnabled = !this.autoRetryEnabled;
         const labCheck = document.getElementById('lab-auto-retry');
         if (labCheck) labCheck.checked = this.autoRetryEnabled;
+    }
+
+    toggleHoldWave() {
+        this.holdWaveEnabled = !this.holdWaveEnabled;
+        const btn = document.getElementById('btn-hold-wave');
+        if (btn) {
+            btn.classList.toggle('bg-yellow-600', this.holdWaveEnabled);
+            btn.classList.toggle('bg-slate-700', !this.holdWaveEnabled);
+        }
+        this.save();
     }
 
     activateSkill(id) {
@@ -3231,16 +3242,24 @@ class Game {
         // Wave completion check
         if (this.enemiesToSpawn <= 0 && this.enemies.length === 0 && this.waveInProgress) {
             this.waveInProgress = false;
-            this.wave++;
             // Repair all turrets at wave end
             this.turrets.forEach(t => t.repair?.());
             // Auto-upgrade turrets if enabled
             if (this.settings.autoUpgradeTurrets) {
                 this.autoUpgradeTurrets();
             }
-            this.isDirty = true;
-            this.save();
-            setTimeout(() => this.startWave(), 2000 / this.speedMultiplier);
+
+            // Hold wave mode: replay same wave instead of advancing
+            if (this.holdWaveEnabled) {
+                this.isDirty = true;
+                this.save();
+                setTimeout(() => this.startWave(), 2000 / this.speedMultiplier);
+            } else {
+                this.wave++;
+                this.isDirty = true;
+                this.save();
+                setTimeout(() => this.startWave(), 2000 / this.speedMultiplier);
+            }
         }
 
         this.castle.update(dt);
@@ -3596,6 +3615,7 @@ class Game {
             speedIndex: this.speedIndex,
             autoRetry: this.autoRetryEnabled,
             autoBuy: this.autoBuyEnabled,
+            holdWave: this.holdWaveEnabled,
             lastSaveTime: Date.now(),
             settings: this.settings,
             locale: i18n.getLocale(),
@@ -3705,6 +3725,7 @@ class Game {
             this.lastSaveTime = data.lastSaveTime || Date.now();
             this.autoRetryEnabled = data.autoRetry || false;
             this.autoBuyEnabled = data.autoBuy || false;
+            this.holdWaveEnabled = data.holdWave || false;
 
             // Speed settings
             if (data.speedIndex !== undefined) {
@@ -3779,6 +3800,13 @@ class Game {
             if (toggleRange) toggleRange.checked = this.settings.showRange;
             if (toggleAutoTurret) toggleAutoTurret.checked = this.settings.autoUpgradeTurrets;
             if (labAutoRetry) labAutoRetry.checked = this.autoRetryEnabled;
+
+            // Sync hold wave button state
+            const btnHoldWave = document.getElementById('btn-hold-wave');
+            if (btnHoldWave) {
+                btnHoldWave.classList.toggle('bg-yellow-600', this.holdWaveEnabled);
+                btnHoldWave.classList.toggle('bg-slate-700', !this.holdWaveEnabled);
+            }
 
             // Sync haptics toggle (defaults to enabled if supported)
             const toggleHaptics = document.getElementById('toggle-haptics');

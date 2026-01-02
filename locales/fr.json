@@ -39,7 +39,8 @@
     },
     "buttons": {
       "pause": "Basculer la pause",
-      "sound": "Basculer le son"
+      "sound": "Basculer le son",
+      "holdWave": "Bloquer vague - Farmer sans avancer"
     }
   },
   "sideHud": {
