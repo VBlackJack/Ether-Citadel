@@ -804,6 +804,8 @@
     "title": "Daily Quests",
     "resetIn": "Reset in",
     "completed": "Completed!",
+    "claim": "Claim Reward",
+    "claimed": "Claimed",
     "noQuests": "No quests available. Try again later.",
     "kill_enemies": { "name": "Exterminator", "desc": "Kill enemies." },
     "reach_wave": { "name": "Survivor", "desc": "Reach waves." },

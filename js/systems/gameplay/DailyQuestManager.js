@@ -55,13 +55,29 @@ export class DailyQuestManager {
         const currentProgress = this.progress[questType] || BigNumService.create(0);
         const addAmount = BigNumService.create(amount);
         this.progress[questType] = BigNumService.add(currentProgress, addAmount);
-
-        if (BigNumService.gte(this.progress[questType], quest.target)) {
-            this.completeQuest(quest);
-        }
+        // Quest ready to claim when progress >= target, but don't auto-complete
     }
 
-    completeQuest(quest) {
+    /**
+     * Check if a quest is ready to claim (progress >= target but not yet claimed)
+     */
+    isReadyToClaim(questId) {
+        const quest = this.quests.find(q => q.id === questId);
+        if (!quest || quest.completed) return false;
+        const progress = this.progress[questId] || BigNumService.create(0);
+        return BigNumService.gte(progress, quest.target);
+    }
+
+    /**
+     * Claim reward for a completed quest
+     */
+    claimReward(questId) {
+        const quest = this.quests.find(q => q.id === questId);
+        if (!quest || quest.completed) return false;
+
+        const progress = this.progress[questId] || BigNumService.create(0);
+        if (!BigNumService.gte(progress, quest.target)) return false;
+
         quest.completed = true;
 
         switch (quest.rewardType) {
@@ -86,7 +102,9 @@ export class DailyQuestManager {
             28
         ));
         this.game.sound.play('levelup');
+        this.game.renderDailyQuestsUI();
         this.game.save();
+        return true;
     }
 
     getTimeUntilReset() {
@@ -96,10 +114,7 @@ export class DailyQuestManager {
     }
 
     hasClaimableReward() {
-        return this.quests.some(q =>
-            !q.completed &&
-            BigNumService.gte(this.progress[q.id] || BigNumService.create(0), q.target)
-        );
+        return this.quests.some(q => this.isReadyToClaim(q.id));
     }
 
     hasIncompleteQuests() {

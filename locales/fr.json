@@ -804,6 +804,8 @@
     "title": "Quetes quotidiennes",
     "resetIn": "Reset dans",
     "completed": "Complete !",
+    "claim": "Reclamer",
+    "claimed": "Reclame",
     "noQuests": "Pas de quetes. Reessayez plus tard.",
     "kill_enemies": { "name": "Exterminateur", "desc": "Tuez des ennemis." },
     "reach_wave": { "name": "Survivant", "desc": "Atteignez des vagues." },

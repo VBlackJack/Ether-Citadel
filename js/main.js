@@ -1491,9 +1491,10 @@ class Game {
         this.dailyQuests.quests.forEach(quest => {
             const progress = this.dailyQuests.progress[quest.id] || 0;
             const percent = Math.min(100, (progress / quest.target) * 100);
+            const isReadyToClaim = this.dailyQuests.isReadyToClaim(quest.id);
 
             const div = document.createElement('div');
-            div.className = `p-4 rounded-xl border-2 transition-all ${quest.completed ? 'bg-emerald-900/40 border-emerald-500' : 'bg-slate-800 border-slate-600'}`;
+            div.className = `p-4 rounded-xl border-2 transition-all ${quest.completed ? 'bg-emerald-900/40 border-emerald-500' : isReadyToClaim ? 'bg-yellow-900/40 border-yellow-500' : 'bg-slate-800 border-slate-600'}`;
 
             const rewardIcon = quest.rewardType === 'gold' ? '💰' : (quest.rewardType === 'crystals' ? '💎' : '🔮');
 
@@ -1505,15 +1506,22 @@ class Game {
                         <div class="text-xs text-slate-400">${t(quest.descKey)}</div>
                     </div>
                     <div class="text-right">
-                        <div class="text-emerald-400 font-bold">+${quest.reward} ${rewardIcon}</div>
+                        <div class="text-emerald-400 font-bold">+${formatNumber(quest.reward)} ${rewardIcon}</div>
                     </div>
                 </div>
-                <div class="relative h-4 bg-slate-700 rounded-full overflow-hidden">
-                    <div class="absolute inset-0 h-full bg-emerald-500 transition-all" style="width: ${percent}%"></div>
+                <div class="relative h-4 bg-slate-700 rounded-full overflow-hidden mb-2">
+                    <div class="absolute inset-0 h-full ${quest.completed ? 'bg-emerald-500' : isReadyToClaim ? 'bg-yellow-500' : 'bg-emerald-500'} transition-all" style="width: ${percent}%"></div>
                     <div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-white">
-                        ${progress}/${quest.target} ${quest.completed ? `✓ ${t('quests.completed')}` : ''}
+                        ${formatNumber(progress)}/${formatNumber(quest.target)}
                     </div>
                 </div>
+                ${quest.completed ? `
+                    <div class="text-center text-emerald-400 font-bold text-sm">✓ ${t('quests.claimed')}</div>
+                ` : isReadyToClaim ? `
+                    <button data-action="quest.claim" data-id="${quest.id}" class="w-full py-2 bg-yellow-600 hover:bg-yellow-500 text-white font-bold rounded-lg transition-all">
+                        ${t('quests.claim')} +${formatNumber(quest.reward)} ${rewardIcon}
+                    </button>
+                ` : ''}
             `;
 
             container.appendChild(div);
@@ -1728,14 +1736,14 @@ class Game {
                 </div>
                 <div class="text-xs text-slate-400 mb-2">${t(turret.descKey)}</div>
                 ${!unlocked ? `
-                    <button data-action="school.unlock" data-id="${turret.id}" class="w-full px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded ${BigNumService.gte(this.crystals, turret.unlockCost) ? '' : 'opacity-50 cursor-not-allowed'}">
-                        ${t('school.unlock')} (${turret.unlockCost} 💎)
+                    <button data-action="school.unlock" data-id="${turret.id}" class="w-full px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded ${BigNumService.gte(this.crystals, turret.unlockCost) ? '' : 'opacity-50 cursor-not-allowed'}" ${BigNumService.gte(this.crystals, turret.unlockCost) ? '' : 'disabled'}>
+                        ${t('school.unlock')} (${formatNumber(turret.unlockCost)} 💎)
                     </button>
                 ` : maxed ? `
                     <div class="text-center text-xs text-yellow-400">${t('school.maxed')}</div>
                 ` : `
-                    <button data-action="school.levelUp" data-id="${turret.id}" class="w-full px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded ${BigNumService.gte(this.crystals, this.school.getLevelUpCost(turret.id)) ? '' : 'opacity-50 cursor-not-allowed'}">
-                        ${t('school.upgrade')} (${this.school.getLevelUpCost(turret.id)} 💎)
+                    <button data-action="school.levelUp" data-id="${turret.id}" class="w-full px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-sm rounded ${BigNumService.gte(this.crystals, this.school.getLevelUpCost(turret.id)) ? '' : 'opacity-50 cursor-not-allowed'}" ${BigNumService.gte(this.crystals, this.school.getLevelUpCost(turret.id)) ? '' : 'disabled'}>
+                        ${t('school.upgrade')} (${formatNumber(this.school.getLevelUpCost(turret.id))} 💎)
                     </button>
                 `}
             `;
