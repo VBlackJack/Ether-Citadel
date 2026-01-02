@@ -1308,14 +1308,37 @@
   },
   "campaign": {
     "title": "Campaign",
+    "chapter": "Chapter",
+    "mission": "Mission",
+    "complete": "Complete",
     "completed": "Mission Complete",
     "kills": "Kills",
     "time": "Time",
+    "locked": "Locked",
     "chapters": {
       "1": "Beginnings",
       "2": "Rising Power",
       "3": "Trials",
       "4": "Mastery"
+    },
+    "objectives": {
+      "wave": "Reach wave",
+      "kills": "Kill enemies",
+      "boss": "Defeat bosses",
+      "time": "Complete in time",
+      "noDamage": "Without taking damage"
+    },
+    "missions": {
+      "tutorial": "First Steps",
+      "wave_10": "Defend the Citadel",
+      "boss_hunter": "Boss Hunter",
+      "speed_clear": "Speed Clear",
+      "elite_slayer": "Elite Slayer",
+      "wave_master": "Wave Master",
+      "untouchable": "Untouchable",
+      "boss_rush": "Boss Rush",
+      "endurance": "Endurance Test",
+      "final_stand": "Final Stand"
     },
     "tutorial": {
       "name": "First Steps",
@@ -1368,7 +1391,22 @@
     "bossesDefeated": "Bosses Defeated",
     "highestCombo": "Highest Combo",
     "endlessRecord": "Endless Record",
-    "bossRushRecord": "Boss Rush Record"
+    "bossRushRecord": "Boss Rush Record",
+    "categories": {
+      "highest_wave": "Highest Wave",
+      "total_kills": "Total Kills",
+      "boss_kills": "Bosses Killed",
+      "total_gold": "Total Gold",
+      "fastest_wave_50": "Fastest Wave 50",
+      "highest_combo": "Highest Combo",
+      "endless_score": "Endless Score",
+      "speedrun_time": "Speedrun Time"
+    },
+    "rank": "Rank",
+    "score": "Score",
+    "date": "Date",
+    "empty": "No scores recorded",
+    "newRecord": "New Record!"
   },
   "presets": {
     "title": "Build Presets",
@@ -1384,14 +1422,32 @@
       "3": "Preset 3",
       "4": "Preset 4",
       "5": "Preset 5"
-    }
+    },
+    "saved": "Build Saved!",
+    "loaded": "Build Loaded!",
+    "deleted": "Preset Deleted"
   },
   "music": {
+    "title": "Music",
     "menu": "Menu Theme",
     "gameplay": "Gameplay",
     "boss": "Boss Battle",
     "victory": "Victory",
-    "defeat": "Defeat"
+    "defeat": "Defeat",
+    "tracks": {
+      "ambient": "Ambient",
+      "battle": "Battle",
+      "boss": "Boss Fight",
+      "victory": "Victory",
+      "menu": "Menu"
+    },
+    "volume": "Volume",
+    "mute": "Mute"
+  },
+  "effects": {
+    "screenShake": "Screen Shake",
+    "particles": "Particles",
+    "trails": "Trails"
   },
   "ux": {
     "suggestionLabel": "Suggested",
