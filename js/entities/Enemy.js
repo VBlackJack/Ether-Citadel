@@ -100,9 +100,11 @@ export class Enemy {
     }
 
     applyStatus(type, power, duration) {
-        if (type === 'ice') this.status.iceTimer = duration;
-        if (type === 'poison') { this.status.poisonTimer = duration; this.status.poisonDmg = power; }
-        if (type === 'stasis') this.status.stasisTimer = duration;
+        // Bosses have CC resistance - reduced duration
+        const effectiveDuration = this.typeKey === 'BOSS' ? duration * (1 - BALANCE.SCALING.BOSS_CC_RESIST) : duration;
+        if (type === 'ice') this.status.iceTimer = effectiveDuration;
+        if (type === 'poison') { this.status.poisonTimer = effectiveDuration; this.status.poisonDmg = power; }
+        if (type === 'stasis') this.status.stasisTimer = effectiveDuration;
     }
 
     update(dt) {
@@ -127,7 +129,12 @@ export class Enemy {
         }
         if (this.thermalShockCooldown > 0) this.thermalShockCooldown -= dt;
         let currentSpeed = this.baseSpeed;
-        if (this.status.iceTimer > 0) { this.status.iceTimer -= dt * 16; currentSpeed *= 0.6; }
+        if (this.status.iceTimer > 0) {
+            this.status.iceTimer -= dt * 16;
+            // Bosses have minimum speed cap when slowed
+            const slowFactor = this.typeKey === 'BOSS' ? BALANCE.SCALING.BOSS_SLOW_CAP : 0.6;
+            currentSpeed *= slowFactor;
+        }
         if (this.status.poisonTimer > 0) {
             this.status.poisonTimer -= dt * 16;
             const tickDmg = (this.status.poisonDmg / 60) * (dt / 16);
