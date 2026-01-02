@@ -154,11 +154,9 @@
             <div id="ui-dread-display" class="hidden text-red-400 font-bold tracking-widest uppercase text-sm mt-1">
                 <span data-i18n="hud.dreadLevel">Dread</span> <span id="dread-level">0</span>
             </div>
-            <!-- Menu buttons moved to right side for cleaner UI -->
-            <button id="btn-dev-menu" onclick="document.getElementById('dev-modal').classList.remove('hidden')" class="hidden text-red-500 hover:text-red-400 transition bg-black/40 px-2 py-1 rounded border border-red-900 font-bold pointer-events-auto">DEV</button>
             <div id="buff-container" class="flex gap-2 mt-1"></div>
             <div id="active-challenge-hud" class="hidden bg-red-900/60 border border-red-500 text-red-200 text-xs px-2 py-1 rounded mt-2 font-bold animate-pulse">
-                <span data-i18n="hud.activeChallenge">ACTIVE CHALLENGE:</span> <span id="challenge-name-hud">NAME</span>
+                <span data-i18n="hud.activeChallenge">ACTIVE CHALLENGE:</span> <span id="challenge-name-hud"></span>
             </div>
             <!-- Active Synergies Indicator -->
             <div id="synergies-hud" class="hidden mt-2">
@@ -1085,21 +1083,6 @@
                         </button>
                     </div>
                     <button id="cloud-btn-logout" class="cloud-btn-logout" data-i18n="cloud.logout">Logout</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Dev Modal -->
-        <div id="dev-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="dev-modal-title">
-            <div class="bg-red-950 border border-red-600 p-8 rounded-2xl max-w-md text-center shadow-2xl">
-                <h2 id="dev-modal-title" class="text-3xl text-red-500 font-bold mb-4" data-i18n="modals.dev.title">DEVELOPER MODE</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <button onclick="game.dev.addGold(1000000)" class="px-4 py-3 bg-yellow-600 hover:bg-yellow-500 text-white font-bold rounded shadow" data-i18n="modals.dev.addGold">+1M GOLD 💰</button>
-                    <button onclick="game.dev.addEther(10000)" class="px-4 py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded shadow" data-i18n="modals.dev.addEther">+10k ETHER 🔮</button>
-                    <button onclick="game.dev.skipWaves(10)" class="px-4 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded shadow" data-i18n="modals.dev.skipWaves">+10 WAVES ⏩</button>
-                    <button onclick="game.dev.resetCooldowns()" class="px-4 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded shadow" data-i18n="modals.dev.resetCooldowns">CD RESET ⚡</button>
-                    <button onclick="game.castle.heal(99999999)" class="px-4 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded shadow" data-i18n="modals.dev.heal">HEAL ❤️</button>
-                    <button onclick="document.getElementById('dev-modal').classList.add('hidden')" class="col-span-2 px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white font-bold rounded mt-4" data-i18n="modals.dev.close">CLOSE</button>
                 </div>
             </div>
         </div>

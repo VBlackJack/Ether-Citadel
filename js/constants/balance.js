@@ -6,10 +6,10 @@
 export const BALANCE = {
     SCALING: {
         // Exponential growth factors - tuned for challenging progression
-        // Key: HP grows much faster (1.25) than player damage upgrades (1.08) forcing continuous investment
-        HP_GROWTH: 1.25,       // Enemies get tougher (+25%/wave) - significantly outpaces player scaling
-        DAMAGE_GROWTH: 1.15,   // Enemy damage scales aggressively
-        GOLD_GROWTH: 1.06,     // Gold scales much slower than HP - forces hard choices
+        // Key: HP grows faster than player damage upgrades forcing continuous investment
+        HP_GROWTH: 1.22,       // Enemies get tougher (+22%/wave) - reduced from 1.25 for smoother curve
+        DAMAGE_GROWTH: 1.12,   // Enemy damage scales steadily (reduced from 1.15)
+        GOLD_GROWTH: 1.08,     // Gold scales to keep pace with difficulty (was 1.06)
 
         // Wave management
         BOSS_WAVE_INTERVAL: 10,
@@ -19,7 +19,7 @@ export const BALANCE = {
         BOSS_SLOW_CAP: 0.85,        // Boss minimum speed when slowed (85% instead of 60%)
 
         // Late game scaling (Wave 50+)
-        LATE_GAME_FACTOR: 1.05, // Extra multiplier added per wave after wave 50
+        LATE_GAME_FACTOR: 1.08, // Extra multiplier added per wave after wave 50 (was 1.05)
         LATE_GAME_THRESHOLD: 50 // Wave threshold for late game scaling
     },
     TURRET: {

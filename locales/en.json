@@ -117,7 +117,10 @@
     "blackhole": {
       "name": "Black Hole",
       "desc": "Pulls and crushes enemies."
-    }
+    },
+    "cooldown": "Cooldown",
+    "active": "Active",
+    "ready": "Ready"
   },
   "modals": {
     "collection": {

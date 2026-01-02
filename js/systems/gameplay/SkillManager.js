@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { t } from '../../i18n.js';
+
 /**
  * SkillManager - Handles active skills (Overdrive, Nuke, Blackhole)
  */
@@ -174,20 +176,19 @@ export class SkillManager {
 
             // Update aria-label with cooldown state for accessibility
             if (skillEl) {
-                const skillNames = { overdrive: 'Overdrive', nuke: 'Meteor', blackhole: 'Black Hole' };
+                const baseName = t(`skills.${key}.name`) || key;
                 const hotkeys = { overdrive: 'Q', nuke: 'W', blackhole: 'E' };
-                const baseName = skillNames[key] || key;
                 const hotkey = hotkeys[key];
 
                 if (s.cdTime > 0) {
                     const remainingSecs = Math.ceil(s.cdTime / 1000);
-                    skillEl.setAttribute('aria-label', `${baseName} skill (Press ${hotkey}) - Cooldown: ${remainingSecs} seconds remaining`);
+                    skillEl.setAttribute('aria-label', `${baseName} (${hotkey}) - ${t('skills.cooldown') || 'Cooldown'}: ${remainingSecs}s`);
                     skillEl.setAttribute('aria-disabled', 'true');
                 } else if (s.activeTime > 0) {
-                    skillEl.setAttribute('aria-label', `${baseName} skill (Press ${hotkey}) - Active`);
+                    skillEl.setAttribute('aria-label', `${baseName} (${hotkey}) - ${t('skills.active') || 'Active'}`);
                     skillEl.setAttribute('aria-disabled', 'true');
                 } else {
-                    skillEl.setAttribute('aria-label', `${baseName} skill (Press ${hotkey}) - Ready`);
+                    skillEl.setAttribute('aria-label', `${baseName} (${hotkey}) - ${t('skills.ready') || 'Ready'}`);
                     skillEl.removeAttribute('aria-disabled');
                 }
             }
