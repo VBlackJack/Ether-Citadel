@@ -184,6 +184,23 @@ export function batchDOMUpdates(updateFn) {
 }
 
 /**
+ * Show loading state in a modal content area
+ * @param {string} containerId - ID of the container element
+ * @param {string} message - Optional loading message
+ */
+export function showModalLoading(containerId, message = '') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = `
+        <div class="modal-loading flex-col">
+            <div class="modal-loading-spinner" role="status" aria-label="Loading"></div>
+            ${message ? `<div class="modal-loading-text">${message}</div>` : ''}
+        </div>
+    `;
+}
+
+/**
  * Debounce function calls
  * @param {Function} fn - Function to debounce
  * @param {number} delay - Delay in milliseconds

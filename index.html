@@ -54,12 +54,12 @@
         <div class="text-slate-400 text-sm" data-i18n="ui.loading">Loading...</div>
     </div>
 
-    <div class="fixed top-0 left-0 w-full h-1 bg-slate-900 z-50 pointer-events-auto cursor-help group touch-tooltip-trigger" tabindex="0" role="button" aria-label="Experience bar" data-i18n-title="hud.tooltips.xp">
+    <button type="button" class="fixed top-0 left-0 w-full h-1 bg-slate-900 z-50 pointer-events-auto cursor-help group touch-tooltip-trigger" aria-label="Experience bar" aria-describedby="xp-tooltip" data-i18n-title="hud.tooltips.xp">
         <div id="ui-xp-bar" class="h-full bg-cyan-500 shadow-[0_0_10px_#06b6d4] transition-all duration-300" style="width: 0%"></div>
-        <div class="xp-tooltip hidden group-hover:block absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-slate-900/95 border border-cyan-500 rounded px-2 py-1 text-xs text-cyan-400 whitespace-nowrap z-50" role="tooltip">
+        <div id="xp-tooltip" class="xp-tooltip hidden group-hover:block group-focus:block absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-slate-900/95 border border-cyan-500 rounded px-2 py-1 text-xs text-cyan-400 whitespace-nowrap z-50" role="tooltip">
             <span data-i18n="hud.xpBar">Experience</span> - <span data-i18n="hud.xpBarHint">Level up for Stat Points</span>
         </div>
-    </div>
+    </button>
 
     <main class="relative flex-grow h-2/3 md:h-full md:w-3/4 bg-slate-900 overflow-hidden" id="game-container" role="main" aria-label="Game Area">
         <div id="stars-bg" class="absolute inset-0 z-0 opacity-50 pointer-events-none"></div>
@@ -72,13 +72,13 @@
                 <span data-i18n="game.level">Level</span> <span id="ui-level">1</span>
             </div>
             <div class="flex items-center gap-4">
-                <div class="resource-display text-4xl font-bold text-yellow-400 drop-shadow-lg flex items-center gap-2 cursor-help relative" tabindex="0" role="button" aria-label="Gold">
+                <button type="button" class="resource-display text-4xl font-bold text-yellow-400 drop-shadow-lg flex items-center gap-2 cursor-help relative group" aria-label="Gold" aria-describedby="gold-tooltip">
                     <span class="text-3xl" aria-hidden="true">🪙</span> <span id="ui-gold">0</span>
-                    <div class="resource-tooltip" role="tooltip">
+                    <div id="gold-tooltip" class="resource-tooltip" role="tooltip">
                         <div class="resource-tooltip-title text-yellow-400" data-i18n="resources.gold.name">Gold</div>
                         <div class="resource-tooltip-desc" data-i18n="resources.gold.desc">Primary currency for upgrades and towers. Earned by defeating enemies.</div>
                     </div>
-                </div>
+                </button>
                 <button id="btn-pause" onclick="game.togglePause()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-3 rounded border border-slate-500 backdrop-blur-sm transition text-sm" aria-label="Toggle pause" data-i18n-title="hud.buttons.pause">⏸️</button>
                 <button id="btn-sound" onclick="game.sound.toggle()" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-2 rounded border border-slate-500 backdrop-blur-sm transition text-sm" aria-label="Toggle sound" data-i18n-title="hud.buttons.sound">🔊</button>
                 <div id="speed-controls-hud" class="pointer-events-auto flex gap-1 ml-2">
@@ -89,33 +89,33 @@
                 </div>
             </div>
             <div class="flex items-center gap-2 text-2xl font-bold drop-shadow-lg">
-                <span class="text-blue-400 group relative cursor-help touch-tooltip-trigger pointer-events-auto" tabindex="0" role="button" aria-label="Wave info">
+                <button type="button" class="text-blue-400 group relative cursor-help touch-tooltip-trigger pointer-events-auto bg-transparent border-none p-0 font-bold text-2xl" aria-label="Wave info" aria-describedby="wave-preview">
                     <span data-i18n="game.wave">Wave</span>: <span id="ui-wave">1</span>
-                    <div id="wave-preview" class="wave-tooltip hidden group-hover:block absolute top-full left-0 mt-1 bg-slate-900/95 border border-blue-500 rounded-lg p-2 text-xs text-left whitespace-nowrap z-50 min-w-48" role="tooltip">
+                    <div id="wave-preview" class="wave-tooltip hidden group-hover:block group-focus:block absolute top-full left-0 mt-1 bg-slate-900/95 border border-blue-500 rounded-lg p-2 text-xs text-left whitespace-nowrap z-50 min-w-48" role="tooltip">
                         <div class="text-blue-400 font-bold mb-1" data-i18n="game.nextWave">Next Wave</div>
                         <div id="wave-preview-content" class="text-slate-300 space-y-1"></div>
                     </div>
-                </span>
+                </button>
                 <button onclick="game.rushWave()" class="pointer-events-auto bg-red-600/80 hover:bg-red-500 text-white text-xs font-bold py-1 px-2 rounded border border-red-400 backdrop-blur-sm transition flex items-center gap-1" data-i18n-title="game.rushTooltip" aria-label="Rush next wave for +25% gold bonus">
                     <span>🔥</span> <span data-i18n="game.rush">RUSH</span>
                 </button>
                 <button id="btn-surrender" onclick="if(game.canSurrender()) gameConfirm(game.t('surrender.confirm'), () => game.strategicSurrender())" class="hidden pointer-events-auto bg-amber-600/80 hover:bg-amber-500 text-white text-xs font-bold py-1 px-2 rounded border border-amber-400 backdrop-blur-sm transition flex items-center gap-1">
                     <span>🏳️</span> <span data-i18n="surrender.button">Surrender</span>
                 </button>
-                <div class="resource-display text-purple-400 text-xl flex items-center gap-1 ml-4 cursor-help relative" tabindex="0" role="button" aria-label="Ether">
+                <button type="button" class="resource-display text-purple-400 text-xl flex items-center gap-1 ml-4 cursor-help relative group" aria-label="Ether" aria-describedby="ether-tooltip">
                     <span class="text-2xl" aria-hidden="true">🔮</span> <span id="ui-ether-hud" class="font-bold">0</span>
-                    <div class="resource-tooltip" role="tooltip">
+                    <div id="ether-tooltip" class="resource-tooltip" role="tooltip">
                         <div class="resource-tooltip-title text-purple-400" data-i18n="resources.ether.name">Ether</div>
                         <div class="resource-tooltip-desc" data-i18n="resources.ether.desc">Permanent currency for meta upgrades. Earned by dying past wave 10.</div>
                     </div>
-                </div>
-                <div class="resource-display text-cyan-400 text-xl flex items-center gap-1 ml-2 cursor-help relative" tabindex="0" role="button" aria-label="Crystals">
+                </button>
+                <button type="button" class="resource-display text-cyan-400 text-xl flex items-center gap-1 ml-2 cursor-help relative group" aria-label="Crystals" aria-describedby="crystals-tooltip">
                     <span class="text-2xl" aria-hidden="true">💎</span> <span id="ui-crystals" class="font-bold">0</span>
-                    <div class="resource-tooltip" role="tooltip">
+                    <div id="crystals-tooltip" class="resource-tooltip" role="tooltip">
                         <div class="resource-tooltip-title text-cyan-400" data-i18n="resources.crystals.name">Crystals</div>
                         <div class="resource-tooltip-desc" data-i18n="resources.crystals.desc">Used for school upgrades and turret mastery.</div>
                     </div>
-                </div>
+                </button>
                 <button id="btn-open-ascension" class="hidden pointer-events-auto bg-purple-900/50 hover:bg-purple-800 text-purple-200 text-xl p-1.5 rounded border border-purple-500 ml-2 transition" data-i18n-title="ascension.title" aria-label="Open Ascension Tree">
                     🌌
                 </button>
@@ -174,7 +174,7 @@
                 <button onclick="document.getElementById('settings-modal').classList.remove('hidden')" class="menu-btn-sm" aria-label="Settings">⚙️</button>
                 <button onclick="document.getElementById('achieve-modal').classList.remove('hidden')" class="menu-btn-sm" aria-label="Achievements">🏆</button>
                 <button id="btn-quests" onclick="game.renderDailyQuestsUI(); document.getElementById('quests-modal').classList.remove('hidden')" class="menu-btn-sm relative" aria-label="Quests">
-                    📋<span id="quest-badge" class="hidden absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-white text-xs font-bold flex items-center justify-center">!</span>
+                    📋<span id="quest-badge" class="hidden absolute -top-2 -right-2 min-w-[20px] h-5 px-1 bg-red-500 rounded-full text-white text-xs font-bold flex items-center justify-center" aria-live="polite">!</span>
                 </button>
                 <div class="w-px h-6 bg-slate-600" aria-hidden="true"></div>
                 <button onclick="game.toggleMenuGroup('all')" class="menu-btn-sm text-cyan-400" aria-label="Toggle Menu" aria-expanded="false" id="btn-toggle-menu">☰</button>
@@ -528,39 +528,39 @@
                 <div class="space-y-4">
                     <!-- Language Selector -->
                     <div class="flex items-center justify-between bg-slate-900 p-3 rounded">
-                        <span class="text-sm font-bold text-slate-300" data-i18n="modals.settings.language">Language</span>
-                        <select id="language-select" onchange="game.changeLanguage(this.value)" class="bg-slate-700 text-white border border-slate-600 rounded px-2 py-1 text-sm" aria-label="Language selector">
+                        <label for="language-select" class="text-sm font-bold text-slate-300" data-i18n="modals.settings.language">Language</label>
+                        <select id="language-select" onchange="game.changeLanguage(this.value)" class="bg-slate-700 text-white border border-slate-600 rounded px-2 py-1 text-sm">
                             <option value="en">English</option>
                             <option value="fr">Français</option>
                         </select>
                     </div>
                     <div class="flex items-center justify-between bg-slate-900 p-3 rounded">
-                        <span class="text-sm font-bold text-slate-300" data-i18n="modals.settings.showDamage">Show Damage</span>
-                        <label class="relative inline-block w-12 h-6">
-                            <input type="checkbox" id="toggle-damage" class="sr-only peer" aria-label="Show damage numbers">
+                        <label for="toggle-damage" class="text-sm font-bold text-slate-300 cursor-pointer" data-i18n="modals.settings.showDamage">Show Damage</label>
+                        <label class="relative inline-block w-12 h-6 cursor-pointer">
+                            <input type="checkbox" id="toggle-damage" class="sr-only peer">
                             <div class="w-12 h-6 bg-slate-600 rounded-full peer peer-checked:bg-cyan-500 transition"></div>
                             <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-6"></div>
                         </label>
                     </div>
                     <div class="flex items-center justify-between bg-slate-900 p-3 rounded">
-                        <span class="text-sm font-bold text-slate-300" data-i18n="modals.settings.showRange">Show Range</span>
-                        <label class="relative inline-block w-12 h-6">
-                            <input type="checkbox" id="toggle-range" class="sr-only peer" aria-label="Show turret range">
+                        <label for="toggle-range" class="text-sm font-bold text-slate-300 cursor-pointer" data-i18n="modals.settings.showRange">Show Range</label>
+                        <label class="relative inline-block w-12 h-6 cursor-pointer">
+                            <input type="checkbox" id="toggle-range" class="sr-only peer">
                             <div class="w-12 h-6 bg-slate-600 rounded-full peer peer-checked:bg-cyan-500 transition"></div>
                             <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-6"></div>
                         </label>
                     </div>
                     <div class="flex items-center justify-between bg-slate-900 p-3 rounded">
-                        <span class="text-sm font-bold text-slate-300" data-i18n="modals.settings.haptics">Haptic Feedback</span>
-                        <label class="relative inline-block w-12 h-6">
-                            <input type="checkbox" id="toggle-haptics" class="sr-only peer" aria-label="Enable haptic feedback" onchange="game.haptics?.setEnabled(this.checked)">
+                        <label for="toggle-haptics" class="text-sm font-bold text-slate-300 cursor-pointer" data-i18n="modals.settings.haptics">Haptic Feedback</label>
+                        <label class="relative inline-block w-12 h-6 cursor-pointer">
+                            <input type="checkbox" id="toggle-haptics" class="sr-only peer" onchange="game.haptics?.setEnabled(this.checked)">
                             <div class="w-12 h-6 bg-slate-600 rounded-full peer peer-checked:bg-cyan-500 transition"></div>
                             <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-6"></div>
                         </label>
                     </div>
                     <div class="flex items-center justify-between bg-slate-900 p-3 rounded">
-                        <span class="text-sm font-bold text-slate-300" data-i18n="settings.notation.title">Number Notation</span>
-                        <select id="setting-notation" class="bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded px-3 py-1.5 focus:ring-cyan-500 focus:border-cyan-500" aria-label="Number notation format">
+                        <label for="setting-notation" class="text-sm font-bold text-slate-300" data-i18n="settings.notation.title">Number Notation</label>
+                        <select id="setting-notation" class="bg-slate-700 border border-slate-600 text-slate-200 text-sm rounded px-3 py-1.5 focus:ring-cyan-500 focus:border-cyan-500">
                         </select>
                     </div>
                     <div>
@@ -572,7 +572,10 @@
                         <button onclick="document.getElementById('import-modal').classList.remove('hidden')" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-sm font-bold" data-i18n="modals.settings.import">IMPORT</button>
                     </div>
                     <hr class="border-slate-700 my-4">
-                    <button onclick="game.confirmReset()" class="w-full bg-red-900 hover:bg-red-700 text-red-200 py-2 rounded text-sm font-bold border border-red-700" data-i18n="modals.settings.reset">RESET</button>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="game.tutorial?.reset(); document.getElementById('settings-modal').classList.add('hidden')" class="flex-1 bg-blue-900 hover:bg-blue-700 text-blue-200 py-2 rounded text-sm font-bold border border-blue-700" data-i18n="modals.settings.restartTutorial">Restart Tutorial</button>
+                        <button type="button" onclick="game.confirmReset()" class="flex-1 bg-red-900 hover:bg-red-700 text-red-200 py-2 rounded text-sm font-bold border border-red-700" data-i18n="modals.settings.reset">RESET</button>
+                    </div>
                     <!-- Keyboard Shortcuts Section -->
                     <hr class="border-slate-700 my-4">
                     <div class="bg-slate-900 p-3 rounded">
@@ -707,9 +710,9 @@
                         <h3 class="text-lg font-bold text-cyan-400 mb-3" data-i18n="prestige.autoTitle">Auto-Prestige</h3>
                         <div class="flex items-center justify-between gap-4 flex-wrap">
                             <div class="flex items-center gap-3">
-                                <span class="text-sm text-slate-300" data-i18n="prestige.autoEnable">Enable Auto-Prestige</span>
-                                <label class="relative inline-block w-12 h-6">
-                                    <input type="checkbox" id="toggle-auto-prestige" class="sr-only peer" aria-label="Enable auto-prestige">
+                                <label for="toggle-auto-prestige" class="text-sm text-slate-300 cursor-pointer" data-i18n="prestige.autoEnable">Enable Auto-Prestige</label>
+                                <label class="relative inline-block w-12 h-6 cursor-pointer">
+                                    <input type="checkbox" id="toggle-auto-prestige" class="sr-only peer">
                                     <div class="w-12 h-6 bg-slate-600 rounded-full peer peer-checked:bg-cyan-500 transition"></div>
                                     <div class="absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-6"></div>
                                 </label>
@@ -954,8 +957,9 @@
                     <button onclick="document.getElementById('leaderboard-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
-                    <div class="flex gap-2 mb-4 flex-wrap justify-center">
-                        <select id="leaderboard-category" onchange="game.renderLeaderboardUI()" class="bg-slate-700 text-white border border-slate-600 rounded px-3 py-2 text-sm" aria-label="Leaderboard category"></select>
+                    <div class="flex gap-2 mb-4 flex-wrap justify-center items-center">
+                        <label for="leaderboard-category" class="sr-only" data-i18n="leaderboard.category">Category</label>
+                        <select id="leaderboard-category" onchange="game.renderLeaderboardUI()" class="bg-slate-700 text-white border border-slate-600 rounded px-3 py-2 text-sm"></select>
                     </div>
                     <div id="leaderboard-list" class="space-y-2">
                         <div class="empty-state text-center py-8 text-slate-400">

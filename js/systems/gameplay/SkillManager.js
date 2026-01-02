@@ -172,6 +172,26 @@ export class SkillManager {
                 }
             }
 
+            // Update aria-label with cooldown state for accessibility
+            if (skillEl) {
+                const skillNames = { overdrive: 'Overdrive', nuke: 'Meteor', blackhole: 'Black Hole' };
+                const hotkeys = { overdrive: 'Q', nuke: 'W', blackhole: 'E' };
+                const baseName = skillNames[key] || key;
+                const hotkey = hotkeys[key];
+
+                if (s.cdTime > 0) {
+                    const remainingSecs = Math.ceil(s.cdTime / 1000);
+                    skillEl.setAttribute('aria-label', `${baseName} skill (Press ${hotkey}) - Cooldown: ${remainingSecs} seconds remaining`);
+                    skillEl.setAttribute('aria-disabled', 'true');
+                } else if (s.activeTime > 0) {
+                    skillEl.setAttribute('aria-label', `${baseName} skill (Press ${hotkey}) - Active`);
+                    skillEl.setAttribute('aria-disabled', 'true');
+                } else {
+                    skillEl.setAttribute('aria-label', `${baseName} skill (Press ${hotkey}) - Ready`);
+                    skillEl.removeAttribute('aria-disabled');
+                }
+            }
+
             if (this.autoSkills[key] && s.cdTime <= 0 && this.game.enemies?.length > 0 && !this.game.isGameOver) {
                 const canAuto = (key === 'overdrive' && this.game.metaUpgrades?.getEffectValue('autoSkillQ')) ||
                                (key === 'nuke' && this.game.metaUpgrades?.getEffectValue('autoSkillW')) ||

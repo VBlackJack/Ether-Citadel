@@ -98,6 +98,7 @@ export class ToastManager {
         const toast = document.createElement('div');
         toast.className = `toast ${config.class}`;
         toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        toast.setAttribute('tabindex', '-1');
         toast.innerHTML = `
             <span class="toast-icon" aria-hidden="true">${this.escapeHtml(options.icon || config.icon)}</span>
             <span class="toast-message">${this.escapeHtml(message)}</span>
@@ -105,6 +106,11 @@ export class ToastManager {
         `;
 
         this.container.appendChild(toast);
+
+        // Focus error toasts for screen reader announcement
+        if (type === 'error') {
+            requestAnimationFrame(() => toast.focus());
+        }
 
         const toastData = {
             element: toast,

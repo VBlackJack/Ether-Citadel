@@ -150,6 +150,7 @@
       "copy": "COPIER",
       "import": "IMPORTER",
       "reset": "RESET",
+      "restartTutorial": "Relancer Tutoriel",
       "confirmReset": "Tout effacer ?",
       "language": "Langue",
       "shortcuts": {
@@ -1380,6 +1381,7 @@
   },
   "leaderboard": {
     "title": "Classements",
+    "category": "Catégorie",
     "highestWave": "Vague la Plus Haute",
     "maxDps": "DPS Maximum",
     "fastestWave50": "Vague 50 la Plus Rapide",

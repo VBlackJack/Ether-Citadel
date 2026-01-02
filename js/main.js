@@ -426,6 +426,39 @@ class Game {
                 target.classList.remove('tooltip-active');
             }
         });
+
+        // Menu arrow key navigation
+        document.addEventListener('keydown', (e) => {
+            const target = e.target;
+
+            // Check if we're in a menu group
+            if (!target.closest('.menu-group')) return;
+
+            const menuItems = Array.from(target.closest('.menu-group')?.querySelectorAll('.menu-item:not(.menu-locked), .menu-group-header') || []);
+            const currentIndex = menuItems.indexOf(target);
+
+            if (currentIndex === -1) return;
+
+            let nextIndex = currentIndex;
+
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                nextIndex = (currentIndex + 1) % menuItems.length;
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                nextIndex = (currentIndex - 1 + menuItems.length) % menuItems.length;
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                nextIndex = 0;
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                nextIndex = menuItems.length - 1;
+            }
+
+            if (nextIndex !== currentIndex) {
+                menuItems[nextIndex]?.focus();
+            }
+        });
     }
 
     triggerDevSecret() {

@@ -377,10 +377,10 @@ export class DialogHelper {
                 <div class="text-center">
                     <p class="text-slate-300 mb-6">${escapedMessage}</p>
                     <div class="flex gap-4 justify-center">
-                        <button class="dialog-cancel px-6 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded font-bold transition">
+                        <button type="button" class="dialog-cancel px-6 py-2 bg-slate-600 hover:bg-slate-500 text-white rounded font-bold transition">
                             ${this.modalManager.escapeHtml(cancelText)}
                         </button>
-                        <button class="dialog-confirm px-6 py-2 ${danger ? 'bg-red-600 hover:bg-red-500' : 'bg-blue-600 hover:bg-blue-500'} text-white rounded font-bold transition">
+                        <button type="button" class="dialog-confirm px-6 py-2 ${danger ? 'bg-red-600 hover:bg-red-500' : 'bg-blue-600 hover:bg-blue-500'} text-white rounded font-bold transition">
                             ${this.modalManager.escapeHtml(confirmText)}
                         </button>
                     </div>
@@ -436,7 +436,7 @@ export class DialogHelper {
             const content = `
                 <div class="text-center">
                     <p class="text-slate-300 mb-6">${escapedMessage}</p>
-                    <button class="dialog-ok px-8 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded font-bold transition">
+                    <button type="button" class="dialog-ok px-8 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded font-bold transition">
                         ${this.modalManager.escapeHtml(buttonText)}
                     </button>
                 </div>

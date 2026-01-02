@@ -150,6 +150,7 @@
       "copy": "COPY",
       "import": "IMPORT",
       "reset": "RESET",
+      "restartTutorial": "Restart Tutorial",
       "confirmReset": "Delete everything?",
       "language": "Language",
       "shortcuts": {
@@ -1339,6 +1340,7 @@
   },
   "leaderboard": {
     "title": "Leaderboards",
+    "category": "Category",
     "highestWave": "Highest Wave",
     "maxDps": "Max DPS",
     "fastestWave50": "Fastest Wave 50",

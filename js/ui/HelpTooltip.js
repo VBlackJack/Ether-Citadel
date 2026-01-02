@@ -24,10 +24,14 @@ export class HelpTooltipManager {
         this._boundHover = (e) => this.handleHover(e);
         this._boundMouseOut = (e) => this.handleMouseOut(e);
         this._boundClick = (e) => this.handleClick(e);
+        this._boundFocusIn = (e) => this.handleFocusIn(e);
+        this._boundFocusOut = (e) => this.handleFocusOut(e);
 
         document.addEventListener('mouseover', this._boundHover);
         document.addEventListener('mouseout', this._boundMouseOut);
         document.addEventListener('click', this._boundClick);
+        document.addEventListener('focusin', this._boundFocusIn);
+        document.addEventListener('focusout', this._boundFocusOut);
     }
 
     /**
@@ -45,6 +49,14 @@ export class HelpTooltipManager {
         if (this._boundClick) {
             document.removeEventListener('click', this._boundClick);
             this._boundClick = null;
+        }
+        if (this._boundFocusIn) {
+            document.removeEventListener('focusin', this._boundFocusIn);
+            this._boundFocusIn = null;
+        }
+        if (this._boundFocusOut) {
+            document.removeEventListener('focusout', this._boundFocusOut);
+            this._boundFocusOut = null;
         }
 
         this.hideTooltip();
@@ -91,6 +103,21 @@ export class HelpTooltipManager {
 
     handleClick(e) {
         if (this.activeTooltip && !e.target.closest('.help-tooltip') && !e.target.closest('.help-icon')) {
+            this.hideTooltip();
+        }
+    }
+
+    handleFocusIn(e) {
+        const helpIcon = e.target.closest('.help-icon[data-help]');
+        if (!helpIcon) return;
+
+        const key = helpIcon.dataset.help;
+        this.showTooltip(key, helpIcon);
+    }
+
+    handleFocusOut(e) {
+        const helpIcon = e.target.closest('.help-icon[data-help]');
+        if (helpIcon && this.activeTooltip) {
             this.hideTooltip();
         }
     }
