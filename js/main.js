@@ -176,7 +176,6 @@ class Game {
         this.speedIndex = 0;
         this.selectedForgeRelic = null;
         this.autoRetryEnabled = false;
-        this.autoAdvanceEnabled = false;
         this.autoBuyEnabled = false;
         this.holdWaveEnabled = false;
         this.isGameOver = false;
@@ -698,13 +697,6 @@ class Game {
                 btn.classList.remove('active');
             }
         });
-    }
-
-    toggleAutoAdvance() {
-        this.autoAdvanceEnabled = !this.autoAdvanceEnabled;
-        // Sync both checkboxes
-        const labCheck = document.getElementById('lab-auto-advance');
-        if (labCheck) labCheck.checked = this.autoAdvanceEnabled;
     }
 
     toggleAutoRetry() {
