@@ -173,9 +173,6 @@ export class InputManager {
                         window.gameConfirm(this.game.t('surrender.confirm'), () => this.game.strategicSurrender());
                     }
                     break;
-                case 'executeSuggestion':
-                    this.game.executeSuggestedAction();
-                    break;
                 default:
                     // Check if action is a game method
                     if (typeof this.game[action] === 'function') {

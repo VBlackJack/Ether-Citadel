@@ -296,7 +296,6 @@ class Game {
             }
             this.updateSynergiesHUD();
             this.updateSeasonalBanner();
-            this.updateSuggestedAction();
             this.updateMenuUnlocks();
             this.ascensionMgr.updateButtonVisibility();
         }, 500));
@@ -2629,66 +2628,6 @@ class Game {
 
     closeFeatureIntro() {
         document.getElementById('feature-intro-modal')?.classList.add('hidden');
-    }
-
-    updateSuggestedAction() {
-        const banner = document.getElementById('suggested-action');
-        const textEl = document.getElementById('suggested-action-text');
-        if (!banner || !textEl) return;
-
-        const suggestion = this.getSuggestedAction();
-        if (suggestion) {
-            banner.classList.remove('hidden');
-            textEl.textContent = suggestion.text;
-            this.currentSuggestion = suggestion;
-        } else {
-            banner.classList.add('hidden');
-            this.currentSuggestion = null;
-        }
-    }
-
-    getSuggestedAction() {
-        // Don't show suggestions if a modal is open
-        const anyModalOpen = document.querySelector('.modal-backdrop:not(.hidden)');
-        if (anyModalOpen) return null;
-
-        // Priority-based suggestions
-        if (this.dailyQuests && this.dailyQuests.hasIncompleteQuests() && !localStorage.getItem('seen_quests_today_' + new Date().toDateString())) {
-            return { text: t('ux.suggestion.checkQuests'), action: () => {
-                this.renderDailyQuestsUI();
-                document.getElementById('quests-modal').classList.remove('hidden');
-                localStorage.setItem('seen_quests_today_' + new Date().toDateString(), 'true');
-            }};
-        }
-
-        if (BigNumService.gte(this.gold, 100) && this.upgrades.canAffordAny()) {
-            return { text: t('ux.suggestion.buyUpgrade'), action: () => {
-                const labPanel = document.getElementById('lab-panel');
-                if (labPanel) labPanel.scrollTop = 0;
-            }};
-        }
-
-        if (this.wave >= 5 && !localStorage.getItem('seen_intro_mining')) {
-            return { text: t('ux.suggestion.tryMining'), action: () => {
-                this.renderMiningUI();
-                document.getElementById('mining-modal').classList.remove('hidden');
-            }};
-        }
-
-        if (this.wave >= 10 && !localStorage.getItem('seen_intro_research')) {
-            return { text: t('ux.suggestion.checkResearch'), action: () => {
-                this.renderResearchUI();
-                document.getElementById('research-modal').classList.remove('hidden');
-            }};
-        }
-
-        return null;
-    }
-
-    executeSuggestedAction() {
-        if (this.currentSuggestion?.action) {
-            this.currentSuggestion.action();
-        }
     }
 
     updateMenuUnlocks() {
