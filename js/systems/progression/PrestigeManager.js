@@ -377,12 +377,21 @@ export class PrestigeManager {
                 div.onclick = () => this.buy(u.id);
             }
 
-            const effectDisplay = typeof effect === 'number' ?
-                (effect < 10 ? `x${effect.toFixed(2)}` : `+${effect}`) :
-                effect;
-            const nextDisplay = typeof nextEffect === 'number' ?
-                (nextEffect < 10 ? `x${nextEffect.toFixed(2)}` : `+${nextEffect}`) :
-                nextEffect;
+            // Format effect display with detailed bonus info
+            const formatEffect = (val, id) => {
+                if (id === 'prestige_start_wave') return `+${val} waves`;
+                if (id === 'prestige_auto_turrets') return `${val} turrets`;
+                if (id === 'prestige_skill_cd') return `-${Math.round((1 - val) * 100)}% CD`;
+                if (val >= 1) return `+${Math.round((val - 1) * 100)}%`;
+                return `x${val.toFixed(2)}`;
+            };
+
+            const currentBonus = formatEffect(effect, u.id);
+            const nextBonus = formatEffect(nextEffect, u.id);
+            const bonusGain = typeof effect === 'number' && typeof nextEffect === 'number' ?
+                (u.id === 'prestige_skill_cd' ? `-${Math.round((effect - nextEffect) * 100)}%` :
+                 u.id === 'prestige_start_wave' || u.id === 'prestige_auto_turrets' ? `+${nextEffect - effect}` :
+                 `+${Math.round((nextEffect - effect) * 100)}%`) : '';
 
             div.innerHTML = `
                 <div class="flex items-center gap-2 mb-2">
@@ -392,11 +401,14 @@ export class PrestigeManager {
                         <div class="text-xs text-cyan-300">${t(u.descKey)}</div>
                     </div>
                 </div>
+                <div class="text-sm mb-1">
+                    <span class="text-green-400 font-bold">${t('prestige.current')}: ${currentBonus}</span>
+                </div>
                 <div class="flex justify-between items-center text-sm">
                     <span class="text-slate-400">${t('lab.level')} ${level}/${u.maxLevel}</span>
                     ${!isMaxed ? `<span class="font-mono font-bold text-cyan-400">${formatNumber(cost)} PP</span>` : `<span class="text-yellow-400">${t('lab.max')}</span>`}
                 </div>
-                ${!isMaxed ? `<div class="text-xs text-slate-500 mt-1">${effectDisplay} → ${nextDisplay}</div>` : ''}
+                ${!isMaxed ? `<div class="text-xs text-yellow-300 mt-1">${t('prestige.next')}: ${nextBonus} <span class="text-green-400">(${bonusGain})</span></div>` : ''}
             `;
             container.appendChild(div);
         });

@@ -820,6 +820,8 @@
     "autoWave": "Prestige \u00e0 la vague",
     "autoDesc": "Quand activ\u00e9, le prestige se d\u00e9clenchera automatiquement au game over si le seuil de vague est atteint.",
     "pending": "PP",
+    "current": "Actuel",
+    "next": "Suivant",
     "damage": { "name": "Pouvoir ancestral", "desc": "+5% D\u00e9g\u00e2ts par niveau" },
     "health": { "name": "Vitalit\u00e9 ancestrale", "desc": "+5% Sant\u00e9 par niveau" },
     "gold": { "name": "H\u00e9ritage dor\u00e9", "desc": "+10% Or par niveau" },

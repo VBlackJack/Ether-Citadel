@@ -3284,6 +3284,8 @@ class Game {
 
         const elGold = document.getElementById('ui-gold');
         if (elGold) elGold.innerText = formatNumber(this.gold);
+        const elDps = document.getElementById('ui-dps');
+        if (elDps) elDps.innerText = formatNumber(Math.floor(this.getCurrentDPS()));
         const elWave = document.getElementById('ui-wave');
         if (elWave) elWave.innerText = this.wave;
         this.updateWavePreview();

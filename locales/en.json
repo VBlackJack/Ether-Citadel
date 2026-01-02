@@ -820,6 +820,8 @@
     "autoWave": "Prestige at Wave",
     "autoDesc": "When enabled, prestige will trigger automatically on game over if wave threshold is reached.",
     "pending": "PP",
+    "current": "Current",
+    "next": "Next",
     "damage": { "name": "Ancestral Power", "desc": "+5% Damage per level" },
     "health": { "name": "Ancestral Vitality", "desc": "+5% Health per level" },
     "gold": { "name": "Golden Legacy", "desc": "+10% Gold per level" },

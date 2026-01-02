@@ -143,6 +143,9 @@ export class InputManager {
                 case 'toggleSound':
                     this.game.sound.toggle();
                     break;
+                case 'toggleStats':
+                    this.game.statsBreakdown?.toggle();
+                    break;
                 case 'rushWave':
                     this.game.rushWave();
                     break;
