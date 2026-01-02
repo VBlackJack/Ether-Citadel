@@ -2870,6 +2870,8 @@ class Game {
         const hpBase = this.upgrades.getById('health');
         const hpMod = this.activeChallenge && this.activeChallenge.id === 'glass' ? 0.1 : 1;
         this.castle.maxHp = Math.floor(hpBase.getValue(hpBase.level) * tierMult * totalHpMult * hpMod);
+        // Clamp current HP to new max (handles balance changes reducing maxHp)
+        if (this.castle.hp > this.castle.maxHp) this.castle.hp = this.castle.maxHp;
 
         const regBase = this.upgrades.getById('regen');
         const researchRegenMult = 1 + (this.researchEffects?.regenMult || 0);
