@@ -206,6 +206,10 @@ class Game {
         this.isPaused = false;
         this.devClickCount = 0;
 
+        // Resource announcement tracking for screen readers
+        this._lastAnnouncedResources = { gold: 0, ether: 0, crystals: 0 };
+        this._lastResourceAnnounceTime = 0;
+
         this.dev = {
             addGold: (amt) => { this.addGold(amt); },
             addEther: (amt) => { this.ether = BigNumService.add(this.ether, amt); this.updateEtherUI(); },
@@ -559,6 +563,49 @@ class Game {
         }
     }
 
+    /**
+     * Announce significant resource changes for screen readers
+     * Throttled to avoid spamming (min 3 seconds between announcements)
+     */
+    checkResourceAnnouncements() {
+        const now = Date.now();
+        const THROTTLE_MS = 3000;
+        const SIGNIFICANT_CHANGE = 0.2; // 20% change threshold
+
+        if (now - this._lastResourceAnnounceTime < THROTTLE_MS) return;
+
+        const current = {
+            gold: BigNumService.toNumber(this.gold),
+            ether: BigNumService.toNumber(this.ether),
+            crystals: BigNumService.toNumber(this.crystals)
+        };
+
+        const changes = [];
+
+        for (const [resource, value] of Object.entries(current)) {
+            const last = this._lastAnnouncedResources[resource] || 0;
+            if (last === 0 && value === 0) continue;
+
+            const diff = value - last;
+            const pctChange = last > 0 ? Math.abs(diff) / last : (value > 0 ? 1 : 0);
+
+            if (pctChange >= SIGNIFICANT_CHANGE && Math.abs(diff) >= 10) {
+                const action = diff > 0 ? 'gained' : 'spent';
+                const resourceName = t(`resources.${resource}.name`) || resource;
+                changes.push(t(`a11y.resource${action.charAt(0).toUpperCase() + action.slice(1)}`, {
+                    amount: formatNumber(Math.abs(diff)),
+                    resource: resourceName
+                }) || `${action} ${formatNumber(Math.abs(diff))} ${resourceName}`);
+            }
+        }
+
+        if (changes.length > 0) {
+            this._lastAnnouncedResources = { ...current };
+            this._lastResourceAnnounceTime = now;
+            this.announce(changes.join('. '));
+        }
+    }
+
     toggleDebugPanel() {
         this.showDebugPanel = !this.showDebugPanel;
         const panel = document.getElementById('debug-panel');
@@ -587,37 +634,42 @@ class Game {
             <div id="debug-memory" class="border-t border-green-800 mt-1 pt-1">Memory: --</div>
         `;
         document.body.appendChild(panel);
+
+        // Cache debug panel elements for performance (avoid DOM queries every 200ms)
+        this._debugElements = {
+            fps: document.getElementById('debug-fps'),
+            frame: document.getElementById('debug-frame-time'),
+            update: document.getElementById('debug-update-time'),
+            render: document.getElementById('debug-render-time'),
+            enemies: document.getElementById('debug-enemies'),
+            projectiles: document.getElementById('debug-projectiles'),
+            particles: document.getElementById('debug-particles'),
+            turrets: document.getElementById('debug-turrets'),
+            memory: document.getElementById('debug-memory')
+        };
+
         this.startDebugUpdates();
     }
 
     startDebugUpdates() {
         this._intervals.push(setInterval(() => {
-            if (!this.showDebugPanel || !this.gameLoop) return;
+            if (!this.showDebugPanel || !this.gameLoop || !this._debugElements) return;
             const stats = this.gameLoop.debugStats;
             const counts = stats.entityCounts;
+            const el = this._debugElements;
 
-            const fpsEl = document.getElementById('debug-fps');
-            const frameEl = document.getElementById('debug-frame-time');
-            const updateEl = document.getElementById('debug-update-time');
-            const renderEl = document.getElementById('debug-render-time');
-            const enemiesEl = document.getElementById('debug-enemies');
-            const projEl = document.getElementById('debug-projectiles');
-            const partEl = document.getElementById('debug-particles');
-            const turretEl = document.getElementById('debug-turrets');
-            const memEl = document.getElementById('debug-memory');
+            if (el.fps) el.fps.textContent = `FPS: ${stats.fps}`;
+            if (el.frame) el.frame.textContent = `Frame: ${stats.frameTime.toFixed(1)} ms`;
+            if (el.update) el.update.textContent = `Update: ${stats.updateTime.toFixed(2)} ms`;
+            if (el.render) el.render.textContent = `Render: ${stats.renderTime.toFixed(2)} ms`;
+            if (el.enemies) el.enemies.textContent = `Enemies: ${counts.enemies || 0}`;
+            if (el.projectiles) el.projectiles.textContent = `Projectiles: ${counts.projectiles || 0}`;
+            if (el.particles) el.particles.textContent = `Particles: ${counts.particles || 0}`;
+            if (el.turrets) el.turrets.textContent = `Turrets: ${counts.turrets || 0}`;
 
-            if (fpsEl) fpsEl.textContent = `FPS: ${stats.fps}`;
-            if (frameEl) frameEl.textContent = `Frame: ${stats.frameTime.toFixed(1)} ms`;
-            if (updateEl) updateEl.textContent = `Update: ${stats.updateTime.toFixed(2)} ms`;
-            if (renderEl) renderEl.textContent = `Render: ${stats.renderTime.toFixed(2)} ms`;
-            if (enemiesEl) enemiesEl.textContent = `Enemies: ${counts.enemies || 0}`;
-            if (projEl) projEl.textContent = `Projectiles: ${counts.projectiles || 0}`;
-            if (partEl) partEl.textContent = `Particles: ${counts.particles || 0}`;
-            if (turretEl) turretEl.textContent = `Turrets: ${counts.turrets || 0}`;
-
-            if (memEl && performance.memory) {
+            if (el.memory && performance.memory) {
                 const mb = (performance.memory.usedJSHeapSize / 1048576).toFixed(1);
-                memEl.textContent = `Memory: ${mb} MB`;
+                el.memory.textContent = `Memory: ${mb} MB`;
             }
         }, 200));
     }
@@ -3177,8 +3229,14 @@ class Game {
         this.runes.forEach(r => r.update(dt));
         this.runes = this.runes.filter(r => r.life > 0);
 
-        if (this.particles.length > 50) this.particles.shift();
-        if (this.floatingTexts.length > 20) this.floatingTexts.shift();
+        // Efficient array capacity management (avoid O(n) shift every frame)
+        // Only truncate when significantly over limit, removing batch at once
+        if (this.particles.length > 75) {
+            this.particles.splice(0, this.particles.length - 50);
+        }
+        if (this.floatingTexts.length > 30) {
+            this.floatingTexts.splice(0, this.floatingTexts.length - 20);
+        }
 
         const fireRate = (this.skills.isActive(SKILL.OVERDRIVE) || this.activeBuffs[RUNE.RAGE] > 0) ? this.currentFireRate / 3 : this.currentFireRate;
         if (this.gameTime - this.lastShotTime > fireRate) {
@@ -3228,6 +3286,7 @@ class Game {
         }
         this.stats.render();
         this.goals?.update();
+        this.checkResourceAnnouncements();
     }
 
     draw() {

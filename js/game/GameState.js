@@ -55,6 +55,18 @@ export const INITIAL_STATE = {
  * Game State Manager
  * Handles saving, loading, and managing game state
  */
+/**
+ * Subsystem keys for save/load operations
+ * Used to iterate over all game subsystems that implement getSaveData/loadSaveData
+ */
+const SUBSYSTEM_KEYS = [
+    'stats', 'upgrades', 'metaUpgrades', 'challenges', 'skills', 'mining',
+    'research', 'production', 'auras', 'chips', 'dailyQuests', 'prestige',
+    'town', 'school', 'office', 'awakening', 'turretSlots', 'weather',
+    'combo', 'events', 'talents', 'statistics', 'ascensionMgr', 'synergies',
+    'gameModes', 'seasonalEvents', 'campaign', 'buildPresets'
+];
+
 export class GameStateManager {
     constructor(game) {
         this.game = game;
@@ -67,7 +79,7 @@ export class GameStateManager {
      */
     createSaveData() {
         const g = this.game;
-        return {
+        const data = {
             version: this.version,
             timestamp: Date.now(),
             gold: g.gold.toString(),
@@ -79,34 +91,6 @@ export class GameStateManager {
             settings: { ...g.settings },
             relics: [...g.relics],
             miningResources: this.serializeMiningResources(g.miningResources),
-            stats: g.stats?.getSaveData?.() || {},
-            upgrades: g.upgrades?.getSaveData?.() || {},
-            metaUpgrades: g.metaUpgrades?.getSaveData?.() || {},
-            challenges: g.challenges?.getSaveData?.() || {},
-            skills: g.skills?.getSaveData?.() || {},
-            mining: g.mining?.getSaveData?.() || {},
-            research: g.research?.getSaveData?.() || {},
-            production: g.production?.getSaveData?.() || {},
-            auras: g.auras?.getSaveData?.() || {},
-            chips: g.chips?.getSaveData?.() || {},
-            dailyQuests: g.dailyQuests?.getSaveData?.() || {},
-            prestige: g.prestige?.getSaveData?.() || {},
-            town: g.town?.getSaveData?.() || {},
-            school: g.school?.getSaveData?.() || {},
-            office: g.office?.getSaveData?.() || {},
-            awakening: g.awakening?.getSaveData?.() || {},
-            turretSlots: g.turretSlots?.getSaveData?.() || {},
-            weather: g.weather?.getSaveData?.() || {},
-            combo: g.combo?.getSaveData?.() || {},
-            events: g.events?.getSaveData?.() || {},
-            talents: g.talents?.getSaveData?.() || {},
-            statistics: g.statistics?.getSaveData?.() || {},
-            ascensionMgr: g.ascensionMgr?.getSaveData?.() || {},
-            synergies: g.synergies?.getSaveData?.() || {},
-            gameModes: g.gameModes?.getSaveData?.() || {},
-            seasonalEvents: g.seasonalEvents?.getSaveData?.() || {},
-            campaign: g.campaign?.getSaveData?.() || {},
-            buildPresets: g.buildPresets?.getSaveData?.() || {},
             castle: {
                 hp: g.castle?.hp || 100,
                 maxHp: g.castle?.maxHp || 100,
@@ -115,6 +99,13 @@ export class GameStateManager {
                 tier: g.castle?.tier || 1
             }
         };
+
+        // Save all subsystems
+        for (const key of SUBSYSTEM_KEYS) {
+            data[key] = g[key]?.getSaveData?.() || {};
+        }
+
+        return data;
     }
 
     /**
@@ -252,34 +243,12 @@ export class GameStateManager {
         // Mining resources - BigNum values
         g.miningResources = this.deserializeMiningResources(data.miningResources);
 
-        if (data.stats && g.stats?.loadSaveData) g.stats.loadSaveData(data.stats);
-        if (data.upgrades && g.upgrades?.loadSaveData) g.upgrades.loadSaveData(data.upgrades);
-        if (data.metaUpgrades && g.metaUpgrades?.loadSaveData) g.metaUpgrades.loadSaveData(data.metaUpgrades);
-        if (data.challenges && g.challenges?.loadSaveData) g.challenges.loadSaveData(data.challenges);
-        if (data.skills && g.skills?.loadSaveData) g.skills.loadSaveData(data.skills);
-        if (data.mining && g.mining?.loadSaveData) g.mining.loadSaveData(data.mining);
-        if (data.research && g.research?.loadSaveData) g.research.loadSaveData(data.research);
-        if (data.production && g.production?.loadSaveData) g.production.loadSaveData(data.production);
-        if (data.auras && g.auras?.loadSaveData) g.auras.loadSaveData(data.auras);
-        if (data.chips && g.chips?.loadSaveData) g.chips.loadSaveData(data.chips);
-        if (data.dailyQuests && g.dailyQuests?.loadSaveData) g.dailyQuests.loadSaveData(data.dailyQuests);
-        if (data.prestige && g.prestige?.loadSaveData) g.prestige.loadSaveData(data.prestige);
-        if (data.town && g.town?.loadSaveData) g.town.loadSaveData(data.town);
-        if (data.school && g.school?.loadSaveData) g.school.loadSaveData(data.school);
-        if (data.office && g.office?.loadSaveData) g.office.loadSaveData(data.office);
-        if (data.awakening && g.awakening?.loadSaveData) g.awakening.loadSaveData(data.awakening);
-        if (data.turretSlots && g.turretSlots?.loadSaveData) g.turretSlots.loadSaveData(data.turretSlots);
-        if (data.weather && g.weather?.loadSaveData) g.weather.loadSaveData(data.weather);
-        if (data.combo && g.combo?.loadSaveData) g.combo.loadSaveData(data.combo);
-        if (data.events && g.events?.loadSaveData) g.events.loadSaveData(data.events);
-        if (data.talents && g.talents?.loadSaveData) g.talents.loadSaveData(data.talents);
-        if (data.statistics && g.statistics?.loadSaveData) g.statistics.loadSaveData(data.statistics);
-        if (data.ascensionMgr && g.ascensionMgr?.loadSaveData) g.ascensionMgr.loadSaveData(data.ascensionMgr);
-        if (data.synergies && g.synergies?.loadSaveData) g.synergies.loadSaveData(data.synergies);
-        if (data.gameModes && g.gameModes?.loadSaveData) g.gameModes.loadSaveData(data.gameModes);
-        if (data.seasonalEvents && g.seasonalEvents?.loadSaveData) g.seasonalEvents.loadSaveData(data.seasonalEvents);
-        if (data.campaign && g.campaign?.loadSaveData) g.campaign.loadSaveData(data.campaign);
-        if (data.buildPresets && g.buildPresets?.loadSaveData) g.buildPresets.loadSaveData(data.buildPresets);
+        // Load all subsystems
+        for (const key of SUBSYSTEM_KEYS) {
+            if (data[key] && g[key]?.loadSaveData) {
+                g[key].loadSaveData(data[key]);
+            }
+        }
 
         if (data.castle && typeof data.castle === 'object' && g.castle) {
             g.castle.hp = Number.isFinite(data.castle.hp) ? data.castle.hp : 100;

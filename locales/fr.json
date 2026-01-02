@@ -54,7 +54,9 @@
     "waveStart": "Vague {{wave}} commencée. {{enemies}} ennemis approchent.",
     "bossWave": "Attention! Vague boss {{wave}}. Préparez-vous au combat!",
     "waveComplete": "Vague {{wave}} terminée. {{gold}} or gagné.",
-    "gameOver": "Fin de partie à la vague {{wave}}. Vous avez gagné {{ether}} éther."
+    "gameOver": "Fin de partie à la vague {{wave}}. Vous avez gagné {{ether}} éther.",
+    "resourceGained": "{{amount}} {{resource}} gagnés.",
+    "resourceSpent": "{{amount}} {{resource}} dépensés."
   },
   "import": {
     "title": "Importer Sauvegarde",
