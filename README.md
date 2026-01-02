@@ -49,13 +49,23 @@ Defend your citadel against endless waves of enemies in this incremental tower d
 - **Awakening** - Ultimate bonuses for endgame (requires Dread 6)
 - **Combo System** - Chain kills for damage multipliers
 
+### Game Modes
+- **Endless Mode** - Classic infinite scaling challenge
+- **Boss Rush** - Non-stop boss battles
+- **Speedrun** - Timed challenge mode
+- **Campaign** - Mission-based progression with objectives
+
 ### Quality of Life
 - **Auto-Retry** - Automatically restart after game over
 - **Auto-Buy** - Automatically purchase affordable upgrades
 - **Auto-Prestige** - Prestige automatically at target wave
 - **Offline Earnings** - Earn resources while away (up to 24h)
 - **Daily Quests** - Complete objectives for bonus rewards
+- **Build Presets** - Save and load turret configurations
+- **Leaderboards** - Track personal bests across categories
 - **Cloud Save** - Export/import your save data anytime
+- **Music & SFX** - Dynamic soundtrack with volume controls
+- **Visual Effects** - Screen shake, particles, trails (configurable)
 - **i18n Support** - English & French languages
 
 ## Technologies
@@ -89,30 +99,35 @@ npx serve
 ```
 Ether-Citadel/
 ├── index.html              # Main game page
+├── configs/                # JSON game configuration
+│   ├── enemies.json        # Enemy types & stats
+│   ├── turrets.json        # Turret tiers & upgrades
+│   ├── waves.json          # Wave composition & scaling
+│   ├── upgrades.json       # Run & meta upgrades
+│   └── ...                 # Other data configs
 ├── css/
-│   └── styles.css          # Custom styles & animations
+│   ├── styles.css          # Main styles
+│   ├── modules.css         # Modular CSS entry point
+│   └── game/               # Component-specific styles
 ├── js/
 │   ├── main.js             # Game engine & initialization
 │   ├── config.js           # Configuration constants
-│   ├── data.js             # Game data definitions
 │   ├── i18n.js             # Internationalization
 │   ├── constants/          # Balance & color constants
-│   ├── entities/           # Game entities
-│   │   ├── Castle.js       # Player castle
-│   │   ├── Enemy.js        # Enemy types & behaviors
-│   │   ├── Turret.js       # Turret system
-│   │   └── Projectile.js   # Projectile physics
+│   ├── entities/           # Game entities (Castle, Enemy, Turret, Projectile)
 │   ├── systems/
 │   │   ├── combat/         # Damage, skills, targeting
 │   │   ├── economy/        # Upgrades, production, forge
-│   │   ├── progression/    # Prestige, meta upgrades
+│   │   ├── progression/    # Prestige, meta, research
+│   │   ├── gameplay/       # Skills, quests, campaigns
 │   │   ├── audio/          # Sound & music
-│   │   └── ui/             # UI components
-│   ├── services/           # Save, config, big numbers
+│   │   └── ui/             # UI components & panels
+│   ├── services/           # Save, config registry, big numbers
 │   └── utils/              # Helpers & sanitization
-└── locales/
-    ├── en.json             # English translations
-    └── fr.json             # French translations
+├── locales/
+│   ├── en.json             # English translations
+│   └── fr.json             # French translations
+└── sw.js                   # Service Worker for offline support
 ```
 
 ## Controls
@@ -123,6 +138,8 @@ Ether-Citadel/
 | Rush Wave | Click "RUSH" button (+25% gold) |
 | Speed Toggle | Click speed button (x1 / x2 / x3) |
 | Place Turret | Click empty turret slot |
+| Skills | Keys 1-6 (when unlocked) |
+| Pause | P or Escape |
 
 ## Progression Guide
 
