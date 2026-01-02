@@ -57,7 +57,8 @@
       "ether": "Ether - Used for permanent upgrades and awakening",
       "crystals": "Crystals - Used for school upgrades and turret mastery",
       "autoAdvance": "Auto-advance to next wave",
-      "autoRetry": "Auto-retry after defeat"
+      "autoRetry": "Auto-retry after defeat",
+      "autoBuy": "Auto-buy upgrades with gold (requires AI unlock)"
     },
     "buttons": {
       "pause": "Toggle pause",
@@ -629,6 +630,7 @@
   "feedback": {
     "noStatPoints": "No stat points available",
     "maxLevel": "Already at max level",
+    "requiresUnlockAI": "Requires AI Assistant meta upgrade",
     "notEnoughGold": "Not enough Gold",
     "notEnoughEther": "Not enough Ether",
     "notEnoughCrystals": "Not enough Crystals",
@@ -1415,6 +1417,9 @@
     "mining": "MINING",
     "totalHealth": "TOTAL HEALTH",
     "summary": "Stats Summary",
+    "spTitle": "Stat Points",
+    "spDescription": "You earn 5 points per level. Click + to boost stats.",
+    "spHelp": "Spend points to permanently increase your stats. Each stat can be leveled up to 100.",
     "crit": "Crit",
     "armor": "Armor",
     "regen": "Regen",

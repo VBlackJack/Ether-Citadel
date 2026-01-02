@@ -35,7 +35,8 @@
       "ether": "\u00c9ther - Utilis\u00e9 pour les am\u00e9liorations permanentes et l'\u00e9veil",
       "crystals": "Cristaux - Utilis\u00e9s pour l'\u00e9cole et la ma\u00eetrise des tourelles",
       "autoAdvance": "Avancer automatiquement \u00e0 la prochaine vague",
-      "autoRetry": "R\u00e9essayer automatiquement apr\u00e8s une d\u00e9faite"
+      "autoRetry": "R\u00e9essayer automatiquement apr\u00e8s une d\u00e9faite",
+      "autoBuy": "Achat auto des am\u00e9liorations (n\u00e9cessite d\u00e9verrouillage IA)"
     },
     "buttons": {
       "pause": "Basculer la pause",
@@ -629,6 +630,7 @@
   "feedback": {
     "noStatPoints": "Pas de points de stat disponibles",
     "maxLevel": "Niveau maximum atteint",
+    "requiresUnlockAI": "N\u00e9cessite l'am\u00e9lioration Assistant IA",
     "notEnoughGold": "Pas assez d'Or",
     "notEnoughEther": "Pas assez d'\u00c9ther",
     "notEnoughCrystals": "Pas assez de Cristaux",
@@ -1489,6 +1491,9 @@
     "mining": "MINAGE",
     "totalHealth": "VIE TOTALE",
     "summary": "Résumé des Stats",
+    "spTitle": "Points de Stat",
+    "spDescription": "Vous gagnez 5 points par niveau. Cliquez + pour améliorer.",
+    "spHelp": "Dépensez des points pour augmenter vos stats. Chaque stat peut atteindre le niveau 100.",
     "crit": "Crit",
     "armor": "Armure",
     "regen": "Régén",

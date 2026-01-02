@@ -713,6 +713,17 @@ class Game {
         if (labCheck) labCheck.checked = this.autoRetryEnabled;
     }
 
+    toggleAutoBuy() {
+        if (!this.metaUpgrades.getEffectValue('unlockAI')) {
+            this.ui?.showToast(t('feedback.requiresUnlockAI'), 'warning');
+            return;
+        }
+        this.autoBuyEnabled = !this.autoBuyEnabled;
+        const labCheck = document.getElementById('lab-auto-buy');
+        if (labCheck) labCheck.checked = this.autoBuyEnabled;
+        this.save();
+    }
+
     toggleHoldWave() {
         this.holdWaveEnabled = !this.holdWaveEnabled;
         const btn = document.getElementById('btn-hold-wave');
@@ -1838,10 +1849,9 @@ class Game {
 
     /** Defender Idle 2 Style - Stats Panel */
     renderStatsUI() {
-        const grid = document.getElementById('stats-grid');
-        const summary = document.getElementById('stats-summary');
-        const spEl = document.getElementById('stats-sp');
-        const tierEl = document.getElementById('stats-tier');
+        const grid = document.getElementById('lab-stats-grid');
+        const summary = document.getElementById('lab-stats-summary');
+        const spEl = document.getElementById('lab-stats-sp');
         if (!grid) return;
 
         // Calculate stat points available (5 per level)
@@ -1850,7 +1860,6 @@ class Game {
         const availablePoints = Math.max(0, statPoints - usedPoints);
 
         if (spEl) spEl.innerText = availablePoints;
-        if (tierEl) tierEl.innerText = this.castle?.tier || 1;
 
         // Stats to display (Defender Idle 2 style)
         const stats = [
@@ -3795,11 +3804,13 @@ class Game {
             const toggleRange = document.getElementById('toggle-range');
             const toggleAutoTurret = document.getElementById('toggle-auto-turret');
             const labAutoRetry = document.getElementById('lab-auto-retry');
+            const labAutoBuy = document.getElementById('lab-auto-buy');
 
             if (toggleDamage) toggleDamage.checked = this.settings.showDamageText;
             if (toggleRange) toggleRange.checked = this.settings.showRange;
             if (toggleAutoTurret) toggleAutoTurret.checked = this.settings.autoUpgradeTurrets;
             if (labAutoRetry) labAutoRetry.checked = this.autoRetryEnabled;
+            if (labAutoBuy) labAutoBuy.checked = this.autoBuyEnabled;
 
             // Sync hold wave button state
             const btnHoldWave = document.getElementById('btn-hold-wave');
