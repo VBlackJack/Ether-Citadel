@@ -6,10 +6,10 @@
 export const BALANCE = {
     SCALING: {
         // Exponential growth factors - tuned for challenging progression
-        // Key: HP grows faster (1.18) than player damage upgrades (1.10) forcing continuous investment
-        HP_GROWTH: 1.18,       // Enemies get tougher (+18%/wave) - outpaces player damage scaling
-        DAMAGE_GROWTH: 1.10,   // Enemy damage scales with HP
-        GOLD_GROWTH: 1.10,     // Gold scales slower than HP - forces strategic choices
+        // Key: HP grows much faster (1.22) than player damage upgrades (1.08) forcing continuous investment
+        HP_GROWTH: 1.22,       // Enemies get tougher (+22%/wave) - significantly outpaces player scaling
+        DAMAGE_GROWTH: 1.15,   // Enemy damage scales aggressively
+        GOLD_GROWTH: 1.06,     // Gold scales much slower than HP - forces hard choices
 
         // Wave management
         BOSS_WAVE_INTERVAL: 10,
@@ -28,9 +28,9 @@ export const BALANCE = {
         EFFICIENCY: [1.0, 0.85, 0.75, 0.65, 0.55, 0.50, 0.45, 0.40]
     },
     BASE: {
-        ENEMY_HP: 25,
-        ENEMY_DAMAGE: 8,
-        GOLD_DROP: 3,
+        ENEMY_HP: 30,
+        ENEMY_DAMAGE: 12,
+        GOLD_DROP: 2,
         CRYSTAL_DROP_CHANCE: 0.05
     },
     ENTITY: {
