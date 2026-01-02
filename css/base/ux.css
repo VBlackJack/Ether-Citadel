@@ -49,8 +49,31 @@
 .menu-item:focus-visible,
 .menu-btn-sm:focus-visible,
 .skill-btn:focus-visible {
-    outline: 2px solid #60a5fa;
+    outline: 3px solid #60a5fa;
     outline-offset: 2px;
+}
+
+/* High Contrast Mode support */
+@media (forced-colors: active) {
+    [role="button"]:focus-visible,
+    [onclick]:focus-visible,
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    .menu-item:focus-visible,
+    .menu-btn-sm:focus-visible,
+    .skill-btn:focus-visible {
+        outline: 3px solid CanvasText;
+        outline-offset: 2px;
+    }
+
+    /* Ensure buttons are visible */
+    button,
+    .menu-item,
+    .skill-btn {
+        border: 1px solid ButtonText;
+    }
 }
 
 /* Touch-friendly tooltip support */
@@ -89,7 +112,7 @@
 button:focus-visible,
 input:focus-visible,
 select:focus-visible {
-    outline: 2px solid #60a5fa;
+    outline: 3px solid #60a5fa;
     outline-offset: 2px;
 }
 
@@ -288,8 +311,8 @@ label:has(> input[type="checkbox"].sr-only.peer:focus-visible) > div:first-of-ty
     #skill-overdrive,
     #skill-nuke,
     #skill-blackhole {
-        width: 48px;
-        height: 48px;
+        width: 52px;
+        height: 52px;
     }
 }
 

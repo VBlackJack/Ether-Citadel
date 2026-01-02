@@ -432,7 +432,50 @@ class Game {
             const target = e.target;
 
             // Check if we're in a menu group
-            if (!target.closest('.menu-group')) return;
+            if (!target.closest('.menu-group') && !target.classList.contains('menu-group-header')) return;
+
+            const isHeader = target.classList.contains('menu-group-header');
+
+            // Handle Enter/Space on menu group headers to toggle
+            if (isHeader && (e.key === 'Enter' || e.key === ' ')) {
+                e.preventDefault();
+                target.click();
+                return;
+            }
+
+            // Handle ArrowRight/ArrowLeft on headers to expand/collapse
+            if (isHeader) {
+                const content = target.nextElementSibling;
+                const isExpanded = content && !content.classList.contains('hidden');
+
+                if (e.key === 'ArrowRight' && !isExpanded) {
+                    e.preventDefault();
+                    target.click();
+                    return;
+                } else if (e.key === 'ArrowLeft' && isExpanded) {
+                    e.preventDefault();
+                    target.click();
+                    return;
+                }
+            }
+
+            // Navigate between menu groups with ArrowUp/ArrowDown on headers
+            if (isHeader && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+                const allHeaders = Array.from(document.querySelectorAll('.menu-group-header'));
+                const headerIndex = allHeaders.indexOf(target);
+
+                if (headerIndex !== -1) {
+                    e.preventDefault();
+                    let nextHeaderIndex = headerIndex;
+                    if (e.key === 'ArrowDown') {
+                        nextHeaderIndex = (headerIndex + 1) % allHeaders.length;
+                    } else {
+                        nextHeaderIndex = (headerIndex - 1 + allHeaders.length) % allHeaders.length;
+                    }
+                    allHeaders[nextHeaderIndex]?.focus();
+                    return;
+                }
+            }
 
             const menuItems = Array.from(target.closest('.menu-group')?.querySelectorAll('.menu-item:not(.menu-locked), .menu-group-header') || []);
             const currentIndex = menuItems.indexOf(target);

@@ -26,13 +26,20 @@
 }
 
 .form-input:focus {
-    outline: 2px solid var(--color-primary);
+    outline: 3px solid var(--color-primary);
     outline-offset: 2px;
     border-color: var(--color-primary);
 }
 
 .form-input::placeholder {
-    color: var(--color-text-muted);
+    color: #94a3b8; /* slate-400: 4.68:1 contrast on dark backgrounds */
+}
+
+/* Global placeholder contrast fix for WCAG AA compliance */
+input::placeholder,
+textarea::placeholder {
+    color: #94a3b8; /* Minimum 4.5:1 contrast */
+    opacity: 1; /* Firefox default is 0.54 */
 }
 
 .toggle-checkbox {
@@ -79,7 +86,7 @@
 }
 
 .form-select:focus {
-    outline: 2px solid var(--color-primary);
+    outline: 3px solid var(--color-primary);
     outline-offset: 2px;
     border-color: var(--color-primary);
 }
