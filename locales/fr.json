@@ -753,10 +753,14 @@
     "T6": { "name": "Mythique" }
   },
   "units": {
-    "units": "Unites",
+    "units": "Unités",
     "bounces": "Rebonds",
     "perSecond": "/s",
     "second": "s",
+    "seconds": "secondes",
+    "minutes": "minutes",
+    "hours": "heures",
+    "days": "jours",
     "xp": "XP"
   },
   "production": {

@@ -757,6 +757,10 @@
     "bounces": "Bounces",
     "perSecond": "/s",
     "second": "s",
+    "seconds": "seconds",
+    "minutes": "minutes",
+    "hours": "hours",
+    "days": "days",
     "xp": "XP"
   },
   "production": {

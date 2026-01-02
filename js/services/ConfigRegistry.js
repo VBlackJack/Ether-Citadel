@@ -89,8 +89,6 @@ class ConfigRegistryClass {
         );
 
         const successful = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
-        console.log(`ConfigRegistry: Loaded ${successful}/${Object.keys(CONFIG_FILES).length} configs`);
-
         this.loaded = true;
         return successful > 0;
     }

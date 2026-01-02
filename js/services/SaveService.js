@@ -301,7 +301,6 @@ class SaveServiceClass {
             const migration = MIGRATIONS[nextVersion];
 
             if (migration) {
-                console.log(`SaveService: Migrating v${currentVersion} -> v${nextVersion}`);
                 try {
                     migratedData = migration(migratedData);
                     migratedData.version = nextVersion;

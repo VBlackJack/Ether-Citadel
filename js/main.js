@@ -230,7 +230,6 @@ class Game {
         // Initialize Ascension UI after load (defensive)
         try {
             if (this.ascensionMgr) {
-                console.log('Initializing Ascension UI...');
                 this.ascensionMgr.initUI();
             }
         } catch (e) {
@@ -322,8 +321,6 @@ class Game {
                 this.ui?.showToast(t('notifications.autoSaved'), 'success', { duration: 1500 });
             }
         }, CONFIG.saveIntervalMs || 30000));
-
-        console.log('Game initialization complete.');
     }
 
     cleanup() {
@@ -2054,13 +2051,11 @@ class Game {
             this.renderSchoolUI();
             document.getElementById('school-modal').classList.remove('hidden');
         }
-        console.log('Tech stage clicked:', turretId, stage.id);
     }
 
     onTechNodeClick(node) {
         if (node.unlocked) return;
         // Handle unlock logic
-        console.log('Tech node clicked:', node.id);
     }
 
     /** Lab Panel - Compact Stats UI */
@@ -3412,8 +3407,6 @@ class Game {
                 localStorage.removeItem(CONFIG.ui.storageKeys.buyMode);
                 localStorage.removeItem(CONFIG.ui.storageKeys.tutorialComplete);
                 localStorage.removeItem('ether_citadel_save'); // Legacy key
-
-                console.log('[Reset] Save data wiped successfully.');
             } catch (e) {
                 console.error('[Reset] Error during reset:', e);
             }
@@ -3801,7 +3794,6 @@ async function init() {
         // Use location-relative path for GitHub Pages compatibility
         const basePath = location.pathname.replace(/\/[^/]*$/, '/');
         navigator.serviceWorker.register(basePath + 'sw.js')
-            .then((reg) => console.log('[SW] Registered:', reg.scope))
             .catch((err) => console.warn('[SW] Registration failed:', err));
     }
 
