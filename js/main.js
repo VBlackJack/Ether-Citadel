@@ -16,6 +16,7 @@
 
 import { i18n, t, formatDate } from './i18n.js';
 import { CONFIG, SOUND_DB, MathUtils, formatNumber, BigNumService } from './config.js';
+import { BALANCE } from './constants/balance.js';
 import {
     CHALLENGES,
     DARK_MATTER_UPGRADES,
@@ -774,8 +775,22 @@ class Game {
     getCurrentDPS() {
         const damage = this.getDamage();
         const fireRate = this.getFireRate();
-        const turretCount = this.turrets?.length || 1;
-        return (damage * turretCount * 1000) / fireRate;
+
+        // Main castle DPS
+        let totalDPS = (damage * 1000) / fireRate;
+
+        // Turret DPS with diminishing returns and actual damage multipliers
+        const efficiency = BALANCE.TURRET.EFFICIENCY;
+        if (this.turrets?.length > 0) {
+            this.turrets.forEach((turret, idx) => {
+                const efficiencyMult = efficiency[Math.min(idx, efficiency.length - 1)];
+                const turretDmg = damage * (turret.damageMultiplier || 0.25);
+                const turretFireRate = fireRate / (turret.fireRateMult || 1);
+                totalDPS += (turretDmg * efficiencyMult * 1000) / turretFireRate;
+            });
+        }
+
+        return totalDPS;
     }
 
     getArmor() {

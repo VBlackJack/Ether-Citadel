@@ -8,6 +8,7 @@ import { MathUtils } from '../config.js';
 import { Projectile } from './Projectile.js';
 import { SKILL, RUNE } from '../constants/skillIds.js';
 import { COLORS } from '../constants/colors.js';
+import { BALANCE } from '../constants/balance.js';
 
 export class Turret {
     constructor(id, offsetIndex, total, type = 'NORMAL', tier = 1) {
@@ -82,7 +83,10 @@ export class Turret {
 
     shoot(target) {
         if (!window.game) return;
-        const dmg = Math.max(1, Math.floor((window.game.currentDamage || 1) * this.damageMultiplier));
+        // Apply diminishing returns based on turret slot index
+        const efficiency = BALANCE.TURRET.EFFICIENCY;
+        const efficiencyMult = efficiency[Math.min(this.id, efficiency.length - 1)];
+        const dmg = Math.max(1, Math.floor((window.game.currentDamage || 1) * this.damageMultiplier * efficiencyMult));
         let speed = 15;
         const tierData = TURRET_TIERS[this.tier] || TURRET_TIERS[1];
         let color = tierData.color || COLORS.TURRET_BASE;
