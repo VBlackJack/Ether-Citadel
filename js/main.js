@@ -3237,9 +3237,10 @@ class Game {
         // Check various conditions for contextual suggestions
         const goldNum = BigNumService.toNumber(this.gold);
         const dmgUpg = this.upgrades?.getById('damage');
+        const dmgCost = dmgUpg ? BigNumService.toNumber(this.upgrades.getCost(dmgUpg)) : Infinity;
 
         // Suggest buying upgrade if can afford
-        if (dmgUpg && goldNum >= dmgUpg.getCost()) {
+        if (dmgUpg && goldNum >= dmgCost) {
             suggestion = t('ux.suggestion.buyUpgrade');
         }
         // Suggest prestige if stuck and eligible
