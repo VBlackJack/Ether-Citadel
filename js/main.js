@@ -2716,7 +2716,7 @@ class Game {
             const toggleBtn = document.getElementById('btn-toggle-menu');
             const isCollapsed = menuGroups.classList.toggle('collapsed');
             if (toggleBtn) {
-                toggleBtn.textContent = isCollapsed ? '☰' : '✕';
+                toggleBtn.textContent = isCollapsed ? '≡' : '✕';
                 toggleBtn.setAttribute('aria-expanded', String(!isCollapsed));
             }
             return;
