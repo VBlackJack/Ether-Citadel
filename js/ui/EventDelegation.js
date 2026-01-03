@@ -94,9 +94,17 @@ export class EventDelegationManager {
             this.game.tutorial?.skip();
         });
 
-        // Sound toggle
+        // Sound toggle (both naming conventions)
         this.register('sound.toggle', () => {
             this.game.sound?.toggle();
+        });
+        this.register('toggleSound', () => {
+            this.game.sound?.toggle();
+        });
+
+        // Stats toggle
+        this.register('toggleStats', () => {
+            this.game.toggleStatsPanel?.();
         });
 
         // Speed control
@@ -104,14 +112,30 @@ export class EventDelegationManager {
             this.game.cycleSpeed?.();
         });
 
+        // Set speed (from HUD buttons with data-speed attribute)
+        this.register('setSpeed', (params) => {
+            const speed = safeParseInt(params.speed, 1);
+            this.game.setSpeed?.(speed);
+        });
+
         // Pause toggle
         this.register('togglePause', () => {
-            this.game.togglePause?.();
+            this.game.togglePause();
         });
 
         // Hold wave toggle
         this.register('toggleHoldWave', () => {
             this.game.toggleHoldWave?.();
+        });
+
+        // Rush wave
+        this.register('rushWave', () => {
+            this.game.rushWave?.();
+        });
+
+        // Surrender
+        this.register('surrender', () => {
+            this.game.surrender?.execute?.();
         });
 
         // Challenge actions
