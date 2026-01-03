@@ -64,7 +64,12 @@
       "pause": "Toggle pause",
       "sound": "Toggle sound",
       "holdWave": "Hold wave - Farm current wave without advancing"
-    }
+    },
+    "saving": "Saving...",
+    "saved": "Saved"
+  },
+  "search": {
+    "placeholder": "Search..."
   },
   "sideHud": {
     "spendPoints": "Spend Stat Points",
@@ -723,6 +728,8 @@
     "maxLevel": "Already at max level",
     "requiresUnlockAI": "Requires AI Assistant meta upgrade",
     "notEnoughGold": "Not enough Gold",
+    "need": "need",
+    "more": "more",
     "notEnoughEther": "Not enough Ether",
     "notEnoughCrystals": "Not enough Crystals",
     "notEnoughResources": "Not enough resources",

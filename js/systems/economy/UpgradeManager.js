@@ -352,7 +352,9 @@ export class UpgradeManager {
                     setTimeout(() => target.classList.remove('purchase-success'), 800);
                     this.buy(u.id);
                 } else {
-                    this.game.ui?.showToast(t('feedback.notEnoughGold'), 'warning');
+                    const needed = BigNumService.sub(cost, this.game.gold);
+                    const msg = `${t('feedback.notEnoughGold')} (${t('feedback.need')} ${formatNumber(needed)} ${t('feedback.more')})`;
+                    this.game.ui?.showToast(msg, 'warning');
                 }
             };
         }

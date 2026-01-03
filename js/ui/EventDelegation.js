@@ -22,13 +22,33 @@ export class EventDelegationManager {
         this.game = game;
         this.actions = new Map();
         this._boundClickHandler = null;
+        this._boundKeydownHandler = null;
         this.init();
     }
 
     init() {
         this.registerDefaultActions();
         this._boundClickHandler = (e) => this.handleClick(e);
+        this._boundKeydownHandler = (e) => this.handleKeydown(e);
         document.addEventListener('click', this._boundClickHandler);
+        document.addEventListener('keydown', this._boundKeydownHandler);
+    }
+
+    /**
+     * Handle Enter key on data-action elements for keyboard accessibility
+     */
+    handleKeydown(e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+
+        const target = e.target;
+        const actionEl = target.closest('[data-action]');
+
+        if (actionEl && !actionEl.disabled) {
+            // Prevent space from scrolling
+            if (e.key === ' ') e.preventDefault();
+            // Trigger the same handler as click
+            this.handleClick({ target: actionEl, preventDefault: () => {} });
+        }
     }
 
     /**

@@ -97,9 +97,9 @@
                     </div>
                 </button>
                 <button id="btn-stats" data-action="toggleStats" class="pointer-events-auto bg-purple-700/80 hover:bg-purple-600 text-white font-bold py-1 px-2 rounded border border-purple-500 backdrop-blur-sm transition text-sm" aria-label="View stats breakdown" title="Stats">📊</button>
-                <button id="btn-hold-wave" data-action="toggleHoldWave" class="pointer-events-auto bg-slate-700 hover:bg-yellow-600 text-white font-bold py-1 px-2 rounded border border-slate-500 backdrop-blur-sm transition text-sm" aria-label="Hold wave" data-i18n-title="hud.buttons.holdWave">🔒</button>
-                <button id="btn-pause" data-action="togglePause" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-3 rounded border border-slate-500 backdrop-blur-sm transition text-sm" aria-label="Toggle pause" data-i18n-title="hud.buttons.pause">⏸️</button>
-                <button id="btn-sound" data-action="toggleSound" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-2 rounded border border-slate-500 backdrop-blur-sm transition text-sm" aria-label="Toggle sound" data-i18n-title="hud.buttons.sound">🔊</button>
+                <button id="btn-hold-wave" data-action="toggleHoldWave" class="pointer-events-auto bg-slate-700 hover:bg-yellow-600 text-white font-bold py-1 px-2 rounded border border-slate-500 backdrop-blur-sm transition text-sm" aria-label="Hold wave" aria-pressed="false" data-i18n-title="hud.buttons.holdWave">🔒</button>
+                <button id="btn-pause" data-action="togglePause" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-3 rounded border border-slate-500 backdrop-blur-sm transition text-sm" aria-label="Toggle pause" aria-pressed="false" data-i18n-title="hud.buttons.pause">⏸️</button>
+                <button id="btn-sound" data-action="toggleSound" class="pointer-events-auto bg-slate-700/80 hover:bg-slate-600 text-white font-bold py-1 px-2 rounded border border-slate-500 backdrop-blur-sm transition text-sm" aria-label="Toggle sound" aria-pressed="false" data-i18n-title="hud.buttons.sound">🔊</button>
                 <div id="speed-controls-hud" class="pointer-events-auto flex gap-1 ml-2">
                     <button data-action="setSpeed" data-speed="1" class="speed-btn-mini active" aria-label="Speed 1x">1x</button>
                     <button data-action="setSpeed" data-speed="3" class="speed-btn-mini" aria-label="Speed 3x">3x</button>
@@ -141,6 +141,10 @@
                 <button id="btn-cloud" class="pointer-events-auto text-xl p-1.5 rounded ml-2 transition" data-i18n-title="cloud.title" aria-label="Cloud Save">
                     ☁️
                 </button>
+                <span id="autosave-indicator" class="hidden text-xs text-green-400 ml-2 flex items-center gap-1" role="status" aria-live="polite">
+                    <span class="animate-pulse">💾</span> <span data-i18n="hud.saving">Saving...</span>
+                </span>
+                <span id="autosave-done" class="hidden text-xs text-green-500 ml-2" role="status">✓</span>
             </div>
             <div class="text-xl text-slate-300 font-bold flex items-center gap-2">
                 <span data-i18n="game.enemies">Enemies</span>: <span id="ui-enemies">0</span>
@@ -441,6 +445,9 @@
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="research.desc">Research permanent upgrades for your turrets and defenses.</div>
+                    <div class="mb-3">
+                        <input type="text" id="research-search" class="w-full bg-slate-700 border border-slate-600 rounded px-3 py-2 text-sm text-white placeholder-slate-400 focus:border-purple-500 focus:outline-none" placeholder="Search research..." data-i18n-placeholder="search.placeholder" oninput="game.filterResearchUI(this.value)" aria-label="Search research">
+                    </div>
                     <div class="mb-4 bg-slate-700/50 p-2 rounded border border-slate-600 text-xs text-slate-400 text-center">
                         <span class="text-purple-400">💡</span> <span data-i18n="research.tip">Each branch has prerequisites. Complete lower tiers to unlock higher ones!</span>
                     </div>

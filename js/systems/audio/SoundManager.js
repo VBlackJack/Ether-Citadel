@@ -108,7 +108,10 @@ export class SoundManager {
     toggle() {
         this.muted = !this.muted;
         const btn = document.getElementById('btn-sound');
-        if (btn) btn.innerText = this.muted ? '🔇' : '🔊';
+        if (btn) {
+            btn.innerText = this.muted ? '🔇' : '🔊';
+            btn.setAttribute('aria-pressed', String(this.muted));
+        }
 
         // Init and resume on unmute (user gesture)
         if (!this.muted) {

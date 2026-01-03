@@ -536,12 +536,15 @@ class Game {
     togglePause() {
         this.isPaused = !this.isPaused;
         const btn = document.getElementById('btn-pause');
+        if (btn) {
+            btn.setAttribute('aria-pressed', String(this.isPaused));
+        }
         if (this.isPaused) {
-            btn.classList.add('bg-yellow-600');
+            btn?.classList.add('bg-yellow-600');
             this.eventBus.emit(GameEvents.GAME_PAUSE);
             this.announce(t('a11y.gamePaused'));
         } else {
-            btn.classList.remove('bg-yellow-600');
+            btn?.classList.remove('bg-yellow-600');
             this.eventBus.emit(GameEvents.GAME_RESUME);
             this.announce(t('a11y.gameResumed'));
         }
@@ -722,6 +725,7 @@ class Game {
         this.holdWaveEnabled = !this.holdWaveEnabled;
         const btn = document.getElementById('btn-hold-wave');
         if (btn) {
+            btn.setAttribute('aria-pressed', String(this.holdWaveEnabled));
             btn.classList.toggle('bg-yellow-600', this.holdWaveEnabled);
             btn.classList.toggle('bg-slate-700', !this.holdWaveEnabled);
         }
@@ -1391,12 +1395,30 @@ class Game {
         });
     }
 
+    filterResearchUI(query) {
+        const container = document.getElementById('research-branches');
+        if (!container) return;
+
+        const searchTerm = query.toLowerCase().trim();
+
+        container.querySelectorAll('.research-nodes > div').forEach(node => {
+            const text = node.textContent.toLowerCase();
+            if (!searchTerm || text.includes(searchTerm)) {
+                node.style.display = '';
+            } else {
+                node.style.display = 'none';
+            }
+        });
+    }
+
     showLootPopup(relic) {
         const div = document.createElement('div');
         div.className = 'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-yellow-500 text-black font-bold p-4 rounded-xl border-4 border-white shadow-2xl z-40 loot-popup';
+        div.setAttribute('role', 'alert');
+        div.setAttribute('aria-live', 'assertive');
         div.innerHTML = `<div>🏆 ${t('notifications.relicObtained')}</div><div class="text-2xl mt-1">${escapeHtml(relic.icon)} ${t(relic.nameKey)}</div><div class="text-xs font-normal">${t(relic.descKey)}</div>`;
         document.getElementById('loot-container').appendChild(div);
-        setTimeout(() => div.remove(), 2000);
+        setTimeout(() => div.remove(), 4000);
     }
 
     renderProductionUI() {
@@ -3627,6 +3649,14 @@ class Game {
         // Create backup before saving
         SaveService.createBackup(1);
 
+        // Show autosave indicator
+        const indicator = document.getElementById('autosave-indicator');
+        const doneIndicator = document.getElementById('autosave-done');
+        if (indicator) {
+            indicator.classList.remove('hidden');
+            doneIndicator?.classList.add('hidden');
+        }
+
         // Delegate save to SaveService (handles subsystems, checksum, storage)
         const success = SaveService.save(coreData);
 
@@ -3639,6 +3669,16 @@ class Game {
             if (saveStringEl) {
                 saveStringEl.value = SaveService.exportSave();
             }
+
+            // Show save complete indicator
+            if (indicator) {
+                indicator.classList.add('hidden');
+                doneIndicator?.classList.remove('hidden');
+                setTimeout(() => doneIndicator?.classList.add('hidden'), 2000);
+            }
+        } else {
+            // Hide indicator on failure
+            indicator?.classList.add('hidden');
         }
     }
 

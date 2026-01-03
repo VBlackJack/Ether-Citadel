@@ -501,11 +501,16 @@ export class InputManager {
     }
 
     _processCanvasInteraction(x, y) {
+        // Touch devices get larger hit areas for better UX
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        const slotRadius = isTouchDevice ? 40 : 25;
+        const runeRadius = isTouchDevice ? 45 : 30;
+
         // 1. Turret Slots Interaction
         if (this.game.turretSlots) {
             for (const slot of this.game.turretSlots.slots) {
                 const pos = this.game.turretSlots.getSlotPosition(slot.id);
-                if (pos && MathUtils.dist(x, y, pos.x, pos.y) < 25) {
+                if (pos && MathUtils.dist(x, y, pos.x, pos.y) < slotRadius) {
                     this.game.handleSlotClick(slot);
                     return; // Stop propagation
                 }
@@ -515,7 +520,7 @@ export class InputManager {
         // 2. Runes Interaction (Buffs)
         // Use filter to handle in-place removal
         this.game.runes = this.game.runes.filter(r => {
-            if (MathUtils.dist(x, y, r.x, r.y) < 30) {
+            if (MathUtils.dist(x, y, r.x, r.y) < runeRadius) {
                 this.game.activateRune(r);
                 return false; // Remove rune
             }

@@ -338,6 +338,8 @@ export class GameUIManager {
 
         const popup = document.createElement('div');
         popup.className = 'loot-popup absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-800 border-2 border-yellow-500 rounded-lg px-4 py-2 text-center z-50';
+        popup.setAttribute('role', 'alert');
+        popup.setAttribute('aria-live', 'assertive');
 
         const iconDiv = document.createElement('div');
         iconDiv.className = 'text-2xl';
@@ -355,7 +357,7 @@ export class GameUIManager {
             if (popup.parentNode) {
                 popup.remove();
             }
-        }, 2000);
+        }, 4000);
     }
 
     /**

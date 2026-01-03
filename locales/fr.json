@@ -42,7 +42,12 @@
       "pause": "Basculer la pause",
       "sound": "Basculer le son",
       "holdWave": "Bloquer vague - Farmer sans avancer"
-    }
+    },
+    "saving": "Sauvegarde...",
+    "saved": "Sauvegarde"
+  },
+  "search": {
+    "placeholder": "Rechercher..."
   },
   "sideHud": {
     "spendPoints": "Dépenser les Points",
@@ -723,6 +728,8 @@
     "maxLevel": "Niveau maximum atteint",
     "requiresUnlockAI": "N\u00e9cessite l'am\u00e9lioration Assistant IA",
     "notEnoughGold": "Pas assez d'Or",
+    "need": "besoin de",
+    "more": "de plus",
     "notEnoughEther": "Pas assez d'\u00c9ther",
     "notEnoughCrystals": "Pas assez de Cristaux",
     "notEnoughResources": "Ressources insuffisantes",
