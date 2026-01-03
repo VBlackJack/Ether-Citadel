@@ -2292,8 +2292,20 @@ select:focus-visible {
 }
 
 /* Menu collapse animation */
+#menu-groups {
+    max-height: 80vh;
+    opacity: 1;
+    transform: translateX(0);
+    transition: all 0.3s ease-out;
+    overflow-y: auto;
+}
+
 #menu-groups.collapsed {
-    display: none;
+    max-height: 0;
+    opacity: 0;
+    transform: translateX(20px);
+    pointer-events: none;
+    overflow: hidden;
 }
 
 /* New badge for unlocked features */

@@ -2715,7 +2715,10 @@ class Game {
             const menuGroups = document.getElementById('menu-groups');
             const toggleBtn = document.getElementById('btn-toggle-menu');
             const isCollapsed = menuGroups.classList.toggle('collapsed');
-            if (toggleBtn) toggleBtn.textContent = isCollapsed ? '☰' : '✕';
+            if (toggleBtn) {
+                toggleBtn.textContent = isCollapsed ? '☰' : '✕';
+                toggleBtn.setAttribute('aria-expanded', String(!isCollapsed));
+            }
             return;
         }
 
