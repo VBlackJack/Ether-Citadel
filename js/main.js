@@ -2072,9 +2072,11 @@ class Game {
     }
 
     upgradeStat(statId) {
+        console.log('[DEBUG] upgradeStat called with statId:', statId);
         const statPoints = (this.stats?.level || 1) * 5;
         const usedPoints = this.statPointsUsed || 0;
         const availablePoints = statPoints - usedPoints;
+        console.log('[DEBUG] statPoints:', statPoints, 'usedPoints:', usedPoints, 'availablePoints:', availablePoints);
 
         if (availablePoints <= 0) {
             this.ui?.showToast(t('feedback.noStatPoints'), 'warning');

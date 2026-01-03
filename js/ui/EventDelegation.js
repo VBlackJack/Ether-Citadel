@@ -297,7 +297,9 @@ export class EventDelegationManager {
 
         // Stats actions (Defender Idle 2 style)
         this.register('stat.upgrade', (params) => {
-            this.game.upgradeStat(params.id);
+            console.log('[DEBUG] stat.upgrade called with params:', params);
+            const result = this.game.upgradeStat(params.id);
+            console.log('[DEBUG] upgradeStat returned:', result);
         });
 
         // Passive actions (Defender Idle 2 style)
