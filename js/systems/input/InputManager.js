@@ -109,77 +109,13 @@ export class InputManager {
             }
         });
 
-        // Global event delegation for data-action buttons
-        this.initEventDelegation(signal);
+        // Note: Event delegation for data-action buttons is handled by EventDelegation.js
 
         // Notation selector
         this.initNotationSelector(signal);
 
         // Cloud save modal
         this.initCloudModal(signal);
-    }
-
-    /**
-     * Initialize event delegation for buttons with data-action attributes
-     * This reduces the number of inline onclick handlers and improves performance
-     */
-    initEventDelegation(signal) {
-        document.body.addEventListener('click', (e) => {
-            const target = e.target.closest('[data-action]');
-            if (!target) return;
-
-            const action = target.dataset.action;
-            const params = { ...target.dataset };
-            delete params.action;
-
-            // Handle common actions
-            switch (action) {
-                case 'setSpeed':
-                    this.game.setSpeed(parseInt(params.speed, 10));
-                    break;
-                case 'togglePause':
-                    this.game.togglePause();
-                    break;
-                case 'toggleSound':
-                    this.game.sound.toggle();
-                    break;
-                case 'toggleStats':
-                    this.game.statsBreakdown?.toggle();
-                    break;
-                case 'rushWave':
-                    this.game.rushWave();
-                    break;
-                case 'openModal':
-                    const modal = document.getElementById(params.modal);
-                    if (modal) {
-                        // Call render function if specified
-                        if (params.render && this.game[params.render]) {
-                            this.game[params.render]();
-                        }
-                        modal.classList.remove('hidden');
-                    }
-                    break;
-                case 'closeModal':
-                    const closeModal = e.target.closest('.modal-backdrop');
-                    if (closeModal) {
-                        closeModal.classList.add('hidden');
-                    }
-                    break;
-                case 'toggleMenuGroup':
-                    this.game.toggleMenuGroup(params.group);
-                    break;
-                case 'surrender':
-                    if (this.game.canSurrender()) {
-                        window.gameConfirm(this.game.t('surrender.confirm'), () => this.game.strategicSurrender());
-                    }
-                    break;
-                default:
-                    // Check if action is a game method
-                    if (typeof this.game[action] === 'function') {
-                        this.game[action]();
-                    }
-            }
-        }, { signal });
     }
 
     initNotationSelector(signal) {
