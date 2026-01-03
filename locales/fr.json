@@ -1069,7 +1069,18 @@
     "swamper": { "name": "Mar\u00e9cageur", "desc": "D\u00e9g\u00e2ts de zone larges, cadence lente." },
     "rocket": { "name": "Fus\u00e9e", "desc": "D\u00e9g\u00e2ts de zone \u00e9lev\u00e9s, tr\u00e8s lent." },
     "sniper": { "name": "Sniper", "desc": "D\u00e9g\u00e2ts et port\u00e9e extr\u00eames, tir lent." },
-    "inferno": { "name": "Inferno", "desc": "Br\u00fble les ennemis dans le temps." }
+    "inferno": { "name": "Inferno", "desc": "Brûle les ennemis dans le temps." }
+  },
+  "turretUpgrade": {
+    "title": "Améliorations de tourelle",
+    "slot": "Emplacement",
+    "level": "Nv.",
+    "damage": "Dégâts",
+    "range": "Portée",
+    "speed": "Cadence",
+    "maxed": "MAX",
+    "noTurret": "Aucune tourelle dans cet emplacement",
+    "hint": "Cliquez sur un emplacement pour améliorer les stats"
   },
   "office": {
     "title": "Bureau",

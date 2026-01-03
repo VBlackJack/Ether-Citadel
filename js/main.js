@@ -1848,6 +1848,71 @@ class Game {
         });
     }
 
+    renderTurretUpgradeUI(slotId) {
+        const container = document.getElementById('turret-upgrade-content');
+        if (!container) return;
+
+        const slot = this.turretSlots.slots[slotId];
+        if (!slot || !slot.turretId) {
+            container.innerHTML = `<div class="text-slate-400 text-center">${t('turretUpgrade.noTurret')}</div>`;
+            return;
+        }
+
+        const turret = SCHOOL_TURRETS.find(t => t.id === slot.turretId);
+        const stats = this.school.getTurretStats(slot.turretId);
+        if (!turret || !stats) return;
+
+        const upgrades = slot.upgrades || { damage: 0, range: 0, speed: 0 };
+        const maxLevel = 10;
+
+        const renderUpgradeRow = (stat, icon, label, currentBonus) => {
+            const level = upgrades[stat] || 0;
+            const cost = this.turretSlots.getUpgradeCost(slotId, stat);
+            const canAfford = this.turretSlots.canUpgradeSlot(slotId, stat);
+            const isMaxed = level >= maxLevel;
+            const bonusText = `+${Math.round(currentBonus * 100 - 100)}%`;
+
+            return `
+                <div class="flex items-center justify-between bg-slate-700/50 p-3 rounded border border-slate-600">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">${icon}</span>
+                        <div>
+                            <div class="font-medium text-slate-200">${label}</div>
+                            <div class="text-xs text-cyan-400">${t('turretUpgrade.level')} ${level}/${maxLevel} (${bonusText})</div>
+                        </div>
+                    </div>
+                    ${isMaxed ? `
+                        <span class="text-yellow-400 text-sm">${t('turretUpgrade.maxed')}</span>
+                    ` : `
+                        <button data-action="turretSlot.upgrade" data-slot="${slotId}" data-stat="${stat}"
+                            class="px-3 py-1 bg-cyan-600 hover:bg-cyan-500 text-white text-sm rounded ${canAfford ? '' : 'opacity-50 cursor-not-allowed'}"
+                            ${canAfford ? '' : 'disabled'}>
+                            ${formatNumber(cost)} 💰
+                        </button>
+                    `}
+                </div>
+            `;
+        };
+
+        container.innerHTML = `
+            <div class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-700">
+                <span class="text-3xl">${turret.icon}</span>
+                <div>
+                    <div class="font-bold text-cyan-400">${t(turret.nameKey)}</div>
+                    <div class="text-xs text-slate-400">${t('turretUpgrade.slot')} ${slotId + 1}</div>
+                </div>
+            </div>
+            <div class="space-y-2">
+                ${renderUpgradeRow('damage', '⚔️', t('turretUpgrade.damage'), this.turretSlots.getSlotBonus(slotId, 'damage'))}
+                ${renderUpgradeRow('range', '🎯', t('turretUpgrade.range'), this.turretSlots.getSlotBonus(slotId, 'range'))}
+                ${renderUpgradeRow('speed', '⚡', t('turretUpgrade.speed'), this.turretSlots.getSlotBonus(slotId, 'speed'))}
+            </div>
+            <div class="mt-4 text-xs text-slate-400 text-center">
+                ${t('turretUpgrade.hint')}
+            </div>
+        `;
+    }
+
     renderOfficeUI() {
         const gemsEl = document.getElementById('office-gems');
         const activeContainer = document.getElementById('office-active-boosts');
@@ -2824,18 +2889,25 @@ class Game {
 
         if (selectedSlot.turretId) {
             const turret = SCHOOL_TURRETS.find(t => t.id === selectedSlot.turretId);
+            const totalLevel = this.turretSlots.getTotalUpgradeLevel(selectedSlot.id);
             currentEl.innerHTML = `
                 <div class="flex items-center gap-3">
                     <span class="text-3xl">${turret?.icon || '?'}</span>
                     <div>
                         <div class="font-bold text-cyan-400">${t(turret?.nameKey || 'slots.empty')}</div>
-                        <div class="text-xs text-slate-400">${t('school.level')} ${this.school.getLevel(selectedSlot.turretId)}</div>
+                        <div class="text-xs text-slate-400">${t('school.level')} ${this.school.getLevel(selectedSlot.turretId)} ${totalLevel > 0 ? `<span class="text-yellow-400">(+${totalLevel})</span>` : ''}</div>
                     </div>
                 </div>
-                <button data-action="turretSlot.remove" data-id="${selectedSlot.id}"
-                    class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded text-sm">
-                    ${t('slots.remove')}
-                </button>
+                <div class="flex gap-2">
+                    <button data-action="turretSlot.openUpgrade" data-id="${selectedSlot.id}"
+                        class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-sm">
+                        ${t('turretUpgrade.title')}
+                    </button>
+                    <button data-action="turretSlot.remove" data-id="${selectedSlot.id}"
+                        class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded text-sm">
+                        ${t('slots.remove')}
+                    </button>
+                </div>
             `;
         } else {
             currentEl.innerHTML = `<span class="text-slate-500">${t('slots.empty')}</span>`;

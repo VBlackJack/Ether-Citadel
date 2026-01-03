@@ -1141,6 +1141,17 @@
     "sniper": { "name": "Sniper", "desc": "Extreme damage and range, slow fire." },
     "inferno": { "name": "Inferno", "desc": "Burns enemies over time." }
   },
+  "turretUpgrade": {
+    "title": "Turret Upgrades",
+    "slot": "Slot",
+    "level": "Lv.",
+    "damage": "Damage",
+    "range": "Range",
+    "speed": "Fire Rate",
+    "maxed": "MAX",
+    "noTurret": "No turret in this slot",
+    "hint": "Click a turret slot to upgrade individual stats"
+  },
   "office": {
     "title": "Office",
     "desc": "Activate temporary boosts using gems.",

@@ -163,6 +163,21 @@ export class EventDelegationManager {
             this.game.renderTurretSlotsUI();
         });
 
+        this.register('turretSlot.upgrade', (params) => {
+            const slotId = safeParseInt(params.slot);
+            const stat = params.stat;
+            if (this.game.turretSlots.upgradeSlot(slotId, stat)) {
+                this.game.renderTurretUpgradeUI(slotId);
+            }
+        });
+
+        this.register('turretSlot.openUpgrade', (params) => {
+            const slotId = safeParseInt(params.id);
+            this.game.renderTurretUpgradeUI(slotId);
+            const modal = document.getElementById('turret-upgrade-modal');
+            if (modal) modal.classList.remove('hidden');
+        });
+
         // Dread level actions
         this.register('dread.setLevel', (params) => {
             this.game.prestige.setDreadLevel(safeParseInt(params.level));

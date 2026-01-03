@@ -8,6 +8,14 @@ import { t } from '../../i18n.js';
 import { formatNumber, BigNumService } from '../../config.js';
 import { Projectile } from '../../entities/Projectile.js';
 
+// Turret slot upgrade constants
+const SLOT_UPGRADE_CONFIG = {
+    maxLevel: 10,
+    baseCost: 500,
+    costScale: 1.8,
+    bonusPerLevel: 0.10 // +10% per level
+};
+
 export class TurretSlotManager {
     constructor(game) {
         this.game = game;
@@ -15,9 +23,71 @@ export class TurretSlotManager {
             ...slot,
             purchased: slot.free,
             turretId: null,
-            lastFireTime: 0
+            lastFireTime: 0,
+            // Per-slot upgrades
+            upgrades: {
+                damage: 0,
+                range: 0,
+                speed: 0
+            }
         }));
         this.selectedSlot = null;
+    }
+
+    /**
+     * Get upgrade cost for a specific stat on a slot
+     */
+    getUpgradeCost(slotId, stat) {
+        const slot = this.slots[slotId];
+        if (!slot || !slot.upgrades) return Infinity;
+        const level = slot.upgrades[stat] || 0;
+        if (level >= SLOT_UPGRADE_CONFIG.maxLevel) return Infinity;
+        return Math.floor(SLOT_UPGRADE_CONFIG.baseCost * Math.pow(SLOT_UPGRADE_CONFIG.costScale, level));
+    }
+
+    /**
+     * Check if upgrade can be purchased
+     */
+    canUpgradeSlot(slotId, stat) {
+        const slot = this.slots[slotId];
+        if (!slot || !slot.purchased || !slot.turretId) return false;
+        const level = slot.upgrades[stat] || 0;
+        if (level >= SLOT_UPGRADE_CONFIG.maxLevel) return false;
+        const cost = this.getUpgradeCost(slotId, stat);
+        const gold = this.game.gold || BigNumService.create(0);
+        return BigNumService.gte(gold, BigNumService.create(cost));
+    }
+
+    /**
+     * Upgrade a specific stat on a turret slot
+     */
+    upgradeSlot(slotId, stat) {
+        if (!this.canUpgradeSlot(slotId, stat)) return false;
+        const cost = this.getUpgradeCost(slotId, stat);
+        this.game.gold = BigNumService.sub(this.game.gold, BigNumService.create(cost));
+        this.slots[slotId].upgrades[stat]++;
+        this.game.sound?.play('upgrade');
+        this.game.save();
+        return true;
+    }
+
+    /**
+     * Get slot upgrade bonus multiplier for a stat
+     */
+    getSlotBonus(slotId, stat) {
+        const slot = this.slots[slotId];
+        if (!slot || !slot.upgrades) return 1;
+        const level = slot.upgrades[stat] || 0;
+        return 1 + level * SLOT_UPGRADE_CONFIG.bonusPerLevel;
+    }
+
+    /**
+     * Get total upgrade level for a slot
+     */
+    getTotalUpgradeLevel(slotId) {
+        const slot = this.slots[slotId];
+        if (!slot || !slot.upgrades) return 0;
+        return (slot.upgrades.damage || 0) + (slot.upgrades.range || 0) + (slot.upgrades.speed || 0);
     }
 
     getSlotPosition(slotId) {
@@ -106,10 +176,15 @@ export class TurretSlotManager {
             const pos = this.getSlotPosition(slot.id);
             if (!pos) return;
 
-            const fireRate = 2000 / stats.speed;
+            // Apply per-slot upgrade bonuses
+            const damageBonus = this.getSlotBonus(slot.id, 'damage');
+            const rangeBonus = this.getSlotBonus(slot.id, 'range');
+            const speedBonus = this.getSlotBonus(slot.id, 'speed');
+
+            const fireRate = 2000 / (stats.speed * speedBonus);
             if (this.game.gameTime - slot.lastFireTime < fireRate) return;
 
-            const range = 150 * stats.range;
+            const range = 150 * stats.range * rangeBonus;
             let target = null;
             let minDist = Infinity;
 
@@ -124,7 +199,7 @@ export class TurretSlotManager {
             if (target) {
                 slot.lastFireTime = this.game.gameTime;
                 const baseDamage = this.game.currentDamage * 0.3;
-                const damage = Math.floor(baseDamage * stats.damage);
+                const damage = Math.floor(baseDamage * stats.damage * damageBonus);
                 const color = this.getTurretColor(slot.turretId);
 
                 const effects = {};
@@ -138,7 +213,7 @@ export class TurretSlotManager {
                     1, false, false, false, effects, props
                 ));
 
-                this.game.sound.play('shoot');
+                this.game.sound?.play('shoot');
             }
         });
     }
@@ -195,14 +270,24 @@ export class TurretSlotManager {
             } else {
                 this.drawTurretSkin(ctx, slot.turretId, aimAngle);
 
+                // Show upgrade level indicator
+                const totalLevel = this.getTotalUpgradeLevel(slot.id);
+                if (totalLevel > 0) {
+                    ctx.fillStyle = '#fbbf24';
+                    ctx.font = 'bold 8px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`+${totalLevel}`, 0, -22);
+                }
+
                 if (this.game.settings.showRange) {
                     const stats = this.game.school.getTurretStats(slot.turretId);
+                    const rangeBonus = this.getSlotBonus(slot.id, 'range');
                     const color = this.getTurretColor(slot.turretId);
                     if (stats) {
                         ctx.strokeStyle = `${color}30`;
                         ctx.lineWidth = 1;
                         ctx.beginPath();
-                        ctx.arc(0, 0, 150 * stats.range, 0, Math.PI * 2);
+                        ctx.arc(0, 0, 150 * stats.range * rangeBonus, 0, Math.PI * 2);
                         ctx.stroke();
                     }
                 }
@@ -371,7 +456,8 @@ export class TurretSlotManager {
         return this.slots.map(s => ({
             id: s.id,
             purchased: s.purchased,
-            turretId: s.turretId
+            turretId: s.turretId,
+            upgrades: s.upgrades || { damage: 0, range: 0, speed: 0 }
         }));
     }
 
@@ -382,7 +468,18 @@ export class TurretSlotManager {
             if (slot) {
                 slot.purchased = saved.purchased;
                 slot.turretId = saved.turretId;
+                slot.upgrades = saved.upgrades || { damage: 0, range: 0, speed: 0 };
             }
         });
+    }
+
+    /**
+     * Reset upgrades when turret is removed from slot
+     */
+    resetSlotUpgrades(slotId) {
+        const slot = this.slots[slotId];
+        if (slot) {
+            slot.upgrades = { damage: 0, range: 0, speed: 0 };
+        }
     }
 }
