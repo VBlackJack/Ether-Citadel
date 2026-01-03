@@ -105,7 +105,7 @@ export class EventDelegationManager {
 
         // Stats toggle
         this.register('toggleStats', () => {
-            this.game.toggleStatsPanel?.();
+            this.game.statsBreakdown?.toggle();
         });
 
         // Speed control
