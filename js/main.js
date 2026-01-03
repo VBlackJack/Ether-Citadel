@@ -2016,7 +2016,7 @@ class Game {
         if (!grid) return;
 
         // Calculate stat points available (5 per level)
-        const statPoints = (this.level || 1) * 5;
+        const statPoints = (this.stats?.level || 1) * 5;
         const usedPoints = this.statPointsUsed || 0;
         const availablePoints = Math.max(0, statPoints - usedPoints);
 
@@ -2063,7 +2063,7 @@ class Game {
     }
 
     upgradeStat(statId) {
-        const statPoints = (this.level || 1) * 5;
+        const statPoints = (this.stats?.level || 1) * 5;
         const usedPoints = this.statPointsUsed || 0;
         const availablePoints = statPoints - usedPoints;
 
@@ -2239,7 +2239,7 @@ class Game {
         const tierEl = document.getElementById('lab-stats-tier');
         if (!grid) return;
 
-        const statPoints = (this.level || 1) * 5;
+        const statPoints = (this.stats?.level || 1) * 5;
         const usedPoints = this.statPointsUsed || 0;
         const availablePoints = Math.max(0, statPoints - usedPoints);
 
@@ -3966,7 +3966,9 @@ class Game {
                 level: this.stats.level,
                 masteryPoints: this.stats.masteryPoints,
                 mastery: this.stats.mastery,
-                seenEnemies: this.stats.seenEnemies
+                seenEnemies: this.stats.seenEnemies,
+                statLevels: this.statLevels || {},
+                statPointsUsed: this.statPointsUsed || 0
             },
             challenges: { dm: this.challenges.darkMatter, tech: this.challenges.dmTech }
         };
@@ -4117,6 +4119,8 @@ class Game {
                 this.stats.masteryPoints = data.stats.masteryPoints || 0;
                 this.stats.mastery = data.stats.mastery || {};
                 this.stats.seenEnemies = data.stats.seenEnemies || [];
+                this.statLevels = data.stats.statLevels || {};
+                this.statPointsUsed = data.stats.statPointsUsed || 0;
             }
 
             // Challenges
