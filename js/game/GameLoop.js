@@ -8,12 +8,17 @@ export class GameLoop {
         this.game = game;
         this.isRunning = false;
         this.lastTime = 0;
-        this.accumulator = 0;
         this.rafId = null;
 
-        // Debug stats
+        // Frame timing constants
+        this.TARGET_FRAME_TIME = 1000 / 60; // 60 FPS target
+        this.MAX_FRAME_TIME = 100; // Cap to prevent spiral
+        this.FRAME_SKIP_THRESHOLD = 50; // Skip frame if too slow
+
+        // Debug stats with exponential moving average for smoother FPS
         this.debugStats = {
-            fps: 0,
+            fps: 60,
+            fpsSmooth: 60,
             frames: 0,
             lastFpsUpdate: 0,
             frameTime: 0,
@@ -41,19 +46,25 @@ export class GameLoop {
     }
 
     loop(currentTime) {
-        if (!this.isRunning) return;
+        // Guard against double-queuing during shutdown
+        if (!this.isRunning) {
+            this.rafId = null;
+            return;
+        }
 
-        // Request next frame immediately
-        this.rafId = requestAnimationFrame(this._boundLoop);
-
-        // Calculate delta time
+        // Calculate delta time FIRST
         const dtRaw = currentTime - this.lastTime;
         this.lastTime = currentTime;
 
-        // Debug: FPS Calculation (every 1 second)
+        // Cap dt to prevent spiral (e.g. if tab was inactive)
+        const safeDt = Math.min(dtRaw, this.MAX_FRAME_TIME);
+
+        // Debug: FPS Calculation with exponential moving average
         this.debugStats.frames++;
         if (currentTime - this.debugStats.lastFpsUpdate >= 1000) {
             this.debugStats.fps = this.debugStats.frames;
+            // Smooth FPS using EMA (alpha = 0.3)
+            this.debugStats.fpsSmooth = this.debugStats.fpsSmooth * 0.7 + this.debugStats.fps * 0.3;
             this.debugStats.frames = 0;
             this.debugStats.lastFpsUpdate = currentTime;
         }
@@ -61,14 +72,10 @@ export class GameLoop {
         // Performance monitoring
         const startUpdate = performance.now();
 
-        // Game Logic Update
-        // Only update if not paused, OR if we want to allow some systems to run while paused (optional)
-        // Cap dt to prevent spiraling (e.g. if tab was inactive)
-        const safeDt = Math.min(dtRaw, 100);
-
         // Apply game speed multiplier
         const dt = safeDt * (this.game.speedMultiplier || 1);
 
+        // Game Logic Update (skip if paused)
         if (!this.game.isPaused) {
             this.game.gameTime += dt;
             this.game.update(dt);
@@ -77,12 +84,18 @@ export class GameLoop {
         const endUpdate = performance.now();
         this.debugStats.updateTime = endUpdate - startUpdate;
 
-        // Rendering
-        // Always draw, even when paused
-        this.game.draw();
+        // Rendering - always draw, even when paused
+        // Skip render if frame took too long (catch-up mode)
+        if (dtRaw < this.FRAME_SKIP_THRESHOLD) {
+            this.game.draw();
+        }
 
         const endRender = performance.now();
         this.debugStats.renderTime = endRender - endUpdate;
         this.debugStats.frameTime = dtRaw;
+
+        // Request next frame at END of loop (not start)
+        // This prevents frame queue buildup when frames are slow
+        this.rafId = requestAnimationFrame(this._boundLoop);
     }
 }

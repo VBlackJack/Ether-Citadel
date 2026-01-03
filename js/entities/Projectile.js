@@ -147,6 +147,7 @@ export class Projectile {
             line.ty = nearest.y;
             line.life = 0.5;
             line.draw = function(ctx) {
+                ctx.save();
                 ctx.globalAlpha = this.life;
                 ctx.strokeStyle = this.color;
                 ctx.lineWidth = 1;
@@ -154,6 +155,7 @@ export class Projectile {
                 ctx.moveTo(this.x, this.y);
                 ctx.lineTo(this.tx, this.ty);
                 ctx.stroke();
+                ctx.restore();
             };
             game?.particles?.push(line);
         } else {

@@ -52,14 +52,14 @@ export class FloatingText {
         // Check for nearby texts and calculate offset
         let offsetX = 0;
         let offsetY = 0;
-        const threshold = 30;
+        const thresholdSq = 900; // 30² - avoid Math.sqrt
 
         for (const pos of FloatingText.recentPositions) {
             const dx = x - pos.x;
             const dy = y - pos.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+            const distSq = dx * dx + dy * dy;
 
-            if (dist < threshold) {
+            if (distSq < thresholdSq) {
                 // Fan out in alternating directions
                 const index = FloatingText.recentPositions.length;
                 offsetX = ((index % 3) - 1) * 15; // -15, 0, or 15
@@ -72,9 +72,9 @@ export class FloatingText {
 
     static registerPosition(x, y) {
         FloatingText.recentPositions.push({ x, y, time: Date.now() });
-        // Limit array size
+        // O(1) array size limit - truncate from end instead of shift
         if (FloatingText.recentPositions.length > 20) {
-            FloatingText.recentPositions.shift();
+            FloatingText.recentPositions.length = 20;
         }
     }
 

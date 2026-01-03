@@ -120,8 +120,11 @@ class Game {
             hpText: document.getElementById('ui-hp-text'),
             shieldBar: document.getElementById('ui-shield-bar'),
             dmAmount: document.getElementById('ui-dm-amount'),
-            darkMatter: document.getElementById('ui-dark-matter')
+            darkMatter: document.getElementById('ui-dark-matter'),
+            buffContainer: document.getElementById('buff-container')
         };
+        // Track previous buff state to avoid unnecessary DOM updates
+        this._prevBuffState = '';
         this.renderSystem = new RenderSystem(this);
         this.gameLoop = new GameLoop(this);
         this.gameTime = 0;
@@ -3519,32 +3522,47 @@ class Game {
             }
         }
 
-        // Only update buff container if we have active buffs (reduces DOM thrashing)
-        const buffContainer = document.getElementById('buff-container');
+        // Only update buff container if state changed (reduces DOM thrashing)
+        const buffContainer = this._hudElements.buffContainer;
         if (buffContainer) {
-            if (!hasActiveBuffs) {
-                if (buffContainer.childNodes.length > 0) buffContainer.innerHTML = '';
-            } else {
+            // Build current state string for comparison
+            let buffState = '';
+            if (hasActiveBuffs) {
                 // Build rune map cache once
                 if (!this._runeMap) {
                     this._runeMap = new Map(RUNE_TYPES.map(r => [r.id, r]));
                 }
-                // Use DocumentFragment for batch DOM update
-                const fragment = document.createDocumentFragment();
                 for (let k in this.activeBuffs) {
                     if (this.activeBuffs[k] > 0) {
-                        const runeType = this._runeMap.get(k);
-                        if (runeType) {
-                            const d = document.createElement('div');
-                            d.className = 'text-xs bg-black/50 px-2 py-1 rounded text-white border';
-                            d.style.borderColor = runeType.color;
-                            d.textContent = `${runeType.icon} ${(this.activeBuffs[k] / 1000).toFixed(1)}s`;
-                            fragment.appendChild(d);
-                        }
+                        // Round to 0.1s to avoid updates every frame
+                        buffState += `${k}:${Math.round(this.activeBuffs[k] / 100)}|`;
                     }
                 }
-                buffContainer.innerHTML = '';
-                buffContainer.appendChild(fragment);
+            }
+
+            // Only update DOM if buff state changed
+            if (buffState !== this._prevBuffState) {
+                this._prevBuffState = buffState;
+                if (!hasActiveBuffs) {
+                    if (buffContainer.childNodes.length > 0) buffContainer.innerHTML = '';
+                } else {
+                    // Use DocumentFragment for batch DOM update
+                    const fragment = document.createDocumentFragment();
+                    for (let k in this.activeBuffs) {
+                        if (this.activeBuffs[k] > 0) {
+                            const runeType = this._runeMap.get(k);
+                            if (runeType) {
+                                const d = document.createElement('div');
+                                d.className = 'text-xs bg-black/50 px-2 py-1 rounded text-white border';
+                                d.style.borderColor = runeType.color;
+                                d.textContent = `${runeType.icon} ${(this.activeBuffs[k] / 1000).toFixed(1)}s`;
+                                fragment.appendChild(d);
+                            }
+                        }
+                    }
+                    buffContainer.innerHTML = '';
+                    buffContainer.appendChild(fragment);
+                }
             }
         }
 
@@ -3578,12 +3596,12 @@ class Game {
             if (this.holdWaveEnabled) {
                 this.isDirty = true;
                 this.save();
-                setTimeout(() => this.startWave(), 2000 / this.speedMultiplier);
+                this.waveTimeoutId = setTimeout(() => this.startWave(), 2000 / this.speedMultiplier);
             } else {
                 this.wave++;
                 this.isDirty = true;
                 this.save();
-                setTimeout(() => this.startWave(), 2000 / this.speedMultiplier);
+                this.waveTimeoutId = setTimeout(() => this.startWave(), 2000 / this.speedMultiplier);
             }
         }
 
@@ -3592,14 +3610,6 @@ class Game {
         this.runes.forEach(r => r.update(dt));
         this._compactRunes();
 
-        // Efficient array capacity management (avoid O(n) shift every frame)
-        // Only truncate when significantly over limit, removing batch at once
-        if (this.particles.length > 75) {
-            this.particles.splice(0, this.particles.length - 50);
-        }
-        if (this.floatingTexts.length > 30) {
-            this.floatingTexts.splice(0, this.floatingTexts.length - 20);
-        }
 
         const baseFireRate = this.getFireRate();
         const fireRate = (this.skills.isActive(SKILL.OVERDRIVE) || this.activeBuffs[RUNE.RAGE] > 0) ? baseFireRate / 3 : baseFireRate;
@@ -3621,6 +3631,10 @@ class Game {
         this._compactProjectiles();
         this._compactParticles();
         this._compactFloatingTexts();
+
+        // O(1) array size limits - truncate after compaction (no shift, no splice)
+        if (this.particles.length > 50) this.particles.length = 50;
+        if (this.floatingTexts.length > 20) this.floatingTexts.length = 20;
 
         // Use cached HUD elements to avoid DOM queries every frame
         const hud = this._hudElements;
@@ -3740,6 +3754,10 @@ class Game {
         if (this.retryIntervalId) {
             clearInterval(this.retryIntervalId);
             this.retryIntervalId = null;
+        }
+        if (this.waveTimeoutId) {
+            clearTimeout(this.waveTimeoutId);
+            this.waveTimeoutId = null;
         }
     }
 

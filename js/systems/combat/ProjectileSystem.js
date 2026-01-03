@@ -103,6 +103,9 @@ const PROJECTILE_CONFIG = {
     }
 };
 
+// Trail buffer size - using circular buffer pattern
+const TRAIL_MAX_LENGTH = 10;
+
 /**
  * Projectile class
  */
@@ -123,8 +126,10 @@ export class Projectile {
         this.color = options.color || config.color;
         this.pierce = options.pierce ?? config.pierce;
         this.splash = options.splash ?? config.splash;
+        this.splashSq = this.splash * this.splash; // Pre-compute squared for comparisons
         this.chain = options.chain ?? config.chain ?? 0;
         this.chainRange = options.chainRange ?? config.chainRange ?? 100;
+        this.chainRangeSq = this.chainRange * this.chainRange; // Pre-compute squared
         this.slow = options.slow ?? config.slow;
         this.slowDuration = options.slowDuration ?? config.slowDuration;
         this.dot = options.dot ?? config.dot;
@@ -150,7 +155,13 @@ export class Projectile {
         this.dead = false;
         this.active = true;
         this.hitTargets = new Set();
-        this.trailPoints = [];
+
+        // Circular buffer for trail points (O(1) operations instead of shift's O(n))
+        if (this.trail) {
+            this.trailPoints = new Array(TRAIL_MAX_LENGTH);
+            this.trailIndex = 0;
+            this.trailCount = 0;
+        }
     }
 
     /**
@@ -160,12 +171,11 @@ export class Projectile {
     update(deltaTime) {
         if (this.dead) return;
 
-        // Store trail point
+        // Store trail point using circular buffer (O(1) instead of shift's O(n))
         if (this.trail) {
-            this.trailPoints.push({ x: this.x, y: this.y });
-            if (this.trailPoints.length > 10) {
-                this.trailPoints.shift();
-            }
+            this.trailPoints[this.trailIndex] = { x: this.x, y: this.y };
+            this.trailIndex = (this.trailIndex + 1) % TRAIL_MAX_LENGTH;
+            if (this.trailCount < TRAIL_MAX_LENGTH) this.trailCount++;
         }
 
         // Homing behavior
@@ -193,7 +203,7 @@ export class Projectile {
     }
 
     /**
-     * Check collision with enemy
+     * Check collision with enemy (uses squared distance - no sqrt)
      * @param {object} enemy
      * @returns {boolean}
      */
@@ -230,22 +240,26 @@ export class Projectile {
             enemy.applyDot?.(this.damage * this.dotDamage, this.dotDuration);
         }
 
-        // Splash damage
-        if (this.splash > 0 && game) {
-            const splashTargets = game.enemies?.filter(e =>
-                !e.dead &&
-                e !== enemy &&
-                !this.hitTargets.has(e) &&
-                this.distanceTo(e) <= this.splash
-            ) || [];
+        // Splash damage - uses squared distance for O(1) comparison
+        if (this.splash > 0 && game?.enemies) {
+            const projX = this.x;
+            const projY = this.y;
+            const splashSq = this.splashSq;
 
-            splashTargets.forEach(target => {
-                target.takeDamage?.(this.damage * 0.5, this.source);
-                this.hitTargets.add(target);
-            });
+            for (let i = 0; i < game.enemies.length; i++) {
+                const e = game.enemies[i];
+                if (e.dead || e === enemy || this.hitTargets.has(e)) continue;
+
+                const dx = projX - e.x;
+                const dy = projY - e.y;
+                if (dx * dx + dy * dy <= splashSq) {
+                    e.takeDamage?.(this.damage * 0.5, this.source);
+                    this.hitTargets.add(e);
+                }
+            }
         }
 
-        // Chain lightning
+        // Chain lightning - optimized O(n) per chain instead of O(n²)
         if (this.chain > 0 && game) {
             this.chainTo(enemy, game);
         }
@@ -260,65 +274,88 @@ export class Projectile {
     }
 
     /**
-     * Chain to nearby enemies
+     * Chain to nearby enemies - Optimized: single pass distance calculation
      * @param {object} fromEnemy
      * @param {object} game
      */
     chainTo(fromEnemy, game) {
         let chainsLeft = this.chain;
         let currentEnemy = fromEnemy;
+        const chainRangeSq = this.chainRangeSq;
 
-        while (chainsLeft > 0) {
-            const nearby = game.enemies?.filter(e =>
-                !e.dead &&
-                !this.hitTargets.has(e) &&
-                this.distanceFromTo(currentEnemy, e) <= this.chainRange
-            ) || [];
+        while (chainsLeft > 0 && game.enemies) {
+            let nearestEnemy = null;
+            let nearestDistSq = chainRangeSq;
 
-            if (nearby.length === 0) break;
+            // Single pass: find nearest valid enemy using squared distance
+            const cx = currentEnemy.x;
+            const cy = currentEnemy.y;
 
-            // Find nearest
-            nearby.sort((a, b) =>
-                this.distanceFromTo(currentEnemy, a) - this.distanceFromTo(currentEnemy, b)
-            );
+            for (let i = 0; i < game.enemies.length; i++) {
+                const e = game.enemies[i];
+                if (e.dead || this.hitTargets.has(e)) continue;
 
-            const nextEnemy = nearby[0];
-            this.hitTargets.add(nextEnemy);
-            nextEnemy.takeDamage?.(this.damage * 0.7, this.source);
+                const dx = cx - e.x;
+                const dy = cy - e.y;
+                const distSq = dx * dx + dy * dy;
+
+                if (distSq < nearestDistSq) {
+                    nearestDistSq = distSq;
+                    nearestEnemy = e;
+                }
+            }
+
+            if (!nearestEnemy) break;
+
+            this.hitTargets.add(nearestEnemy);
+            nearestEnemy.takeDamage?.(this.damage * 0.7, this.source);
 
             // Visual effect (chain lightning line)
             if (game.addVisualEffect) {
                 game.addVisualEffect({
                     type: 'chain',
                     from: { x: currentEnemy.x, y: currentEnemy.y },
-                    to: { x: nextEnemy.x, y: nextEnemy.y },
+                    to: { x: nearestEnemy.x, y: nearestEnemy.y },
                     color: this.color,
                     duration: 100
                 });
             }
 
-            currentEnemy = nextEnemy;
+            currentEnemy = nearestEnemy;
             chainsLeft--;
         }
     }
 
     /**
-     * Distance from this projectile to an entity
+     * Squared distance from this projectile to an entity (no sqrt - faster)
+     * @param {object} entity
+     * @returns {number}
+     */
+    distanceToSq(entity) {
+        const dx = this.x - entity.x;
+        const dy = this.y - entity.y;
+        return dx * dx + dy * dy;
+    }
+
+    /**
+     * Distance from this projectile to an entity (uses sqrt - for display only)
      * @param {object} entity
      * @returns {number}
      */
     distanceTo(entity) {
-        return Math.sqrt((this.x - entity.x) ** 2 + (this.y - entity.y) ** 2);
+        return Math.sqrt(this.distanceToSq(entity));
     }
 
     /**
-     * Distance between two entities
+     * Squared distance between two entities (no sqrt - faster)
      * @param {object} a
      * @param {object} b
      * @returns {number}
      */
-    distanceFromTo(a, b) {
-        return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
+    distanceFromToSq(a, b) {
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        return dx * dx + dy * dy;
     }
 
     /**
@@ -340,12 +377,18 @@ export class Projectile {
     render(ctx) {
         if (this.dead) return;
 
-        // Draw trail
-        if (this.trail && this.trailPoints.length > 1) {
+        // Draw trail using circular buffer
+        if (this.trail && this.trailCount > 1) {
             ctx.beginPath();
-            ctx.moveTo(this.trailPoints[0].x, this.trailPoints[0].y);
-            for (let i = 1; i < this.trailPoints.length; i++) {
-                ctx.lineTo(this.trailPoints[i].x, this.trailPoints[i].y);
+            // Start from oldest point in circular buffer
+            const startIdx = this.trailCount < TRAIL_MAX_LENGTH ? 0 : this.trailIndex;
+            const firstPoint = this.trailPoints[startIdx];
+            ctx.moveTo(firstPoint.x, firstPoint.y);
+
+            for (let i = 1; i < this.trailCount; i++) {
+                const idx = (startIdx + i) % TRAIL_MAX_LENGTH;
+                const point = this.trailPoints[idx];
+                ctx.lineTo(point.x, point.y);
             }
             ctx.strokeStyle = this.color + '80';
             ctx.lineWidth = this.size * 0.5;
@@ -358,14 +401,15 @@ export class Projectile {
         ctx.fillStyle = this.color;
         ctx.fill();
 
-        // Glow effect
+        // Glow effect - save/restore to isolate shadow state
+        ctx.save();
         ctx.shadowColor = this.color;
         ctx.shadowBlur = 10;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size * 0.6, 0, Math.PI * 2);
         ctx.fillStyle = '#fff';
         ctx.fill();
-        ctx.shadowBlur = 0;
+        ctx.restore();
     }
 }
 
