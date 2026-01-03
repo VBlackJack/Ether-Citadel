@@ -64,7 +64,8 @@ const SUBSYSTEM_KEYS = [
     'research', 'production', 'auras', 'chips', 'dailyQuests', 'prestige',
     'town', 'school', 'office', 'awakening', 'turretSlots', 'weather',
     'combo', 'events', 'talents', 'statistics', 'ascensionMgr', 'synergies',
-    'gameModes', 'seasonalEvents', 'campaign', 'buildPresets'
+    'gameModes', 'seasonalEvents', 'campaign', 'buildPresets',
+    'mazing', 'worlds', 'skillCards', 'landmarks', 'towerModules'
 ];
 
 export class GameStateManager {

@@ -29,3 +29,6 @@ export { WeatherManager } from './WeatherManager.js';
 export { EventManager } from './EventManager.js';
 export { SeasonalEventManager } from './SeasonalEventManager.js';
 export { BuildPresetManager } from './BuildPresetManager.js';
+export { MazingManager } from './MazingManager.js';
+export { SkillCardManager } from './SkillCardManager.js';
+export { LandmarkManager } from './LandmarkManager.js';

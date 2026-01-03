@@ -3,7 +3,7 @@
  * Apache-2.0 License
  */
 
-import { DAILY_QUEST_TYPES } from '../../data.js';
+import { DAILY_QUEST_TYPES, DAILY_CHESTS } from '../../data.js';
 import { t } from '../../i18n.js';
 import { FloatingText } from '../../entities/FloatingText.js';
 import { BigNumService, formatNumber } from '../../config.js';
@@ -14,6 +14,137 @@ export class DailyQuestManager {
         this.quests = [];
         this.lastRefresh = null;
         this.progress = {};
+
+        // Daily chest system
+        this.loginStreak = 0;
+        this.lastLoginDate = null;
+        this.chestClaimed = false;
+
+        // Ether dividends (passive income)
+        this.etherDividendRate = 0;
+        this.lastDividendTime = Date.now();
+    }
+
+    /**
+     * Check and update login streak
+     */
+    checkLoginStreak() {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        const yesterday = today - (24 * 60 * 60 * 1000);
+
+        if (this.lastLoginDate === today) {
+            return; // Already logged in today
+        }
+
+        if (this.lastLoginDate === yesterday) {
+            // Consecutive day
+            this.loginStreak = Math.min(this.loginStreak + 1, 7);
+        } else if (this.lastLoginDate !== today) {
+            // Streak broken or first login
+            this.loginStreak = 1;
+        }
+
+        this.lastLoginDate = today;
+        this.chestClaimed = false;
+        this.game.save();
+    }
+
+    /**
+     * Get current daily chest
+     */
+    getCurrentChest() {
+        const day = Math.min(this.loginStreak, 7);
+        return DAILY_CHESTS.find(c => c.day === day) || DAILY_CHESTS[0];
+    }
+
+    /**
+     * Check if daily chest can be claimed
+     */
+    canClaimChest() {
+        return this.loginStreak > 0 && !this.chestClaimed;
+    }
+
+    /**
+     * Claim daily chest
+     */
+    claimChest() {
+        if (!this.canClaimChest()) return false;
+
+        const chest = this.getCurrentChest();
+        const reward = chest.reward;
+
+        // Grant rewards
+        if (reward.ether) {
+            this.game.ether = BigNumService.add(this.game.ether, reward.ether);
+            this.game.updateEtherUI?.();
+        }
+        if (reward.crystals) {
+            this.game.crystals = BigNumService.add(this.game.crystals, reward.crystals);
+            this.game.updateCrystalsUI?.();
+        }
+        if (reward.gold) {
+            this.game.gold = BigNumService.add(this.game.gold, reward.gold);
+        }
+        if (reward.relic) {
+            this.game.spawnRandomRelic?.(2);
+        }
+
+        this.chestClaimed = true;
+
+        // Show notification
+        if (this.game.floatingTexts) {
+            this.game.floatingTexts.push(FloatingText.create(
+                this.game.width / 2,
+                this.game.height / 2,
+                `${chest.icon} ${t('dailyChest.claimed')}!`,
+                '#fbbf24',
+                32
+            ));
+        }
+
+        this.game.sound?.play('chest');
+        this.game.save();
+        return true;
+    }
+
+    /**
+     * Calculate ether dividend rate based on total ether earned
+     */
+    updateDividendRate() {
+        const totalEther = this.game.statistics?.stats?.totalEtherEarned || 0;
+        // 0.1% of total ether earned per hour, minimum 1
+        this.etherDividendRate = Math.max(1, Math.floor(totalEther * 0.001));
+    }
+
+    /**
+     * Collect ether dividends (called periodically)
+     */
+    collectDividends() {
+        if (this.etherDividendRate <= 0) return 0;
+
+        const now = Date.now();
+        const elapsed = (now - this.lastDividendTime) / (1000 * 60 * 60); // Hours
+        const dividends = Math.floor(elapsed * this.etherDividendRate);
+
+        if (dividends > 0) {
+            this.game.ether = BigNumService.add(this.game.ether, dividends);
+            this.lastDividendTime = now;
+            this.game.updateEtherUI?.();
+            return dividends;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Get pending dividends without collecting
+     */
+    getPendingDividends() {
+        if (this.etherDividendRate <= 0) return 0;
+        const now = Date.now();
+        const elapsed = (now - this.lastDividendTime) / (1000 * 60 * 60);
+        return Math.floor(elapsed * this.etherDividendRate);
     }
 
     generateQuests() {
@@ -137,7 +268,12 @@ export class DailyQuestManager {
         return {
             quests: serializedQuests,
             lastRefresh: this.lastRefresh,
-            progress: serializedProgress
+            progress: serializedProgress,
+            loginStreak: this.loginStreak,
+            lastLoginDate: this.lastLoginDate,
+            chestClaimed: this.chestClaimed,
+            etherDividendRate: this.etherDividendRate,
+            lastDividendTime: this.lastDividendTime
         };
     }
 
@@ -159,5 +295,14 @@ export class DailyQuestManager {
                 this.progress[key] = BigNumService.create(value || 0);
             }
         }
+
+        // Daily chest data
+        this.loginStreak = data.loginStreak || 0;
+        this.lastLoginDate = data.lastLoginDate || null;
+        this.chestClaimed = data.chestClaimed || false;
+
+        // Dividend data
+        this.etherDividendRate = data.etherDividendRate || 0;
+        this.lastDividendTime = data.lastDividendTime || Date.now();
     }
 }

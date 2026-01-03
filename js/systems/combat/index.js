@@ -23,3 +23,4 @@ export { ProjectileSystem, ProjectileType } from './ProjectileSystem.js';
 export { ComboManager } from './ComboManager.js';
 export { SynergyManager } from './SynergyManager.js';
 export { BossMechanicsManager } from './BossMechanicsManager.js';
+export { TowerModuleManager } from './TowerModuleManager.js';

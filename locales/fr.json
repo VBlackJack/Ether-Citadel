@@ -352,20 +352,40 @@
     "autoSkillE": {
       "name": "Auto Trou Noir",
       "desc": "Active auto Trou Noir."
+    },
+    "infiniteDamage": {
+      "name": "Lame Éternelle",
+      "desc": "+2% dégâts par niveau (illimité)."
+    },
+    "infiniteHealth": {
+      "name": "Forteresse Éternelle",
+      "desc": "+2% PV max par niveau (illimité)."
+    },
+    "infiniteGold": {
+      "name": "Trésor Éternel",
+      "desc": "+3% or par niveau (illimité)."
     }
   },
   "darkMatter": {
     "berserk": {
       "name": "Berserk",
-      "desc": "+1% D\u00e9g\u00e2ts / 1% PV perdus"
+      "desc": "+1% Dégâts / 1% PV perdus"
     },
     "siphon": {
-      "name": "Siphon d'\u00c2me",
-      "desc": "Chance d'Ether sur ennemis normaux"
+      "name": "Siphon d'Âme",
+      "desc": "+0.5% chance d'ether par niveau sur les kills"
     },
     "overlord": {
       "name": "Suzerain",
       "desc": "Drone attaque 2x plus vite"
+    },
+    "etherSurge": {
+      "name": "Surge d'Éther",
+      "desc": "+10% gain d'ether par niveau"
+    },
+    "voidAffinity": {
+      "name": "Affinité du Vide",
+      "desc": "-15% dégâts ennemis en défis par niveau"
     }
   },
   "challenges": {
@@ -541,28 +561,96 @@
       "desc": "Tuer 1000 ennemis"
     },
     "kill_5000": {
-      "name": "L\u00e9gende",
+      "name": "Légende",
       "desc": "Tuer 5000 ennemis"
+    },
+    "kill_50000": {
+      "name": "Annihilateur",
+      "desc": "Tuer 50000 ennemis"
     },
     "boss_5": {
       "name": "Tueur de Rois",
       "desc": "Vaincre 5 Boss"
     },
     "boss_50": {
-      "name": "D\u00e9icide",
+      "name": "Déicide",
       "desc": "Vaincre 50 Boss"
+    },
+    "boss_200": {
+      "name": "Tueur de Dieux",
+      "desc": "Vaincre 200 Boss"
     },
     "wave_20": {
       "name": "Survivant",
       "desc": "Atteindre la vague 20"
     },
     "wave_50": {
-      "name": "V\u00e9t\u00e9ran",
+      "name": "Vétéran",
       "desc": "Atteindre la vague 50"
+    },
+    "wave_100": {
+      "name": "Champion",
+      "desc": "Atteindre la vague 100"
+    },
+    "wave_250": {
+      "name": "Élite",
+      "desc": "Atteindre la vague 250"
+    },
+    "wave_500": {
+      "name": "Immortel",
+      "desc": "Atteindre la vague 500"
     },
     "gold_10k": {
       "name": "Riche",
       "desc": "Gagner 10k Or (Total)"
+    },
+    "gold_1m": {
+      "name": "Magnat",
+      "desc": "Gagner 1M Or (Total)"
+    },
+    "ether_100": {
+      "name": "Éveil",
+      "desc": "Gagner 100 Éther (Total)"
+    },
+    "ether_1000": {
+      "name": "Illuminé",
+      "desc": "Gagner 1000 Éther (Total)"
+    },
+    "ether_10000": {
+      "name": "Transcendant",
+      "desc": "Gagner 10000 Éther (Total)"
+    },
+    "consistent_10": {
+      "name": "Fiable",
+      "desc": "Terminer 10 parties régulières (80%+ du record)"
+    },
+    "consistent_50": {
+      "name": "Tenace",
+      "desc": "Terminer 50 parties régulières"
+    },
+    "dread_5": {
+      "name": "Marcheur du Dread",
+      "desc": "Atteindre Dread niveau 5"
+    },
+    "dread_10": {
+      "name": "Maître du Dread",
+      "desc": "Atteindre Dread niveau 10"
+    },
+    "prestige_10": {
+      "name": "Renaissant",
+      "desc": "Prestige 10 fois"
+    },
+    "prestige_100": {
+      "name": "Éternel",
+      "desc": "Prestige 100 fois"
+    },
+    "ascend_1": {
+      "name": "Éveil Cosmique",
+      "desc": "Ascensionner pour la première fois"
+    },
+    "ascend_5": {
+      "name": "Maître Cosmique",
+      "desc": "Ascensionner 5 fois"
     }
   },
   "mastery": {
@@ -834,6 +922,14 @@
     "pending": "PP",
     "current": "Actuel",
     "next": "Suivant",
+    "endless": "Prestige Infini",
+    "endlessMode": "Mode Infini",
+    "endlessInterval": "Prestige toutes les X vagues",
+    "endlessDesc": "Auto-prestige durant la partie sans mourir. Gagne des PP bonus a chaque cycle.",
+    "endlessBonus": "Bonus Infini",
+    "themes": "Themes de Prestige",
+    "selectTheme": "Choisir un Theme",
+    "themeActive": "Theme Actif",
     "damage": { "name": "Pouvoir ancestral", "desc": "+5% D\u00e9g\u00e2ts par niveau" },
     "health": { "name": "Vitalit\u00e9 ancestrale", "desc": "+5% Sant\u00e9 par niveau" },
     "gold": { "name": "H\u00e9ritage dor\u00e9", "desc": "+10% Or par niveau" },
@@ -1078,34 +1174,45 @@
     "locked": "Verrouille",
     "requires": "Requiert",
     "perks": {
-      "ap_starter_damage": { "name": "Force Ancestrale", "desc": "+10% Degats globaux par niveau" },
-      "ap_mining_speed": { "name": "Pioche Etheree", "desc": "+5% Vitesse de minage par niveau" },
-      "ap_ether_boost": { "name": "Flux Arcanique", "desc": "+25% Gain d'Ether par niveau" },
-      "ap_start_wave": { "name": "Avant-Garde", "desc": "Commence +5 vagues plus loin par niveau" }
+      "ap_starter_damage": { "name": "Force Ancestrale", "desc": "+10% Dégâts globaux par niveau" },
+      "ap_mining_speed": { "name": "Pioche Éthérée", "desc": "+5% Vitesse de minage par niveau" },
+      "ap_ether_boost": { "name": "Flux Arcanique", "desc": "+25% Gain d'Éther par niveau" },
+      "ap_start_wave": { "name": "Avant-Garde", "desc": "Commence +5 vagues plus loin par niveau" },
+      "ap_crit_power": { "name": "Précision Cosmique", "desc": "+15% Dégâts critiques par niveau" },
+      "ap_prestige_mult": { "name": "Héritage Résonnant", "desc": "+10% Points de Prestige par niveau" },
+      "ap_dread_resist": { "name": "Résistance au Dread", "desc": "-3% dégâts ennemis en Dread par niveau" },
+      "ap_skill_power": { "name": "Puissance Astrale", "desc": "+10% Dégâts des compétences par niveau" },
+      "ap_offline_bonus": { "name": "Fortune Dormante", "desc": "+20% Gains hors ligne par niveau" },
+      "ap_consistency_bonus": { "name": "Esprit Tenace", "desc": "+10% Bonus de régularité par niveau" }
     }
   },
   "statistics": {
     "title": "Statistiques",
-    "general": "General",
+    "general": "Général",
     "combat": "Combat",
-    "economy": "Economie",
+    "economy": "Économie",
     "progression": "Progression",
     "totalPlayTime": "Temps de jeu total",
     "totalKills": "Kills totaux",
     "totalBosses": "Boss vaincus",
-    "totalGold": "Or total gagne",
-    "totalDamage": "Degats totaux infliges",
+    "totalGold": "Or total gagné",
+    "totalDamage": "Dégâts totaux infligés",
     "highestWave": "Vague la plus haute",
     "highestCombo": "Combo le plus haut",
     "totalPrestiges": "Prestiges totaux",
     "totalAscensions": "Ascensions totales",
     "criticalHits": "Coups critiques",
-    "projectilesFired": "Projectiles tires",
-    "skillsUsed": "Competences utilisees",
-    "runesCollected": "Runes collectees",
-    "relicsFound": "Reliques trouvees",
+    "projectilesFired": "Projectiles tirés",
+    "skillsUsed": "Compétences utilisées",
+    "runesCollected": "Runes collectées",
+    "relicsFound": "Reliques trouvées",
     "dps": "DPS actuel",
-    "avgWaveTime": "Temps moyen par vague"
+    "avgWaveTime": "Temps moyen par vague",
+    "totalEtherEarned": "Éther total gagné",
+    "runsCompleted": "Parties terminées",
+    "consistentRuns": "Parties régulières (80%+ du record)",
+    "fastestWave50": "Record vague 50",
+    "highestDreadCleared": "Dread max atteint"
   },
   "help": {
     "lab": {
@@ -1262,6 +1369,14 @@
     "elementalMaster": {
       "name": "Maître Élémentaire",
       "desc": "Solidifieur + Inferno + Marécageur : +30% dégâts, +20% ralentissement, +30 Zone"
+    },
+    "techSupremacy": {
+      "name": "Suprématie Tech",
+      "desc": "Laser + Roquette + Sniper : +40% Dégâts, +20 Crit, +20% Portée"
+    },
+    "chaosEngine": {
+      "name": "Moteur du Chaos",
+      "desc": "Inferno + Roquette + Blaster : +60 Zone, +35% Dégâts, +15% Cadence"
     }
   },
   "modes": {
@@ -1758,5 +1873,595 @@
       "useCloud": "Utiliser Cloud",
       "useLocal": "Utiliser Local"
     }
+  },
+  "prestigeTheme": {
+    "fire": { "name": "Inferno", "desc": "+25% Degats, +30% Degats Crit, -10% Sante" },
+    "ice": { "name": "Givre", "desc": "+20% Ralentissement, +30% Bouclier, -10% Cadence" },
+    "lightning": { "name": "Tempete", "desc": "+30% Cadence, +15 Chance Crit, -10% Degats" },
+    "void": { "name": "Vide", "desc": "+50% Gain Ether, +25% Pouvoir Competences, -15% Or" },
+    "cosmic": { "name": "Cosmique", "desc": "+15% Toutes Stats, +25% Points Prestige" }
+  },
+  "milestones": {
+    "title": "Jalons",
+    "unlocked": "Jalon Atteint",
+    "progress": "Progression",
+    "reward": "Recompense",
+    "claimed": "Reclame",
+    "wave10": { "name": "Premiere Epreuve", "desc": "Atteindre la vague 10" },
+    "wave25": { "name": "Defenseur", "desc": "Atteindre la vague 25" },
+    "wave50": { "name": "Veteran", "desc": "Atteindre la vague 50" },
+    "wave100": { "name": "Champion", "desc": "Atteindre la vague 100" },
+    "wave200": { "name": "Heros", "desc": "Atteindre la vague 200" },
+    "wave500": { "name": "Immortel", "desc": "Atteindre la vague 500" },
+    "dreadComplete": { "name": "Maitre du Dread", "desc": "Completer Dread niveau 10" }
+  },
+  "dailyChest": {
+    "title": "Coffre Quotidien",
+    "claim": "Ouvrir le Coffre",
+    "claimed": "Coffre Ouvert",
+    "streak": "Serie de Connexions",
+    "days": "jours",
+    "nextChest": "Prochain coffre dans",
+    "day1": { "name": "Coffre Jour 1" },
+    "day2": { "name": "Coffre Jour 2" },
+    "day3": { "name": "Coffre Jour 3" },
+    "day4": { "name": "Coffre Jour 4" },
+    "day5": { "name": "Coffre Jour 5" },
+    "day6": { "name": "Coffre Jour 6" },
+    "day7": { "name": "Mega Coffre Jour 7" }
+  },
+  "exchange": {
+    "title": "Echange de Ressources",
+    "convert": "Convertir",
+    "rate": "Taux de Change",
+    "available": "Disponible",
+    "success": "Echange Reussi",
+    "goldToCrystals": "Or vers Cristaux",
+    "crystalsToEther": "Cristaux vers Ether",
+    "etherToAscension": "Ether vers Points d'Ascension"
+  },
+  "dividends": {
+    "title": "Dividendes d'Ether",
+    "rate": "Taux Horaire",
+    "pending": "En Attente",
+    "collect": "Collecter",
+    "collected": "Dividendes Collectes",
+    "totalEarned": "Total Gagne",
+    "basedOn": "Base sur l'ether total gagne"
+  },
+  "bosses": {
+    "warning": "Boss Approche",
+    "phase": "Phase",
+    "defeated": "Boss Vaincu",
+    "goblinKing": {
+      "name": "Roi Gobelin",
+      "desc": "Le seigneur de guerre des gobelins avec une force brutale"
+    },
+    "crystalGiant": {
+      "name": "Geant de Cristal",
+      "desc": "Un golem massif fait de cristal vivant"
+    },
+    "infernoDragon": {
+      "name": "Dragon Inferno",
+      "desc": "L'ancien dragon du royaume volcanique"
+    },
+    "voidEmperor": {
+      "name": "Empereur du Vide",
+      "desc": "Seigneur des dimensions du vide"
+    },
+    "ancientOne": {
+      "name": "L'Ancien",
+      "desc": "Entite cosmique au-dela de la comprehension"
+    }
+  },
+  "bossAbilities": {
+    "spinAttack": "Attaque Tournovante",
+    "summonGoblins": "Invocation de Gobelins",
+    "warCry": "Cri de Guerre",
+    "crystalShield": "Bouclier de Cristal",
+    "shardBurst": "Eclat de Fragments",
+    "crystalPrison": "Prison de Cristal",
+    "fireBreath": "Souffle de Feu",
+    "wingGust": "Bourrasque d'Ailes",
+    "summonDrakes": "Invocation de Drakes",
+    "meteorRain": "Pluie de Meteores",
+    "voidOrbs": "Orbes du Vide",
+    "gravityWell": "Puits de Gravite",
+    "mindControl": "Controle Mental",
+    "voidExplosion": "Explosion du Vide",
+    "cosmicBeam": "Rayon Cosmique",
+    "dimensionalRift": "Faille Dimensionnelle",
+    "timeStop": "Arret du Temps",
+    "starCollapse": "Effondrement Stellaire",
+    "realityWarp": "Distorsion de Realite"
+  },
+  "skillCombos": {
+    "title": "Combos de Competences",
+    "active": "Combo Actif",
+    "ready": "Combo Pret",
+    "novaStorm": {
+      "name": "Tempete Nova",
+      "desc": "Overdrive + Devastateur = Explosion de degats massifs"
+    },
+    "timeFracture": {
+      "name": "Fracture Temporelle",
+      "desc": "Distorsion + Overdrive = Vitesse extreme avec temps ralenti"
+    },
+    "voidCollapse": {
+      "name": "Effondrement du Vide",
+      "desc": "Faille du Vide + Seisme = Fusion gravitationnelle"
+    },
+    "shieldStorm": {
+      "name": "Tempete de Bouclier",
+      "desc": "Bouclier Miroir + Tempete = Ripostes de foudre"
+    },
+    "apocalypse": {
+      "name": "Apocalypse",
+      "desc": "Tempete + Faille du Vide = Destruction ultime"
+    },
+    "eternity": {
+      "name": "Eternite",
+      "desc": "Distorsion + Bouclier Miroir = Invincibilite temporaire"
+    }
+  },
+  "classes": {
+    "title": "Classe de Personnage",
+    "selected": "Classe Selectionnee",
+    "levelUp": "Niveau Superieur",
+    "select": "Choisir une Classe",
+    "level": "Niveau de Classe",
+    "xp": "XP de Classe",
+    "bonuses": "Bonus de Classe",
+    "passives": "Competences Passives",
+    "ultimate": "Competence Ultime",
+    "defender": {
+      "name": "Defenseur",
+      "desc": "Maitre de l'endurance et de la protection",
+      "passives": {
+        "ironWill": { "name": "Volonte de Fer", "desc": "+5% Sante par niveau" },
+        "shieldMastery": { "name": "Maitrise du Bouclier", "desc": "+10% Bouclier par niveau" },
+        "fortification": { "name": "Fortification", "desc": "+3% Armure par niveau" }
+      }
+    },
+    "berserker": {
+      "name": "Berserker",
+      "desc": "Rage furieuse et puissance brute",
+      "passives": {
+        "bloodRage": { "name": "Rage Sanguinaire", "desc": "+5% Degats par niveau" },
+        "frenzy": { "name": "Frenesie", "desc": "+3% Vitesse d'attaque par niveau" },
+        "executioner": { "name": "Bourreau", "desc": "+10% Degats critiques par niveau" }
+      }
+    },
+    "mage": {
+      "name": "Mage",
+      "desc": "Maitre de la magie arcanique",
+      "passives": {
+        "arcanePower": { "name": "Pouvoir Arcanique", "desc": "+8% Pouvoir competence par niveau" },
+        "manaFlow": { "name": "Flux de Mana", "desc": "-5% Temps de recharge par niveau" },
+        "spellMastery": { "name": "Maitrise des Sorts", "desc": "+15% Duree competence par niveau" }
+      }
+    },
+    "ranger": {
+      "name": "Rodeur",
+      "desc": "Precision et attaques rapides",
+      "passives": {
+        "eagleEye": { "name": "Oeil d'Aigle", "desc": "+3% Chance critique par niveau" },
+        "quickDraw": { "name": "Tir Rapide", "desc": "+5% Cadence par niveau" },
+        "piercing": { "name": "Perforant", "desc": "+10% Ignore armure par niveau" }
+      }
+    },
+    "merchant": {
+      "name": "Marchand",
+      "desc": "Maitre du commerce et des ressources",
+      "passives": {
+        "goldenTouch": { "name": "Toucher Dore", "desc": "+10% Or par niveau" },
+        "resourceful": { "name": "Debrouillard", "desc": "+8% Gain cristaux par niveau" },
+        "luckyFind": { "name": "Trouvaille Chanceuse", "desc": "+5% Chance de relique par niveau" }
+      }
+    }
+  },
+  "equipment": {
+    "title": "Equipement",
+    "inventory": "Inventaire",
+    "equipped": "Equipe",
+    "equip": "Equiper",
+    "unequip": "Retirer",
+    "sell": "Vendre",
+    "stats": "Statistiques",
+    "tier": "Tier",
+    "power": "Puissance d'Equipement",
+    "full": "Inventaire plein",
+    "found": "Equipement trouve",
+    "slots": {
+      "head": "Tete",
+      "chest": "Torse",
+      "hands": "Mains",
+      "feet": "Pieds",
+      "accessory1": "Accessoire 1",
+      "accessory2": "Accessoire 2"
+    },
+    "items": {
+      "leatherCap": { "name": "Chapeau de Cuir", "desc": "Protection basique de la tete" },
+      "ironHelm": { "name": "Heaume de Fer", "desc": "Protection solide en metal" },
+      "crystalCrown": { "name": "Couronne de Cristal", "desc": "Couvre-chef magique" },
+      "voidMask": { "name": "Masque du Vide", "desc": "Infuse avec l'energie du vide" },
+      "clothRobe": { "name": "Robe de Tissu", "desc": "Vetement basique" },
+      "chainmail": { "name": "Cotte de Mailles", "desc": "Armure en anneaux de metal" },
+      "plateArmor": { "name": "Armure de Plates", "desc": "Protection lourde" },
+      "voidplate": { "name": "Plates du Vide", "desc": "Armure imbibee du vide" },
+      "workGloves": { "name": "Gants de Travail", "desc": "Gants basiques" },
+      "combatGauntlets": { "name": "Gantelets de Combat", "desc": "Gants renforces" },
+      "arcaneGrips": { "name": "Poignes Arcaniques", "desc": "Magiquement ameliores" },
+      "voidGrasps": { "name": "Prises du Vide", "desc": "Energie du vide infusee" },
+      "sandals": { "name": "Sandales", "desc": "Chaussures simples" },
+      "ironBoots": { "name": "Bottes de Fer", "desc": "Chaussures solides" },
+      "swiftBoots": { "name": "Bottes de Rapidite", "desc": "Amelioration de la vitesse" },
+      "voidTreads": { "name": "Semelles du Vide", "desc": "Marcher dans le vide" },
+      "copperRing": { "name": "Anneau de Cuivre", "desc": "Anneau simple" },
+      "silverRing": { "name": "Anneau d'Argent", "desc": "Anneau de qualite" },
+      "goldRing": { "name": "Anneau d'Or", "desc": "Anneau precieux" },
+      "voidBand": { "name": "Bracelet du Vide", "desc": "Pouvoir du vide" },
+      "leatherAmulet": { "name": "Amulette de Cuir", "desc": "Amulette basique" },
+      "crystalPendant": { "name": "Pendentif de Cristal", "desc": "Pouvoir cristallin" },
+      "goldMedallion": { "name": "Medaillon d'Or", "desc": "Medaillon precieux" },
+      "voidHeart": { "name": "Coeur du Vide", "desc": "Essence pure du vide" }
+    }
+  },
+  "pets": {
+    "title": "Compagnons",
+    "unlocked": "Compagnon Debloque",
+    "levelUp": "Niveau",
+    "active": "Compagnon Actif",
+    "ability": "Capacite Active",
+    "passive": "Bonus Passif",
+    "cooldown": "Temps de Recharge",
+    "select": "Selectionner",
+    "fireSprite": {
+      "name": "Sprite de Feu",
+      "desc": "Un petit esprit de feu qui augmente les degats"
+    },
+    "frostWisp": {
+      "name": "Lueur Glaciale",
+      "desc": "Un esprit de glace qui gele les ennemis"
+    },
+    "goldDrake": {
+      "name": "Drake Dore",
+      "desc": "Un petit dragon qui augmente le gain d'or"
+    },
+    "shadowCat": {
+      "name": "Chat de l'Ombre",
+      "desc": "Un felin mystique avec des frappes obscures"
+    },
+    "stormEagle": {
+      "name": "Aigle de la Tempete",
+      "desc": "Un oiseau qui frappe avec l'eclair"
+    },
+    "crystalGolem": {
+      "name": "Golem de Cristal",
+      "desc": "Un defenseur de pierre qui absorbe les degats"
+    },
+    "voidSpawn": {
+      "name": "Rejeton du Vide",
+      "desc": "Une creature du vide avec des capacites chaotiques"
+    },
+    "phoenixHatchling": {
+      "name": "Bebe Phenix",
+      "desc": "Un oiseau de feu qui peut ranimer"
+    },
+    "celestialSpirit": {
+      "name": "Esprit Celeste",
+      "desc": "Un etre divin avec un bouclier protecteur"
+    }
+  },
+  "modifiers": {
+    "title": "Modificateurs de Vague",
+    "active": "Modificateurs Actifs",
+    "select": "Choisir un Modificateur",
+    "skip": "Passer",
+    "reward": "Bonus de Recompense",
+    "armoredHorde": {
+      "name": "Horde Blindee",
+      "desc": "Les ennemis ont +30% armure, +30% recompenses"
+    },
+    "swiftTide": {
+      "name": "Maree Rapide",
+      "desc": "Les ennemis ont +40% vitesse, +35% recompenses"
+    },
+    "massiveBrutes": {
+      "name": "Brutes Massives",
+      "desc": "Les ennemis ont +50% PV et taille, +40% recompenses"
+    },
+    "endlessSwarm": {
+      "name": "Nuee Infinie",
+      "desc": "+100% nombre d'ennemis, +50% recompenses"
+    },
+    "regenerators": {
+      "name": "Regenerateurs",
+      "desc": "Les ennemis regenerent 1% PV/s, +25% recompenses"
+    },
+    "vampiric": {
+      "name": "Vampirique",
+      "desc": "Les ennemis soignent en frappant, +30% recompenses"
+    },
+    "empowered": {
+      "name": "Renforces",
+      "desc": "+50% stats ennemis, +50% or"
+    },
+    "fragile": {
+      "name": "Fragiles",
+      "desc": "-30% PV ennemis, 2x cristaux"
+    },
+    "slowMotion": {
+      "name": "Ralenti",
+      "desc": "-50% vitesse ennemis, moins de recompenses"
+    },
+    "glassReward": {
+      "name": "Recompense de Verre",
+      "desc": "-40% sante joueur, 3x ether"
+    },
+    "damageDebuff": {
+      "name": "Malus de Degats",
+      "desc": "-20% degats joueur, +15% chance relique"
+    },
+    "limitedAmmo": {
+      "name": "Munitions Limitees",
+      "desc": "100 tirs par vague, +100% recompenses"
+    },
+    "risky": {
+      "name": "Risque",
+      "desc": "+20% degats joueur, -20% sante joueur"
+    },
+    "cooldownHell": {
+      "name": "Enfer de Recharge",
+      "desc": "+50% temps de recharge, +30% or"
+    }
+  },
+  "dungeon": {
+    "title": "Donjon",
+    "enter": "Entrer dans le Donjon",
+    "floor": "Etage",
+    "room": "Salle",
+    "clear": "Salle Nettoyee",
+    "boss": "Salle du Boss",
+    "treasure": "Salle au Tresor",
+    "rest": "Salle de Repos",
+    "shop": "Boutique",
+    "mystery": "Salle Mystere",
+    "trap": "Salle Piege",
+    "exit": "Sortie",
+    "reward": "Recompenses du Donjon",
+    "progress": "Progression du Donjon"
+  },
+  "rift": {
+    "title": "Mode Faille",
+    "enter": "Entrer dans la Faille",
+    "level": "Niveau de Faille",
+    "timer": "Temps Restant",
+    "bonus": "Bonus de Faille",
+    "complete": "Faille Terminee",
+    "failed": "Faille Echouee",
+    "reward": "Recompenses de Faille"
+  },
+  "relicSynergy": {
+    "title": "Synergies de Reliques",
+    "active": "Synergies Actives",
+    "progress": "Progression",
+    "fireSet": {
+      "name": "Ensemble Ardent",
+      "desc": "+50% Degats de feu, brule les ennemis"
+    },
+    "iceSet": {
+      "name": "Ensemble Glacial",
+      "desc": "+40% Ralentissement, gele les ennemis"
+    },
+    "voidSet": {
+      "name": "Ensemble du Vide",
+      "desc": "+30% Tout, effets du vide"
+    },
+    "ancientSet": {
+      "name": "Ensemble Ancien",
+      "desc": "+25% Stats, sagesse ancienne"
+    },
+    "cosmicSet": {
+      "name": "Ensemble Cosmique",
+      "desc": "+20% Tout, pouvoir cosmique"
+    }
+  },
+  "relicEvolution": {
+    "title": "Evolution de Relique",
+    "evolve": "Faire Evoluer",
+    "requirements": "Conditions",
+    "maxLevel": "Niveau Requis",
+    "materials": "Materiaux",
+    "success": "Evolution Reussie",
+    "blazingCore": {
+      "name": "Noyau Embrase",
+      "desc": "Evolue en forme embrasee"
+    },
+    "frostHeart": {
+      "name": "Coeur de Givre",
+      "desc": "Evolue en essence glaciale"
+    },
+    "voidShard": {
+      "name": "Eclat du Vide",
+      "desc": "Evolue en cristal du vide"
+    },
+    "ancientRelic": {
+      "name": "Relique Ancienne",
+      "desc": "Evolue en artefact ancien"
+    },
+    "cosmicOrb": {
+      "name": "Orbe Cosmique",
+      "desc": "Evolue en sphere cosmique"
+    }
+  },
+  "mazing": {
+    "title": "Labyrinthe",
+    "walls": "Murs",
+    "traps": "Pieges",
+    "place": "Placer",
+    "remove": "Retirer",
+    "destroyed": "Mur Detruit !",
+    "maxWalls": "Maximum de murs atteint",
+    "maxTraps": "Maximum de pieges atteint",
+    "wouldBlockPath": "Bloquerait le chemin",
+    "woodenWall": { "name": "Mur en Bois", "desc": "Mur basique, PV faibles" },
+    "stoneWall": { "name": "Mur en Pierre", "desc": "Pierre solide, PV moyens" },
+    "ironWall": { "name": "Mur en Fer", "desc": "Fer resistant, PV eleves" },
+    "crystalWall": { "name": "Mur de Cristal", "desc": "Barriere cristalline, blesse les ennemis" },
+    "voidBarrier": { "name": "Barriere du Vide", "desc": "Barriere etheree, etourdit les ennemis" },
+    "spikeTrap": { "name": "Piege a Pointes", "desc": "Inflige des degats aux ennemis" },
+    "poisonTrap": { "name": "Piege Empoisonne", "desc": "Empoisonne les ennemis" },
+    "freezeTrap": { "name": "Piege de Gel", "desc": "Ralentit fortement les ennemis" },
+    "fireTrap": { "name": "Piege de Feu", "desc": "Degats de feu en zone" },
+    "lightningTrap": { "name": "Piege Eclair", "desc": "Degats en chaine" },
+    "voidTrap": { "name": "Piege du Vide", "desc": "Attire et blesse les ennemis" }
+  },
+  "worlds": {
+    "title": "Mondes",
+    "select": "Selectionner un Monde",
+    "unlocked": "Monde Debloque",
+    "complete": "Monde Termine",
+    "progress": "Progression",
+    "completions": "Completions",
+    "grasslands": { "name": "Prairies", "desc": "Prairies paisibles avec ennemis basiques" },
+    "desert": { "name": "Desert", "desc": "Sables brulants avec ennemis coriaces" },
+    "volcanic": { "name": "Royaume Volcanique", "desc": "Domaine de feu avec dangers de lave" },
+    "frozen": { "name": "Toundra Gelee", "desc": "Terres glacees qui ralentissent vos attaques" },
+    "shadow": { "name": "Dimension de l'Ombre", "desc": "Royaume sombre avec visibilite reduite" },
+    "cosmic": { "name": "Vide Cosmique", "desc": "Le defi ultime au-dela de la realite" }
+  },
+  "hazards": {
+    "title": "Dangers",
+    "lavaPools": { "name": "Mares de Lave" },
+    "icePatches": { "name": "Plaques de Glace" },
+    "shadowZones": { "name": "Zones d'Ombre" },
+    "voidRifts": { "name": "Failles du Vide" },
+    "meteorShowers": { "name": "Pluies de Meteores" }
+  },
+  "skillCards": {
+    "title": "Cartes de Competence",
+    "collection": "Collection",
+    "equipped": "Equipees",
+    "equip": "Equiper",
+    "unequip": "Retirer",
+    "disenchant": "Desenchanter",
+    "craft": "Fabriquer",
+    "powerSurge": { "name": "Surge de Puissance", "desc": "+10% Degats" },
+    "rapidFire": { "name": "Tir Rapide", "desc": "+10% Cadence" },
+    "precisionStrike": { "name": "Frappe Precise", "desc": "+5% Chance Critique" },
+    "armorPiercing": { "name": "Perce-Armure", "desc": "+15% Ignore Armure" },
+    "explosiveRounds": { "name": "Munitions Explosives", "desc": "+20 Splash, +30% Degats Splash" },
+    "chainLightning": { "name": "Eclair en Chaine", "desc": "Chaine a 3 ennemis, 50% degats" },
+    "devastator": { "name": "Devastateur", "desc": "+50% Degats, +100% Degats Crit" },
+    "reinforcedWalls": { "name": "Murs Renforces", "desc": "+10% Sante" },
+    "quickRepair": { "name": "Reparation Rapide", "desc": "+20% Regen" },
+    "energyShield": { "name": "Bouclier Energetique", "desc": "+25% Bouclier" },
+    "damageReflect": { "name": "Reflexion Degats", "desc": "Reflechit 10% degats" },
+    "immortalCore": { "name": "Coeur Immortel", "desc": "Revit une fois avec 50% PV" },
+    "goldMagnet": { "name": "Aimant a Or", "desc": "+15% Or" },
+    "expBoost": { "name": "Boost d'XP", "desc": "+20% Experience" },
+    "luckyStar": { "name": "Etoile Chanceuse", "desc": "+10% Chance, +10% Chance Relique" },
+    "timeDilation": { "name": "Dilatation Temporelle", "desc": "-20% Temps de Recharge" },
+    "voidTouch": { "name": "Toucher du Vide", "desc": "+50% Ether, +10% Toutes Stats" },
+    "overdriveExtend": { "name": "Extension Overdrive", "desc": "+50% Duree Overdrive" },
+    "meteorCluster": { "name": "Amas de Meteores", "desc": "+3 Meteores" },
+    "blackholeGravity": { "name": "Gravite Trou Noir", "desc": "+50% Portee, +30% Degats" }
+  },
+  "cardPacks": {
+    "title": "Paquets de Cartes",
+    "open": "Ouvrir le Paquet",
+    "basic": { "name": "Paquet Basique" },
+    "premium": { "name": "Paquet Premium" },
+    "elite": { "name": "Paquet Elite" },
+    "legendary": { "name": "Paquet Legendaire" }
+  },
+  "cards": {
+    "dust": "Poussiere de Carte",
+    "crafted": "Carte Fabriquee",
+    "rarity": {
+      "common": "Commun",
+      "uncommon": "Peu Commun",
+      "rare": "Rare",
+      "legendary": "Legendaire"
+    }
+  },
+  "landmarks": {
+    "title": "Points de Repere",
+    "place": "Placer un Repere",
+    "unlocked": "Repere Debloque",
+    "maxLandmarks": "Maximum de reperes atteint",
+    "altarOfPower": { "name": "Autel de Puissance", "desc": "+20% Degats dans la zone" },
+    "healingSpring": { "name": "Source de Soin", "desc": "Soigne le chateau" },
+    "goldFountain": { "name": "Fontaine d'Or", "desc": "Genere de l'or par seconde" },
+    "stormPillar": { "name": "Pilier de Tempete", "desc": "Degats eclair en chaine" },
+    "crystalObelisk": { "name": "Obelisque de Cristal", "desc": "+15% Chance Crit dans la zone" },
+    "frostShrine": { "name": "Sanctuaire de Givre", "desc": "Ralentit les ennemis" },
+    "fireBeacon": { "name": "Balise de Feu", "desc": "Brule les ennemis" },
+    "voidMonolith": { "name": "Monolithe du Vide", "desc": "-30% Armure Ennemie" },
+    "ancientTree": { "name": "Arbre Ancien", "desc": "Soigne et booste la regen" },
+    "celestialGate": { "name": "Porte Celeste", "desc": "+15% Toutes Stats dans la zone" }
+  },
+  "affixes": {
+    "title": "Affixes d'Ennemi",
+    "berserker": { "name": "Berserker", "desc": "+50% Degats, +20% Vitesse" },
+    "venomous": { "name": "Venimeux", "desc": "Empoisonne au contact" },
+    "explosive": { "name": "Explosif", "desc": "Explose a la mort" },
+    "vampiric": { "name": "Vampirique", "desc": "Se soigne en frappant" },
+    "armored": { "name": "Blinde", "desc": "Double armure" },
+    "regenerating": { "name": "Regenerant", "desc": "Regenere 2% PV/s" },
+    "shielded": { "name": "Protege", "desc": "Possede un bouclier" },
+    "ethereal": { "name": "Etheree", "desc": "30% chance d'esquive" },
+    "swift": { "name": "Rapide", "desc": "+50% Vitesse" },
+    "teleporter": { "name": "Teleporteur", "desc": "Se teleporte aleatoirement" },
+    "phasing": { "name": "Phasing", "desc": "Traverse les murs" },
+    "jammer": { "name": "Brouilleur", "desc": "Desactive les tourelles proches" },
+    "corrosive": { "name": "Corrosif", "desc": "Reduit les degats des tourelles" },
+    "magnetic": { "name": "Magnetique", "desc": "Devie les projectiles" },
+    "nullifier": { "name": "Annulateur", "desc": "Immunise aux competences" },
+    "arcane": { "name": "Arcanique", "desc": "Lance des boules de feu" },
+    "commander": { "name": "Commandant", "desc": "Booste les ennemis proches" },
+    "voidTouched": { "name": "Touche par le Vide", "desc": "Pulse de degats du vide" }
+  },
+  "modules": {
+    "title": "Modules de Tourelle",
+    "unlocked": "Module Debloque",
+    "barrels": "Canons",
+    "cores": "Coeurs",
+    "bases": "Bases",
+    "ammo": "Munitions",
+    "standardBarrel": { "name": "Canon Standard" },
+    "heavyBarrel": { "name": "Canon Lourd" },
+    "rapidBarrel": { "name": "Canon Rapide" },
+    "sniperBarrel": { "name": "Canon Sniper" },
+    "scatterBarrel": { "name": "Canon Dispersion" },
+    "voidBarrel": { "name": "Canon du Vide" },
+    "basicCore": { "name": "Coeur Basique" },
+    "powerCore": { "name": "Coeur de Puissance" },
+    "speedCore": { "name": "Coeur de Vitesse" },
+    "critCore": { "name": "Coeur Critique" },
+    "elementalCore": { "name": "Coeur Elementaire" },
+    "cosmicCore": { "name": "Coeur Cosmique" },
+    "fixedBase": { "name": "Base Fixe" },
+    "rotatingBase": { "name": "Base Rotative" },
+    "elevatedBase": { "name": "Base Sureleve" },
+    "armoredBase": { "name": "Base Blindee" },
+    "mobileBase": { "name": "Base Mobile" },
+    "phasingBase": { "name": "Base Phasique" },
+    "standardAmmo": { "name": "Munitions Standard" },
+    "incendiaryAmmo": { "name": "Munitions Incendiaires" },
+    "cryoAmmo": { "name": "Munitions Cryo" },
+    "shockAmmo": { "name": "Munitions Choc" },
+    "explosiveAmmo": { "name": "Munitions Explosives" },
+    "voidAmmo": { "name": "Munitions du Vide" }
+  },
+  "moduleSynergies": {
+    "title": "Synergies de Modules",
+    "fireStorm": { "name": "Tempete de Feu" },
+    "frozenFortress": { "name": "Forteresse Gelee" },
+    "deathRay": { "name": "Rayon de la Mort" },
+    "voidStorm": { "name": "Tempete du Vide" },
+    "artillery": { "name": "Artillerie" },
+    "chainMaster": { "name": "Maitre des Chaines" }
   }
 }

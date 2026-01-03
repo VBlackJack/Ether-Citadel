@@ -178,8 +178,10 @@ export const CHALLENGES = [
  */
 export const DARK_MATTER_UPGRADES = [
     { id: 'berserk', nameKey: 'darkMatter.berserk.name', descKey: 'darkMatter.berserk.desc', max: 1, cost: 5 },
-    { id: 'siphon', nameKey: 'darkMatter.siphon.name', descKey: 'darkMatter.siphon.desc', max: 5, cost: 10 },
-    { id: 'overlord', nameKey: 'darkMatter.overlord.name', descKey: 'darkMatter.overlord.desc', max: 3, cost: 8 }
+    { id: 'siphon', nameKey: 'darkMatter.siphon.name', descKey: 'darkMatter.siphon.desc', max: 10, cost: 8, effectPerLevel: 0.5 },
+    { id: 'overlord', nameKey: 'darkMatter.overlord.name', descKey: 'darkMatter.overlord.desc', max: 3, cost: 8 },
+    { id: 'etherSurge', nameKey: 'darkMatter.etherSurge.name', descKey: 'darkMatter.etherSurge.desc', max: 5, cost: 15, effectPerLevel: 0.1 },
+    { id: 'voidAffinity', nameKey: 'darkMatter.voidAffinity.name', descKey: 'darkMatter.voidAffinity.desc', max: 3, cost: 25, effectPerLevel: 0.15 }
 ];
 
 /**
@@ -217,11 +219,28 @@ export const ACHIEVEMENTS_DB = [
     { id: 'kill_100', nameKey: 'achievements.kill_100.name', descKey: 'achievements.kill_100.desc', cond: (s) => s.kills >= 100, reward: 5 },
     { id: 'kill_1000', nameKey: 'achievements.kill_1000.name', descKey: 'achievements.kill_1000.desc', cond: (s) => s.kills >= 1000, reward: 25 },
     { id: 'kill_5000', nameKey: 'achievements.kill_5000.name', descKey: 'achievements.kill_5000.desc', cond: (s) => s.kills >= 5000, reward: 100 },
+    { id: 'kill_50000', nameKey: 'achievements.kill_50000.name', descKey: 'achievements.kill_50000.desc', cond: (s) => s.kills >= 50000, reward: 500 },
     { id: 'boss_5', nameKey: 'achievements.boss_5.name', descKey: 'achievements.boss_5.desc', cond: (s) => s.bosses >= 5, reward: 15 },
     { id: 'boss_50', nameKey: 'achievements.boss_50.name', descKey: 'achievements.boss_50.desc', cond: (s) => s.bosses >= 50, reward: 100 },
+    { id: 'boss_200', nameKey: 'achievements.boss_200.name', descKey: 'achievements.boss_200.desc', cond: (s) => s.bosses >= 200, reward: 500 },
     { id: 'wave_20', nameKey: 'achievements.wave_20.name', descKey: 'achievements.wave_20.desc', cond: (s) => s.maxWave >= 20, reward: 10 },
     { id: 'wave_50', nameKey: 'achievements.wave_50.name', descKey: 'achievements.wave_50.desc', cond: (s) => s.maxWave >= 50, reward: 50 },
-    { id: 'gold_10k', nameKey: 'achievements.gold_10k.name', descKey: 'achievements.gold_10k.desc', cond: (s) => s.totalGold >= 10000, reward: 20 }
+    { id: 'wave_100', nameKey: 'achievements.wave_100.name', descKey: 'achievements.wave_100.desc', cond: (s) => s.maxWave >= 100, reward: 150 },
+    { id: 'wave_250', nameKey: 'achievements.wave_250.name', descKey: 'achievements.wave_250.desc', cond: (s) => s.maxWave >= 250, reward: 500 },
+    { id: 'wave_500', nameKey: 'achievements.wave_500.name', descKey: 'achievements.wave_500.desc', cond: (s) => s.maxWave >= 500, reward: 2000 },
+    { id: 'gold_10k', nameKey: 'achievements.gold_10k.name', descKey: 'achievements.gold_10k.desc', cond: (s) => s.totalGold >= 10000, reward: 20 },
+    { id: 'gold_1m', nameKey: 'achievements.gold_1m.name', descKey: 'achievements.gold_1m.desc', cond: (s) => s.totalGold >= 1000000, reward: 200 },
+    { id: 'ether_100', nameKey: 'achievements.ether_100.name', descKey: 'achievements.ether_100.desc', cond: (s) => s.totalEther >= 100, reward: 25 },
+    { id: 'ether_1000', nameKey: 'achievements.ether_1000.name', descKey: 'achievements.ether_1000.desc', cond: (s) => s.totalEther >= 1000, reward: 150 },
+    { id: 'ether_10000', nameKey: 'achievements.ether_10000.name', descKey: 'achievements.ether_10000.desc', cond: (s) => s.totalEther >= 10000, reward: 1000 },
+    { id: 'consistent_10', nameKey: 'achievements.consistent_10.name', descKey: 'achievements.consistent_10.desc', cond: (s) => s.consistentRuns >= 10, reward: 50 },
+    { id: 'consistent_50', nameKey: 'achievements.consistent_50.name', descKey: 'achievements.consistent_50.desc', cond: (s) => s.consistentRuns >= 50, reward: 250 },
+    { id: 'dread_5', nameKey: 'achievements.dread_5.name', descKey: 'achievements.dread_5.desc', cond: (s) => s.highestDread >= 5, reward: 100 },
+    { id: 'dread_10', nameKey: 'achievements.dread_10.name', descKey: 'achievements.dread_10.desc', cond: (s) => s.highestDread >= 10, reward: 500 },
+    { id: 'prestige_10', nameKey: 'achievements.prestige_10.name', descKey: 'achievements.prestige_10.desc', cond: (s) => s.totalPrestiges >= 10, reward: 75 },
+    { id: 'prestige_100', nameKey: 'achievements.prestige_100.name', descKey: 'achievements.prestige_100.desc', cond: (s) => s.totalPrestiges >= 100, reward: 500 },
+    { id: 'ascend_1', nameKey: 'achievements.ascend_1.name', descKey: 'achievements.ascend_1.desc', cond: (s) => s.totalAscensions >= 1, reward: 250 },
+    { id: 'ascend_5', nameKey: 'achievements.ascend_5.name', descKey: 'achievements.ascend_5.desc', cond: (s) => s.totalAscensions >= 5, reward: 1000 }
 ];
 
 /**
@@ -596,6 +615,72 @@ export const ASCENSION_PERKS = [
         costFactor: '5',
         effectBase: 5,
         req: 'ap_ether_boost'
+    },
+    {
+        id: 'ap_crit_power',
+        nameKey: 'ascension.perks.ap_crit_power.name',
+        descKey: 'ascension.perks.ap_crit_power.desc',
+        icon: '💥',
+        maxLevel: 0,
+        costBase: '15',
+        costFactor: '1.3',
+        effectBase: 0.15,
+        req: 'ap_starter_damage'
+    },
+    {
+        id: 'ap_prestige_mult',
+        nameKey: 'ascension.perks.ap_prestige_mult.name',
+        descKey: 'ascension.perks.ap_prestige_mult.desc',
+        icon: '✨',
+        maxLevel: 25,
+        costBase: '25',
+        costFactor: '2.5',
+        effectBase: 0.1,
+        req: 'ap_ether_boost'
+    },
+    {
+        id: 'ap_dread_resist',
+        nameKey: 'ascension.perks.ap_dread_resist.name',
+        descKey: 'ascension.perks.ap_dread_resist.desc',
+        icon: '🛡️',
+        maxLevel: 20,
+        costBase: '30',
+        costFactor: '2',
+        effectBase: 0.03,
+        req: 'ap_start_wave'
+    },
+    {
+        id: 'ap_skill_power',
+        nameKey: 'ascension.perks.ap_skill_power.name',
+        descKey: 'ascension.perks.ap_skill_power.desc',
+        icon: '⚡',
+        maxLevel: 0,
+        costBase: '20',
+        costFactor: '1.25',
+        effectBase: 0.1,
+        req: 'ap_crit_power'
+    },
+    {
+        id: 'ap_offline_bonus',
+        nameKey: 'ascension.perks.ap_offline_bonus.name',
+        descKey: 'ascension.perks.ap_offline_bonus.desc',
+        icon: '🌙',
+        maxLevel: 10,
+        costBase: '100',
+        costFactor: '3',
+        effectBase: 0.2,
+        req: 'ap_prestige_mult'
+    },
+    {
+        id: 'ap_consistency_bonus',
+        nameKey: 'ascension.perks.ap_consistency_bonus.name',
+        descKey: 'ascension.perks.ap_consistency_bonus.desc',
+        icon: '🎯',
+        maxLevel: 5,
+        costBase: '75',
+        costFactor: '4',
+        effectBase: 0.1,
+        req: 'ap_ether_boost'
     }
 ];
 
@@ -654,7 +739,14 @@ export function createMetaUpgrades() {
         { id: 'healthMult', nameKey: 'metaUpgrades.healthMult.name', descKey: 'metaUpgrades.healthMult.desc', baseCost: 2, costMult: 1.5, level: 0, maxLevel: 20, getEffect: (lvl) => 1 + (lvl * 0.1), format: (v) => `x${v.toFixed(1)}`, icon: '\ud83c\udff0' },
         { id: 'unlockAuto', nameKey: 'metaUpgrades.unlockAuto.name', descKey: 'metaUpgrades.unlockAuto.desc', baseCost: 10, costMult: 100, level: 0, maxLevel: 1, getEffect: (lvl) => lvl > 0, format: (v) => v ? t('status.on') : t('status.off'), icon: '\ud83d\udd04' },
         { id: 'unlockAI', nameKey: 'metaUpgrades.unlockAI.name', descKey: 'metaUpgrades.unlockAI.desc', baseCost: 25, costMult: 100, level: 0, maxLevel: 1, getEffect: (lvl) => lvl > 0, format: (v) => v ? t('status.on') : t('status.off'), icon: '\ud83e\udd16' },
-        { id: 'unlockDrone', nameKey: 'metaUpgrades.unlockDrone.name', descKey: 'metaUpgrades.unlockDrone.desc', baseCost: 50, costMult: 100, level: 0, maxLevel: 1, getEffect: (lvl) => lvl > 0, format: (v) => v ? t('status.on') : t('status.off'), icon: '\ud83d\udef8' }
+        { id: 'unlockDrone', nameKey: 'metaUpgrades.unlockDrone.name', descKey: 'metaUpgrades.unlockDrone.desc', baseCost: 50, costMult: 100, level: 0, maxLevel: 1, getEffect: (lvl) => lvl > 0, format: (v) => v ? t('status.on') : t('status.off'), icon: '\ud83d\udef8' },
+        // Infinite scaling upgrades for late game (diminishing returns)
+        { id: 'infiniteDamage', nameKey: 'metaUpgrades.infiniteDamage.name', descKey: 'metaUpgrades.infiniteDamage.desc', baseCost: 100, costMult: 1.15, level: 0, maxLevel: 0, getEffect: (lvl) => 1 + (lvl * 0.02), format: (v) => `x${v.toFixed(2)}`, icon: '🗡️' },
+        { id: 'infiniteHealth', nameKey: 'metaUpgrades.infiniteHealth.name', descKey: 'metaUpgrades.infiniteHealth.desc', baseCost: 100, costMult: 1.15, level: 0, maxLevel: 0, getEffect: (lvl) => 1 + (lvl * 0.02), format: (v) => `x${v.toFixed(2)}`, icon: '💖' },
+        { id: 'infiniteGold', nameKey: 'metaUpgrades.infiniteGold.name', descKey: 'metaUpgrades.infiniteGold.desc', baseCost: 150, costMult: 1.2, level: 0, maxLevel: 0, getEffect: (lvl) => 1 + (lvl * 0.03), format: (v) => `x${v.toFixed(2)}`, icon: '💎' },
+        { id: 'autoSkillQ', nameKey: 'metaUpgrades.autoSkillQ.name', descKey: 'metaUpgrades.autoSkillQ.desc', baseCost: 75, costMult: 100, level: 0, maxLevel: 1, getEffect: (lvl) => lvl > 0, format: (v) => v ? t('status.on') : t('status.off'), icon: '⚡' },
+        { id: 'autoSkillW', nameKey: 'metaUpgrades.autoSkillW.name', descKey: 'metaUpgrades.autoSkillW.desc', baseCost: 100, costMult: 100, level: 0, maxLevel: 1, getEffect: (lvl) => lvl > 0, format: (v) => v ? t('status.on') : t('status.off'), icon: '☄️' },
+        { id: 'autoSkillE', nameKey: 'metaUpgrades.autoSkillE.name', descKey: 'metaUpgrades.autoSkillE.desc', baseCost: 125, costMult: 100, level: 0, maxLevel: 1, getEffect: (lvl) => lvl > 0, format: (v) => v ? t('status.on') : t('status.off'), icon: '🌀' }
     ];
 }
 
@@ -701,8 +793,69 @@ export const TURRET_SYNERGIES = [
     { id: 'precision_combo', nameKey: 'synergy.precisionCombo.name', descKey: 'synergy.precisionCombo.desc', requires: ['laser', 'sniper'], bonus: { critChance: 15, critDamage: 0.5 }, color: '#ef4444' },
     { id: 'artillery_combo', nameKey: 'synergy.artilleryCombo.name', descKey: 'synergy.artilleryCombo.desc', requires: ['rocket', 'swamper'], bonus: { aoe: 40, damage: 0.15 }, color: '#a855f7' },
     { id: 'full_defense', nameKey: 'synergy.fullDefense.name', descKey: 'synergy.fullDefense.desc', requires: ['sentry', 'blaster', 'laser'], bonus: { fireRate: 0.2, damage: 0.1 }, color: '#3b82f6' },
-    { id: 'elemental_master', nameKey: 'synergy.elementalMaster.name', descKey: 'synergy.elementalMaster.desc', requires: ['solidifier', 'inferno', 'swamper'], bonus: { damage: 0.3, slow: 0.2, aoe: 30 }, color: '#fbbf24' }
+    { id: 'elemental_master', nameKey: 'synergy.elementalMaster.name', descKey: 'synergy.elementalMaster.desc', requires: ['solidifier', 'inferno', 'swamper'], bonus: { damage: 0.3, slow: 0.2, aoe: 30 }, color: '#fbbf24' },
+    { id: 'tech_supremacy', nameKey: 'synergy.techSupremacy.name', descKey: 'synergy.techSupremacy.desc', requires: ['laser', 'rocket', 'sniper'], bonus: { damage: 0.4, critChance: 20, range: 0.2 }, color: '#22c55e' },
+    { id: 'chaos_engine', nameKey: 'synergy.chaosEngine.name', descKey: 'synergy.chaosEngine.desc', requires: ['inferno', 'rocket', 'blaster'], bonus: { aoe: 60, damage: 0.35, fireRate: 0.15 }, color: '#dc2626' }
 ];
+
+/**
+ * Milestone definitions - One-time rewards for reaching specific goals
+ */
+export const MILESTONES = [
+    { id: 'first_boss', wave: 10, nameKey: 'milestones.firstBoss.name', descKey: 'milestones.firstBoss.desc', icon: '👑', reward: { ether: 10, crystals: 25 } },
+    { id: 'wave_25', wave: 25, nameKey: 'milestones.wave25.name', descKey: 'milestones.wave25.desc', icon: '🌊', reward: { ether: 25, gold: 5000 } },
+    { id: 'wave_50', wave: 50, nameKey: 'milestones.wave50.name', descKey: 'milestones.wave50.desc', icon: '⭐', reward: { ether: 75, crystals: 100 } },
+    { id: 'wave_100', wave: 100, nameKey: 'milestones.wave100.name', descKey: 'milestones.wave100.desc', icon: '🏆', reward: { ether: 200, crystals: 250, relic: true } },
+    { id: 'wave_150', wave: 150, nameKey: 'milestones.wave150.name', descKey: 'milestones.wave150.desc', icon: '💎', reward: { ether: 400, crystals: 500 } },
+    { id: 'wave_200', wave: 200, nameKey: 'milestones.wave200.name', descKey: 'milestones.wave200.desc', icon: '🔥', reward: { ether: 750, relic: true, relicTier: 3 } },
+    { id: 'wave_250', wave: 250, nameKey: 'milestones.wave250.name', descKey: 'milestones.wave250.desc', icon: '🌟', reward: { ether: 1500, crystals: 1000, relic: true, relicTier: 4 } },
+    { id: 'wave_300', wave: 300, nameKey: 'milestones.wave300.name', descKey: 'milestones.wave300.desc', icon: '👁️', reward: { ether: 3000, ascensionPoints: 1 } },
+    { id: 'wave_500', wave: 500, nameKey: 'milestones.wave500.name', descKey: 'milestones.wave500.desc', icon: '🌌', reward: { ether: 10000, ascensionPoints: 5, relic: true, relicTier: 4 } },
+    { id: 'dread_complete', dread: 10, nameKey: 'milestones.dreadComplete.name', descKey: 'milestones.dreadComplete.desc', icon: '💀', reward: { ether: 5000, ascensionPoints: 3 } }
+];
+
+/**
+ * Daily chest tiers - Guaranteed rewards based on streak
+ */
+export const DAILY_CHESTS = [
+    { day: 1, nameKey: 'dailyChest.day1.name', icon: '📦', reward: { ether: 5, gold: 1000 } },
+    { day: 2, nameKey: 'dailyChest.day2.name', icon: '📦', reward: { ether: 10, crystals: 15 } },
+    { day: 3, nameKey: 'dailyChest.day3.name', icon: '🎁', reward: { ether: 20, gold: 2500 } },
+    { day: 4, nameKey: 'dailyChest.day4.name', icon: '🎁', reward: { ether: 30, crystals: 30 } },
+    { day: 5, nameKey: 'dailyChest.day5.name', icon: '🎁', reward: { ether: 50, gold: 5000, crystals: 25 } },
+    { day: 6, nameKey: 'dailyChest.day6.name', icon: '✨', reward: { ether: 75, crystals: 50 } },
+    { day: 7, nameKey: 'dailyChest.day7.name', icon: '👑', reward: { ether: 150, crystals: 100, relic: true } }
+];
+
+/**
+ * Themed prestige layers - Elemental specializations
+ */
+export const PRESTIGE_THEMES = [
+    { id: 'fire', nameKey: 'prestigeTheme.fire.name', descKey: 'prestigeTheme.fire.desc', icon: '🔥', color: '#ef4444', unlockPrestiges: 5, bonuses: { damage: 0.25, critDamage: 0.3 }, penalty: { health: -0.1 } },
+    { id: 'ice', nameKey: 'prestigeTheme.ice.name', descKey: 'prestigeTheme.ice.desc', icon: '❄️', color: '#22d3ee', unlockPrestiges: 5, bonuses: { slow: 0.2, shield: 0.3 }, penalty: { fireRate: -0.1 } },
+    { id: 'lightning', nameKey: 'prestigeTheme.lightning.name', descKey: 'prestigeTheme.lightning.desc', icon: '⚡', color: '#fbbf24', unlockPrestiges: 10, bonuses: { fireRate: 0.3, critChance: 15 }, penalty: { damage: -0.1 } },
+    { id: 'void', nameKey: 'prestigeTheme.void.name', descKey: 'prestigeTheme.void.desc', icon: '🌀', color: '#a855f7', unlockPrestiges: 15, bonuses: { etherGain: 0.5, skillPower: 0.25 }, penalty: { gold: -0.15 } },
+    { id: 'cosmic', nameKey: 'prestigeTheme.cosmic.name', descKey: 'prestigeTheme.cosmic.desc', icon: '🌌', color: '#3b82f6', unlockPrestiges: 25, bonuses: { allStats: 0.15, prestigePoints: 0.25 }, penalty: {} }
+];
+
+/**
+ * Resource exchange rates
+ */
+export const EXCHANGE_RATES = {
+    goldToCrystals: { from: 'gold', to: 'crystals', rate: 1000, min: 1000 },
+    crystalsToEther: { from: 'crystals', to: 'ether', rate: 50, min: 50 },
+    etherToAscension: { from: 'ether', to: 'ascensionPoints', rate: 500, min: 500, unlockAscensions: 1 }
+};
+
+/**
+ * Endless prestige settings
+ */
+export const ENDLESS_PRESTIGE_CONFIG = {
+    minWave: 50,
+    defaultInterval: 100,
+    bonusPerCycle: 0.05,
+    maxBonusStacks: 20
+};
 
 /**
  * Game modes
@@ -852,6 +1005,1128 @@ export const LEADERBOARD_CATEGORIES = [
     { id: 'highest_combo', nameKey: 'leaderboard.highestCombo', icon: '🔗', sortDesc: true },
     { id: 'endless_record', nameKey: 'leaderboard.endlessRecord', icon: '♾️', sortDesc: true },
     { id: 'boss_rush_record', nameKey: 'leaderboard.bossRushRecord', icon: '🏆', sortDesc: true }
+];
+
+/**
+ * Unique boss encounters with distinct mechanics
+ */
+export const UNIQUE_BOSSES = {
+    GOBLIN_KING: {
+        wave: 10,
+        nameKey: 'bosses.goblinKing.name',
+        descKey: 'bosses.goblinKing.desc',
+        color: '#22c55e',
+        hpMult: 30,
+        speedMult: 0.5,
+        scale: 2.5,
+        goldMult: 8,
+        icon: '👺',
+        phases: [
+            { hpThreshold: 1.0, abilities: ['spin_attack'], color: '#22c55e' },
+            { hpThreshold: 0.5, abilities: ['spin_attack', 'summon_goblins'], color: '#16a34a' }
+        ],
+        abilities: {
+            spin_attack: { damage: 25, radius: 150, cooldown: 5000, duration: 2000 },
+            summon_goblins: { count: 8, type: 'MINI', cooldown: 8000 }
+        },
+        loot: { ether: 15, crystals: 20, relicChance: 0.5 }
+    },
+    CRYSTAL_GIANT: {
+        wave: 20,
+        nameKey: 'bosses.crystalGiant.name',
+        descKey: 'bosses.crystalGiant.desc',
+        color: '#22d3ee',
+        hpMult: 50,
+        speedMult: 0.35,
+        scale: 3.2,
+        goldMult: 12,
+        icon: '💎',
+        phases: [
+            { hpThreshold: 1.0, abilities: ['crystal_shield'], color: '#22d3ee' },
+            { hpThreshold: 0.66, abilities: ['crystal_shield', 'shard_burst'], color: '#06b6d4' },
+            { hpThreshold: 0.33, abilities: ['crystal_shield', 'shard_burst', 'crystal_prison'], color: '#0891b2' }
+        ],
+        abilities: {
+            crystal_shield: { immuneDuration: 3000, cooldown: 12000 },
+            shard_burst: { damage: 40, count: 8, radius: 200, cooldown: 7000 },
+            crystal_prison: { slowAmount: 0.8, duration: 4000, cooldown: 15000 }
+        },
+        loot: { ether: 35, crystals: 50, relicChance: 0.7, relicTier: 2 }
+    },
+    INFERNO_DRAGON: {
+        wave: 50,
+        nameKey: 'bosses.infernoDragon.name',
+        descKey: 'bosses.infernoDragon.desc',
+        color: '#ef4444',
+        hpMult: 120,
+        speedMult: 0.4,
+        scale: 4.0,
+        goldMult: 25,
+        icon: '🐉',
+        phases: [
+            { hpThreshold: 1.0, abilities: ['fire_breath'], color: '#ef4444' },
+            { hpThreshold: 0.75, abilities: ['fire_breath', 'wing_gust'], color: '#dc2626' },
+            { hpThreshold: 0.5, abilities: ['fire_breath', 'wing_gust', 'summon_drakes'], color: '#b91c1c' },
+            { hpThreshold: 0.25, abilities: ['fire_breath', 'meteor_rain', 'enrage'], color: '#7f1d1d' }
+        ],
+        abilities: {
+            fire_breath: { damage: 60, coneAngle: 60, range: 250, cooldown: 4000, burnDuration: 3000 },
+            wing_gust: { pushForce: 200, radius: 300, cooldown: 10000 },
+            summon_drakes: { count: 3, type: 'FLYING', cooldown: 15000 },
+            meteor_rain: { count: 6, damage: 80, radius: 100, cooldown: 12000 },
+            enrage: { damageMult: 1.5, speedMult: 1.3 }
+        },
+        loot: { ether: 100, crystals: 150, relicChance: 1.0, relicTier: 3 }
+    },
+    VOID_EMPEROR: {
+        wave: 100,
+        nameKey: 'bosses.voidEmperor.name',
+        descKey: 'bosses.voidEmperor.desc',
+        color: '#a855f7',
+        hpMult: 300,
+        speedMult: 0.3,
+        scale: 4.5,
+        goldMult: 50,
+        icon: '👁️',
+        phases: [
+            { hpThreshold: 1.0, abilities: ['void_orbs'], color: '#a855f7' },
+            { hpThreshold: 0.8, abilities: ['void_orbs', 'dimensional_rift'], color: '#9333ea' },
+            { hpThreshold: 0.6, abilities: ['void_orbs', 'dimensional_rift', 'mind_control'], color: '#7c3aed' },
+            { hpThreshold: 0.4, abilities: ['void_orbs', 'dimensional_rift', 'void_explosion'], color: '#6d28d9' },
+            { hpThreshold: 0.2, abilities: ['void_orbs', 'dimensional_rift', 'void_explosion', 'time_stop'], color: '#5b21b6' }
+        ],
+        abilities: {
+            void_orbs: { count: 5, damage: 50, speed: 3, cooldown: 3000 },
+            dimensional_rift: { teleportCount: 3, summonType: 'PHANTOM', cooldown: 10000 },
+            mind_control: { duration: 5000, cooldown: 20000, disableTurrets: 2 },
+            void_explosion: { damage: 150, radius: 400, chargeTime: 2000, cooldown: 15000 },
+            time_stop: { duration: 3000, cooldown: 30000 }
+        },
+        loot: { ether: 500, crystals: 300, ascensionPoints: 1, relicChance: 1.0, relicTier: 4 }
+    },
+    ANCIENT_ONE: {
+        wave: 200,
+        nameKey: 'bosses.ancientOne.name',
+        descKey: 'bosses.ancientOne.desc',
+        color: '#000000',
+        hpMult: 1000,
+        speedMult: 0.25,
+        scale: 5.0,
+        goldMult: 100,
+        icon: '🌌',
+        phases: [
+            { hpThreshold: 1.0, abilities: ['cosmic_beam'], color: '#1e3a5f' },
+            { hpThreshold: 0.75, abilities: ['cosmic_beam', 'gravity_well'], color: '#172554' },
+            { hpThreshold: 0.5, abilities: ['cosmic_beam', 'gravity_well', 'star_collapse'], color: '#0c1e3a' },
+            { hpThreshold: 0.25, abilities: ['cosmic_beam', 'gravity_well', 'star_collapse', 'reality_warp'], color: '#000000' }
+        ],
+        abilities: {
+            cosmic_beam: { damage: 200, width: 50, length: 500, rotateSpeed: 30, cooldown: 5000 },
+            gravity_well: { pullForce: 150, radius: 350, damage: 30, cooldown: 8000, duration: 4000 },
+            star_collapse: { damage: 300, radius: 250, warningTime: 3000, cooldown: 20000 },
+            reality_warp: { shuffleTurrets: true, invertControls: true, duration: 5000, cooldown: 45000 }
+        },
+        loot: { ether: 2000, crystals: 1000, ascensionPoints: 5, relicChance: 1.0, relicTier: 4 }
+    }
+};
+
+/**
+ * Skills data with loadout system
+ */
+export const SKILLS_DATA = {
+    // Original skills
+    overdrive: {
+        id: 'overdrive',
+        nameKey: 'skills.overdrive.name',
+        descKey: 'skills.overdrive.desc',
+        icon: '⚡',
+        color: '#fbbf24',
+        duration: 5000,
+        cooldown: 30000,
+        hotkey: 'Q',
+        category: 'buff',
+        effect: { fireRateMult: 3, damageMult: 1.5 },
+        upgrades: [
+            { id: 'duration', nameKey: 'skills.upgrades.duration', effect: { durationMult: 1.5 }, cost: 50 },
+            { id: 'power', nameKey: 'skills.upgrades.power', effect: { damageMult: 2.0 }, cost: 75 },
+            { id: 'cooldown', nameKey: 'skills.upgrades.cooldown', effect: { cooldownMult: 0.7 }, cost: 100 }
+        ]
+    },
+    nuke: {
+        id: 'nuke',
+        nameKey: 'skills.nuke.name',
+        descKey: 'skills.nuke.desc',
+        icon: '💥',
+        color: '#ef4444',
+        duration: 0,
+        cooldown: 60000,
+        hotkey: 'W',
+        category: 'damage',
+        effect: { damagePercent: 1.0, bossDamageMult: 50 },
+        upgrades: [
+            { id: 'chain', nameKey: 'skills.upgrades.chain', effect: { chainReaction: true }, cost: 100 },
+            { id: 'vacuum', nameKey: 'skills.upgrades.vacuum', effect: { pullEnemies: true, pullRadius: 200 }, cost: 80 },
+            { id: 'aftershock', nameKey: 'skills.upgrades.aftershock', effect: { aftershockDamage: 0.3, aftershockDelay: 1000 }, cost: 120 }
+        ]
+    },
+    blackhole: {
+        id: 'blackhole',
+        nameKey: 'skills.blackhole.name',
+        descKey: 'skills.blackhole.desc',
+        icon: '🌀',
+        color: '#a855f7',
+        duration: 4000,
+        cooldown: 45000,
+        hotkey: 'E',
+        category: 'control',
+        effect: { pullForce: 5, damagePerSecond: 50, radius: 150 },
+        upgrades: [
+            { id: 'size', nameKey: 'skills.upgrades.size', effect: { radiusMult: 1.5 }, cost: 60 },
+            { id: 'duration', nameKey: 'skills.upgrades.duration', effect: { durationMult: 1.75 }, cost: 70 },
+            { id: 'damage', nameKey: 'skills.upgrades.damage', effect: { damageMult: 2.0 }, cost: 90 }
+        ]
+    },
+    // New skills
+    timewarp: {
+        id: 'timewarp',
+        nameKey: 'skills.timewarp.name',
+        descKey: 'skills.timewarp.desc',
+        icon: '⏰',
+        color: '#22d3ee',
+        duration: 8000,
+        cooldown: 50000,
+        hotkey: 'R',
+        category: 'control',
+        unlockWave: 30,
+        effect: { enemySlowMult: 0.3, turretSpeedMult: 2.0 },
+        upgrades: [
+            { id: 'freeze', nameKey: 'skills.upgrades.freeze', effect: { enemySlowMult: 0.1 }, cost: 80 },
+            { id: 'haste', nameKey: 'skills.upgrades.haste', effect: { turretSpeedMult: 3.0 }, cost: 100 },
+            { id: 'extend', nameKey: 'skills.upgrades.extend', effect: { durationMult: 1.5 }, cost: 75 }
+        ]
+    },
+    earthquake: {
+        id: 'earthquake',
+        nameKey: 'skills.earthquake.name',
+        descKey: 'skills.earthquake.desc',
+        icon: '🌋',
+        color: '#78716c',
+        duration: 0,
+        cooldown: 55000,
+        hotkey: 'T',
+        category: 'control',
+        unlockWave: 40,
+        effect: { stunDuration: 3000, damage: 100, radius: 400 },
+        upgrades: [
+            { id: 'aftershock', nameKey: 'skills.upgrades.aftershock', effect: { waves: 3, waveDelay: 500 }, cost: 90 },
+            { id: 'fissure', nameKey: 'skills.upgrades.fissure', effect: { fissureDamage: 50, fissureDuration: 5000 }, cost: 110 },
+            { id: 'magnitude', nameKey: 'skills.upgrades.magnitude', effect: { damageMult: 2.0, stunDurationMult: 1.5 }, cost: 130 }
+        ]
+    },
+    mirrorshield: {
+        id: 'mirrorshield',
+        nameKey: 'skills.mirrorshield.name',
+        descKey: 'skills.mirrorshield.desc',
+        icon: '🛡️',
+        color: '#3b82f6',
+        duration: 6000,
+        cooldown: 45000,
+        hotkey: 'Y',
+        category: 'defense',
+        unlockWave: 35,
+        effect: { reflectPercent: 0.5, damageReduction: 0.5 },
+        upgrades: [
+            { id: 'reflect', nameKey: 'skills.upgrades.reflect', effect: { reflectPercent: 0.8 }, cost: 85 },
+            { id: 'absorb', nameKey: 'skills.upgrades.absorb', effect: { damageReduction: 0.75, healOnHit: 0.1 }, cost: 95 },
+            { id: 'counter', nameKey: 'skills.upgrades.counter', effect: { counterAttack: true, counterDamage: 200 }, cost: 120 }
+        ]
+    },
+    meteorstorm: {
+        id: 'meteorstorm',
+        nameKey: 'skills.meteorstorm.name',
+        descKey: 'skills.meteorstorm.desc',
+        icon: '☄️',
+        color: '#f97316',
+        duration: 5000,
+        cooldown: 60000,
+        hotkey: 'U',
+        category: 'damage',
+        unlockWave: 50,
+        effect: { meteorCount: 8, meteorDamage: 150, meteorRadius: 80, interval: 500 },
+        upgrades: [
+            { id: 'barrage', nameKey: 'skills.upgrades.barrage', effect: { meteorCount: 15 }, cost: 100 },
+            { id: 'impact', nameKey: 'skills.upgrades.impact', effect: { meteorDamage: 250, meteorRadius: 120 }, cost: 120 },
+            { id: 'burn', nameKey: 'skills.upgrades.burn', effect: { burnDamage: 30, burnDuration: 4000 }, cost: 90 }
+        ]
+    },
+    voidrift: {
+        id: 'voidrift',
+        nameKey: 'skills.voidrift.name',
+        descKey: 'skills.voidrift.desc',
+        icon: '🕳️',
+        color: '#6d28d9',
+        duration: 0,
+        cooldown: 70000,
+        hotkey: 'I',
+        category: 'damage',
+        unlockWave: 60,
+        effect: { instantKillCount: 5, maxHpPercent: 0.2, bossExcluded: true },
+        upgrades: [
+            { id: 'expand', nameKey: 'skills.upgrades.expand', effect: { instantKillCount: 10 }, cost: 150 },
+            { id: 'drain', nameKey: 'skills.upgrades.drain', effect: { etherPerKill: 1 }, cost: 200 },
+            { id: 'boss', nameKey: 'skills.upgrades.boss', effect: { bossExcluded: false, bossDamagePercent: 0.1 }, cost: 250 }
+        ]
+    }
+};
+
+/**
+ * Skill combo definitions
+ */
+export const SKILL_COMBOS = [
+    {
+        id: 'devastation',
+        nameKey: 'skillCombos.devastation.name',
+        descKey: 'skillCombos.devastation.desc',
+        skills: ['overdrive', 'nuke'],
+        timeWindow: 5000,
+        effect: { aoeDamage: true, radiusMult: 2.0 },
+        icon: '💣',
+        color: '#ef4444'
+    },
+    {
+        id: 'singularity',
+        nameKey: 'skillCombos.singularity.name',
+        descKey: 'skillCombos.singularity.desc',
+        skills: ['nuke', 'blackhole'],
+        timeWindow: 5000,
+        effect: { extendedPull: true, damageOnPull: 100 },
+        icon: '🌑',
+        color: '#a855f7'
+    },
+    {
+        id: 'overcharge',
+        nameKey: 'skillCombos.overcharge.name',
+        descKey: 'skillCombos.overcharge.desc',
+        skills: ['blackhole', 'overdrive'],
+        timeWindow: 5000,
+        effect: { ignoreRange: true, globalDamage: 0.5 },
+        icon: '⚡',
+        color: '#fbbf24'
+    },
+    {
+        id: 'timestop',
+        nameKey: 'skillCombos.timestop.name',
+        descKey: 'skillCombos.timestop.desc',
+        skills: ['timewarp', 'blackhole'],
+        timeWindow: 5000,
+        effect: { freezeInBlackhole: true, extendedDuration: 3000 },
+        icon: '❄️',
+        color: '#22d3ee'
+    },
+    {
+        id: 'armageddon',
+        nameKey: 'skillCombos.armageddon.name',
+        descKey: 'skillCombos.armageddon.desc',
+        skills: ['meteorstorm', 'earthquake'],
+        timeWindow: 5000,
+        effect: { meteorStun: true, earthquakeFire: true },
+        icon: '🔥',
+        color: '#f97316'
+    },
+    {
+        id: 'voidstorm',
+        nameKey: 'skillCombos.voidstorm.name',
+        descKey: 'skillCombos.voidstorm.desc',
+        skills: ['voidrift', 'meteorstorm'],
+        timeWindow: 5000,
+        effect: { voidMeteors: true, etherPerMeteor: 0.5 },
+        icon: '🌌',
+        color: '#6d28d9'
+    }
+];
+
+/**
+ * Relic evolution system
+ */
+export const RELIC_EVOLUTIONS = {
+    // Format: original_relic_id: evolved_form
+    bloodstone: {
+        evolvedId: 'crimson_heart',
+        nameKey: 'relics.crimsonHeart.name',
+        descKey: 'relics.crimsonHeart.desc',
+        icon: '❤️‍🔥',
+        tier: 4,
+        requirement: { kills: 10000 },
+        effect: (g) => { g.relicMults.damage += 0.5; g.relicMults.leech += 0.1; g.relicMults.health += 0.25; }
+    },
+    swift_boots: {
+        evolvedId: 'wings_of_hermes',
+        nameKey: 'relics.wingsOfHermes.name',
+        descKey: 'relics.wingsOfHermes.desc',
+        icon: '👟',
+        tier: 4,
+        requirement: { waveReached: 100 },
+        effect: (g) => { g.relicMults.speed += 0.6; g.relicMults.cooldown += 0.3; g.relicMults.dodge += 0.15; }
+    },
+    gold_magnet: {
+        evolvedId: 'midas_crown',
+        nameKey: 'relics.midasCrown.name',
+        descKey: 'relics.midasCrown.desc',
+        icon: '👑',
+        tier: 4,
+        requirement: { goldEarned: 1000000 },
+        effect: (g) => { g.relicMults.gold += 1.0; g.relicMults.crystals += 0.5; g.relicMults.ether += 0.25; }
+    },
+    crit_lens: {
+        evolvedId: 'eye_of_precision',
+        nameKey: 'relics.eyeOfPrecision.name',
+        descKey: 'relics.eyeOfPrecision.desc',
+        icon: '👁️',
+        tier: 4,
+        requirement: { criticalHits: 50000 },
+        effect: (g) => { g.relicMults.critChance += 30; g.relicMults.critDamage += 1.5; g.relicMults.damage += 0.2; }
+    },
+    void_shard: {
+        evolvedId: 'void_core',
+        nameKey: 'relics.voidCore.name',
+        descKey: 'relics.voidCore.desc',
+        icon: '💜',
+        tier: 4,
+        requirement: { skillsUsed: 1000 },
+        effect: (g) => { g.relicMults.skillPower += 0.75; g.relicMults.cooldown += 0.4; g.relicMults.ether += 0.5; }
+    }
+};
+
+/**
+ * Relic synergy bonuses
+ */
+export const RELIC_SYNERGIES = [
+    {
+        id: 'fire_set',
+        nameKey: 'relicSynergy.fireSet.name',
+        descKey: 'relicSynergy.fireSet.desc',
+        relics: ['inferno_core', 'flame_heart', 'ember_ring'],
+        minCount: 2,
+        bonuses: {
+            2: { damage: 0.15, burnDamage: 0.25 },
+            3: { damage: 0.35, burnDamage: 0.5, burnSpread: true }
+        },
+        color: '#ef4444',
+        icon: '🔥'
+    },
+    {
+        id: 'ice_set',
+        nameKey: 'relicSynergy.iceSet.name',
+        descKey: 'relicSynergy.iceSet.desc',
+        relics: ['frost_core', 'glacier_heart', 'frozen_ring'],
+        minCount: 2,
+        bonuses: {
+            2: { slow: 0.2, shield: 0.15 },
+            3: { slow: 0.4, shield: 0.3, freezeChance: 0.1 }
+        },
+        color: '#22d3ee',
+        icon: '❄️'
+    },
+    {
+        id: 'void_set',
+        nameKey: 'relicSynergy.voidSet.name',
+        descKey: 'relicSynergy.voidSet.desc',
+        relics: ['void_shard', 'shadow_gem', 'darkness_orb'],
+        minCount: 2,
+        bonuses: {
+            2: { ether: 0.25, skillPower: 0.2 },
+            3: { ether: 0.5, skillPower: 0.4, voidDamage: 0.3 }
+        },
+        color: '#a855f7',
+        icon: '🌀'
+    },
+    {
+        id: 'wealth_set',
+        nameKey: 'relicSynergy.wealthSet.name',
+        descKey: 'relicSynergy.wealthSet.desc',
+        relics: ['gold_magnet', 'lucky_coin', 'treasure_map'],
+        minCount: 2,
+        bonuses: {
+            2: { gold: 0.3, crystals: 0.2 },
+            3: { gold: 0.6, crystals: 0.4, doubleDropChance: 0.1 }
+        },
+        color: '#fbbf24',
+        icon: '💰'
+    },
+    {
+        id: 'warrior_set',
+        nameKey: 'relicSynergy.warriorSet.name',
+        descKey: 'relicSynergy.warriorSet.desc',
+        relics: ['bloodstone', 'berserker_axe', 'war_banner'],
+        minCount: 2,
+        bonuses: {
+            2: { damage: 0.2, critChance: 10 },
+            3: { damage: 0.45, critChance: 20, critDamage: 0.5 }
+        },
+        color: '#dc2626',
+        icon: '⚔️'
+    }
+];
+
+/**
+ * Character class system
+ */
+export const CHARACTER_CLASSES = [
+    {
+        id: 'defender',
+        nameKey: 'classes.defender.name',
+        descKey: 'classes.defender.desc',
+        icon: '🛡️',
+        color: '#3b82f6',
+        startingBonus: { health: 0.25, armor: 0.15, regen: 0.2 },
+        passives: [
+            { id: 'fortitude', nameKey: 'classes.defender.fortitude', effect: { healthPerLevel: 0.02 }, maxLevel: 25 },
+            { id: 'iron_skin', nameKey: 'classes.defender.ironSkin', effect: { armorPerLevel: 0.01 }, maxLevel: 20 },
+            { id: 'guardian', nameKey: 'classes.defender.guardian', effect: { shieldOnHit: 0.05 }, maxLevel: 15 },
+            { id: 'last_stand', nameKey: 'classes.defender.lastStand', effect: { damageReductionLowHp: 0.03 }, maxLevel: 20 },
+            { id: 'immortal', nameKey: 'classes.defender.immortal', effect: { reviveChance: 0.05 }, maxLevel: 5 }
+        ],
+        ultimateSkill: 'mirrorshield'
+    },
+    {
+        id: 'berserker',
+        nameKey: 'classes.berserker.name',
+        descKey: 'classes.berserker.desc',
+        icon: '⚔️',
+        color: '#ef4444',
+        startingBonus: { damage: 0.2, critChance: 10, critDamage: 0.25 },
+        passives: [
+            { id: 'fury', nameKey: 'classes.berserker.fury', effect: { damagePerLevel: 0.02 }, maxLevel: 25 },
+            { id: 'bloodlust', nameKey: 'classes.berserker.bloodlust', effect: { leechPerLevel: 0.005 }, maxLevel: 20 },
+            { id: 'rampage', nameKey: 'classes.berserker.rampage', effect: { damageOnKill: 0.01, stackMax: 50 }, maxLevel: 15 },
+            { id: 'executioner', nameKey: 'classes.berserker.executioner', effect: { damageToLowHp: 0.04 }, maxLevel: 20 },
+            { id: 'warlord', nameKey: 'classes.berserker.warlord', effect: { allDamage: 0.1 }, maxLevel: 5 }
+        ],
+        ultimateSkill: 'voidrift'
+    },
+    {
+        id: 'mage',
+        nameKey: 'classes.mage.name',
+        descKey: 'classes.mage.desc',
+        icon: '🔮',
+        color: '#a855f7',
+        startingBonus: { skillPower: 0.3, cooldown: 0.15, ether: 0.2 },
+        passives: [
+            { id: 'arcane_power', nameKey: 'classes.mage.arcanePower', effect: { skillPowerPerLevel: 0.03 }, maxLevel: 25 },
+            { id: 'quick_cast', nameKey: 'classes.mage.quickCast', effect: { cooldownPerLevel: 0.02 }, maxLevel: 20 },
+            { id: 'mana_surge', nameKey: 'classes.mage.manaSurge', effect: { runeChancePerLevel: 0.02 }, maxLevel: 15 },
+            { id: 'time_warp', nameKey: 'classes.mage.timeWarp', effect: { skillDurationPerLevel: 0.03 }, maxLevel: 20 },
+            { id: 'archmage', nameKey: 'classes.mage.archmage', effect: { doubleSkillChance: 0.05 }, maxLevel: 5 }
+        ],
+        ultimateSkill: 'meteorstorm'
+    },
+    {
+        id: 'ranger',
+        nameKey: 'classes.ranger.name',
+        descKey: 'classes.ranger.desc',
+        icon: '🏹',
+        color: '#22c55e',
+        startingBonus: { fireRate: 0.2, range: 0.15, critChance: 15 },
+        passives: [
+            { id: 'precision', nameKey: 'classes.ranger.precision', effect: { critChancePerLevel: 1 }, maxLevel: 25 },
+            { id: 'rapid_fire', nameKey: 'classes.ranger.rapidFire', effect: { fireRatePerLevel: 0.015 }, maxLevel: 20 },
+            { id: 'eagle_eye', nameKey: 'classes.ranger.eagleEye', effect: { rangePerLevel: 0.02 }, maxLevel: 15 },
+            { id: 'multishot', nameKey: 'classes.ranger.multishot', effect: { projectileChance: 0.02 }, maxLevel: 20 },
+            { id: 'sniper', nameKey: 'classes.ranger.sniper', effect: { critDamagePerLevel: 0.1 }, maxLevel: 5 }
+        ],
+        ultimateSkill: 'timewarp'
+    },
+    {
+        id: 'merchant',
+        nameKey: 'classes.merchant.name',
+        descKey: 'classes.merchant.desc',
+        icon: '💰',
+        color: '#fbbf24',
+        startingBonus: { gold: 0.3, crystals: 0.2, production: 0.25 },
+        passives: [
+            { id: 'gold_sense', nameKey: 'classes.merchant.goldSense', effect: { goldPerLevel: 0.03 }, maxLevel: 25 },
+            { id: 'treasure_hunter', nameKey: 'classes.merchant.treasureHunter', effect: { relicChancePerLevel: 0.02 }, maxLevel: 20 },
+            { id: 'efficient', nameKey: 'classes.merchant.efficient', effect: { upgradeCostPerLevel: -0.01 }, maxLevel: 15 },
+            { id: 'lucky', nameKey: 'classes.merchant.lucky', effect: { doubleGoldChance: 0.02 }, maxLevel: 20 },
+            { id: 'tycoon', nameKey: 'classes.merchant.tycoon', effect: { passiveGoldPerLevel: 1 }, maxLevel: 5 }
+        ],
+        ultimateSkill: 'earthquake'
+    }
+];
+
+/**
+ * Equipment slots and types
+ */
+export const EQUIPMENT_SLOTS = ['head', 'chest', 'hands', 'feet', 'accessory1', 'accessory2'];
+
+export const EQUIPMENT_TYPES = {
+    head: [
+        { id: 'iron_helm', nameKey: 'equipment.ironHelm.name', descKey: 'equipment.ironHelm.desc', icon: '🪖', tier: 1, stats: { health: 0.05, armor: 0.02 } },
+        { id: 'crystal_crown', nameKey: 'equipment.crystalCrown.name', descKey: 'equipment.crystalCrown.desc', icon: '👑', tier: 2, stats: { health: 0.1, skillPower: 0.1 } },
+        { id: 'dragon_helm', nameKey: 'equipment.dragonHelm.name', descKey: 'equipment.dragonHelm.desc', icon: '🐲', tier: 3, stats: { health: 0.2, damage: 0.15, armor: 0.1 } },
+        { id: 'void_crown', nameKey: 'equipment.voidCrown.name', descKey: 'equipment.voidCrown.desc', icon: '👁️', tier: 4, stats: { health: 0.3, skillPower: 0.25, ether: 0.2 } }
+    ],
+    chest: [
+        { id: 'leather_armor', nameKey: 'equipment.leatherArmor.name', descKey: 'equipment.leatherArmor.desc', icon: '🦺', tier: 1, stats: { health: 0.1, armor: 0.05 } },
+        { id: 'chainmail', nameKey: 'equipment.chainmail.name', descKey: 'equipment.chainmail.desc', icon: '⛓️', tier: 2, stats: { health: 0.15, armor: 0.1, regen: 0.1 } },
+        { id: 'dragon_plate', nameKey: 'equipment.dragonPlate.name', descKey: 'equipment.dragonPlate.desc', icon: '🛡️', tier: 3, stats: { health: 0.25, armor: 0.2, damage: 0.1 } },
+        { id: 'celestial_robe', nameKey: 'equipment.celestialRobe.name', descKey: 'equipment.celestialRobe.desc', icon: '✨', tier: 4, stats: { health: 0.2, skillPower: 0.3, cooldown: 0.2 } }
+    ],
+    hands: [
+        { id: 'leather_gloves', nameKey: 'equipment.leatherGloves.name', descKey: 'equipment.leatherGloves.desc', icon: '🧤', tier: 1, stats: { damage: 0.05, fireRate: 0.05 } },
+        { id: 'steel_gauntlets', nameKey: 'equipment.steelGauntlets.name', descKey: 'equipment.steelGauntlets.desc', icon: '🥊', tier: 2, stats: { damage: 0.1, critChance: 5 } },
+        { id: 'dragon_claws', nameKey: 'equipment.dragonClaws.name', descKey: 'equipment.dragonClaws.desc', icon: '🐉', tier: 3, stats: { damage: 0.2, critChance: 10, critDamage: 0.3 } },
+        { id: 'void_grips', nameKey: 'equipment.voidGrips.name', descKey: 'equipment.voidGrips.desc', icon: '🌀', tier: 4, stats: { damage: 0.25, fireRate: 0.2, leech: 0.1 } }
+    ],
+    feet: [
+        { id: 'leather_boots', nameKey: 'equipment.leatherBoots.name', descKey: 'equipment.leatherBoots.desc', icon: '👢', tier: 1, stats: { speed: 0.05, dodge: 0.02 } },
+        { id: 'swift_boots', nameKey: 'equipment.swiftBoots.name', descKey: 'equipment.swiftBoots.desc', icon: '👟', tier: 2, stats: { speed: 0.1, cooldown: 0.05 } },
+        { id: 'dragon_greaves', nameKey: 'equipment.dragonGreaves.name', descKey: 'equipment.dragonGreaves.desc', icon: '🦶', tier: 3, stats: { speed: 0.15, dodge: 0.1, health: 0.1 } },
+        { id: 'astral_steps', nameKey: 'equipment.astralSteps.name', descKey: 'equipment.astralSteps.desc', icon: '🌟', tier: 4, stats: { speed: 0.25, dodge: 0.15, skillPower: 0.15 } }
+    ],
+    accessory1: [
+        { id: 'copper_ring', nameKey: 'equipment.copperRing.name', descKey: 'equipment.copperRing.desc', icon: '💍', tier: 1, stats: { gold: 0.1 } },
+        { id: 'silver_amulet', nameKey: 'equipment.silverAmulet.name', descKey: 'equipment.silverAmulet.desc', icon: '📿', tier: 2, stats: { gold: 0.15, crystals: 0.1 } },
+        { id: 'dragon_pendant', nameKey: 'equipment.dragonPendant.name', descKey: 'equipment.dragonPendant.desc', icon: '🔱', tier: 3, stats: { gold: 0.25, damage: 0.15, health: 0.1 } },
+        { id: 'cosmic_orb', nameKey: 'equipment.cosmicOrb.name', descKey: 'equipment.cosmicOrb.desc', icon: '🔮', tier: 4, stats: { allStats: 0.1, ether: 0.25 } }
+    ],
+    accessory2: [
+        { id: 'lucky_charm', nameKey: 'equipment.luckyCharm.name', descKey: 'equipment.luckyCharm.desc', icon: '🍀', tier: 1, stats: { critChance: 3 } },
+        { id: 'crystal_pendant', nameKey: 'equipment.crystalPendant.name', descKey: 'equipment.crystalPendant.desc', icon: '💎', tier: 2, stats: { crystals: 0.2, skillPower: 0.1 } },
+        { id: 'war_medal', nameKey: 'equipment.warMedal.name', descKey: 'equipment.warMedal.desc', icon: '🎖️', tier: 3, stats: { damage: 0.2, critDamage: 0.3 } },
+        { id: 'infinity_stone', nameKey: 'equipment.infinityStone.name', descKey: 'equipment.infinityStone.desc', icon: '💠', tier: 4, stats: { allStats: 0.15, cooldown: 0.15 } }
+    ]
+};
+
+/**
+ * Pet/Companion system
+ */
+export const PETS = [
+    {
+        id: 'fire_sprite',
+        nameKey: 'pets.fireSprite.name',
+        descKey: 'pets.fireSprite.desc',
+        icon: '🔥',
+        color: '#ef4444',
+        tier: 1,
+        passiveBonus: { damage: 0.05 },
+        activeAbility: { type: 'fireball', damage: 50, cooldown: 10000 },
+        evolutionMaterial: 'ember_essence'
+    },
+    {
+        id: 'frost_fairy',
+        nameKey: 'pets.frostFairy.name',
+        descKey: 'pets.frostFairy.desc',
+        icon: '❄️',
+        color: '#22d3ee',
+        tier: 1,
+        passiveBonus: { slow: 0.1 },
+        activeAbility: { type: 'freeze', duration: 2000, cooldown: 15000 },
+        evolutionMaterial: 'frost_crystal'
+    },
+    {
+        id: 'gold_pixie',
+        nameKey: 'pets.goldPixie.name',
+        descKey: 'pets.goldPixie.desc',
+        icon: '✨',
+        color: '#fbbf24',
+        tier: 1,
+        passiveBonus: { gold: 0.1 },
+        activeAbility: { type: 'gold_burst', goldMult: 3, duration: 5000, cooldown: 20000 },
+        evolutionMaterial: 'gold_dust'
+    },
+    {
+        id: 'shadow_cat',
+        nameKey: 'pets.shadowCat.name',
+        descKey: 'pets.shadowCat.desc',
+        icon: '🐱',
+        color: '#a855f7',
+        tier: 2,
+        passiveBonus: { critChance: 5, critDamage: 0.15 },
+        activeAbility: { type: 'shadow_strike', damage: 200, targets: 3, cooldown: 12000 },
+        evolutionMaterial: 'shadow_essence'
+    },
+    {
+        id: 'storm_hawk',
+        nameKey: 'pets.stormHawk.name',
+        descKey: 'pets.stormHawk.desc',
+        icon: '🦅',
+        color: '#3b82f6',
+        tier: 2,
+        passiveBonus: { fireRate: 0.1, range: 0.1 },
+        activeAbility: { type: 'lightning_strike', damage: 150, chain: 5, cooldown: 10000 },
+        evolutionMaterial: 'storm_feather'
+    },
+    {
+        id: 'void_serpent',
+        nameKey: 'pets.voidSerpent.name',
+        descKey: 'pets.voidSerpent.desc',
+        icon: '🐍',
+        color: '#6d28d9',
+        tier: 3,
+        passiveBonus: { damage: 0.15, leech: 0.05 },
+        activeAbility: { type: 'void_bite', damagePercent: 0.1, cooldown: 8000 },
+        evolutionMaterial: 'void_scale'
+    },
+    {
+        id: 'phoenix',
+        nameKey: 'pets.phoenix.name',
+        descKey: 'pets.phoenix.desc',
+        icon: '🦅',
+        color: '#f97316',
+        tier: 3,
+        passiveBonus: { damage: 0.1, regen: 0.2 },
+        activeAbility: { type: 'rebirth', reviveHealth: 0.5, cooldown: 60000 },
+        evolutionMaterial: 'phoenix_feather'
+    },
+    {
+        id: 'dragon_whelp',
+        nameKey: 'pets.dragonWhelp.name',
+        descKey: 'pets.dragonWhelp.desc',
+        icon: '🐲',
+        color: '#dc2626',
+        tier: 4,
+        passiveBonus: { damage: 0.2, fireRate: 0.1, health: 0.1 },
+        activeAbility: { type: 'dragon_breath', damage: 300, aoe: 150, cooldown: 15000 },
+        evolutionMaterial: 'dragon_scale'
+    },
+    {
+        id: 'celestial_guardian',
+        nameKey: 'pets.celestialGuardian.name',
+        descKey: 'pets.celestialGuardian.desc',
+        icon: '👼',
+        color: '#fff',
+        tier: 4,
+        passiveBonus: { allStats: 0.1, ether: 0.15 },
+        activeAbility: { type: 'divine_shield', invulnerable: 3000, cooldown: 45000 },
+        evolutionMaterial: 'celestial_shard'
+    }
+];
+
+/**
+ * Roguelike wave modifiers
+ */
+export const WAVE_MODIFIERS = [
+    // Enemy modifiers
+    { id: 'armored_horde', nameKey: 'modifiers.armoredHorde.name', descKey: 'modifiers.armoredHorde.desc', icon: '🛡️', type: 'enemy', effect: { enemyArmor: 0.3, enemyHp: 0.2 }, rewardMult: 1.3 },
+    { id: 'speed_demons', nameKey: 'modifiers.speedDemons.name', descKey: 'modifiers.speedDemons.desc', icon: '💨', type: 'enemy', effect: { enemySpeed: 0.5 }, rewardMult: 1.25 },
+    { id: 'titan_wave', nameKey: 'modifiers.titanWave.name', descKey: 'modifiers.titanWave.desc', icon: '🗿', type: 'enemy', effect: { enemyHp: 1.0, enemySize: 0.5, enemyCount: -0.5 }, rewardMult: 1.4 },
+    { id: 'swarm', nameKey: 'modifiers.swarm.name', descKey: 'modifiers.swarm.desc', icon: '🐜', type: 'enemy', effect: { enemyCount: 2.0, enemyHp: -0.5, enemySize: -0.3 }, rewardMult: 1.2 },
+    { id: 'regenerators', nameKey: 'modifiers.regenerators.name', descKey: 'modifiers.regenerators.desc', icon: '💚', type: 'enemy', effect: { enemyRegen: 0.02 }, rewardMult: 1.35 },
+    { id: 'vampiric', nameKey: 'modifiers.vampiric.name', descKey: 'modifiers.vampiric.desc', icon: '🧛', type: 'enemy', effect: { enemyLeech: 0.1 }, rewardMult: 1.3 },
+    // Reward modifiers
+    { id: 'gold_rush', nameKey: 'modifiers.goldRush.name', descKey: 'modifiers.goldRush.desc', icon: '💰', type: 'reward', effect: { goldMult: 2.0 }, difficultyMult: 1.0 },
+    { id: 'crystal_shower', nameKey: 'modifiers.crystalShower.name', descKey: 'modifiers.crystalShower.desc', icon: '💎', type: 'reward', effect: { crystalMult: 3.0 }, difficultyMult: 1.0 },
+    { id: 'ether_flow', nameKey: 'modifiers.etherFlow.name', descKey: 'modifiers.etherFlow.desc', icon: '🔮', type: 'reward', effect: { etherMult: 1.5 }, difficultyMult: 1.0 },
+    { id: 'treasure_trove', nameKey: 'modifiers.treasureTrove.name', descKey: 'modifiers.treasureTrove.desc', icon: '🎁', type: 'reward', effect: { relicChance: 0.5 }, difficultyMult: 1.0 },
+    // Player modifiers
+    { id: 'glass_cannon', nameKey: 'modifiers.glassCannon.name', descKey: 'modifiers.glassCannon.desc', icon: '🔫', type: 'player', effect: { damage: 1.0, health: -0.5 }, rewardMult: 1.5 },
+    { id: 'tank_mode', nameKey: 'modifiers.tankMode.name', descKey: 'modifiers.tankMode.desc', icon: '🛡️', type: 'player', effect: { health: 1.0, damage: -0.3 }, rewardMult: 1.2 },
+    { id: 'overcharge', nameKey: 'modifiers.overcharge.name', descKey: 'modifiers.overcharge.desc', icon: '⚡', type: 'player', effect: { fireRate: 0.5, skillCooldown: -0.3 }, rewardMult: 1.1 },
+    { id: 'limited_ammo', nameKey: 'modifiers.limitedAmmo.name', descKey: 'modifiers.limitedAmmo.desc', icon: '🎯', type: 'player', effect: { limitedShots: 100 }, rewardMult: 1.6 }
+];
+
+/**
+ * Rift mode configuration
+ */
+export const RIFT_CONFIG = {
+    duration: 180000, // 3 minutes
+    waves: 10,
+    rewardTokensBase: 10,
+    rewardTokensPerWave: 5,
+    difficultyScale: 1.5,
+    leaderboardEnabled: true
+};
+
+/**
+ * Dungeon mode room types
+ */
+export const DUNGEON_ROOMS = [
+    { id: 'combat', nameKey: 'dungeon.combat.name', descKey: 'dungeon.combat.desc', icon: '⚔️', type: 'combat', waves: 3, rewardMult: 1.0 },
+    { id: 'elite', nameKey: 'dungeon.elite.name', descKey: 'dungeon.elite.desc', icon: '💀', type: 'combat', waves: 1, eliteOnly: true, rewardMult: 2.0 },
+    { id: 'boss', nameKey: 'dungeon.boss.name', descKey: 'dungeon.boss.desc', icon: '👑', type: 'boss', bossType: 'random', rewardMult: 3.0 },
+    { id: 'treasure', nameKey: 'dungeon.treasure.name', descKey: 'dungeon.treasure.desc', icon: '💎', type: 'reward', rewards: { gold: 5000, crystals: 50, relicChance: 0.5 } },
+    { id: 'shop', nameKey: 'dungeon.shop.name', descKey: 'dungeon.shop.desc', icon: '🏪', type: 'shop', items: 3, discount: 0.2 },
+    { id: 'altar', nameKey: 'dungeon.altar.name', descKey: 'dungeon.altar.desc', icon: '⛩️', type: 'choice', options: ['buff', 'curse_reward', 'gamble'] },
+    { id: 'rest', nameKey: 'dungeon.rest.name', descKey: 'dungeon.rest.desc', icon: '🏕️', type: 'heal', healPercent: 0.5, upgradeChoice: true },
+    { id: 'mystery', nameKey: 'dungeon.mystery.name', descKey: 'dungeon.mystery.desc', icon: '❓', type: 'random', possibilities: ['treasure', 'combat', 'elite', 'trap'] }
+];
+
+/**
+ * Dungeon configuration
+ */
+export const DUNGEON_CONFIG = {
+    floors: 20,
+    roomsPerFloor: 3,
+    bossFloors: [5, 10, 15, 20],
+    startingLives: 3,
+    difficultyPerFloor: 0.1,
+    rewardPerFloor: { ether: 10, crystals: 25 }
+};
+
+/**
+ * Mazing System - Wall types for path manipulation
+ */
+export const WALL_TYPES = [
+    { id: 'wooden_wall', nameKey: 'mazing.woodenWall.name', descKey: 'mazing.woodenWall.desc', icon: '🪵', tier: 1, hp: 100, cost: 50, slowMult: 0.8 },
+    { id: 'stone_wall', nameKey: 'mazing.stoneWall.name', descKey: 'mazing.stoneWall.desc', icon: '🧱', tier: 2, hp: 300, cost: 150, slowMult: 0.6, unlockWave: 15 },
+    { id: 'iron_wall', nameKey: 'mazing.ironWall.name', descKey: 'mazing.ironWall.desc', icon: '🔩', tier: 3, hp: 600, cost: 400, slowMult: 0.4, unlockWave: 30 },
+    { id: 'crystal_wall', nameKey: 'mazing.crystalWall.name', descKey: 'mazing.crystalWall.desc', icon: '💎', tier: 4, hp: 1000, cost: 1000, slowMult: 0.2, effect: { damage: 5 }, unlockWave: 50 },
+    { id: 'void_barrier', nameKey: 'mazing.voidBarrier.name', descKey: 'mazing.voidBarrier.desc', icon: '🔮', tier: 5, hp: 2000, cost: 2500, slowMult: 0, effect: { stun: 0.5 }, unlockWave: 80 }
+];
+
+/**
+ * Mazing traps for path
+ */
+export const TRAP_TYPES = [
+    { id: 'spike_trap', nameKey: 'mazing.spikeTrap.name', descKey: 'mazing.spikeTrap.desc', icon: '🗡️', damage: 10, cooldown: 2000, cost: 100 },
+    { id: 'poison_trap', nameKey: 'mazing.poisonTrap.name', descKey: 'mazing.poisonTrap.desc', icon: '☠️', damage: 5, dot: { damage: 2, duration: 5000 }, cooldown: 3000, cost: 200 },
+    { id: 'freeze_trap', nameKey: 'mazing.freezeTrap.name', descKey: 'mazing.freezeTrap.desc', icon: '❄️', slow: 0.5, duration: 3000, cooldown: 5000, cost: 300 },
+    { id: 'fire_trap', nameKey: 'mazing.fireTrap.name', descKey: 'mazing.fireTrap.desc', icon: '🔥', damage: 25, aoe: 50, cooldown: 4000, cost: 400 },
+    { id: 'lightning_trap', nameKey: 'mazing.lightningTrap.name', descKey: 'mazing.lightningTrap.desc', icon: '⚡', damage: 50, chain: 3, cooldown: 6000, cost: 600 },
+    { id: 'void_trap', nameKey: 'mazing.voidTrap.name', descKey: 'mazing.voidTrap.desc', icon: '🌀', damage: 100, pull: true, cooldown: 8000, cost: 1000 }
+];
+
+/**
+ * World/Planet Progression - Multiple themed worlds
+ */
+export const WORLDS = [
+    {
+        id: 'grasslands',
+        nameKey: 'worlds.grasslands.name',
+        descKey: 'worlds.grasslands.desc',
+        icon: '🌿',
+        tier: 1,
+        unlockWave: 0,
+        background: '#4ade80',
+        enemyTypes: ['basic', 'runner', 'tank'],
+        bossKey: 'GOBLIN_KING',
+        rewards: { goldMult: 1.0, etherMult: 1.0 },
+        waves: 50
+    },
+    {
+        id: 'desert',
+        nameKey: 'worlds.desert.name',
+        descKey: 'worlds.desert.desc',
+        icon: '🏜️',
+        tier: 2,
+        unlockWave: 50,
+        background: '#fbbf24',
+        enemyTypes: ['basic', 'runner', 'tank', 'healer'],
+        bossKey: 'CRYSTAL_GIANT',
+        rewards: { goldMult: 1.5, etherMult: 1.2 },
+        waves: 50,
+        modifiers: { enemyHp: 0.2, enemySpeed: 0.1 }
+    },
+    {
+        id: 'volcanic',
+        nameKey: 'worlds.volcanic.name',
+        descKey: 'worlds.volcanic.desc',
+        icon: '🌋',
+        tier: 3,
+        unlockWave: 100,
+        background: '#ef4444',
+        enemyTypes: ['basic', 'runner', 'tank', 'healer', 'splitter', 'shielder'],
+        bossKey: 'INFERNO_DRAGON',
+        rewards: { goldMult: 2.0, etherMult: 1.5 },
+        waves: 50,
+        modifiers: { enemyHp: 0.5, damage: 0.2 },
+        hazards: ['lava_pools']
+    },
+    {
+        id: 'frozen',
+        nameKey: 'worlds.frozen.name',
+        descKey: 'worlds.frozen.desc',
+        icon: '❄️',
+        tier: 4,
+        unlockWave: 150,
+        background: '#22d3ee',
+        enemyTypes: ['basic', 'runner', 'tank', 'healer', 'splitter', 'shielder', 'teleporter'],
+        bossKey: 'FROST_TITAN',
+        rewards: { goldMult: 2.5, etherMult: 2.0 },
+        waves: 50,
+        modifiers: { enemyHp: 0.8, fireRate: -0.2 },
+        hazards: ['ice_patches']
+    },
+    {
+        id: 'shadow',
+        nameKey: 'worlds.shadow.name',
+        descKey: 'worlds.shadow.desc',
+        icon: '🌑',
+        tier: 5,
+        unlockWave: 200,
+        background: '#1e1b4b',
+        enemyTypes: ['basic', 'runner', 'tank', 'healer', 'splitter', 'shielder', 'teleporter', 'ghost'],
+        bossKey: 'VOID_EMPEROR',
+        rewards: { goldMult: 3.0, etherMult: 2.5 },
+        waves: 50,
+        modifiers: { enemyHp: 1.0, range: -0.3 },
+        hazards: ['shadow_zones']
+    },
+    {
+        id: 'cosmic',
+        nameKey: 'worlds.cosmic.name',
+        descKey: 'worlds.cosmic.desc',
+        icon: '🌌',
+        tier: 6,
+        unlockWave: 300,
+        background: '#312e81',
+        enemyTypes: ['all'],
+        bossKey: 'ANCIENT_ONE',
+        rewards: { goldMult: 5.0, etherMult: 4.0 },
+        waves: 100,
+        modifiers: { enemyHp: 2.0, enemySpeed: 0.5, damage: 0.5 },
+        hazards: ['void_rifts', 'meteor_showers']
+    }
+];
+
+/**
+ * World hazards
+ */
+export const WORLD_HAZARDS = {
+    lava_pools: { nameKey: 'hazards.lavaPools.name', damage: 10, interval: 1000, visual: '🔥' },
+    ice_patches: { nameKey: 'hazards.icePatches.name', slow: 0.5, slipChance: 0.3, visual: '❄️' },
+    shadow_zones: { nameKey: 'hazards.shadowZones.name', missChance: 0.3, visual: '🌑' },
+    void_rifts: { nameKey: 'hazards.voidRifts.name', teleportChance: 0.2, damage: 50, visual: '🌀' },
+    meteor_showers: { nameKey: 'hazards.meteorShowers.name', damage: 100, aoe: 80, interval: 10000, visual: '☄️' }
+};
+
+/**
+ * Skill Cards - Collectible cards that modify abilities
+ */
+export const SKILL_CARDS = [
+    // Attack cards
+    { id: 'power_surge', nameKey: 'skillCards.powerSurge.name', descKey: 'skillCards.powerSurge.desc', icon: '⚡', rarity: 'common', category: 'attack', effect: { damage: 0.1 } },
+    { id: 'rapid_fire', nameKey: 'skillCards.rapidFire.name', descKey: 'skillCards.rapidFire.desc', icon: '🔫', rarity: 'common', category: 'attack', effect: { fireRate: 0.1 } },
+    { id: 'precision_strike', nameKey: 'skillCards.precisionStrike.name', descKey: 'skillCards.precisionStrike.desc', icon: '🎯', rarity: 'common', category: 'attack', effect: { critChance: 0.05 } },
+    { id: 'armor_piercing', nameKey: 'skillCards.armorPiercing.name', descKey: 'skillCards.armorPiercing.desc', icon: '🗡️', rarity: 'uncommon', category: 'attack', effect: { armorIgnore: 0.15 } },
+    { id: 'explosive_rounds', nameKey: 'skillCards.explosiveRounds.name', descKey: 'skillCards.explosiveRounds.desc', icon: '💥', rarity: 'uncommon', category: 'attack', effect: { splash: 20, splashDamage: 0.3 } },
+    { id: 'chain_lightning', nameKey: 'skillCards.chainLightning.name', descKey: 'skillCards.chainLightning.desc', icon: '⚡', rarity: 'rare', category: 'attack', effect: { chain: 3, chainDamage: 0.5 } },
+    { id: 'devastator', nameKey: 'skillCards.devastator.name', descKey: 'skillCards.devastator.desc', icon: '☢️', rarity: 'legendary', category: 'attack', effect: { damage: 0.5, critDamage: 1.0 } },
+    // Defense cards
+    { id: 'reinforced_walls', nameKey: 'skillCards.reinforcedWalls.name', descKey: 'skillCards.reinforcedWalls.desc', icon: '🧱', rarity: 'common', category: 'defense', effect: { health: 0.1 } },
+    { id: 'quick_repair', nameKey: 'skillCards.quickRepair.name', descKey: 'skillCards.quickRepair.desc', icon: '🔧', rarity: 'common', category: 'defense', effect: { regen: 0.2 } },
+    { id: 'energy_shield', nameKey: 'skillCards.energyShield.name', descKey: 'skillCards.energyShield.desc', icon: '🛡️', rarity: 'uncommon', category: 'defense', effect: { shield: 0.25 } },
+    { id: 'damage_reflect', nameKey: 'skillCards.damageReflect.name', descKey: 'skillCards.damageReflect.desc', icon: '🪞', rarity: 'rare', category: 'defense', effect: { reflect: 0.1 } },
+    { id: 'immortal_core', nameKey: 'skillCards.immortalCore.name', descKey: 'skillCards.immortalCore.desc', icon: '💎', rarity: 'legendary', category: 'defense', effect: { revive: 1, reviveHealth: 0.5 } },
+    // Utility cards
+    { id: 'gold_magnet', nameKey: 'skillCards.goldMagnet.name', descKey: 'skillCards.goldMagnet.desc', icon: '🧲', rarity: 'common', category: 'utility', effect: { gold: 0.15 } },
+    { id: 'exp_boost', nameKey: 'skillCards.expBoost.name', descKey: 'skillCards.expBoost.desc', icon: '📚', rarity: 'common', category: 'utility', effect: { exp: 0.2 } },
+    { id: 'lucky_star', nameKey: 'skillCards.luckyStar.name', descKey: 'skillCards.luckyStar.desc', icon: '⭐', rarity: 'uncommon', category: 'utility', effect: { luck: 0.1, relicChance: 0.1 } },
+    { id: 'time_dilation', nameKey: 'skillCards.timeDilation.name', descKey: 'skillCards.timeDilation.desc', icon: '⏳', rarity: 'rare', category: 'utility', effect: { skillCooldown: -0.2 } },
+    { id: 'void_touch', nameKey: 'skillCards.voidTouch.name', descKey: 'skillCards.voidTouch.desc', icon: '🔮', rarity: 'legendary', category: 'utility', effect: { ether: 0.5, allStats: 0.1 } },
+    // Skill-specific cards
+    { id: 'overdrive_extend', nameKey: 'skillCards.overdriveExtend.name', descKey: 'skillCards.overdriveExtend.desc', icon: '🔋', rarity: 'uncommon', category: 'skill', effect: { overdriveDuration: 0.5 } },
+    { id: 'meteor_cluster', nameKey: 'skillCards.meteorCluster.name', descKey: 'skillCards.meteorCluster.desc', icon: '☄️', rarity: 'rare', category: 'skill', effect: { meteorCount: 3 } },
+    { id: 'blackhole_gravity', nameKey: 'skillCards.blackholeGravity.name', descKey: 'skillCards.blackholeGravity.desc', icon: '🌀', rarity: 'rare', category: 'skill', effect: { blackholeRange: 0.5, blackholeDamage: 0.3 } }
+];
+
+/**
+ * Card rarity weights and colors
+ */
+export const CARD_RARITIES = {
+    common: { weight: 60, color: '#94a3b8', dustValue: 5 },
+    uncommon: { weight: 25, color: '#22c55e', dustValue: 15 },
+    rare: { weight: 12, color: '#3b82f6', dustValue: 40 },
+    legendary: { weight: 3, color: '#fbbf24', dustValue: 100 }
+};
+
+/**
+ * Landmarks - Unique map objects with special effects
+ */
+export const LANDMARKS = [
+    {
+        id: 'altar_of_power',
+        nameKey: 'landmarks.altarOfPower.name',
+        descKey: 'landmarks.altarOfPower.desc',
+        icon: '⛩️',
+        tier: 1,
+        effect: { type: 'buff', stat: 'damage', value: 0.2, range: 150 },
+        cost: { crystals: 100 },
+        unlockWave: 10
+    },
+    {
+        id: 'healing_spring',
+        nameKey: 'landmarks.healingSpring.name',
+        descKey: 'landmarks.healingSpring.desc',
+        icon: '⛲',
+        tier: 1,
+        effect: { type: 'heal', value: 5, interval: 1000, range: 100 },
+        cost: { crystals: 150 },
+        unlockWave: 15
+    },
+    {
+        id: 'gold_fountain',
+        nameKey: 'landmarks.goldFountain.name',
+        descKey: 'landmarks.goldFountain.desc',
+        icon: '💰',
+        tier: 2,
+        effect: { type: 'passive', stat: 'goldPerSecond', value: 10 },
+        cost: { crystals: 300 },
+        unlockWave: 25
+    },
+    {
+        id: 'storm_pillar',
+        nameKey: 'landmarks.stormPillar.name',
+        descKey: 'landmarks.stormPillar.desc',
+        icon: '🌩️',
+        tier: 2,
+        effect: { type: 'damage', damage: 50, interval: 3000, range: 200, chain: 5 },
+        cost: { crystals: 500 },
+        unlockWave: 40
+    },
+    {
+        id: 'crystal_obelisk',
+        nameKey: 'landmarks.crystalObelisk.name',
+        descKey: 'landmarks.crystalObelisk.desc',
+        icon: '💎',
+        tier: 3,
+        effect: { type: 'buff', stat: 'critChance', value: 0.15, range: 200 },
+        cost: { crystals: 800 },
+        unlockWave: 60
+    },
+    {
+        id: 'frost_shrine',
+        nameKey: 'landmarks.frostShrine.name',
+        descKey: 'landmarks.frostShrine.desc',
+        icon: '🧊',
+        tier: 3,
+        effect: { type: 'slow', value: 0.3, range: 250 },
+        cost: { crystals: 700 },
+        unlockWave: 55
+    },
+    {
+        id: 'fire_beacon',
+        nameKey: 'landmarks.fireBeacon.name',
+        descKey: 'landmarks.fireBeacon.desc',
+        icon: '🔥',
+        tier: 3,
+        effect: { type: 'dot', damage: 10, duration: 3000, range: 180 },
+        cost: { crystals: 750 },
+        unlockWave: 50
+    },
+    {
+        id: 'void_monolith',
+        nameKey: 'landmarks.voidMonolith.name',
+        descKey: 'landmarks.voidMonolith.desc',
+        icon: '🗿',
+        tier: 4,
+        effect: { type: 'debuff', stat: 'enemyArmor', value: -0.3, range: 300 },
+        cost: { crystals: 1200 },
+        unlockWave: 80
+    },
+    {
+        id: 'ancient_tree',
+        nameKey: 'landmarks.ancientTree.name',
+        descKey: 'landmarks.ancientTree.desc',
+        icon: '🌳',
+        tier: 4,
+        effect: { type: 'multi', effects: [
+            { type: 'heal', value: 10, interval: 2000 },
+            { type: 'buff', stat: 'regen', value: 0.5 }
+        ], range: 250 },
+        cost: { crystals: 1500 },
+        unlockWave: 100
+    },
+    {
+        id: 'celestial_gate',
+        nameKey: 'landmarks.celestialGate.name',
+        descKey: 'landmarks.celestialGate.desc',
+        icon: '🌟',
+        tier: 5,
+        effect: { type: 'buff', stat: 'allStats', value: 0.15, range: 400 },
+        cost: { crystals: 3000 },
+        unlockWave: 150
+    }
+];
+
+/**
+ * Enemy Affixes - Special modifiers that enemies can have
+ */
+export const ENEMY_AFFIXES = [
+    // Offensive affixes
+    { id: 'berserker', nameKey: 'affixes.berserker.name', descKey: 'affixes.berserker.desc', icon: '😡', tier: 1, effect: { damageMult: 1.5, speedMult: 1.2 }, rewardMult: 1.2 },
+    { id: 'venomous', nameKey: 'affixes.venomous.name', descKey: 'affixes.venomous.desc', icon: '🐍', tier: 1, effect: { poisonOnHit: { damage: 5, duration: 3000 } }, rewardMult: 1.15 },
+    { id: 'explosive', nameKey: 'affixes.explosive.name', descKey: 'affixes.explosive.desc', icon: '💣', tier: 2, effect: { deathExplosion: { damage: 50, range: 80 } }, rewardMult: 1.3 },
+    { id: 'vampiric', nameKey: 'affixes.vampiric.name', descKey: 'affixes.vampiric.desc', icon: '🧛', tier: 2, effect: { lifesteal: 0.2 }, rewardMult: 1.25 },
+    // Defensive affixes
+    { id: 'armored', nameKey: 'affixes.armored.name', descKey: 'affixes.armored.desc', icon: '🛡️', tier: 1, effect: { armorMult: 2.0 }, rewardMult: 1.2 },
+    { id: 'regenerating', nameKey: 'affixes.regenerating.name', descKey: 'affixes.regenerating.desc', icon: '💚', tier: 1, effect: { regenPercent: 0.02 }, rewardMult: 1.15 },
+    { id: 'shielded', nameKey: 'affixes.shielded.name', descKey: 'affixes.shielded.desc', icon: '🔵', tier: 2, effect: { shieldPercent: 0.5 }, rewardMult: 1.3 },
+    { id: 'ethereal', nameKey: 'affixes.ethereal.name', descKey: 'affixes.ethereal.desc', icon: '👻', tier: 3, effect: { evadeChance: 0.3 }, rewardMult: 1.4 },
+    // Utility affixes
+    { id: 'swift', nameKey: 'affixes.swift.name', descKey: 'affixes.swift.desc', icon: '💨', tier: 1, effect: { speedMult: 1.5 }, rewardMult: 1.1 },
+    { id: 'teleporter', nameKey: 'affixes.teleporter.name', descKey: 'affixes.teleporter.desc', icon: '🌀', tier: 2, effect: { teleportChance: 0.1, teleportCooldown: 5000 }, rewardMult: 1.35 },
+    { id: 'phasing', nameKey: 'affixes.phasing.name', descKey: 'affixes.phasing.desc', icon: '🌫️', tier: 2, effect: { phaseThrough: true, phaseDuration: 2000, phaseCooldown: 8000 }, rewardMult: 1.3 },
+    // Turret-affecting affixes
+    { id: 'jammer', nameKey: 'affixes.jammer.name', descKey: 'affixes.jammer.desc', icon: '📡', tier: 2, effect: { disableTurrets: { range: 100, duration: 2000 } }, rewardMult: 1.4 },
+    { id: 'corrosive', nameKey: 'affixes.corrosive.name', descKey: 'affixes.corrosive.desc', icon: '🧪', tier: 2, effect: { turretDebuff: { stat: 'damage', value: -0.2, range: 120 } }, rewardMult: 1.35 },
+    { id: 'magnetic', nameKey: 'affixes.magnetic.name', descKey: 'affixes.magnetic.desc', icon: '🧲', tier: 3, effect: { projectileDeflect: 0.3 }, rewardMult: 1.5 },
+    { id: 'nullifier', nameKey: 'affixes.nullifier.name', descKey: 'affixes.nullifier.desc', icon: '⛔', tier: 3, effect: { immuneToSkills: true }, rewardMult: 1.6 },
+    // Elite affixes
+    { id: 'arcane', nameKey: 'affixes.arcane.name', descKey: 'affixes.arcane.desc', icon: '✨', tier: 3, effect: { spellCast: { type: 'fireball', damage: 30, interval: 4000 } }, rewardMult: 1.5 },
+    { id: 'commander', nameKey: 'affixes.commander.name', descKey: 'affixes.commander.desc', icon: '👑', tier: 3, effect: { aura: { stat: 'damage', value: 0.2, range: 150 } }, rewardMult: 1.45 },
+    { id: 'void_touched', nameKey: 'affixes.voidTouched.name', descKey: 'affixes.voidTouched.desc', icon: '🔮', tier: 4, effect: { voidPulse: { damage: 100, range: 200, interval: 8000 } }, rewardMult: 2.0 }
+];
+
+/**
+ * Tower Modules - Mix and match components for turrets
+ */
+export const TOWER_MODULES = {
+    barrels: [
+        { id: 'standard_barrel', nameKey: 'modules.standardBarrel.name', icon: '🔫', tier: 1, effect: { damage: 1.0, fireRate: 1.0 }, cost: 0 },
+        { id: 'heavy_barrel', nameKey: 'modules.heavyBarrel.name', icon: '💪', tier: 2, effect: { damage: 1.5, fireRate: 0.7 }, cost: 500, unlockWave: 20 },
+        { id: 'rapid_barrel', nameKey: 'modules.rapidBarrel.name', icon: '⚡', tier: 2, effect: { damage: 0.7, fireRate: 1.8 }, cost: 500, unlockWave: 20 },
+        { id: 'sniper_barrel', nameKey: 'modules.sniperBarrel.name', icon: '🎯', tier: 3, effect: { damage: 2.0, range: 1.5, fireRate: 0.5 }, cost: 1200, unlockWave: 40 },
+        { id: 'scatter_barrel', nameKey: 'modules.scatterBarrel.name', icon: '💥', tier: 3, effect: { projectiles: 3, damage: 0.5 }, cost: 1500, unlockWave: 50 },
+        { id: 'void_barrel', nameKey: 'modules.voidBarrel.name', icon: '🔮', tier: 4, effect: { damage: 2.5, pierce: 3, voidDamage: true }, cost: 3000, unlockWave: 80 }
+    ],
+    cores: [
+        { id: 'basic_core', nameKey: 'modules.basicCore.name', icon: '⚙️', tier: 1, effect: {}, cost: 0 },
+        { id: 'power_core', nameKey: 'modules.powerCore.name', icon: '🔋', tier: 2, effect: { damage: 0.25 }, cost: 400, unlockWave: 15 },
+        { id: 'speed_core', nameKey: 'modules.speedCore.name', icon: '⏩', tier: 2, effect: { fireRate: 0.3 }, cost: 400, unlockWave: 15 },
+        { id: 'crit_core', nameKey: 'modules.critCore.name', icon: '💎', tier: 3, effect: { critChance: 0.1, critDamage: 0.5 }, cost: 1000, unlockWave: 35 },
+        { id: 'elemental_core', nameKey: 'modules.elementalCore.name', icon: '🌈', tier: 3, effect: { elementalDamage: 0.3, statusChance: 0.2 }, cost: 1200, unlockWave: 45 },
+        { id: 'cosmic_core', nameKey: 'modules.cosmicCore.name', icon: '🌟', tier: 4, effect: { allStats: 0.2, skillBoost: 0.15 }, cost: 2500, unlockWave: 70 }
+    ],
+    bases: [
+        { id: 'fixed_base', nameKey: 'modules.fixedBase.name', icon: '🏗️', tier: 1, effect: {}, cost: 0 },
+        { id: 'rotating_base', nameKey: 'modules.rotatingBase.name', icon: '🔄', tier: 2, effect: { rotationSpeed: 2.0 }, cost: 300, unlockWave: 10 },
+        { id: 'elevated_base', nameKey: 'modules.elevatedBase.name', icon: '📡', tier: 2, effect: { range: 0.2 }, cost: 350, unlockWave: 12 },
+        { id: 'armored_base', nameKey: 'modules.armoredBase.name', icon: '🛡️', tier: 3, effect: { turretHp: 0.5, turretArmor: 0.3 }, cost: 800, unlockWave: 30 },
+        { id: 'mobile_base', nameKey: 'modules.mobileBase.name', icon: '🚗', tier: 3, effect: { canMove: true, moveSpeed: 50 }, cost: 1500, unlockWave: 55 },
+        { id: 'phasing_base', nameKey: 'modules.phasingBase.name', icon: '👻', tier: 4, effect: { phaseShift: true, phaseInterval: 5000 }, cost: 2000, unlockWave: 75 }
+    ],
+    ammo: [
+        { id: 'standard_ammo', nameKey: 'modules.standardAmmo.name', icon: '🔹', tier: 1, effect: {}, cost: 0 },
+        { id: 'incendiary_ammo', nameKey: 'modules.incendiaryAmmo.name', icon: '🔥', tier: 2, effect: { burnDamage: 5, burnDuration: 3000 }, cost: 300, unlockWave: 18 },
+        { id: 'cryo_ammo', nameKey: 'modules.cryoAmmo.name', icon: '❄️', tier: 2, effect: { slow: 0.3, slowDuration: 2000 }, cost: 300, unlockWave: 18 },
+        { id: 'shock_ammo', nameKey: 'modules.shockAmmo.name', icon: '⚡', tier: 3, effect: { chainCount: 2, chainDamage: 0.4 }, cost: 700, unlockWave: 38 },
+        { id: 'explosive_ammo', nameKey: 'modules.explosiveAmmo.name', icon: '💣', tier: 3, effect: { aoeRadius: 40, aoeDamage: 0.4 }, cost: 800, unlockWave: 42 },
+        { id: 'void_ammo', nameKey: 'modules.voidAmmo.name', icon: '🌀', tier: 4, effect: { voidMark: true, voidDamageBonus: 0.5 }, cost: 1800, unlockWave: 65 }
+    ]
+};
+
+/**
+ * Module synergies - Bonus for combining specific modules
+ */
+export const MODULE_SYNERGIES = [
+    { id: 'fire_storm', modules: ['rapid_barrel', 'incendiary_ammo'], bonus: { burnDamage: 0.5, fireRate: 0.1 }, nameKey: 'synergies.fireStorm.name' },
+    { id: 'frozen_fortress', modules: ['armored_base', 'cryo_ammo'], bonus: { slow: 0.2, turretHp: 0.2 }, nameKey: 'synergies.frozenFortress.name' },
+    { id: 'death_ray', modules: ['sniper_barrel', 'crit_core'], bonus: { critDamage: 1.0, range: 0.2 }, nameKey: 'synergies.deathRay.name' },
+    { id: 'void_storm', modules: ['void_barrel', 'void_ammo', 'cosmic_core'], bonus: { voidDamage: 0.5, pierce: 2 }, nameKey: 'synergies.voidStorm.name' },
+    { id: 'artillery', modules: ['heavy_barrel', 'explosive_ammo'], bonus: { aoeDamage: 0.3, aoeRadius: 20 }, nameKey: 'synergies.artillery.name' },
+    { id: 'chain_master', modules: ['scatter_barrel', 'shock_ammo'], bonus: { chainCount: 2, chainDamage: 0.2 }, nameKey: 'synergies.chainMaster.name' }
+];
+
+/**
+ * Card pack types for skill card system
+ */
+export const CARD_PACKS = [
+    { id: 'basic_pack', nameKey: 'cardPacks.basic.name', cards: 3, guaranteedRarity: null, cost: { crystals: 50 } },
+    { id: 'premium_pack', nameKey: 'cardPacks.premium.name', cards: 5, guaranteedRarity: 'uncommon', cost: { crystals: 150 } },
+    { id: 'elite_pack', nameKey: 'cardPacks.elite.name', cards: 5, guaranteedRarity: 'rare', cost: { ether: 50 } },
+    { id: 'legendary_pack', nameKey: 'cardPacks.legendary.name', cards: 3, guaranteedRarity: 'legendary', cost: { ether: 200 } }
 ];
 
 /**

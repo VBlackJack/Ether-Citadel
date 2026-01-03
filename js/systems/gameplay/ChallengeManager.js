@@ -25,8 +25,49 @@ import { BigNumService, formatNumber } from '../../config.js';
 export class ChallengeManager {
     constructor() {
         this.challenges = CHALLENGES;
-        this.dmTech = { berserk: 0, siphon: 0, overlord: 0 };
+        this.dmTech = { berserk: 0, siphon: 0, overlord: 0, etherSurge: 0, voidAffinity: 0 };
         this.darkMatter = BigNumService.create(0);
+        this.siphonProcs = 0;
+    }
+
+    /**
+     * Get siphon ether chance based on upgrade level
+     * @returns {number} Chance percentage (0-100)
+     */
+    getSiphonChance() {
+        const level = this.dmTech.siphon || 0;
+        return level * 0.5; // 0.5% per level, max 5%
+    }
+
+    /**
+     * Get ether surge bonus multiplier
+     * @returns {number} Multiplier (1 = no bonus)
+     */
+    getEtherSurgeBonus() {
+        const level = this.dmTech.etherSurge || 0;
+        return 1 + (level * 0.1); // 10% per level
+    }
+
+    /**
+     * Get void affinity damage reduction in challenges
+     * @returns {number} Reduction percentage
+     */
+    getVoidAffinityBonus() {
+        const level = this.dmTech.voidAffinity || 0;
+        return level * 0.15; // 15% per level
+    }
+
+    /**
+     * Try to proc siphon ether gain
+     * @returns {boolean} Whether ether was gained
+     */
+    trySiphonProc() {
+        const chance = this.getSiphonChance();
+        if (chance > 0 && Math.random() * 100 < chance) {
+            this.siphonProcs++;
+            return true;
+        }
+        return false;
     }
 
     startChallenge(id) {
@@ -92,13 +133,22 @@ export class ChallengeManager {
     getSaveData() {
         return {
             dm: BigNumService.serialize(this.darkMatter),
-            tech: this.dmTech
+            tech: this.dmTech,
+            siphonProcs: this.siphonProcs
         };
     }
 
     loadSaveData(data) {
         if (!data) return;
         this.darkMatter = BigNumService.deserialize(data.dm) || BigNumService.create(0);
-        this.dmTech = data.tech || { berserk: 0, siphon: 0, overlord: 0 };
+        this.dmTech = {
+            berserk: 0,
+            siphon: 0,
+            overlord: 0,
+            etherSurge: 0,
+            voidAffinity: 0,
+            ...data.tech
+        };
+        this.siphonProcs = data.siphonProcs || 0;
     }
 }

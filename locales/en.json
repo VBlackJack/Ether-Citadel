@@ -352,6 +352,18 @@
     "autoSkillE": {
       "name": "Auto Black Hole",
       "desc": "Auto-cast Black Hole skill."
+    },
+    "infiniteDamage": {
+      "name": "Eternal Blade",
+      "desc": "+2% damage per level (no cap)."
+    },
+    "infiniteHealth": {
+      "name": "Eternal Fortress",
+      "desc": "+2% max HP per level (no cap)."
+    },
+    "infiniteGold": {
+      "name": "Eternal Treasury",
+      "desc": "+3% gold per level (no cap)."
     }
   },
   "darkMatter": {
@@ -361,11 +373,19 @@
     },
     "siphon": {
       "name": "Soul Siphon",
-      "desc": "Ether chance on normal enemies"
+      "desc": "+0.5% ether chance per level on kills"
     },
     "overlord": {
       "name": "Overlord",
       "desc": "Drone attacks 2x faster"
+    },
+    "etherSurge": {
+      "name": "Ether Surge",
+      "desc": "+10% ether gain per level"
+    },
+    "voidAffinity": {
+      "name": "Void Affinity",
+      "desc": "-15% enemy damage in challenges per level"
     }
   },
   "challenges": {
@@ -544,6 +564,10 @@
       "name": "Legend",
       "desc": "Kill 5000 enemies"
     },
+    "kill_50000": {
+      "name": "Annihilator",
+      "desc": "Kill 50000 enemies"
+    },
     "boss_5": {
       "name": "Kingslayer",
       "desc": "Defeat 5 Bosses"
@@ -551,6 +575,10 @@
     "boss_50": {
       "name": "Deicide",
       "desc": "Defeat 50 Bosses"
+    },
+    "boss_200": {
+      "name": "Godslayer",
+      "desc": "Defeat 200 Bosses"
     },
     "wave_20": {
       "name": "Survivor",
@@ -560,9 +588,69 @@
       "name": "Veteran",
       "desc": "Reach wave 50"
     },
+    "wave_100": {
+      "name": "Champion",
+      "desc": "Reach wave 100"
+    },
+    "wave_250": {
+      "name": "Elite",
+      "desc": "Reach wave 250"
+    },
+    "wave_500": {
+      "name": "Immortal",
+      "desc": "Reach wave 500"
+    },
     "gold_10k": {
       "name": "Rich",
       "desc": "Earn 10k Gold (Total)"
+    },
+    "gold_1m": {
+      "name": "Tycoon",
+      "desc": "Earn 1M Gold (Total)"
+    },
+    "ether_100": {
+      "name": "Awakening",
+      "desc": "Earn 100 Ether (Total)"
+    },
+    "ether_1000": {
+      "name": "Enlightened",
+      "desc": "Earn 1000 Ether (Total)"
+    },
+    "ether_10000": {
+      "name": "Transcendent",
+      "desc": "Earn 10000 Ether (Total)"
+    },
+    "consistent_10": {
+      "name": "Reliable",
+      "desc": "Complete 10 consistent runs (80%+ of best wave)"
+    },
+    "consistent_50": {
+      "name": "Steadfast",
+      "desc": "Complete 50 consistent runs"
+    },
+    "dread_5": {
+      "name": "Dread Walker",
+      "desc": "Clear Dread level 5"
+    },
+    "dread_10": {
+      "name": "Dread Master",
+      "desc": "Clear Dread level 10"
+    },
+    "prestige_10": {
+      "name": "Reborn",
+      "desc": "Prestige 10 times"
+    },
+    "prestige_100": {
+      "name": "Eternal",
+      "desc": "Prestige 100 times"
+    },
+    "ascend_1": {
+      "name": "Cosmic Awakening",
+      "desc": "Ascend for the first time"
+    },
+    "ascend_5": {
+      "name": "Cosmic Master",
+      "desc": "Ascend 5 times"
     }
   },
   "mastery": {
@@ -834,6 +922,14 @@
     "pending": "PP",
     "current": "Current",
     "next": "Next",
+    "endless": "Endless Prestige",
+    "endlessMode": "Endless Mode",
+    "endlessInterval": "Prestige every X waves",
+    "endlessDesc": "Auto-prestige during run without dying. Gain bonus PP each cycle.",
+    "endlessBonus": "Endless Bonus",
+    "themes": "Prestige Themes",
+    "selectTheme": "Select Theme",
+    "themeActive": "Active Theme",
     "damage": { "name": "Ancestral Power", "desc": "+5% Damage per level" },
     "health": { "name": "Ancestral Vitality", "desc": "+5% Health per level" },
     "gold": { "name": "Golden Legacy", "desc": "+10% Gold per level" },
@@ -842,6 +938,73 @@
     "auto_turrets": { "name": "Auto-Build", "desc": "Start with turrets" },
     "production": { "name": "Industrial", "desc": "+20% Production per level" },
     "skill_cd": { "name": "Quick Reflexes", "desc": "-5% Skill Cooldown per level" }
+  },
+  "prestigeTheme": {
+    "fire": { "name": "Inferno", "desc": "+25% Damage, +30% Crit Damage, -10% Health" },
+    "ice": { "name": "Frost", "desc": "+20% Slow, +30% Shield, -10% Fire Rate" },
+    "lightning": { "name": "Storm", "desc": "+30% Fire Rate, +15 Crit Chance, -10% Damage" },
+    "void": { "name": "Void", "desc": "+50% Ether Gain, +25% Skill Power, -15% Gold" },
+    "cosmic": { "name": "Cosmic", "desc": "+15% All Stats, +25% Prestige Points" }
+  },
+  "milestones": {
+    "title": "Milestones",
+    "unlocked": "Milestone Unlocked",
+    "progress": "Progress",
+    "reward": "Reward",
+    "claimed": "Claimed",
+    "firstBoss": { "name": "First Victory", "desc": "Defeat your first boss at wave 10" },
+    "wave25": { "name": "Rising Star", "desc": "Reach wave 25" },
+    "wave50": { "name": "Veteran", "desc": "Reach wave 50" },
+    "wave100": { "name": "Champion", "desc": "Reach wave 100" },
+    "wave150": { "name": "Elite", "desc": "Reach wave 150" },
+    "wave200": { "name": "Master", "desc": "Reach wave 200" },
+    "wave250": { "name": "Grandmaster", "desc": "Reach wave 250" },
+    "wave300": { "name": "Transcendent", "desc": "Reach wave 300" },
+    "wave500": { "name": "Immortal", "desc": "Reach wave 500" },
+    "dreadComplete": { "name": "Dread Master", "desc": "Complete Dread level 10" }
+  },
+  "dailyChest": {
+    "title": "Daily Chest",
+    "claim": "Claim Chest",
+    "claimed": "Chest Claimed",
+    "streak": "Login Streak",
+    "nextChest": "Next Chest",
+    "day1": { "name": "Day 1 Chest" },
+    "day2": { "name": "Day 2 Chest" },
+    "day3": { "name": "Day 3 Chest" },
+    "day4": { "name": "Day 4 Chest" },
+    "day5": { "name": "Day 5 Chest" },
+    "day6": { "name": "Day 6 Chest" },
+    "day7": { "name": "Day 7 Mega Chest" }
+  },
+  "exchange": {
+    "title": "Resource Exchange",
+    "convert": "Convert",
+    "rate": "Exchange Rate",
+    "success": "Exchange Complete",
+    "insufficient": "Insufficient resources",
+    "goldToCrystals": "Gold to Crystals",
+    "crystalsToEther": "Crystals to Ether",
+    "etherToAscension": "Ether to Ascension Points"
+  },
+  "dividends": {
+    "title": "Ether Dividends",
+    "rate": "Hourly Rate",
+    "pending": "Pending",
+    "collect": "Collect",
+    "desc": "Earn passive ether based on your total earnings"
+  },
+  "synergy": {
+    "title": "Turret Synergies",
+    "active": "Active Synergies",
+    "fireCombo": { "name": "Fire Combo", "desc": "Blaster + Inferno: +25% Damage, +20 AOE" },
+    "frostCombo": { "name": "Frost Combo", "desc": "Solidifier + Swamper: +30% Slow, +15% Range" },
+    "precisionCombo": { "name": "Precision", "desc": "Laser + Sniper: +15 Crit Chance, +50% Crit Damage" },
+    "artilleryCombo": { "name": "Artillery", "desc": "Rocket + Swamper: +40 AOE, +15% Damage" },
+    "fullDefense": { "name": "Full Defense", "desc": "Sentry + Blaster + Laser: +20% Fire Rate, +10% Damage" },
+    "elementalMaster": { "name": "Elemental Master", "desc": "Solidifier + Inferno + Swamper: +30% Damage, +20% Slow, +30 AOE" },
+    "techSupremacy": { "name": "Tech Supremacy", "desc": "Laser + Rocket + Sniper: +40% Damage, +20 Crit, +20% Range" },
+    "chaosEngine": { "name": "Chaos Engine", "desc": "Inferno + Rocket + Blaster: +60 AOE, +35% Damage, +15% Fire Rate" }
   },
   "speeds": {
     "x1": "x1",
@@ -1081,7 +1244,13 @@
       "ap_starter_damage": { "name": "Ancestral Might", "desc": "+10% Global Damage per level" },
       "ap_mining_speed": { "name": "Ethereal Pickaxe", "desc": "+5% Mining Speed per level" },
       "ap_ether_boost": { "name": "Arcane Flux", "desc": "+25% Ether Gain per level" },
-      "ap_start_wave": { "name": "Vanguard", "desc": "Start +5 waves further per level" }
+      "ap_start_wave": { "name": "Vanguard", "desc": "Start +5 waves further per level" },
+      "ap_crit_power": { "name": "Cosmic Precision", "desc": "+15% Critical Damage per level" },
+      "ap_prestige_mult": { "name": "Echoing Legacy", "desc": "+10% Prestige Points per level" },
+      "ap_dread_resist": { "name": "Dread Resilience", "desc": "-3% enemy damage in Dread per level" },
+      "ap_skill_power": { "name": "Astral Power", "desc": "+10% Skill Damage per level" },
+      "ap_offline_bonus": { "name": "Slumbering Fortune", "desc": "+20% Offline Gains per level" },
+      "ap_consistency_bonus": { "name": "Steadfast Spirit", "desc": "+10% Consistency Bonus per level" }
     }
   },
   "statistics": {
@@ -1105,7 +1274,12 @@
     "runesCollected": "Runes Collected",
     "relicsFound": "Relics Found",
     "dps": "Current DPS",
-    "avgWaveTime": "Avg Wave Time"
+    "avgWaveTime": "Avg Wave Time",
+    "totalEtherEarned": "Total Ether Earned",
+    "runsCompleted": "Runs Completed",
+    "consistentRuns": "Consistent Runs (80%+ of best)",
+    "fastestWave50": "Fastest to Wave 50",
+    "highestDreadCleared": "Highest Dread Cleared"
   },
   "help": {
     "lab": {
@@ -1741,5 +1915,362 @@
       "useCloud": "Use Cloud",
       "useLocal": "Use Local"
     }
+  },
+  "bosses": {
+    "warning": "Boss Approaching",
+    "phase": "Phase",
+    "defeated": "Boss Defeated",
+    "goblinKing": { "name": "Goblin King", "desc": "A fearsome goblin leader who spins through battle" },
+    "crystalGiant": { "name": "Crystal Giant", "desc": "An ancient being made of living crystal" },
+    "infernoDragon": { "name": "Inferno Dragon", "desc": "A legendary dragon with devastating fire breath" },
+    "voidEmperor": { "name": "Void Emperor", "desc": "Master of the void realm, bends reality to his will" },
+    "ancientOne": { "name": "The Ancient One", "desc": "A cosmic entity from beyond the stars" }
+  },
+  "skillCombos": {
+    "title": "Skill Combos",
+    "devastation": { "name": "Devastation", "desc": "Overdrive + Nuke: Massive area damage" },
+    "singularity": { "name": "Singularity", "desc": "Nuke + Blackhole: Extended pull with damage" },
+    "overcharge": { "name": "Overcharge", "desc": "Blackhole + Overdrive: Turrets ignore range" },
+    "timestop": { "name": "Time Stop", "desc": "Time Warp + Blackhole: Freeze enemies in void" },
+    "armageddon": { "name": "Armageddon", "desc": "Meteor Storm + Earthquake: Fire and stun" },
+    "voidstorm": { "name": "Void Storm", "desc": "Void Rift + Meteor Storm: Ether meteors" }
+  },
+  "classes": {
+    "title": "Character Class",
+    "selected": "Class Selected",
+    "levelUp": "Level Up",
+    "select": "Select Class",
+    "passives": "Class Passives",
+    "defender": {
+      "name": "Defender",
+      "desc": "Tank class focused on health and survival",
+      "fortitude": "Fortitude: +2% Health per level",
+      "ironSkin": "Iron Skin: +1% Armor per level",
+      "guardian": "Guardian: +5% Shield on hit",
+      "lastStand": "Last Stand: +3% Damage reduction at low HP",
+      "immortal": "Immortal: +5% Revive chance"
+    },
+    "berserker": {
+      "name": "Berserker",
+      "desc": "Damage dealer with critical strikes",
+      "fury": "Fury: +2% Damage per level",
+      "bloodlust": "Bloodlust: +0.5% Life leech per level",
+      "rampage": "Rampage: +1% Damage per kill (stacks)",
+      "executioner": "Executioner: +4% Damage to low HP enemies",
+      "warlord": "Warlord: +10% All damage"
+    },
+    "mage": {
+      "name": "Mage",
+      "desc": "Skill specialist with powerful abilities",
+      "arcanePower": "Arcane Power: +3% Skill power per level",
+      "quickCast": "Quick Cast: +2% Cooldown reduction per level",
+      "manaSurge": "Mana Surge: +2% Rune chance per level",
+      "timeWarp": "Time Warp: +3% Skill duration per level",
+      "archmage": "Archmage: +5% Double skill chance"
+    },
+    "ranger": {
+      "name": "Ranger",
+      "desc": "Precision fighter with fast attacks",
+      "precision": "Precision: +1% Crit chance per level",
+      "rapidFire": "Rapid Fire: +1.5% Fire rate per level",
+      "eagleEye": "Eagle Eye: +2% Range per level",
+      "multishot": "Multishot: +2% Extra projectile chance",
+      "sniper": "Sniper: +10% Crit damage per level"
+    },
+    "merchant": {
+      "name": "Merchant",
+      "desc": "Economy focused class for maximum gold",
+      "goldSense": "Gold Sense: +3% Gold per level",
+      "treasureHunter": "Treasure Hunter: +2% Relic chance per level",
+      "efficient": "Efficient: -1% Upgrade cost per level",
+      "lucky": "Lucky: +2% Double gold chance",
+      "tycoon": "Tycoon: +1 Passive gold per level"
+    }
+  },
+  "equipment": {
+    "title": "Equipment",
+    "found": "Equipment Found",
+    "equip": "Equip",
+    "unequip": "Unequip",
+    "sell": "Sell",
+    "inventory": "Inventory",
+    "equipped": "Equipped",
+    "power": "Equipment Power",
+    "slots": {
+      "head": "Head",
+      "chest": "Chest",
+      "hands": "Hands",
+      "feet": "Feet",
+      "accessory1": "Accessory 1",
+      "accessory2": "Accessory 2"
+    },
+    "ironHelm": { "name": "Iron Helm", "desc": "+5% Health, +2% Armor" },
+    "crystalCrown": { "name": "Crystal Crown", "desc": "+10% Health, +10% Skill Power" },
+    "dragonHelm": { "name": "Dragon Helm", "desc": "+20% Health, +15% Damage, +10% Armor" },
+    "voidCrown": { "name": "Void Crown", "desc": "+30% Health, +25% Skill Power, +20% Ether" },
+    "leatherArmor": { "name": "Leather Armor", "desc": "+10% Health, +5% Armor" },
+    "chainmail": { "name": "Chainmail", "desc": "+15% Health, +10% Armor, +10% Regen" },
+    "dragonPlate": { "name": "Dragon Plate", "desc": "+25% Health, +20% Armor, +10% Damage" },
+    "celestialRobe": { "name": "Celestial Robe", "desc": "+20% Health, +30% Skill Power, +20% Cooldown" },
+    "leatherGloves": { "name": "Leather Gloves", "desc": "+5% Damage, +5% Fire Rate" },
+    "steelGauntlets": { "name": "Steel Gauntlets", "desc": "+10% Damage, +5% Crit" },
+    "dragonClaws": { "name": "Dragon Claws", "desc": "+20% Damage, +10% Crit, +30% Crit Damage" },
+    "voidGrips": { "name": "Void Grips", "desc": "+25% Damage, +20% Fire Rate, +10% Leech" },
+    "leatherBoots": { "name": "Leather Boots", "desc": "+5% Speed, +2% Dodge" },
+    "swiftBoots": { "name": "Swift Boots", "desc": "+10% Speed, +5% Cooldown" },
+    "dragonGreaves": { "name": "Dragon Greaves", "desc": "+15% Speed, +10% Dodge, +10% Health" },
+    "astralSteps": { "name": "Astral Steps", "desc": "+25% Speed, +15% Dodge, +15% Skill Power" },
+    "copperRing": { "name": "Copper Ring", "desc": "+10% Gold" },
+    "silverAmulet": { "name": "Silver Amulet", "desc": "+15% Gold, +10% Crystals" },
+    "dragonPendant": { "name": "Dragon Pendant", "desc": "+25% Gold, +15% Damage, +10% Health" },
+    "cosmicOrb": { "name": "Cosmic Orb", "desc": "+10% All Stats, +25% Ether" },
+    "luckyCharm": { "name": "Lucky Charm", "desc": "+3% Crit Chance" },
+    "crystalPendant": { "name": "Crystal Pendant", "desc": "+20% Crystals, +10% Skill Power" },
+    "warMedal": { "name": "War Medal", "desc": "+20% Damage, +30% Crit Damage" },
+    "infinityStone": { "name": "Infinity Stone", "desc": "+15% All Stats, +15% Cooldown" }
+  },
+  "pets": {
+    "title": "Companions",
+    "unlocked": "Pet Unlocked",
+    "levelUp": "Pet Level Up",
+    "select": "Select Pet",
+    "active": "Active Pet",
+    "ability": "Ability",
+    "fireSprite": { "name": "Fire Sprite", "desc": "+5% Damage, Fireball attack" },
+    "frostFairy": { "name": "Frost Fairy", "desc": "+10% Slow, Freeze ability" },
+    "goldPixie": { "name": "Gold Pixie", "desc": "+10% Gold, Gold burst ability" },
+    "shadowCat": { "name": "Shadow Cat", "desc": "+5% Crit, Shadow strike attack" },
+    "stormHawk": { "name": "Storm Hawk", "desc": "+10% Fire Rate, Lightning strike" },
+    "voidSerpent": { "name": "Void Serpent", "desc": "+15% Damage, Void bite attack" },
+    "phoenix": { "name": "Phoenix", "desc": "+10% Damage, Rebirth ability" },
+    "dragonWhelp": { "name": "Dragon Whelp", "desc": "+20% Damage, Dragon breath" },
+    "celestialGuardian": { "name": "Celestial Guardian", "desc": "+10% All Stats, Divine shield" }
+  },
+  "modifiers": {
+    "title": "Wave Modifiers",
+    "choose": "Choose a Modifier",
+    "skip": "Skip",
+    "active": "Active Modifiers",
+    "armoredHorde": { "name": "Armored Horde", "desc": "+30% Enemy Armor, +20% HP. Reward: +30%" },
+    "speedDemons": { "name": "Speed Demons", "desc": "+50% Enemy Speed. Reward: +25%" },
+    "titanWave": { "name": "Titan Wave", "desc": "+100% HP, +50% Size, -50% Count. Reward: +40%" },
+    "swarm": { "name": "Swarm", "desc": "+200% Count, -50% HP, -30% Size. Reward: +20%" },
+    "regenerators": { "name": "Regenerators", "desc": "Enemies regenerate 2% HP/s. Reward: +35%" },
+    "vampiric": { "name": "Vampiric", "desc": "Enemies heal 10% on hit. Reward: +30%" },
+    "goldRush": { "name": "Gold Rush", "desc": "2x Gold this wave" },
+    "crystalShower": { "name": "Crystal Shower", "desc": "3x Crystals this wave" },
+    "etherFlow": { "name": "Ether Flow", "desc": "+50% Ether this wave" },
+    "treasureTrove": { "name": "Treasure Trove", "desc": "+50% Relic chance this wave" },
+    "glassCannon": { "name": "Glass Cannon", "desc": "+100% Damage, -50% Health. Reward: +50%" },
+    "tankMode": { "name": "Tank Mode", "desc": "+100% Health, -30% Damage. Reward: +20%" },
+    "overcharge": { "name": "Overcharge", "desc": "+50% Fire Rate, -30% Skill Cooldown. Reward: +10%" },
+    "limitedAmmo": { "name": "Limited Ammo", "desc": "Only 100 shots this wave. Reward: +60%" }
+  },
+  "dungeon": {
+    "title": "Dungeon",
+    "floor": "Floor",
+    "lives": "Lives",
+    "enter": "Enter Dungeon",
+    "combat": { "name": "Combat Room", "desc": "Fight through 3 waves of enemies" },
+    "elite": { "name": "Elite Room", "desc": "Face powerful elite enemies" },
+    "boss": { "name": "Boss Room", "desc": "Defeat a mighty boss" },
+    "treasure": { "name": "Treasure Room", "desc": "Collect gold, crystals, and maybe a relic" },
+    "shop": { "name": "Shop", "desc": "Buy upgrades at a discount" },
+    "altar": { "name": "Altar", "desc": "Make a choice: buff, curse+reward, or gamble" },
+    "rest": { "name": "Rest Area", "desc": "Heal 50% HP and upgrade a skill" },
+    "mystery": { "name": "Mystery Room", "desc": "Could be treasure, combat, or a trap..." }
+  },
+  "rift": {
+    "title": "Rift Mode",
+    "enter": "Enter Rift",
+    "timeLeft": "Time Left",
+    "waves": "Waves Cleared",
+    "tokens": "Rift Tokens",
+    "complete": "Rift Complete",
+    "failed": "Rift Failed"
+  },
+  "relicSynergy": {
+    "title": "Relic Synergies",
+    "active": "Active Synergies",
+    "fireSet": { "name": "Fire Set", "desc": "2pc: +15% Damage. 3pc: +35% Damage, Burn spreads" },
+    "iceSet": { "name": "Ice Set", "desc": "2pc: +20% Slow. 3pc: +40% Slow, Freeze chance" },
+    "voidSet": { "name": "Void Set", "desc": "2pc: +25% Ether. 3pc: +50% Ether, Void damage" },
+    "wealthSet": { "name": "Wealth Set", "desc": "2pc: +30% Gold. 3pc: +60% Gold, Double drops" },
+    "warriorSet": { "name": "Warrior Set", "desc": "2pc: +20% Damage. 3pc: +45% Damage, +50% Crit" }
+  },
+  "relicEvolution": {
+    "title": "Relic Evolution",
+    "evolve": "Evolve",
+    "requirement": "Requirement",
+    "evolved": "Evolved"
+  },
+  "mazing": {
+    "title": "Mazing",
+    "walls": "Walls",
+    "traps": "Traps",
+    "place": "Place",
+    "remove": "Remove",
+    "destroyed": "Wall Destroyed!",
+    "maxWalls": "Max walls reached",
+    "maxTraps": "Max traps reached",
+    "wouldBlockPath": "Would block path",
+    "woodenWall": { "name": "Wooden Wall", "desc": "Basic wall, low HP" },
+    "stoneWall": { "name": "Stone Wall", "desc": "Solid stone, medium HP" },
+    "ironWall": { "name": "Iron Wall", "desc": "Strong iron, high HP" },
+    "crystalWall": { "name": "Crystal Wall", "desc": "Crystal barrier, damages enemies" },
+    "voidBarrier": { "name": "Void Barrier", "desc": "Ethereal barrier, stuns enemies" },
+    "spikeTrap": { "name": "Spike Trap", "desc": "Deals damage to enemies" },
+    "poisonTrap": { "name": "Poison Trap", "desc": "Poisons enemies over time" },
+    "freezeTrap": { "name": "Freeze Trap", "desc": "Slows enemies significantly" },
+    "fireTrap": { "name": "Fire Trap", "desc": "Area fire damage" },
+    "lightningTrap": { "name": "Lightning Trap", "desc": "Chain lightning damage" },
+    "voidTrap": { "name": "Void Trap", "desc": "Pulls and damages enemies" }
+  },
+  "worlds": {
+    "title": "Worlds",
+    "select": "Select World",
+    "unlocked": "World Unlocked",
+    "complete": "World Complete",
+    "progress": "Progress",
+    "completions": "Completions",
+    "grasslands": { "name": "Grasslands", "desc": "Peaceful meadows with basic enemies" },
+    "desert": { "name": "Desert Wastes", "desc": "Scorching sands with tougher foes" },
+    "volcanic": { "name": "Volcanic Realm", "desc": "Fiery domain with lava hazards" },
+    "frozen": { "name": "Frozen Tundra", "desc": "Icy lands that slow your attacks" },
+    "shadow": { "name": "Shadow Dimension", "desc": "Dark realm with reduced visibility" },
+    "cosmic": { "name": "Cosmic Void", "desc": "The ultimate challenge beyond reality" }
+  },
+  "hazards": {
+    "title": "Hazards",
+    "lavaPools": { "name": "Lava Pools" },
+    "icePatches": { "name": "Ice Patches" },
+    "shadowZones": { "name": "Shadow Zones" },
+    "voidRifts": { "name": "Void Rifts" },
+    "meteorShowers": { "name": "Meteor Showers" }
+  },
+  "skillCards": {
+    "title": "Skill Cards",
+    "collection": "Collection",
+    "equipped": "Equipped",
+    "equip": "Equip",
+    "unequip": "Unequip",
+    "disenchant": "Disenchant",
+    "craft": "Craft",
+    "powerSurge": { "name": "Power Surge", "desc": "+10% Damage" },
+    "rapidFire": { "name": "Rapid Fire", "desc": "+10% Fire Rate" },
+    "precisionStrike": { "name": "Precision Strike", "desc": "+5% Crit Chance" },
+    "armorPiercing": { "name": "Armor Piercing", "desc": "+15% Armor Ignore" },
+    "explosiveRounds": { "name": "Explosive Rounds", "desc": "+20 Splash, +30% Splash Damage" },
+    "chainLightning": { "name": "Chain Lightning", "desc": "Chain to 3 enemies, 50% damage" },
+    "devastator": { "name": "Devastator", "desc": "+50% Damage, +100% Crit Damage" },
+    "reinforcedWalls": { "name": "Reinforced Walls", "desc": "+10% Health" },
+    "quickRepair": { "name": "Quick Repair", "desc": "+20% Regen" },
+    "energyShield": { "name": "Energy Shield", "desc": "+25% Shield" },
+    "damageReflect": { "name": "Damage Reflect", "desc": "Reflect 10% damage" },
+    "immortalCore": { "name": "Immortal Core", "desc": "Revive once with 50% HP" },
+    "goldMagnet": { "name": "Gold Magnet", "desc": "+15% Gold" },
+    "expBoost": { "name": "EXP Boost", "desc": "+20% Experience" },
+    "luckyStar": { "name": "Lucky Star", "desc": "+10% Luck, +10% Relic Chance" },
+    "timeDilation": { "name": "Time Dilation", "desc": "-20% Skill Cooldown" },
+    "voidTouch": { "name": "Void Touch", "desc": "+50% Ether, +10% All Stats" },
+    "overdriveExtend": { "name": "Overdrive Extend", "desc": "+50% Overdrive Duration" },
+    "meteorCluster": { "name": "Meteor Cluster", "desc": "+3 Meteor Count" },
+    "blackholeGravity": { "name": "Blackhole Gravity", "desc": "+50% Range, +30% Damage" }
+  },
+  "cardPacks": {
+    "title": "Card Packs",
+    "open": "Open Pack",
+    "basic": { "name": "Basic Pack" },
+    "premium": { "name": "Premium Pack" },
+    "elite": { "name": "Elite Pack" },
+    "legendary": { "name": "Legendary Pack" }
+  },
+  "cards": {
+    "dust": "Card Dust",
+    "crafted": "Card Crafted",
+    "rarity": {
+      "common": "Common",
+      "uncommon": "Uncommon",
+      "rare": "Rare",
+      "legendary": "Legendary"
+    }
+  },
+  "landmarks": {
+    "title": "Landmarks",
+    "place": "Place Landmark",
+    "unlocked": "Landmark Unlocked",
+    "maxLandmarks": "Max landmarks placed",
+    "altarOfPower": { "name": "Altar of Power", "desc": "+20% Damage in range" },
+    "healingSpring": { "name": "Healing Spring", "desc": "Heals castle over time" },
+    "goldFountain": { "name": "Gold Fountain", "desc": "Generates gold per second" },
+    "stormPillar": { "name": "Storm Pillar", "desc": "Chain lightning damage" },
+    "crystalObelisk": { "name": "Crystal Obelisk", "desc": "+15% Crit Chance in range" },
+    "frostShrine": { "name": "Frost Shrine", "desc": "Slows enemies in range" },
+    "fireBeacon": { "name": "Fire Beacon", "desc": "Burns enemies over time" },
+    "voidMonolith": { "name": "Void Monolith", "desc": "-30% Enemy Armor" },
+    "ancientTree": { "name": "Ancient Tree", "desc": "Heals and boosts regen" },
+    "celestialGate": { "name": "Celestial Gate", "desc": "+15% All Stats in range" }
+  },
+  "affixes": {
+    "title": "Enemy Affixes",
+    "berserker": { "name": "Berserker", "desc": "+50% Damage, +20% Speed" },
+    "venomous": { "name": "Venomous", "desc": "Poisons on hit" },
+    "explosive": { "name": "Explosive", "desc": "Explodes on death" },
+    "vampiric": { "name": "Vampiric", "desc": "Heals when dealing damage" },
+    "armored": { "name": "Armored", "desc": "Double armor" },
+    "regenerating": { "name": "Regenerating", "desc": "Regenerates 2% HP/s" },
+    "shielded": { "name": "Shielded", "desc": "Has a damage shield" },
+    "ethereal": { "name": "Ethereal", "desc": "30% chance to evade" },
+    "swift": { "name": "Swift", "desc": "+50% Speed" },
+    "teleporter": { "name": "Teleporter", "desc": "Randomly teleports" },
+    "phasing": { "name": "Phasing", "desc": "Phases through walls" },
+    "jammer": { "name": "Jammer", "desc": "Disables nearby turrets" },
+    "corrosive": { "name": "Corrosive", "desc": "Reduces turret damage" },
+    "magnetic": { "name": "Magnetic", "desc": "Deflects projectiles" },
+    "nullifier": { "name": "Nullifier", "desc": "Immune to skills" },
+    "arcane": { "name": "Arcane", "desc": "Casts fireballs" },
+    "commander": { "name": "Commander", "desc": "Buffs nearby enemies" },
+    "voidTouched": { "name": "Void Touched", "desc": "Void pulse damage" }
+  },
+  "modules": {
+    "title": "Tower Modules",
+    "unlocked": "Module Unlocked",
+    "barrels": "Barrels",
+    "cores": "Cores",
+    "bases": "Bases",
+    "ammo": "Ammo",
+    "standardBarrel": { "name": "Standard Barrel" },
+    "heavyBarrel": { "name": "Heavy Barrel" },
+    "rapidBarrel": { "name": "Rapid Barrel" },
+    "sniperBarrel": { "name": "Sniper Barrel" },
+    "scatterBarrel": { "name": "Scatter Barrel" },
+    "voidBarrel": { "name": "Void Barrel" },
+    "basicCore": { "name": "Basic Core" },
+    "powerCore": { "name": "Power Core" },
+    "speedCore": { "name": "Speed Core" },
+    "critCore": { "name": "Crit Core" },
+    "elementalCore": { "name": "Elemental Core" },
+    "cosmicCore": { "name": "Cosmic Core" },
+    "fixedBase": { "name": "Fixed Base" },
+    "rotatingBase": { "name": "Rotating Base" },
+    "elevatedBase": { "name": "Elevated Base" },
+    "armoredBase": { "name": "Armored Base" },
+    "mobileBase": { "name": "Mobile Base" },
+    "phasingBase": { "name": "Phasing Base" },
+    "standardAmmo": { "name": "Standard Ammo" },
+    "incendiaryAmmo": { "name": "Incendiary Ammo" },
+    "cryoAmmo": { "name": "Cryo Ammo" },
+    "shockAmmo": { "name": "Shock Ammo" },
+    "explosiveAmmo": { "name": "Explosive Ammo" },
+    "voidAmmo": { "name": "Void Ammo" }
+  },
+  "moduleSynergies": {
+    "title": "Module Synergies",
+    "fireStorm": { "name": "Fire Storm" },
+    "frozenFortress": { "name": "Frozen Fortress" },
+    "deathRay": { "name": "Death Ray" },
+    "voidStorm": { "name": "Void Storm" },
+    "artillery": { "name": "Artillery" },
+    "chainMaster": { "name": "Chain Master" }
   }
 }

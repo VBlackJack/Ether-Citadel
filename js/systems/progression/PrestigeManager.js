@@ -19,7 +19,7 @@
  * Includes auto-prestige functionality
  */
 
-import { PRESTIGE_UPGRADES } from '../../data.js';
+import { PRESTIGE_UPGRADES, PRESTIGE_THEMES, ENDLESS_PRESTIGE_CONFIG } from '../../data.js';
 import { t } from '../../i18n.js';
 import { formatNumber, BigNumService } from '../../config.js';
 import { FloatingText } from '../../entities/FloatingText.js';
@@ -40,9 +40,127 @@ export class PrestigeManager {
         this.autoPrestige = false;
         this.autoPrestigeWave = 30;
 
+        // Endless prestige mode
+        this.endlessMode = false;
+        this.endlessInterval = ENDLESS_PRESTIGE_CONFIG.defaultInterval;
+        this.endlessCycles = 0;
+
+        // Themed prestige
+        this.activeTheme = null;
+
         PRESTIGE_UPGRADES.forEach(u => {
             this.upgrades[u.id] = 0;
         });
+    }
+
+    /**
+     * Toggle endless prestige mode
+     */
+    setEndlessMode(enabled) {
+        this.endlessMode = enabled;
+        this.game.save();
+    }
+
+    /**
+     * Set endless prestige wave interval
+     */
+    setEndlessInterval(waves) {
+        this.endlessInterval = Math.max(ENDLESS_PRESTIGE_CONFIG.minWave, waves);
+        this.game.save();
+    }
+
+    /**
+     * Get endless prestige bonus multiplier
+     */
+    getEndlessBonus() {
+        const stacks = Math.min(this.endlessCycles, ENDLESS_PRESTIGE_CONFIG.maxBonusStacks);
+        return 1 + (stacks * ENDLESS_PRESTIGE_CONFIG.bonusPerCycle);
+    }
+
+    /**
+     * Check if endless prestige should trigger
+     */
+    checkEndlessPrestige() {
+        if (!this.endlessMode || this.game.isGameOver) return;
+        if (this.game.wave > 0 && this.game.wave % this.endlessInterval === 0) {
+            this.doEndlessPrestige();
+        }
+    }
+
+    /**
+     * Execute endless prestige (quick prestige without full reset)
+     */
+    doEndlessPrestige() {
+        if (!this.canPrestige()) return;
+
+        const points = this.calculatePrestigePoints();
+        const bonusPoints = BigNumService.mul(points, this.getEndlessBonus());
+        this.prestigePoints = BigNumService.add(this.prestigePoints, bonusPoints);
+        this.totalPrestiges++;
+        this.endlessCycles++;
+
+        // Partial reset - keep wave progress but reset gold and upgrades
+        this.game.gold = BigNumService.create(this.game.metaUpgrades?.getEffectValue?.('startGold') || 0);
+        if (this.game.upgrades?.upgrades) {
+            this.game.upgrades.upgrades.forEach(u => {
+                if (PRESTIGE_RESET_UPGRADES.includes(u.id)) {
+                    u.level = 0;
+                }
+            });
+        }
+
+        // Show notification
+        if (this.game.floatingTexts) {
+            this.game.floatingTexts.push(FloatingText.create(
+                this.game.width / 2,
+                this.game.height / 4,
+                `♾️ ${t('prestige.endless')} +${formatNumber(bonusPoints)} PP`,
+                '#22d3ee',
+                28
+            ));
+        }
+
+        this.game.save();
+    }
+
+    /**
+     * Get available prestige themes
+     */
+    getAvailableThemes() {
+        return PRESTIGE_THEMES.filter(theme =>
+            this.totalPrestiges >= theme.unlockPrestiges
+        );
+    }
+
+    /**
+     * Set active prestige theme
+     */
+    setTheme(themeId) {
+        const theme = PRESTIGE_THEMES.find(t => t.id === themeId);
+        if (!theme || this.totalPrestiges < theme.unlockPrestiges) return false;
+        this.activeTheme = themeId;
+        this.game.save();
+        return true;
+    }
+
+    /**
+     * Get theme bonuses
+     */
+    getThemeBonuses() {
+        if (!this.activeTheme) return { bonuses: {}, penalties: {} };
+        const theme = PRESTIGE_THEMES.find(t => t.id === this.activeTheme);
+        if (!theme) return { bonuses: {}, penalties: {} };
+        return { bonuses: theme.bonuses, penalties: theme.penalty };
+    }
+
+    /**
+     * Get theme bonus for a specific stat
+     */
+    getThemeBonus(stat) {
+        const { bonuses, penalties } = this.getThemeBonuses();
+        const bonus = bonuses[stat] || 0;
+        const penalty = penalties[stat] || 0;
+        return bonus + penalty;
     }
 
     /**
@@ -442,7 +560,11 @@ export class PrestigeManager {
             totalPrestiges: this.totalPrestiges,
             upgrades: { ...this.upgrades },
             autoPrestige: this.autoPrestige,
-            autoPrestigeWave: this.autoPrestigeWave
+            autoPrestigeWave: this.autoPrestigeWave,
+            endlessMode: this.endlessMode,
+            endlessInterval: this.endlessInterval,
+            endlessCycles: this.endlessCycles,
+            activeTheme: this.activeTheme
         };
     }
 
@@ -457,5 +579,9 @@ export class PrestigeManager {
         this.upgrades = data.upgrades || {};
         this.autoPrestige = data.autoPrestige || false;
         this.autoPrestigeWave = data.autoPrestigeWave || 30;
+        this.endlessMode = data.endlessMode || false;
+        this.endlessInterval = data.endlessInterval || ENDLESS_PRESTIGE_CONFIG.defaultInterval;
+        this.endlessCycles = data.endlessCycles || 0;
+        this.activeTheme = data.activeTheme || null;
     }
 }

@@ -171,13 +171,25 @@ export class AscensionManager {
             damage: 0,
             miningSpeed: 0,
             etherGain: 0,
-            startWave: 0
+            startWave: 0,
+            critPower: 0,
+            prestigeMult: 0,
+            dreadResist: 0,
+            skillPower: 0,
+            offlineBonus: 0,
+            consistencyBonus: 0
         };
 
         effects.damage = this.getPerkEffect('ap_starter_damage');
         effects.miningSpeed = this.getPerkEffect('ap_mining_speed');
         effects.etherGain = this.getPerkEffect('ap_ether_boost');
         effects.startWave = Math.floor(this.getPerkEffect('ap_start_wave'));
+        effects.critPower = this.getPerkEffect('ap_crit_power');
+        effects.prestigeMult = this.getPerkEffect('ap_prestige_mult');
+        effects.dreadResist = this.getPerkEffect('ap_dread_resist');
+        effects.skillPower = this.getPerkEffect('ap_skill_power');
+        effects.offlineBonus = this.getPerkEffect('ap_offline_bonus');
+        effects.consistencyBonus = this.getPerkEffect('ap_consistency_bonus');
 
         return effects;
     }

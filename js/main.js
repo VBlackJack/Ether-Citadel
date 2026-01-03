@@ -68,6 +68,7 @@ import { SurrenderSystem } from './systems/progression/SurrenderSystem.js';
 import { PrestigeManager } from './systems/progression/PrestigeManager.js';
 import { MetaUpgradeManager } from './systems/progression/MetaUpgradeManager.js';
 import { ResearchManager } from './systems/progression/ResearchManager.js';
+import { WorldManager } from './systems/progression/WorldManager.js';
 import { ForgeManager } from './systems/economy/ForgeManager.js';
 import { MiningManager } from './systems/economy/MiningManager.js';
 import { UpgradeManager } from './systems/economy/UpgradeManager.js';
@@ -84,10 +85,10 @@ import { StatsBreakdown } from './ui/StatsBreakdown.js';
 import { escapeHtml, sanitizeColor, calculateChecksum, verifyChecksum, sanitizeJsonObject } from './utils/HtmlSanitizer.js';
 import { createFocusTrap } from './utils/UIHelpers.js';
 import { Enemy, Castle, FloatingText, Particle, Rune, Projectile, Turret, Drone } from './entities/index.js';
-import { SkillManager, ChallengeManager, GameModeManager, CampaignManager, StatsManager, DailyQuestManager, TurretSlotManager, WeatherManager, EventManager, SeasonalEventManager, BuildPresetManager } from './systems/gameplay/index.js';
+import { SkillManager, ChallengeManager, GameModeManager, CampaignManager, StatsManager, DailyQuestManager, TurretSlotManager, WeatherManager, EventManager, SeasonalEventManager, BuildPresetManager, MazingManager, SkillCardManager, LandmarkManager } from './systems/gameplay/index.js';
 import { TownManager, SchoolManager, OfficeManager } from './systems/town/index.js';
 import { AwakeningManager, TalentManager, AscensionManager } from './systems/meta/index.js';
-import { ComboManager, SynergyManager, BossMechanicsManager } from './systems/combat/index.js';
+import { ComboManager, SynergyManager, BossMechanicsManager, TowerModuleManager } from './systems/combat/index.js';
 import { COLORS, getCastleTierColor } from './constants/colors.js';
 import { SKILL, RUNE, UPGRADE, PRESTIGE_RESET_UPGRADES } from './constants/skillIds.js';
 import { TutorialManager, StatisticsManager, LeaderboardManager, VisualEffectsManager } from './systems/ui/index.js';
@@ -167,6 +168,11 @@ class Game {
         this.visualEffects = new VisualEffectsManager(this);
         this.music = new MusicManager(this);
         this.bossMechanics = new BossMechanicsManager(this);
+        this.mazing = new MazingManager(this);
+        this.worlds = new WorldManager(this);
+        this.skillCards = new SkillCardManager(this);
+        this.landmarks = new LandmarkManager(this);
+        this.towerModules = new TowerModuleManager(this);
 
         // Initialize SaveService and register subsystems
         SaveService.init(CONFIG.saveKey);
@@ -3282,8 +3288,36 @@ class Game {
         this.isGameOver = true;
         this.eventBus.emit(GameEvents.GAME_OVER, { wave: this.wave, highestWave: this.highestWave });
         const dreadMult = this.getDreadMultipliers();
-        const earnedEther = Math.max(1, Math.floor(this.wave / 1.5)) * (1 + (this.stats.mastery['ether_gain'] || 0) * 0.05) * dreadMult.etherBonus;
+
+        // Base ether calculation
+        let earnedEther = Math.max(1, Math.floor(this.wave / 1.5)) * (1 + (this.stats.mastery['ether_gain'] || 0) * 0.05) * dreadMult.etherBonus;
+
+        // Consistency bonus: reward runs that reach 80%+ of personal best
+        const consistencyThreshold = 0.8;
+        const consistencyBonus = this.wave >= (this.highestWave * consistencyThreshold) ? 1.25 : 1.0;
+        earnedEther = Math.floor(earnedEther * consistencyBonus);
+
+        // Ascension perk bonus
+        const ascensionEtherBonus = 1 + (this.ascension?.getPerkEffect('ap_ether_boost') || 0);
+        earnedEther = Math.floor(earnedEther * ascensionEtherBonus);
+
+        // Track ether statistics
+        this.statistics?.increment('totalEtherEarned', earnedEther);
+        this.statistics?.increment('runsCompleted');
+        if (consistencyBonus > 1) {
+            this.statistics?.increment('consistentRuns');
+        }
+
         this.ether = BigNumService.add(this.ether, earnedEther);
+
+        // Floating notification for ether gain
+        this.floatingTexts.push(FloatingText.create(
+            this.width / 2,
+            this.height / 3,
+            `+${formatNumber(earnedEther)} 🔮`,
+            '#a855f7',
+            32
+        ));
         if (this.activeChallenge) {
             const rewardDM = Math.floor(this.wave / 5) * this.activeChallenge.diff;
             this.challenges.darkMatter += rewardDM;
@@ -3534,7 +3568,12 @@ class Game {
             music: this.music,
             tutorial: this.tutorial,
             goals: this.goals,
-            haptics: this.haptics
+            haptics: this.haptics,
+            mazing: this.mazing,
+            worlds: this.worlds,
+            skillCards: this.skillCards,
+            landmarks: this.landmarks,
+            towerModules: this.towerModules
         };
 
         for (const [name, handler] of Object.entries(subsystems)) {

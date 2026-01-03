@@ -23,7 +23,12 @@ export class StatisticsManager {
             projectilesFired: 0,
             skillsUsed: 0,
             runesCollected: 0,
-            relicsFound: 0
+            relicsFound: 0,
+            totalEtherEarned: 0,
+            runsCompleted: 0,
+            consistentRuns: 0,
+            fastestWave50: Infinity,
+            highestDreadCleared: 0
         };
     }
 

@@ -23,3 +23,4 @@ export { PassiveManager } from './PassiveManager.js';
 export { MetaUpgradeManager } from './MetaUpgradeManager.js';
 export { ResearchManager } from './ResearchManager.js';
 export { SurrenderSystem } from './SurrenderSystem.js';
+export { WorldManager } from './WorldManager.js';
