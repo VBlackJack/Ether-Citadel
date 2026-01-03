@@ -721,7 +721,8 @@
     "networkError": "Erreur réseau",
     "saveCorrupted": "Sauvegarde potentiellement corrompue",
     "saveCorruptedBlocked": "Sauvegarde corrompue - utilisez Options > Restaurer",
-    "gameError": "Erreur de jeu - veuillez recharger"
+    "gameError": "Erreur de jeu - veuillez recharger",
+    "unexpectedError": "Une erreur inattendue s'est produite"
   },
   "feedback": {
     "noStatPoints": "Pas de points de stat disponibles",

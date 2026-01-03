@@ -55,6 +55,52 @@ export class EventDelegationManager {
      * Register all default UI actions
      */
     registerDefaultActions() {
+        // Modal actions - generic open/close
+        this.register('modal.open', (params) => {
+            const modal = document.getElementById(params.id);
+            if (modal) {
+                modal.classList.remove('hidden');
+                // Call optional render function
+                if (params.render && this.game[params.render]) {
+                    this.game[params.render]();
+                }
+            }
+        });
+
+        this.register('modal.close', (params) => {
+            const modal = document.getElementById(params.id);
+            if (modal) modal.classList.add('hidden');
+        });
+
+        this.register('modal.toggle', (params) => {
+            const modal = document.getElementById(params.id);
+            if (modal) modal.classList.toggle('hidden');
+        });
+
+        // Menu group toggle
+        this.register('menu.toggle', (params) => {
+            this.game.toggleMenuGroup(params.group);
+        });
+
+        // Tutorial actions
+        this.register('tutorial.next', () => {
+            this.game.tutorial?.next();
+        });
+
+        this.register('tutorial.skip', () => {
+            this.game.tutorial?.skip();
+        });
+
+        // Sound toggle
+        this.register('sound.toggle', () => {
+            this.game.sound?.toggle();
+        });
+
+        // Speed control
+        this.register('speed.cycle', () => {
+            this.game.cycleSpeed?.();
+        });
+
         // Challenge actions
         this.register('challenge.start', (params) => {
             this.game.challenges.startChallenge(params.id);

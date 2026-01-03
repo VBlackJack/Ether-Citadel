@@ -5,6 +5,7 @@
 
 import { MathUtils } from '../config.js';
 import { Particle } from './Particle.js';
+import { getProjectilePool } from '../utils/ObjectPool.js';
 
 export class Projectile {
     constructor(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props) {
@@ -25,6 +26,30 @@ export class Projectile {
         this.blastRadius = (props && props.blast) || 0;
         this.leech = (props && props.leech) || 0;
         this.stasisChance = (props && props.stasis) || 0;
+    }
+
+    /**
+     * Reset projectile for reuse (pool-friendly)
+     */
+    reset(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props) {
+        this.x = x;
+        this.y = y;
+        this.target = target;
+        this.damage = damage;
+        this.speed = speed;
+        this.color = color;
+        this.active = true;
+        this.dead = false;
+        this.tier = tier;
+        this.isMulti = isMulti;
+        this.isCrit = isCrit;
+        this.isSuperCrit = isSuperCrit;
+        this.effects = effects || {};
+        this.bounceCount = (props && props.bounce) || 0;
+        this.blastRadius = (props && props.blast) || 0;
+        this.leech = (props && props.leech) || 0;
+        this.stasisChance = (props && props.stasis) || 0;
+        return this;
     }
 
     update(dt) {
@@ -136,7 +161,31 @@ export class Projectile {
         ctx.shadowBlur = 0;
     }
 
+    /**
+     * Check if projectile is still active
+     */
+    isAlive() {
+        return this.active;
+    }
+
+    /**
+     * Create a projectile (pool-friendly factory)
+     */
     static create(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props) {
         return new Projectile(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props);
+    }
+
+    /**
+     * Acquire from pool (preferred for high-frequency creation)
+     */
+    static acquire(x, y, target, config, effects, props) {
+        return getProjectilePool().acquire(x, y, target, config, effects, props);
+    }
+
+    /**
+     * Release back to pool
+     */
+    static release(projectile) {
+        getProjectilePool().release(projectile);
     }
 }

@@ -721,7 +721,8 @@
     "networkError": "Network error",
     "saveCorrupted": "Save data may be corrupted",
     "saveCorruptedBlocked": "Save corrupted - use Settings > Restore Backup",
-    "gameError": "Game error - please reload"
+    "gameError": "Game error - please reload",
+    "unexpectedError": "An unexpected error occurred"
   },
   "feedback": {
     "noStatPoints": "No stat points available",

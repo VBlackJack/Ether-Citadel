@@ -46,11 +46,16 @@ export class AscensionManager {
 
     /**
      * Calculate ascension points gain from current ether
-     * Formula: floor(sqrt(ether / 100))
+     * Formula: floor(sqrt(ether / 50) * (1 + 0.1 * totalAscensions))
+     * - Reduced divisor (50 vs 100) for better base scaling
+     * - +10% per previous ascension rewards dedicated players
      */
     getAscensionGain() {
         const ether = this.game.ether || BigNumService.create(0);
-        return BigNumService.floor(BigNumService.sqrt(BigNumService.div(ether, 100)));
+        const baseGain = BigNumService.sqrt(BigNumService.div(ether, 50));
+        // Bonus multiplier: 1.0 + 0.1 per previous ascension (capped at 3x)
+        const ascensionBonus = Math.min(3.0, 1.0 + this.totalAscensions * 0.1);
+        return BigNumService.floor(BigNumService.mul(baseGain, ascensionBonus));
     }
 
     /**

@@ -181,6 +181,48 @@ export function getErrorHandler() {
 }
 
 /**
+ * Install global error handlers for uncaught errors and unhandled rejections
+ * Should be called once at app startup
+ */
+export function installGlobalErrorHandlers() {
+    const handler = getErrorHandler();
+
+    // Handle uncaught errors
+    window.onerror = (message, source, lineno, colno, error) => {
+        handler.log(
+            error || new Error(String(message)),
+            `Uncaught Error at ${source}:${lineno}:${colno}`,
+            ErrorSeverity.CRITICAL
+        );
+
+        // Show user-friendly toast if game UI is available
+        if (window.game?.ui?.showToast) {
+            window.game.ui.showToast(t('notifications.unexpectedError') || 'An unexpected error occurred', 'error');
+        }
+
+        // Don't prevent default browser error handling
+        return false;
+    };
+
+    // Handle unhandled promise rejections
+    window.onunhandledrejection = (event) => {
+        const error = event.reason instanceof Error
+            ? event.reason
+            : new Error(String(event.reason));
+
+        handler.log(error, 'Unhandled Promise Rejection', ErrorSeverity.CRITICAL);
+
+        // Show user-friendly toast if game UI is available
+        if (window.game?.ui?.showToast) {
+            window.game.ui.showToast(t('notifications.unexpectedError') || 'An unexpected error occurred', 'error');
+        }
+    };
+
+    // Log that global handlers are installed
+    console.info('[ErrorHandler] Global error handlers installed');
+}
+
+/**
  * Quick error logging function
  */
 export function logError(error, context = '', severity = ErrorSeverity.ERROR) {

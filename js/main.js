@@ -78,7 +78,10 @@ import { ChipManager } from './systems/economy/ChipManager.js';
 import { AutoSkillManager } from './systems/combat/AutoSkillManager.js';
 import { ProjectileSystem } from './systems/combat/ProjectileSystem.js';
 import { getEventDelegation } from './ui/EventDelegation.js';
-import { getErrorHandler, logError } from './utils/ErrorHandler.js';
+import { getErrorHandler, logError, installGlobalErrorHandlers } from './utils/ErrorHandler.js';
+
+// Install global error handlers immediately
+installGlobalErrorHandlers();
 import { ConfigRegistry } from './services/ConfigRegistry.js';
 import { SaveService } from './services/SaveService.js';
 import { StatsBreakdown } from './ui/StatsBreakdown.js';

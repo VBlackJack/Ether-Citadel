@@ -28,9 +28,33 @@ function getDecimal() {
     return null;
 }
 
+// Simple LRU-style cache for expensive operations
+const formatCache = new Map();
+const FORMAT_CACHE_MAX_SIZE = 200;
+
+function getCacheKey(value, precision) {
+    const D = getDecimal();
+    if (!D) return null;
+    const d = value instanceof D ? value : new D(value);
+    // Use mantissa + exponent as cache key for consistent hashing
+    return `${d.mantissa.toFixed(6)}e${d.exponent}:${precision}`;
+}
+
+function cacheSet(key, value) {
+    if (formatCache.size >= FORMAT_CACHE_MAX_SIZE) {
+        // Remove oldest entry (first key)
+        const firstKey = formatCache.keys().next().value;
+        formatCache.delete(firstKey);
+    }
+    formatCache.set(key, value);
+}
+
 export const BigNumService = {
     isAvailable() { return getDecimal() !== null; },
     init() { if (!this.isAvailable()) console.error('BigNumService: break_infinity.js missing!'); },
+
+    // Clear format cache (call on notation change)
+    clearCache() { formatCache.clear(); },
 
     create(value) {
         const D = getDecimal();
@@ -93,6 +117,7 @@ export const BigNumService = {
     setNotation(notation) {
         if (Object.values(NOTATIONS).includes(notation)) {
             currentNotation = notation;
+            formatCache.clear(); // Clear cache when notation changes
         } else {
             console.warn(`BigNumService: Invalid notation '${notation}'`);
         }
@@ -118,44 +143,70 @@ function getLetterSuffix(exponent) {
 export function formatNumber(value, precision = 2) {
     if (value === null || value === undefined) return '0';
 
+    // Check cache first
+    const cacheKey = getCacheKey(value, precision);
+    if (cacheKey && formatCache.has(cacheKey)) {
+        return formatCache.get(cacheKey);
+    }
+
     let decimal = BigNumService.create(value);
 
     if (decimal.eq(0)) return '0';
     if (!Number.isFinite(decimal.mantissa) || !Number.isFinite(decimal.exponent)) return '∞';
 
+    let result;
+
     if (decimal.abs().lt(1000)) {
         const num = decimal.toNumber();
-        if (Number.isInteger(num)) return num.toLocaleString();
-        return num.toFixed(precision).replace(/\.?0+$/, '');
+        if (Number.isInteger(num)) {
+            result = num.toLocaleString();
+        } else {
+            result = num.toFixed(precision).replace(/\.?0+$/, '');
+        }
+    } else {
+        const exponent = decimal.exponent;
+
+        switch (currentNotation) {
+            case NOTATIONS.SCIENTIFIC:
+                result = decimal.toExponential(precision).replace('+', '');
+                break;
+
+            case NOTATIONS.ENGINEERING:
+                const engExponent = Math.floor(exponent / 3) * 3;
+                const engMantissa = decimal.div(Decimal.pow(10, engExponent)).toNumber();
+                result = engMantissa.toFixed(precision) + 'e' + engExponent;
+                break;
+
+            case NOTATIONS.LETTERS:
+                const letterExponent = Math.floor(exponent / 3) * 3;
+                const letterMantissa = decimal.div(Decimal.pow(10, letterExponent)).toNumber();
+                result = letterMantissa.toFixed(precision) + getLetterSuffix(exponent);
+                break;
+
+            case NOTATIONS.STANDARD:
+            default:
+                const suffixIndex = Math.floor(exponent / 3);
+                if (suffixIndex < STANDARD_SUFFIXES.length) {
+                    const stdExponent = suffixIndex * 3;
+                    const stdMantissa = decimal.div(Decimal.pow(10, stdExponent)).toNumber();
+                    if (suffixIndex === 0) {
+                        result = stdMantissa.toFixed(precision);
+                    } else {
+                        result = stdMantissa.toFixed(precision) + STANDARD_SUFFIXES[suffixIndex];
+                    }
+                } else {
+                    result = decimal.toExponential(precision).replace('+', '');
+                }
+                break;
+        }
     }
 
-    const exponent = decimal.exponent;
-
-    switch (currentNotation) {
-        case NOTATIONS.SCIENTIFIC:
-            return decimal.toExponential(precision).replace('+', '');
-
-        case NOTATIONS.ENGINEERING:
-            const engExponent = Math.floor(exponent / 3) * 3;
-            const engMantissa = decimal.div(Decimal.pow(10, engExponent)).toNumber();
-            return engMantissa.toFixed(precision) + 'e' + engExponent;
-
-        case NOTATIONS.LETTERS:
-             const letterExponent = Math.floor(exponent / 3) * 3;
-             const letterMantissa = decimal.div(Decimal.pow(10, letterExponent)).toNumber();
-             return letterMantissa.toFixed(precision) + getLetterSuffix(exponent);
-
-        case NOTATIONS.STANDARD:
-        default:
-            const suffixIndex = Math.floor(exponent / 3);
-            if (suffixIndex < STANDARD_SUFFIXES.length) {
-                const stdExponent = suffixIndex * 3;
-                const stdMantissa = decimal.div(Decimal.pow(10, stdExponent)).toNumber();
-                if (suffixIndex === 0) return stdMantissa.toFixed(precision);
-                return stdMantissa.toFixed(precision) + STANDARD_SUFFIXES[suffixIndex];
-            }
-            return decimal.toExponential(precision).replace('+', '');
+    // Cache the result
+    if (cacheKey) {
+        cacheSet(cacheKey, result);
     }
+
+    return result;
 }
 
 export function formatCurrency(value) { return formatNumber(value) + ' 💰'; }

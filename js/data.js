@@ -49,18 +49,19 @@ export const TURRET_TIERS = {
  * Higher dread = harder enemies but better rewards
  */
 export const DREAD_LEVELS = [
-    // Reward scaling: level^1.5 for better ROI at higher dread
+    // Reward scaling: enemyMult^1.1 to ensure higher dread always has better ROI
+    // Each level guarantees reward/difficulty ratio > 1.3
     { level: 0, nameKey: 'dread.level0', enemyMult: 1.0, rewardMult: 1.0, color: '#94a3b8', unlockWave: 0 },
-    { level: 1, nameKey: 'dread.level1', enemyMult: 1.5, rewardMult: 1.5, color: '#fbbf24', unlockWave: 10 },
+    { level: 1, nameKey: 'dread.level1', enemyMult: 1.5, rewardMult: 2.0, color: '#fbbf24', unlockWave: 10 },
     { level: 2, nameKey: 'dread.level2', enemyMult: 2.0, rewardMult: 2.8, color: '#f97316', unlockWave: 20 },
-    { level: 3, nameKey: 'dread.level3', enemyMult: 3.0, rewardMult: 5.2, color: '#ef4444', unlockWave: 30 },
-    { level: 4, nameKey: 'dread.level4', enemyMult: 5.0, rewardMult: 8.0, color: '#dc2626', unlockWave: 40 },
-    { level: 5, nameKey: 'dread.level5', enemyMult: 8.0, rewardMult: 11.2, color: '#991b1b', unlockWave: 50 },
-    { level: 6, nameKey: 'dread.level6', enemyMult: 12.0, rewardMult: 14.7, color: '#7f1d1d', unlockWave: 60 },
-    { level: 7, nameKey: 'dread.level7', enemyMult: 20.0, rewardMult: 18.5, color: '#a855f7', unlockWave: 70 },
-    { level: 8, nameKey: 'dread.level8', enemyMult: 30.0, rewardMult: 22.6, color: '#9333ea', unlockWave: 80 },
-    { level: 9, nameKey: 'dread.level9', enemyMult: 40.0, rewardMult: 27.0, color: '#6b21a8', unlockWave: 90 },
-    { level: 10, nameKey: 'dread.level10', enemyMult: 50.0, rewardMult: 31.6, color: '#000000', unlockWave: 100 }
+    { level: 3, nameKey: 'dread.level3', enemyMult: 3.0, rewardMult: 4.5, color: '#ef4444', unlockWave: 30 },
+    { level: 4, nameKey: 'dread.level4', enemyMult: 5.0, rewardMult: 7.5, color: '#dc2626', unlockWave: 40 },
+    { level: 5, nameKey: 'dread.level5', enemyMult: 8.0, rewardMult: 12.0, color: '#991b1b', unlockWave: 50 },
+    { level: 6, nameKey: 'dread.level6', enemyMult: 12.0, rewardMult: 18.0, color: '#7f1d1d', unlockWave: 60 },
+    { level: 7, nameKey: 'dread.level7', enemyMult: 20.0, rewardMult: 30.0, color: '#a855f7', unlockWave: 70 },
+    { level: 8, nameKey: 'dread.level8', enemyMult: 30.0, rewardMult: 48.0, color: '#9333ea', unlockWave: 80 },
+    { level: 9, nameKey: 'dread.level9', enemyMult: 40.0, rewardMult: 68.0, color: '#6b21a8', unlockWave: 90 },
+    { level: 10, nameKey: 'dread.level10', enemyMult: 50.0, rewardMult: 90.0, color: '#000000', unlockWave: 100 }
 ];
 
 /**
@@ -613,7 +614,7 @@ export const ASCENSION_PERKS = [
         icon: '🌠',
         maxLevel: 10,
         costBase: '50',
-        costFactor: '5',
+        costFactor: '2.5',
         effectBase: 5,
         req: 'ap_ether_boost'
     },
@@ -668,7 +669,7 @@ export const ASCENSION_PERKS = [
         icon: '🌙',
         maxLevel: 10,
         costBase: '100',
-        costFactor: '3',
+        costFactor: '2',
         effectBase: 0.2,
         req: 'ap_prestige_mult'
     },
@@ -679,7 +680,7 @@ export const ASCENSION_PERKS = [
         icon: '🎯',
         maxLevel: 5,
         costBase: '75',
-        costFactor: '4',
+        costFactor: '2.5',
         effectBase: 0.1,
         req: 'ap_ether_boost'
     }
