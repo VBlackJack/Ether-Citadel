@@ -430,10 +430,13 @@ export class EventDelegationManager {
      * Handle click events
      */
     handleClick(e) {
+        console.log('[DEBUG] handleClick triggered, target:', e.target.tagName, e.target.className);
         const target = e.target.closest('[data-action]');
+        console.log('[DEBUG] closest data-action element:', target);
         if (!target) return;
 
         const action = target.dataset.action;
+        console.log('[DEBUG] action:', action);
         if (!action) return;
 
         const handler = this.actions.get(action);
