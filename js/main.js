@@ -1627,9 +1627,40 @@ class Game {
         }
         if (autoPrestigeWaveInput) {
             autoPrestigeWaveInput.value = this.prestige.autoPrestigeWave;
+            const errorEl = document.getElementById('auto-prestige-error');
+            const validateInput = (value) => {
+                const num = parseInt(value);
+                if (isNaN(num)) return { valid: false, error: t('validation.invalidNumber') };
+                if (num < 25) return { valid: false, error: t('validation.minWave', { min: 25 }) };
+                if (num > 1000) return { valid: false, error: t('validation.maxWave', { max: 1000 }) };
+                return { valid: true };
+            };
+            autoPrestigeWaveInput.oninput = (e) => {
+                const result = validateInput(e.target.value);
+                if (errorEl) {
+                    if (!result.valid) {
+                        errorEl.textContent = result.error || t('validation.invalid');
+                        errorEl.classList.remove('hidden');
+                        e.target.classList.add('border-red-500');
+                    } else {
+                        errorEl.classList.add('hidden');
+                        e.target.classList.remove('border-red-500');
+                    }
+                }
+            };
             autoPrestigeWaveInput.onchange = (e) => {
-                this.prestige.autoPrestigeWave = Math.max(25, parseInt(e.target.value) || 30);
-                this.save();
+                const result = validateInput(e.target.value);
+                if (result.valid) {
+                    this.prestige.autoPrestigeWave = parseInt(e.target.value);
+                    this.save();
+                    if (errorEl) errorEl.classList.add('hidden');
+                    e.target.classList.remove('border-red-500');
+                } else {
+                    // Reset to valid value
+                    e.target.value = this.prestige.autoPrestigeWave;
+                    if (errorEl) errorEl.classList.add('hidden');
+                    e.target.classList.remove('border-red-500');
+                }
             };
         }
 
@@ -3046,6 +3077,13 @@ class Game {
         this.enemiesToSpawn = this.isBossWave ? 1 : (5 + Math.floor(this.wave * 1.5));
         this.spawnTimer = 0;
         if (this.activeChallenge && this.activeChallenge.id === 'horde') this.enemiesToSpawn *= 3;
+
+        // Play wave start sound
+        this.sound?.play('waveStart');
+
+        // Update skills visibility based on wave
+        this.updateSkillsVisibility();
+
         if (this.isBossWave) {
             const notif = document.getElementById('boss-notification');
             notif.classList.remove('hidden');
@@ -3066,6 +3104,84 @@ class Game {
             40
         ));
         this.eventBus.emit(GameEvents.WAVE_START, { wave: this.wave, isBoss: this.isBossWave });
+    }
+
+    /**
+     * Update skills visibility based on current wave
+     */
+    updateSkillsVisibility() {
+        const container = document.getElementById('skills-container');
+        if (!container) return;
+        const unlockWave = parseInt(container.dataset.unlockWave) || 3;
+        if (this.wave >= unlockWave) {
+            container.classList.remove('opacity-50', 'pointer-events-none');
+            container.querySelectorAll('.skill-btn').forEach(btn => {
+                btn.removeAttribute('aria-disabled');
+            });
+        } else {
+            container.classList.add('opacity-50', 'pointer-events-none');
+            container.querySelectorAll('.skill-btn').forEach(btn => {
+                btn.setAttribute('aria-disabled', 'true');
+            });
+        }
+    }
+
+    /**
+     * Update contextual suggestions based on game state
+     */
+    updateSuggestions(dt) {
+        // Throttle suggestions to every 5 seconds
+        this._suggestionTimer = (this._suggestionTimer || 0) + dt;
+        if (this._suggestionTimer < 5000) return;
+        this._suggestionTimer = 0;
+
+        // Don't show suggestions if dismissed recently or tutorial active
+        if (this._suggestionDismissed || this.tutorial?.isActive) return;
+
+        const el = document.getElementById('suggested-action');
+        const textEl = document.getElementById('suggested-action-text');
+        if (!el || !textEl) return;
+
+        let suggestion = null;
+
+        // Check various conditions for contextual suggestions
+        const goldNum = BigNumService.toNumber(this.gold);
+        const dmgUpg = this.upgrades?.getById('damage');
+
+        // Suggest buying upgrade if can afford
+        if (dmgUpg && goldNum >= dmgUpg.getCost()) {
+            suggestion = t('ux.suggestion.buyUpgrade');
+        }
+        // Suggest prestige if stuck and eligible
+        else if (this.isGameOver && this.prestige?.canPrestige() && this.wave >= 25) {
+            suggestion = t('ux.suggestion.tryPrestige');
+        }
+        // Suggest mining if idle and unlocked
+        else if (!this.mining?.isActive && this.wave >= 15 && goldNum < 100) {
+            suggestion = t('ux.suggestion.tryMining');
+        }
+        // Suggest skills if available and enemies present
+        else if (this.wave >= 3 && this.enemies.length > 5 && !this.skills?.isAnyCooldown?.()) {
+            suggestion = t('ux.suggestion.useSkills');
+        }
+
+        if (suggestion) {
+            textEl.textContent = suggestion;
+            el.classList.remove('hidden');
+        } else {
+            el.classList.add('hidden');
+        }
+    }
+
+    /**
+     * Dismiss current suggestion
+     */
+    dismissSuggestion() {
+        const el = document.getElementById('suggested-action');
+        if (el) el.classList.add('hidden');
+        this._suggestionDismissed = true;
+        // Allow suggestions again after 60 seconds
+        setTimeout(() => { this._suggestionDismissed = false; }, 60000);
     }
 
     spawnEnemy(forcedType = null, forcedX = null, forcedY = null) {
@@ -3198,6 +3314,7 @@ class Game {
         this.campaign.update(dt);
         this.visualEffects.update(dt);
         this.bossMechanics.update(dt);
+        this.updateSuggestions(dt);
         if (this.isGameOver) return;
         this.skills.update(dt);
         this.autoSkills.update();
@@ -3265,6 +3382,8 @@ class Game {
         // Wave completion check
         if (this.enemiesToSpawn <= 0 && this.enemies.length === 0 && this.waveInProgress) {
             this.waveInProgress = false;
+            // Play wave complete sound
+            this.sound?.play('waveComplete');
             // Repair all turrets at wave end
             this.turrets.forEach(t => t.repair?.());
             // Auto-upgrade turrets if enabled

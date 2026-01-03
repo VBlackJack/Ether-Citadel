@@ -59,6 +59,29 @@ export class ComboManager {
         ctx.fillStyle = '#fff';
         ctx.font = '14px Arial';
         ctx.fillText(`x${this.currentTier.mult.toFixed(1)}`, centerX, 100);
+
+        // Draw combo decay timer bar
+        const barWidth = 80;
+        const barHeight = 4;
+        const barX = centerX - barWidth / 2;
+        const barY = 108;
+        const timerPercent = Math.max(0, this.timer / 2); // 2 seconds max
+
+        // Background bar
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(barX, barY, barWidth, barHeight);
+
+        // Timer bar with color gradient based on time left
+        const urgency = timerPercent < 0.3;
+        ctx.fillStyle = urgency ? '#ef4444' : this.currentTier.color;
+        ctx.fillRect(barX, barY, barWidth * timerPercent, barHeight);
+
+        // Pulsing effect when low
+        if (urgency && Math.floor(Date.now() / 100) % 2 === 0) {
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(barX, barY, barWidth * timerPercent, barHeight);
+        }
+
         ctx.restore();
     }
 

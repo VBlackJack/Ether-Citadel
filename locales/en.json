@@ -743,6 +743,12 @@
     "featureUnlocked": "New feature unlocked!",
     "cannotAfford": "Cannot afford this"
   },
+  "validation": {
+    "invalidNumber": "Please enter a valid number",
+    "minWave": "Minimum wave is {{min}}",
+    "maxWave": "Maximum wave is {{max}}",
+    "invalid": "Invalid value"
+  },
   "status": {
     "active": "ACTIVE",
     "inactive": "INACTIVE",
@@ -1649,11 +1655,13 @@
       "info": "Info"
     },
     "suggestion": {
-      "buyUpgrade": "Buy an upgrade",
-      "tryMining": "Try Mining",
-      "checkResearch": "Check Research",
+      "buyUpgrade": "You can afford an upgrade!",
+      "tryMining": "Try mining for resources",
+      "checkResearch": "Check Research tree",
       "checkQuests": "Check Daily Quests",
-      "trySchool": "Try School"
+      "trySchool": "Try School upgrades",
+      "tryPrestige": "Ready to prestige for PP!",
+      "useSkills": "Use your skills! (Q/W/E)"
     },
     "intro": {
       "modes": "Choose different game modes for varied challenges. Endless mode has infinite scaling, Boss Rush is boss-only, and Speedrun is timed!",

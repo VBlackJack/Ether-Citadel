@@ -49,29 +49,30 @@ export const TURRET_TIERS = {
  * Higher dread = harder enemies but better rewards
  */
 export const DREAD_LEVELS = [
+    // Reward scaling: level^1.5 for better ROI at higher dread
     { level: 0, nameKey: 'dread.level0', enemyMult: 1.0, rewardMult: 1.0, color: '#94a3b8', unlockWave: 0 },
     { level: 1, nameKey: 'dread.level1', enemyMult: 1.5, rewardMult: 1.5, color: '#fbbf24', unlockWave: 10 },
-    { level: 2, nameKey: 'dread.level2', enemyMult: 2.0, rewardMult: 2.0, color: '#f97316', unlockWave: 20 },
-    { level: 3, nameKey: 'dread.level3', enemyMult: 3.0, rewardMult: 3.0, color: '#ef4444', unlockWave: 30 },
-    { level: 4, nameKey: 'dread.level4', enemyMult: 5.0, rewardMult: 5.0, color: '#dc2626', unlockWave: 40 },
-    { level: 5, nameKey: 'dread.level5', enemyMult: 8.0, rewardMult: 8.0, color: '#991b1b', unlockWave: 50 },
-    { level: 6, nameKey: 'dread.level6', enemyMult: 12.0, rewardMult: 12.0, color: '#7f1d1d', unlockWave: 60 },
-    { level: 7, nameKey: 'dread.level7', enemyMult: 20.0, rewardMult: 20.0, color: '#a855f7', unlockWave: 70 },
-    { level: 8, nameKey: 'dread.level8', enemyMult: 30.0, rewardMult: 33.0, color: '#9333ea', unlockWave: 80 },
-    { level: 9, nameKey: 'dread.level9', enemyMult: 40.0, rewardMult: 48.0, color: '#6b21a8', unlockWave: 90 },
-    { level: 10, nameKey: 'dread.level10', enemyMult: 50.0, rewardMult: 65.0, color: '#000000', unlockWave: 100 }
+    { level: 2, nameKey: 'dread.level2', enemyMult: 2.0, rewardMult: 2.8, color: '#f97316', unlockWave: 20 },
+    { level: 3, nameKey: 'dread.level3', enemyMult: 3.0, rewardMult: 5.2, color: '#ef4444', unlockWave: 30 },
+    { level: 4, nameKey: 'dread.level4', enemyMult: 5.0, rewardMult: 8.0, color: '#dc2626', unlockWave: 40 },
+    { level: 5, nameKey: 'dread.level5', enemyMult: 8.0, rewardMult: 11.2, color: '#991b1b', unlockWave: 50 },
+    { level: 6, nameKey: 'dread.level6', enemyMult: 12.0, rewardMult: 14.7, color: '#7f1d1d', unlockWave: 60 },
+    { level: 7, nameKey: 'dread.level7', enemyMult: 20.0, rewardMult: 18.5, color: '#a855f7', unlockWave: 70 },
+    { level: 8, nameKey: 'dread.level8', enemyMult: 30.0, rewardMult: 22.6, color: '#9333ea', unlockWave: 80 },
+    { level: 9, nameKey: 'dread.level9', enemyMult: 40.0, rewardMult: 27.0, color: '#6b21a8', unlockWave: 90 },
+    { level: 10, nameKey: 'dread.level10', enemyMult: 50.0, rewardMult: 31.6, color: '#000000', unlockWave: 100 }
 ];
 
 /**
  * Mining resource definitions
  */
 export const MINING_RESOURCES = [
-    { id: 'copper', nameKey: 'mining.copper.name', icon: '⛏️', baseRate: 1.0, color: '#b87333', tier: 1 },
-    { id: 'iron', nameKey: 'mining.iron.name', icon: '🔩', baseRate: 0.5, color: '#71797E', tier: 1 },
-    { id: 'crystal', nameKey: 'mining.crystal.name', icon: '💎', baseRate: 0.2, color: '#22d3ee', tier: 2 },
-    { id: 'gold_ore', nameKey: 'mining.gold_ore.name', icon: '🥇', baseRate: 0.1, color: '#fbbf24', tier: 2 },
-    { id: 'void_shard', nameKey: 'mining.void_shard.name', icon: '🔮', baseRate: 0.05, color: '#a855f7', tier: 3 },
-    { id: 'starlight', nameKey: 'mining.starlight.name', icon: '✨', baseRate: 0.02, color: '#fff', tier: 3 }
+    { id: 'copper', nameKey: 'mining.copper.name', icon: '⛏️', baseRate: 1.5, color: '#b87333', tier: 1 },
+    { id: 'iron', nameKey: 'mining.iron.name', icon: '🔩', baseRate: 0.8, color: '#71797E', tier: 1 },
+    { id: 'crystal', nameKey: 'mining.crystal.name', icon: '💎', baseRate: 0.4, color: '#22d3ee', tier: 2 },
+    { id: 'gold_ore', nameKey: 'mining.gold_ore.name', icon: '🥇', baseRate: 0.2, color: '#fbbf24', tier: 2 },
+    { id: 'void_shard', nameKey: 'mining.void_shard.name', icon: '🔮', baseRate: 0.12, color: '#a855f7', tier: 3 },
+    { id: 'starlight', nameKey: 'mining.starlight.name', icon: '✨', baseRate: 0.08, color: '#fff', tier: 3, critChance: 0.05 }
 ];
 
 /**

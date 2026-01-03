@@ -743,6 +743,12 @@
     "featureUnlocked": "Nouvelle fonctionnalit\u00e9 d\u00e9bloqu\u00e9e !",
     "cannotAfford": "Impossible d'acheter"
   },
+  "validation": {
+    "invalidNumber": "Veuillez entrer un nombre valide",
+    "minWave": "Vague minimum : {{min}}",
+    "maxWave": "Vague maximum : {{max}}",
+    "invalid": "Valeur invalide"
+  },
   "status": {
     "active": "ACTIF",
     "inactive": "INACTIF",
@@ -1605,11 +1611,13 @@
       "info": "Info"
     },
     "suggestion": {
-      "buyUpgrade": "Acheter une amélioration",
-      "tryMining": "Essayer le Minage",
+      "buyUpgrade": "Amélioration disponible !",
+      "tryMining": "Essayez le minage",
       "checkResearch": "Voir la Recherche",
       "checkQuests": "Voir les Quêtes",
-      "trySchool": "Essayer l'École"
+      "trySchool": "Essayer l'École",
+      "tryPrestige": "Prêt pour le prestige !",
+      "useSkills": "Utilisez vos compétences ! (Q/W/E)"
     },
     "intro": {
       "modes": "Choisissez différents modes de jeu. Le mode Sans Fin a un scaling infini, Rush Boss n'a que des boss, et Speedrun est chronométré !",

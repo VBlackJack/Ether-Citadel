@@ -92,13 +92,18 @@ export const SOUND_DB = {
     coin: { type: 'sine', freq: 800, decay: 0.2, vol: 0.15, slide: true },
     levelup: { type: 'triangle', freq: 600, decay: 0.5, vol: 0.35, melody: true },
     gameover: { type: 'sawtooth', freq: 150, decay: 1.0, vol: 0.4, slideDown: true },
-    // New sounds for better feedback
+    // Enhanced feedback sounds
     crit: { type: 'square', freq: 600, decay: 0.15, vol: 0.3, slide: true },
     upgrade: { type: 'sine', freq: 500, decay: 0.2, vol: 0.25, slide: true },
     prestige: { type: 'triangle', freq: 400, decay: 0.8, vol: 0.4, melody: true },
     unlock: { type: 'sine', freq: 700, decay: 0.3, vol: 0.3, slide: true },
     skill: { type: 'square', freq: 300, decay: 0.3, vol: 0.3 },
-    boss: { type: 'sawtooth', freq: 80, decay: 0.5, vol: 0.35 }
+    boss: { type: 'sawtooth', freq: 80, decay: 0.5, vol: 0.35 },
+    // New sounds from UX audit
+    achievement: { type: 'triangle', freq: 800, decay: 0.6, vol: 0.4, melody: true },
+    waveStart: { type: 'sine', freq: 350, decay: 0.3, vol: 0.25 },
+    waveComplete: { type: 'triangle', freq: 500, decay: 0.4, vol: 0.3, slide: true },
+    comboUp: { type: 'square', freq: 450, decay: 0.2, vol: 0.25, slide: true }
 };
 
 /**

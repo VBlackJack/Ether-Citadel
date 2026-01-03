@@ -297,9 +297,17 @@ export class Enemy {
             ctx.fill();
         }
         if (this.isElite) {
-            ctx.shadowBlur = 10;
+            // Enhanced elite visual - larger glow aura and pulsing effect
+            const pulseScale = 1 + Math.sin(Date.now() / 200) * 0.1;
+            ctx.shadowBlur = 20 * pulseScale;
             ctx.shadowColor = '#facc15';
             ctx.strokeStyle = '#facc15';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            // Draw outer aura ring
+            ctx.beginPath();
+            ctx.arc(0, 0, this.radius * 1.4 * pulseScale, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(250, 204, 21, 0.4)';
             ctx.lineWidth = 2;
             ctx.stroke();
             ctx.shadowBlur = 0;

@@ -173,12 +173,17 @@ export class PrestigeManager {
         const dreadMult = 1 + ((this.game.dreadLevel || 0) * 0.5);
         const prestigeCountBonus = 1 + (this.totalPrestiges * 0.08);
         // Improved formula: (wave/8)^1.6 gives ~50% more PP than before
-        return BigNumService.floor(
+        let points = BigNumService.floor(
             BigNumService.mul(
                 BigNumService.pow(baseWave / 8, 1.6),
                 dreadMult * prestigeCountBonus
             )
         );
+        // First prestige bonus: +25 PP to make first prestige feel rewarding
+        if (this.totalPrestiges === 0 && baseWave >= 25) {
+            points = BigNumService.add(points, 25);
+        }
+        return points;
     }
 
     /**
