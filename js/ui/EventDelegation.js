@@ -104,6 +104,11 @@ export class EventDelegationManager {
             this.game.cycleSpeed?.();
         });
 
+        // Pause toggle
+        this.register('togglePause', () => {
+            this.game.togglePause?.();
+        });
+
         // Challenge actions
         this.register('challenge.start', (params) => {
             this.game.challenges.startChallenge(params.id);
