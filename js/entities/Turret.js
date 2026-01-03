@@ -21,7 +21,12 @@ export class Turret {
         this.y = 0;
         this.lastShotTime = 0;
         this.cachedTarget = null;
+        this.game = null; // Set via update() or setGame()
         this.updateTierStats();
+    }
+
+    setGame(game) {
+        this.game = game;
     }
 
     updateTierStats() {
@@ -37,44 +42,49 @@ export class Turret {
 
     upgradeTier() {
         if (this.tier >= 6) return false;
-        if (!window.game) return false;
+        const game = this.game;
+        if (!game) return false;
         const nextTier = TURRET_TIERS[this.tier + 1];
         if (!nextTier) return false;
-        if (window.game.wave < nextTier.unlockWave) return false;
-        if (window.game.crystals < nextTier.cost) return false;
+        if (game.wave < nextTier.unlockWave) return false;
+        if (game.crystals < nextTier.cost) return false;
 
-        window.game.crystals -= nextTier.cost;
+        game.crystals -= nextTier.cost;
         this.tier++;
         this.updateTierStats();
-        window.game.updateCrystalsUI?.();
-        window.game.save?.();
+        game.updateCrystalsUI?.();
+        game.save?.();
         return true;
     }
 
-    update(dt, gameTime) {
-        if (!window.game?.castle) return;
+    update(dt, gameTime, game) {
+        // Cache game reference for other methods
+        if (game) this.game = game;
+        const g = this.game;
+        if (!g?.castle) return;
+
         const slots = [{ x: -40, y: -60 }, { x: 40, y: -60 }, { x: -40, y: 60 }, { x: 40, y: 60 }];
-        if (this.type === 'ARTILLERY') { this.x = window.game.castle.x; this.y = window.game.castle.y - 70; }
-        else if (this.type === 'ROCKET') { this.x = window.game.castle.x - 50; this.y = window.game.castle.y; }
-        else if (this.type === 'TESLA') { this.x = window.game.castle.x + 50; this.y = window.game.castle.y; }
+        if (this.type === 'ARTILLERY') { this.x = g.castle.x; this.y = g.castle.y - 70; }
+        else if (this.type === 'ROCKET') { this.x = g.castle.x - 50; this.y = g.castle.y; }
+        else if (this.type === 'TESLA') { this.x = g.castle.x + 50; this.y = g.castle.y; }
         else {
             if (this.id < 4) {
                 const pos = slots[this.id];
-                this.x = window.game.castle.x + pos.x;
-                this.y = window.game.castle.y + pos.y;
+                this.x = g.castle.x + pos.x;
+                this.y = g.castle.y + pos.y;
             } else {
                 const orbitSpeed = 0.001;
                 const angle = (gameTime * orbitSpeed) + (this.id * (Math.PI / 2));
                 const orbitRadius = 100;
-                this.x = window.game.castle.x + Math.cos(angle) * orbitRadius;
-                this.y = window.game.castle.y + Math.sin(angle) * orbitRadius;
+                this.x = g.castle.x + Math.cos(angle) * orbitRadius;
+                this.y = g.castle.y + Math.sin(angle) * orbitRadius;
             }
         }
 
-        const baseFireRate = (window.game.skills?.isActive(SKILL.OVERDRIVE) || window.game.activeBuffs?.[RUNE.RAGE] > 0) ? window.game.currentFireRate / 3 : window.game.currentFireRate;
+        const baseFireRate = (g.skills?.isActive(SKILL.OVERDRIVE) || g.activeBuffs?.[RUNE.RAGE] > 0) ? g.currentFireRate / 3 : g.currentFireRate;
         const fireInterval = baseFireRate / this.fireRateMult;
-        const range = window.game.currentRange * this.rangeMult;
-        this.cachedTarget = window.game.findTarget?.(this.x, this.y, range) || null;
+        const range = g.currentRange * this.rangeMult;
+        this.cachedTarget = g.findTarget?.(this.x, this.y, range) || null;
         if (gameTime - this.lastShotTime > fireInterval && this.cachedTarget) {
             this.shoot(this.cachedTarget);
             this.lastShotTime = gameTime;
@@ -82,19 +92,20 @@ export class Turret {
     }
 
     shoot(target) {
-        if (!window.game) return;
+        const g = this.game;
+        if (!g) return;
         // Apply diminishing returns based on turret slot index
         const efficiency = BALANCE.TURRET.EFFICIENCY;
         const efficiencyMult = efficiency[Math.min(this.id, efficiency.length - 1)];
-        const dmg = Math.max(1, Math.floor((window.game.currentDamage || 1) * this.damageMultiplier * efficiencyMult));
+        const dmg = Math.max(1, Math.floor((g.currentDamage || 1) * this.damageMultiplier * efficiencyMult));
         let speed = 15;
         const tierData = TURRET_TIERS[this.tier] || TURRET_TIERS[1];
         let color = tierData.color || COLORS.TURRET_BASE;
-        let props = { ...(window.game.currentProps || {}) };
+        let props = { ...(g.currentProps || {}) };
         if (this.type === 'ARTILLERY') { speed = 8; color = COLORS.TURRET_ARTILLERY; props.blast = 100; }
         if (this.type === 'ROCKET') { speed = 12; color = COLORS.TURRET_ROCKET; }
         if (this.type === 'TESLA') { speed = 25; color = COLORS.TURRET_TESLA; props.bounce = (props.bounce || 0) + 3; }
-        window.game.projectiles?.push(Projectile.create(this.x, this.y, target, dmg, speed, color, this.tier, false, false, false, window.game.currentEffects || {}, props));
+        g.projectiles?.push(Projectile.create(this.x, this.y, target, dmg, speed, color, this.tier, false, false, false, g.currentEffects || {}, props));
     }
 
     draw(ctx) {

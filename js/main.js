@@ -107,6 +107,7 @@ import { eventBus, GameEvents } from './core/index.js';
 class Game {
     constructor() {
         window.game = this;
+        Projectile.setGameRef(this);
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
         // Cache DOM elements for HUD updates (avoid querying every frame)
@@ -272,7 +273,7 @@ class Game {
                 }
             }
             const savedBuyMode = localStorage.getItem(CONFIG.ui.storageKeys.buyMode);
-            if (savedBuyMode === '1' || savedBuyMode === 'MAX') {
+            if (['1', '10', '100', 'MAX'].includes(savedBuyMode)) {
                 this.buyMode = savedBuyMode;
             }
         } catch (e) {
@@ -538,7 +539,9 @@ class Game {
     }
 
     toggleBulk() {
-        this.buyMode = this.buyMode === '1' ? 'MAX' : '1';
+        const modes = ['1', '10', '100', 'MAX'];
+        const currentIndex = modes.indexOf(this.buyMode);
+        this.buyMode = modes[(currentIndex + 1) % modes.length];
         this.upgrades.render(this.activeTab);
         // Persist UI state
         try {

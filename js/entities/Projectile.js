@@ -7,7 +7,24 @@ import { MathUtils } from '../config.js';
 import { Particle } from './Particle.js';
 import { getProjectilePool, registerProjectileClass } from '../utils/ObjectPool.js';
 
+// Static game reference to avoid window.game dependency
+let _gameRef = null;
+
 export class Projectile {
+    /**
+     * Set the global game reference for all projectiles
+     */
+    static setGameRef(game) {
+        _gameRef = game;
+    }
+
+    /**
+     * Get the game reference
+     */
+    static getGameRef() {
+        return _gameRef;
+    }
+
     constructor(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props) {
         this.x = x;
         this.y = y;
@@ -74,23 +91,25 @@ export class Projectile {
     }
 
     hit(target) {
+        const game = _gameRef;
         target.takeDamage(this.damage, this.isCrit, this.isSuperCrit);
         if (this.effects.ice) target.applyStatus('ice', 0.6, 2000);
         if (this.effects.poison) target.applyStatus('poison', this.damage * 0.2, 3000);
         if (this.stasisChance > 0 && Math.random() < this.stasisChance) target.applyStatus('stasis', 0, 2000);
-        if (this.leech > 0 && target.hp <= 0) window.game?.castle?.heal(this.leech);
+        if (this.leech > 0 && target.hp <= 0) game?.castle?.heal(this.leech);
         if (this.blastRadius > 0) this.explode();
         if (this.bounceCount > 0) this.bounce(target);
         else if (this.blastRadius <= 0) this.active = false;
         if (this.bounceCount <= 0) this.active = false;
-        if (window.game?.particles?.length < 50) {
-            for (let i = 0; i < 3; i++) window.game.particles.push(new Particle(this.x, this.y, this.color));
+        if (game?.particles?.length < 50) {
+            for (let i = 0; i < 3; i++) game.particles.push(new Particle(this.x, this.y, this.color));
         }
     }
 
     explode() {
+        const game = _gameRef;
         const blastRadiusSq = this.blastRadius * this.blastRadius;
-        window.game?.enemies?.forEach(e => {
+        game?.enemies?.forEach(e => {
             if (e.hp > 0 && MathUtils.distSq(this.x, this.y, e.x, e.y) < blastRadiusSq) {
                 e.takeDamage(this.damage * 0.5, false, false, true);
             }
@@ -103,13 +122,14 @@ export class Projectile {
             ctx.arc(this.x, this.y, (1 - this.life) * 50, 0, Math.PI * 2);
             ctx.stroke();
         };
-        window.game?.particles?.push(ripple);
+        game?.particles?.push(ripple);
     }
 
     bounce(lastTarget) {
+        const game = _gameRef;
         let nearest = null;
         let minDistSq = 250 * 250;
-        const enemies = window.game?.enemies || [];
+        const enemies = game?.enemies || [];
         for (const e of enemies) {
             if (e !== lastTarget && e.hp > 0) {
                 const dSq = MathUtils.distSq(this.x, this.y, e.x, e.y);
@@ -135,7 +155,7 @@ export class Projectile {
                 ctx.lineTo(this.tx, this.ty);
                 ctx.stroke();
             };
-            window.game?.particles?.push(line);
+            game?.particles?.push(line);
         } else {
             this.bounceCount = 0;
         }

@@ -126,6 +126,8 @@ export class UpgradeManager {
 
         if (this.game.buyMode === 'MAX') {
             return this._buyMax(u, silent);
+        } else if (this.game.buyMode === '10' || this.game.buyMode === '100') {
+            return this._buyMultiple(u, parseInt(this.game.buyMode, 10), silent);
         } else {
             return this._buySingle(u, silent);
         }
@@ -137,6 +139,40 @@ export class UpgradeManager {
             this.game.gold = BigNumService.sub(this.game.gold, cost);
             u.level++;
             this._onPurchase(u, 1, silent);
+            return true;
+        }
+        return false;
+    }
+
+    _buyMultiple(u, targetCount, silent) {
+        let count = 0;
+        let totalCost = BigNumService.create(0);
+        let currentLvl = u.level;
+        const factor = u.costFactor || 1.15;
+
+        while (count < targetCount) {
+            const nextCost = BigNumService.floor(
+                BigNumService.mul(u.baseCost, BigNumService.pow(factor, currentLvl + count))
+            );
+
+            if (BigNumService.lt(this.game.gold, BigNumService.add(totalCost, nextCost))) break;
+            if (u.maxLevel && currentLvl + count >= u.maxLevel) break;
+
+            // Check if next level hits cap
+            const nextVal = this.getValue(u.id, currentLvl + count + 1);
+            if (u.cap) {
+                if (u.type === 'decay' && nextVal < u.cap) break;
+                if (u.type !== 'decay' && nextVal > u.cap) break;
+            }
+
+            totalCost = BigNumService.add(totalCost, nextCost);
+            count++;
+        }
+
+        if (count > 0) {
+            this.game.gold = BigNumService.sub(this.game.gold, totalCost);
+            u.level += count;
+            this._onPurchase(u, count, silent);
             return true;
         }
         return false;
@@ -314,7 +350,7 @@ export class UpgradeManager {
      */
     updateBulkBuyButton() {
         const bulkBtn = document.getElementById('btn-bulk-buy');
-        const safeBuyMode = ['1', 'MAX'].includes(this.game.buyMode) ? this.game.buyMode : '1';
+        const safeBuyMode = ['1', '10', '100', 'MAX'].includes(this.game.buyMode) ? this.game.buyMode : '1';
         if (bulkBtn) {
             bulkBtn.innerHTML = `<span>${t('lab.bulkBuy')}</span>: ${safeBuyMode}`;
         }
@@ -327,10 +363,12 @@ export class UpgradeManager {
      */
     renderUpgrade(container, u) {
         let cost = this.getCost(u);
-        const isMaxBuy = this.game.buyMode === 'MAX';
+        const buyMode = this.game.buyMode;
 
-        if (isMaxBuy) {
+        if (buyMode === 'MAX') {
             cost = this.calculateMaxCost(u);
+        } else if (buyMode === '10' || buyMode === '100') {
+            cost = this.calculateMultipleCost(u, parseInt(buyMode, 10));
         }
 
         const isMaxed = (u.maxLevel && u.level >= u.maxLevel) ||
@@ -394,6 +432,43 @@ export class UpgradeManager {
 
             totalCost = BigNumService.add(totalCost, nextCost);
             count++;
+        }
+
+        return totalCost;
+    }
+
+    /**
+     * Calculate cost for buying multiple levels (10x or 100x)
+     * @param {object} u - Upgrade object
+     * @param {number} targetCount - Number of levels to buy
+     * @returns {Decimal}
+     */
+    calculateMultipleCost(u, targetCount) {
+        let count = 0;
+        let totalCost = BigNumService.create(0);
+        let currentLvl = u.level;
+        const factor = u.costFactor || 1.15;
+
+        while (count < targetCount) {
+            const nextCost = BigNumService.floor(
+                BigNumService.mul(u.baseCost, BigNumService.pow(factor, currentLvl + count))
+            );
+
+            if (u.maxLevel && currentLvl + count >= u.maxLevel) break;
+
+            const nextVal = this.getValue(u.id, currentLvl + count + 1);
+            if (u.cap) {
+                if (u.type === 'decay' && nextVal < u.cap) break;
+                if (u.type !== 'decay' && nextVal > u.cap) break;
+            }
+
+            totalCost = BigNumService.add(totalCost, nextCost);
+            count++;
+        }
+
+        // If we couldn't buy any, show cost of 1
+        if (count === 0) {
+            return this.getCost(u);
         }
 
         return totalCost;
