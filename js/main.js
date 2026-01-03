@@ -2091,6 +2091,10 @@ class Game {
         this.statPointsUsed = (this.statPointsUsed || 0) + 1;
         this.sound?.play('click');
         this.renderLabStatsUI();
+        // Update HUD immediately (even when paused)
+        if (this._hudElements?.dps) {
+            this._hudElements.dps.innerText = formatNumber(Math.floor(this.getCurrentDPS()));
+        }
         return true;
     }
 
