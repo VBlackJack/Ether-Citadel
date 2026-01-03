@@ -2072,11 +2072,9 @@ class Game {
     }
 
     upgradeStat(statId) {
-        console.log('[DEBUG] upgradeStat called with statId:', statId);
         const statPoints = (this.stats?.level || 1) * 5;
         const usedPoints = this.statPointsUsed || 0;
         const availablePoints = statPoints - usedPoints;
-        console.log('[DEBUG] statPoints:', statPoints, 'usedPoints:', usedPoints, 'availablePoints:', availablePoints);
 
         if (availablePoints <= 0) {
             this.ui?.showToast(t('feedback.noStatPoints'), 'warning');
@@ -2092,7 +2090,7 @@ class Game {
         this.statLevels[statId]++;
         this.statPointsUsed = (this.statPointsUsed || 0) + 1;
         this.sound?.play('click');
-        this.renderStatsUI();
+        this.renderLabStatsUI();
         return true;
     }
 
@@ -2108,7 +2106,7 @@ class Game {
     refundPassives() {
         this.passives?.refundAll();
         this.renderLabPassivesUI();
-        this.renderStatsUI();
+        this.renderLabStatsUI();
     }
 
     /** Defender Idle 2 Style - Technology Tree Visual by Tier */
@@ -2282,7 +2280,7 @@ class Game {
                 <div class="flex items-center gap-2">
                     <span class="text-sm font-bold text-white">${stat.format(value)}</span>
                     <span class="text-xs text-amber-400">${level}/100</span>
-                    <button data-upgrade-stat="${stat.id}" class="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded stat-upgrade-btn" ${availablePoints <= 0 || level >= 100 ? 'disabled style="opacity:0.5"' : ''}>+</button>
+                    <button data-action="stat.upgrade" data-id="${stat.id}" class="w-5 h-5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded stat-upgrade-btn" ${availablePoints <= 0 || level >= 100 ? 'disabled style="opacity:0.5"' : ''}>+</button>
                 </div>
             `;
             grid.appendChild(div);
