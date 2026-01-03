@@ -31,7 +31,8 @@ export class EventDelegationManager {
         this._boundClickHandler = (e) => this.handleClick(e);
         this._boundKeydownHandler = (e) => this.handleKeydown(e);
         this._boundModalBackdropHandler = (e) => this.handleModalBackdropClick(e);
-        document.addEventListener('click', this._boundClickHandler);
+        // Use capture phase (true) to intercept events before stopPropagation can block them
+        document.addEventListener('click', this._boundClickHandler, true);
         document.addEventListener('keydown', this._boundKeydownHandler);
         // Handle modal backdrop clicks (close on outside click)
         document.addEventListener('click', this._boundModalBackdropHandler);
@@ -461,7 +462,8 @@ export class EventDelegationManager {
      */
     cleanup() {
         if (this._boundClickHandler) {
-            document.removeEventListener('click', this._boundClickHandler);
+            // Must use 'true' to match the capture phase listener
+            document.removeEventListener('click', this._boundClickHandler, true);
             this._boundClickHandler = null;
         }
         if (this._boundKeydownHandler) {
