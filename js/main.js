@@ -3423,19 +3423,20 @@ class Game {
         let color = getCastleTierColor(this.castle.tier) || COLORS.PROJECTILE_BASE;
         let isCrit = false;
         let isSuperCrit = false;
-        let dmg = this.currentDamage;
+        let dmg = this.getDamage();
+        const critMultiplier = this.getCritMult();
         if (this.critChance > 100) {
             isCrit = true;
             if (Math.random() * 100 < (this.critChance - 100)) {
                 isSuperCrit = true;
-                dmg = Math.floor(dmg * this.critMult * 2.5);
+                dmg = Math.floor(dmg * critMultiplier * 2.5);
             } else {
-                dmg = Math.floor(dmg * this.critMult);
+                dmg = Math.floor(dmg * critMultiplier);
             }
         } else {
             if (Math.random() * 100 < this.critChance) {
                 isCrit = true;
-                dmg = Math.floor(dmg * this.critMult);
+                dmg = Math.floor(dmg * critMultiplier);
             }
         }
         const finalColor = isSuperCrit ? COLORS.SUPER_CRIT : (isCrit ? COLORS.GOLD : color);
@@ -3460,7 +3461,7 @@ class Game {
             }
         });
         if (target) {
-            const dmg = this.currentDamage * 5;
+            const dmg = this.getDamage() * 5;
             target.takeDamage(dmg, true, true);
             const div = document.createElement('div');
             div.className = 'orbital-laser';
@@ -3592,9 +3593,10 @@ class Game {
             this.floatingTexts.splice(0, this.floatingTexts.length - 20);
         }
 
-        const fireRate = (this.skills.isActive(SKILL.OVERDRIVE) || this.activeBuffs[RUNE.RAGE] > 0) ? this.currentFireRate / 3 : this.currentFireRate;
+        const baseFireRate = this.getFireRate();
+        const fireRate = (this.skills.isActive(SKILL.OVERDRIVE) || this.activeBuffs[RUNE.RAGE] > 0) ? baseFireRate / 3 : baseFireRate;
         if (this.gameTime - this.lastShotTime > fireRate) {
-            const target = this.findTarget(this.castle.x, this.castle.y, this.currentRange);
+            const target = this.findTarget(this.castle.x, this.castle.y, this.getRange());
             if (target) {
                 this.shoot(target);
                 this.lastShotTime = this.gameTime;
