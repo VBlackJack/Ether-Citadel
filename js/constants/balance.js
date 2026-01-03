@@ -42,6 +42,22 @@ export const BALANCE = {
     },
     WAVE: {
         ENEMIES_PER_WAVE_BASE: 5,
-        ENEMIES_GROWTH: 0.2 // +1 enemy every 5 waves
+        ENEMIES_GROWTH: 0.2, // +1 enemy every 5 waves
+        ENEMY_COUNT_MULTIPLIER: 1.5,
+        ENEMY_COUNT_BASE: 3
+    },
+    DREAD: {
+        // Dread difficulty scaling per level
+        HP_PER_LEVEL: 0.5,        // +50% enemy HP per dread level
+        DAMAGE_PER_LEVEL: 0.3,    // +30% enemy damage per dread level
+        SPEED_PER_LEVEL: 0.1,     // +10% enemy speed per dread level
+        CRYSTAL_BONUS_PER_LEVEL: 0.25, // +25% crystal bonus per level
+        ETHER_BONUS_PER_LEVEL: 0.2     // +20% ether bonus per level
+    },
+    RUNE: {
+        HEAL_PERCENT: 0.25 // Heal rune heals 25% of max HP
+    },
+    OFFLINE: {
+        BASE_GOLD_PER_WAVE: 10 // Base gold earned per wave for offline progress
     }
 };

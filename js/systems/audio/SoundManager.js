@@ -11,7 +11,13 @@ const SOUND_COOLDOWNS = {
     hit: 50,     // Max ~20 hits/sec audible
     coin: 30,
     levelup: 200,
-    gameover: 500
+    gameover: 500,
+    crit: 100,
+    upgrade: 150,
+    prestige: 500,
+    unlock: 300,
+    skill: 200,
+    boss: 1000
 };
 
 export class SoundManager {

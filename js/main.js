@@ -106,6 +106,18 @@ class Game {
         window.game = this;
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
+        // Cache DOM elements for HUD updates (avoid querying every frame)
+        this._hudElements = {
+            gold: document.getElementById('ui-gold'),
+            dps: document.getElementById('ui-dps'),
+            wave: document.getElementById('ui-wave'),
+            enemies: document.getElementById('ui-enemies'),
+            healthBar: document.getElementById('ui-health-bar'),
+            hpText: document.getElementById('ui-hp-text'),
+            shieldBar: document.getElementById('ui-shield-bar'),
+            dmAmount: document.getElementById('ui-dm-amount'),
+            darkMatter: document.getElementById('ui-dark-matter')
+        };
         this.renderSystem = new RenderSystem(this);
         this.gameLoop = new GameLoop(this);
         this.gameTime = 0;
@@ -892,7 +904,7 @@ class Game {
 
     activateRune(rune) {
         if (rune.type.instant) {
-            if (rune.type.id === 'heal') this.castle.heal(this.castle.maxHp * 0.25);
+            if (rune.type.id === 'heal') this.castle.heal(this.castle.maxHp * BALANCE.RUNE.HEAL_PERCENT);
         } else {
             this.activeBuffs[rune.type.id] = rune.type.duration;
         }
@@ -908,7 +920,7 @@ class Game {
 
         if (cappedDiffSec > 60) {
             // Base gold from wave progress
-            const baseGold = this.wave * 10;
+            const baseGold = this.wave * BALANCE.OFFLINE.BASE_GOLD_PER_WAVE;
 
             // Multipliers (stacking)
             const goldMult = this.metaUpgrades.getEffectValue('goldMult');
@@ -1122,11 +1134,11 @@ class Game {
     getDreadMultipliers() {
         const level = this.dreadLevel;
         return {
-            enemyHp: 1 + (level * 0.5),
-            enemyDamage: 1 + (level * 0.3),
-            enemySpeed: 1 + (level * 0.1),
-            crystalBonus: 1 + (level * 0.25),
-            etherBonus: 1 + (level * 0.2)
+            enemyHp: 1 + (level * BALANCE.DREAD.HP_PER_LEVEL),
+            enemyDamage: 1 + (level * BALANCE.DREAD.DAMAGE_PER_LEVEL),
+            enemySpeed: 1 + (level * BALANCE.DREAD.SPEED_PER_LEVEL),
+            crystalBonus: 1 + (level * BALANCE.DREAD.CRYSTAL_BONUS_PER_LEVEL),
+            etherBonus: 1 + (level * BALANCE.DREAD.ETHER_BONUS_PER_LEVEL)
         };
     }
 
@@ -1177,7 +1189,7 @@ class Game {
             html = `<div class="text-red-400 font-bold">⚠️ ${t('game.boss')} ⚠️</div>`;
         } else {
             // Calculate approximate enemies for next wave
-            const baseCount = Math.ceil(nextWave * 1.5) + 3;
+            const baseCount = Math.ceil(nextWave * BALANCE.WAVE.ENEMY_COUNT_MULTIPLIER) + BALANCE.WAVE.ENEMY_COUNT_BASE;
             const enemyTypes = [];
 
             if (nextWave >= 1) enemyTypes.push({ icon: '👾', name: t('enemies.NORMAL.name') });
@@ -1580,6 +1592,29 @@ class Game {
             } else {
                 waveSkipEl.parentElement.classList.add('hidden');
             }
+        }
+
+        // Prestige calculator projections
+        const projectionsEl = document.getElementById('prestige-projections');
+        if (projectionsEl) {
+            const projections = this.prestige.getPrestigeProjections();
+            const currentWave = this.stats?.maxWave || this.wave;
+            const currentPoints = this.prestige.calculatePrestigePoints();
+
+            projectionsEl.innerHTML = `
+                <div class="bg-green-900/30 p-2 rounded border border-green-700">
+                    <div class="text-green-400 font-bold">${t('prestige.now')}</div>
+                    <div class="text-white">+${formatNumber(currentPoints)} 👑</div>
+                    <div class="text-slate-400">Wave ${currentWave}</div>
+                </div>
+                ${projections.slice(0, 2).map(p => `
+                    <div class="bg-amber-900/30 p-2 rounded border border-amber-700">
+                        <div class="text-amber-400 font-bold">Wave ${p.wave}</div>
+                        <div class="text-white">+${formatNumber(p.points)} 👑</div>
+                        <div class="text-green-400">+${formatNumber(p.gain)} ${t('prestige.extra')}</div>
+                    </div>
+                `).join('')}
+            `;
         }
 
         // Auto-prestige controls
@@ -2668,20 +2703,36 @@ class Game {
             awakening: this.dreadLevel >= 6
         };
 
+        const featureNames = {
+            school: t('school.title'),
+            office: t('office.title'),
+            awakening: t('awakening.title')
+        };
+
         Object.entries(unlocks).forEach(([feature, isUnlocked]) => {
             const menuItem = document.querySelector(`[data-unlock="${feature}"]`);
             if (menuItem) {
+                const wasLocked = menuItem.classList.contains('menu-locked');
                 if (isUnlocked) {
                     menuItem.classList.remove('menu-locked');
                     menuItem.classList.add('menu-unlocked');
                     if (!localStorage.getItem(`unlock_seen_${feature}`)) {
                         menuItem.classList.add('newly-unlocked');
+                        menuItem.classList.add('feature-new');
+                        // Show unlock celebration if this is a new unlock (was locked before)
+                        if (wasLocked) {
+                            menuItem.classList.add('feature-unlocked');
+                            this.sound.play('unlock');
+                            this.ui?.showToast(`🎉 ${featureNames[feature]} ${t('feedback.unlocked')}!`, 'success');
+                            setTimeout(() => menuItem.classList.remove('feature-unlocked'), 600);
+                        }
                         // Mark as seen only when clicked
                         if (!menuItem.dataset.unlockListenerAdded) {
                             menuItem.dataset.unlockListenerAdded = 'true';
                             menuItem.addEventListener('click', () => {
                                 localStorage.setItem(`unlock_seen_${feature}`, 'true');
                                 menuItem.classList.remove('newly-unlocked');
+                                menuItem.classList.remove('feature-new');
                             }, { once: true });
                         }
                     }
@@ -2689,6 +2740,7 @@ class Game {
                     menuItem.classList.add('menu-locked');
                     menuItem.classList.remove('menu-unlocked');
                     menuItem.classList.remove('newly-unlocked');
+                    menuItem.classList.remove('feature-new');
                 }
             }
         });
@@ -3272,28 +3324,22 @@ class Game {
             return true;
         });
 
-        const elGold = document.getElementById('ui-gold');
-        if (elGold) elGold.innerText = formatNumber(this.gold);
-        const elDps = document.getElementById('ui-dps');
-        if (elDps) elDps.innerText = formatNumber(Math.floor(this.getCurrentDPS()));
-        const elWave = document.getElementById('ui-wave');
-        if (elWave) elWave.innerText = this.wave;
+        // Use cached HUD elements to avoid DOM queries every frame
+        const hud = this._hudElements;
+        if (hud.gold) hud.gold.innerText = formatNumber(this.gold);
+        if (hud.dps) hud.dps.innerText = formatNumber(Math.floor(this.getCurrentDPS()));
+        if (hud.wave) hud.wave.innerText = this.wave;
         this.updateWavePreview();
         this.updateSurrenderButton();
-        const elEnemies = document.getElementById('ui-enemies');
-        if (elEnemies) elEnemies.innerText = this.enemies.length + this.enemiesToSpawn;
+        if (hud.enemies) hud.enemies.innerText = this.enemies.length + this.enemiesToSpawn;
         const hpPct = Math.max(0, Math.ceil((this.castle.hp / this.castle.maxHp) * 100));
-        const elHealthBar = document.getElementById('ui-health-bar');
-        if (elHealthBar) elHealthBar.style.width = `${hpPct}%`;
-        const elHpText = document.getElementById('ui-hp-text');
-        if (elHpText) elHpText.innerText = `${formatNumber(Math.ceil(this.castle.hp))}/${formatNumber(this.castle.maxHp)}`;
+        if (hud.healthBar) hud.healthBar.style.width = `${hpPct}%`;
+        if (hud.hpText) hud.hpText.innerText = `${formatNumber(Math.ceil(this.castle.hp))}/${formatNumber(this.castle.maxHp)}`;
         const shPct = Math.max(0, Math.min(100, Math.ceil((this.castle.shield / this.castle.maxShield) * 100)));
-        const elShieldBar = document.getElementById('ui-shield-bar');
-        if (elShieldBar) elShieldBar.style.width = `${shPct}%`;
-        const dmDisplay = document.getElementById('ui-dm-amount');
-        if (dmDisplay) {
-            dmDisplay.innerText = this.challenges.darkMatter;
-            if (this.challenges.darkMatter > 0) document.getElementById('ui-dark-matter').classList.remove('hidden');
+        if (hud.shieldBar) hud.shieldBar.style.width = `${shPct}%`;
+        if (hud.dmAmount) {
+            hud.dmAmount.innerText = this.challenges.darkMatter;
+            if (this.challenges.darkMatter > 0) hud.darkMatter?.classList.remove('hidden');
         }
         this.stats.render();
         this.goals?.update();

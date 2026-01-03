@@ -222,7 +222,17 @@ export class Enemy {
                 isSuperCrit ? 40 : (isCrit ? 30 : 20)
             ));
         }
-        if (!silent) game.sound.play('hit');
+        if (!silent) {
+            if (isSuperCrit) {
+                game.sound.play('crit');
+                game.visualEffects?.triggerScreenShake(8);
+            } else if (isCrit) {
+                game.sound.play('crit');
+                game.visualEffects?.triggerScreenShake(4);
+            } else {
+                game.sound.play('hit');
+            }
+        }
 
         if (BigNumService.lte(this.hp, 0)) {
             if (this.state !== 'FLEE' || BigNumService.lte(this.hp, 0)) {
@@ -245,11 +255,16 @@ export class Enemy {
             }
             game.sound.play('coin');
             if (this.typeKey === 'BOSS') {
-                for (let i = 0; i < 20; i++) game.particles.push(game.createParticle(this.x, this.y, '#ef4444'));
+                // Boss death: 30 particles + screen shake
+                for (let i = 0; i < 30; i++) game.particles.push(game.createParticle(this.x, this.y, '#ef4444'));
+                game.visualEffects?.triggerScreenShake(12);
+                game.sound.play('boss');
                 game.tryDropRelic();
                 game.onBossKill();
-            } else if (game.particles.length < 50) {
-                for (let i = 0; i < 3; i++) game.particles.push(game.createParticle(this.x, this.y, this.color));
+            } else if (game.particles.length < 60) {
+                // Normal enemy death: 6-8 particles
+                const particleCount = 6 + Math.floor(Math.random() * 3);
+                for (let i = 0; i < particleCount; i++) game.particles.push(game.createParticle(this.x, this.y, this.color));
             }
         }
     }

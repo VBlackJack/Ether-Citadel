@@ -345,7 +345,7 @@ export class PrestigeManager {
         this.game.updateStats?.();
         this.game.save();
 
-        // Show notification
+        // Show celebration notification
         if (this.game.floatingTexts && typeof FloatingText !== 'undefined') {
             this.game.floatingTexts.push(FloatingText.create(
                 this.game.width / 2,
@@ -354,6 +354,19 @@ export class PrestigeManager {
                 COLORS.GOLD,
                 36
             ));
+        }
+
+        // Celebration effects
+        this.game.sound?.play('prestige');
+        this.game.visualEffects?.triggerScreenShake(10);
+
+        // First prestige milestone celebration
+        if (this.totalPrestiges === 1) {
+            this.game.ui?.showToast(`🎉 ${t('milestones.firstPrestige')}`, 'success');
+        } else if (this.totalPrestiges === 10) {
+            this.game.ui?.showToast(`🏆 ${t('milestones.tenPrestiges')}`, 'success');
+        } else if (this.totalPrestiges === 50) {
+            this.game.ui?.showToast(`👑 ${t('milestones.fiftyPrestiges')}`, 'success');
         }
 
         // Hide game over screen and start new wave (don't call restart - it resets wave to 1)

@@ -33,11 +33,16 @@ export class SwipeManager {
         this.enabled = true;
         this.minSwipeDistance = 50;
         this.maxSwipeTime = 300;
+        this.longPressTime = 500; // Long press threshold in ms
         this.touchStart = null;
+        this.longPressTimer = null;
+        this.longPressTriggered = false;
         this.callbacks = new Map();
+        this.longPressCallbacks = new Map();
 
         this._boundTouchStart = this.handleTouchStart.bind(this);
         this._boundTouchEnd = this.handleTouchEnd.bind(this);
+        this._boundTouchMove = this.handleTouchMove.bind(this);
 
         this.init();
     }
@@ -48,6 +53,7 @@ export class SwipeManager {
     init() {
         document.addEventListener('touchstart', this._boundTouchStart, { passive: true });
         document.addEventListener('touchend', this._boundTouchEnd, { passive: true });
+        document.addEventListener('touchmove', this._boundTouchMove, { passive: true });
     }
 
     /**
@@ -56,6 +62,18 @@ export class SwipeManager {
     destroy() {
         document.removeEventListener('touchstart', this._boundTouchStart);
         document.removeEventListener('touchend', this._boundTouchEnd);
+        document.removeEventListener('touchmove', this._boundTouchMove);
+        this.clearLongPressTimer();
+    }
+
+    /**
+     * Clear the long press timer
+     */
+    clearLongPressTimer() {
+        if (this.longPressTimer) {
+            clearTimeout(this.longPressTimer);
+            this.longPressTimer = null;
+        }
     }
 
     /**
@@ -90,6 +108,33 @@ export class SwipeManager {
     }
 
     /**
+     * Register a long press callback for a specific element or selector
+     * @param {string} selector - CSS selector or 'global'
+     * @param {Function} callback - Callback function
+     */
+    onLongPress(selector, callback) {
+        if (!this.longPressCallbacks.has(selector)) {
+            this.longPressCallbacks.set(selector, []);
+        }
+        this.longPressCallbacks.get(selector).push(callback);
+    }
+
+    /**
+     * Remove a long press callback
+     * @param {string} selector
+     * @param {Function} callback
+     */
+    offLongPress(selector, callback) {
+        if (this.longPressCallbacks.has(selector)) {
+            const callbacks = this.longPressCallbacks.get(selector);
+            const index = callbacks.indexOf(callback);
+            if (index > -1) {
+                callbacks.splice(index, 1);
+            }
+        }
+    }
+
+    /**
      * Handle touch start
      * @param {TouchEvent} e
      */
@@ -104,6 +149,14 @@ export class SwipeManager {
             time: Date.now(),
             target: e.target
         };
+
+        // Start long press detection
+        this.longPressTriggered = false;
+        this.clearLongPressTimer();
+        this.longPressTimer = setTimeout(() => {
+            this.longPressTriggered = true;
+            this.triggerLongPress(e.target, { x: touch.clientX, y: touch.clientY });
+        }, this.longPressTime);
     }
 
     /**
@@ -111,7 +164,17 @@ export class SwipeManager {
      * @param {TouchEvent} e
      */
     handleTouchEnd(e) {
+        // Clear long press timer
+        this.clearLongPressTimer();
+
         if (!this.enabled || !this.touchStart) return;
+
+        // If long press was triggered, don't process as swipe
+        if (this.longPressTriggered) {
+            this.touchStart = null;
+            this.longPressTriggered = false;
+            return;
+        }
 
         const touch = e.changedTouches[0];
         const dx = touch.clientX - this.touchStart.x;
@@ -143,6 +206,23 @@ export class SwipeManager {
     }
 
     /**
+     * Handle touch move - cancel long press if finger moves too much
+     * @param {TouchEvent} e
+     */
+    handleTouchMove(e) {
+        if (!this.touchStart || !this.longPressTimer) return;
+
+        const touch = e.touches[0];
+        const dx = Math.abs(touch.clientX - this.touchStart.x);
+        const dy = Math.abs(touch.clientY - this.touchStart.y);
+
+        // Cancel long press if finger moves more than 10px
+        if (dx > 10 || dy > 10) {
+            this.clearLongPressTimer();
+        }
+    }
+
+    /**
      * Trigger swipe callbacks
      * @param {SwipeDirection} direction
      * @param {Element} target
@@ -166,6 +246,33 @@ export class SwipeManager {
 
         // Emit event via game's event bus
         this.game.eventBus?.emit('swipe', { direction, target, ...data });
+    }
+
+    /**
+     * Trigger long press callbacks
+     * @param {Element} target
+     * @param {Object} data
+     */
+    triggerLongPress(target, data) {
+        // Check element-specific callbacks
+        for (const [selector, callbacks] of this.longPressCallbacks) {
+            if (selector === 'global') {
+                callbacks.forEach(cb => cb(data, target));
+            } else {
+                const el = target.closest(selector);
+                if (el) {
+                    callbacks.forEach(cb => cb(data, el));
+                }
+            }
+        }
+
+        // Emit event via game's event bus
+        this.game.eventBus?.emit('longpress', { target, ...data });
+
+        // Haptic feedback if available
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
     }
 
     /**

@@ -930,6 +930,10 @@
     "current": "Current",
     "next": "Next",
     "endless": "Endless Prestige",
+    "now": "Now",
+    "extra": "extra",
+    "calculator": "Prestige Calculator",
+    "calculatorTip": "Push to higher waves for more points!",
     "endlessMode": "Endless Mode",
     "endlessInterval": "Prestige every X waves",
     "endlessDesc": "Auto-prestige during run without dying. Gain bonus PP each cycle.",
@@ -968,7 +972,10 @@
     "wave250": { "name": "Grandmaster", "desc": "Reach wave 250" },
     "wave300": { "name": "Transcendent", "desc": "Reach wave 300" },
     "wave500": { "name": "Immortal", "desc": "Reach wave 500" },
-    "dreadComplete": { "name": "Dread Master", "desc": "Complete Dread level 10" }
+    "dreadComplete": { "name": "Dread Master", "desc": "Complete Dread level 10" },
+    "firstPrestige": "First Prestige Complete! You're on your way!",
+    "tenPrestiges": "10 Prestiges! You're becoming a master!",
+    "fiftyPrestiges": "50 Prestiges! Legendary status achieved!"
   },
   "dailyChest": {
     "title": "Daily Chest",

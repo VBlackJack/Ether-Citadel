@@ -20,7 +20,6 @@
 export const CONFIG = {
     // Enemy settings
     baseEnemySpeed: 0.8,
-    baseEnemyHp: 10,
     enemySpawnRate: 1500,
 
     // Save settings
@@ -85,14 +84,21 @@ export const CONFIG = {
 };
 
 /**
- * Sound definitions for procedural audio
+ * Sound definitions for procedural audio - Improved volumes for better feedback
  */
 export const SOUND_DB = {
-    shoot: { type: 'square', freq: 400, decay: 0.1, vol: 0.1 },
-    hit: { type: 'sawtooth', freq: 100, decay: 0.1, vol: 0.1 },
-    coin: { type: 'sine', freq: 800, decay: 0.2, vol: 0.05, slide: true },
-    levelup: { type: 'triangle', freq: 600, decay: 0.5, vol: 0.2, melody: true },
-    gameover: { type: 'sawtooth', freq: 150, decay: 1.0, vol: 0.3, slideDown: true }
+    shoot: { type: 'square', freq: 400, decay: 0.1, vol: 0.25 },
+    hit: { type: 'sawtooth', freq: 100, decay: 0.1, vol: 0.2 },
+    coin: { type: 'sine', freq: 800, decay: 0.2, vol: 0.15, slide: true },
+    levelup: { type: 'triangle', freq: 600, decay: 0.5, vol: 0.35, melody: true },
+    gameover: { type: 'sawtooth', freq: 150, decay: 1.0, vol: 0.4, slideDown: true },
+    // New sounds for better feedback
+    crit: { type: 'square', freq: 600, decay: 0.15, vol: 0.3, slide: true },
+    upgrade: { type: 'sine', freq: 500, decay: 0.2, vol: 0.25, slide: true },
+    prestige: { type: 'triangle', freq: 400, decay: 0.8, vol: 0.4, melody: true },
+    unlock: { type: 'sine', freq: 700, decay: 0.3, vol: 0.3, slide: true },
+    skill: { type: 'square', freq: 300, decay: 0.3, vol: 0.3 },
+    boss: { type: 'sawtooth', freq: 80, decay: 0.5, vol: 0.35 }
 };
 
 /**

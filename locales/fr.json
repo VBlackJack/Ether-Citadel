@@ -930,6 +930,10 @@
     "current": "Actuel",
     "next": "Suivant",
     "endless": "Prestige Infini",
+    "now": "Maintenant",
+    "extra": "en plus",
+    "calculator": "Calculateur de Prestige",
+    "calculatorTip": "Atteignez des vagues plus hautes pour plus de points!",
     "endlessMode": "Mode Infini",
     "endlessInterval": "Prestige toutes les X vagues",
     "endlessDesc": "Auto-prestige durant la partie sans mourir. Gagne des PP bonus a chaque cycle.",
@@ -1900,7 +1904,10 @@
     "wave100": { "name": "Champion", "desc": "Atteindre la vague 100" },
     "wave200": { "name": "Heros", "desc": "Atteindre la vague 200" },
     "wave500": { "name": "Immortel", "desc": "Atteindre la vague 500" },
-    "dreadComplete": { "name": "Maitre du Dread", "desc": "Completer Dread niveau 10" }
+    "dreadComplete": { "name": "Maitre du Dread", "desc": "Completer Dread niveau 10" },
+    "firstPrestige": "Premier Prestige! Vous etes sur la bonne voie!",
+    "tenPrestiges": "10 Prestiges! Vous devenez un maitre!",
+    "fiftyPrestiges": "50 Prestiges! Statut legendaire atteint!"
   },
   "dailyChest": {
     "title": "Coffre Quotidien",
