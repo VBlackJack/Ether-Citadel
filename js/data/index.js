@@ -102,7 +102,8 @@ export {
     COMBO_TIERS,
     MILESTONES,
     PRESTIGE_THEMES,
-    PRODUCTION_BUILDINGS
+    PRODUCTION_BUILDINGS,
+    ENDLESS_PRESTIGE_CONFIG
 } from './misc.js';
 
 // Characters module

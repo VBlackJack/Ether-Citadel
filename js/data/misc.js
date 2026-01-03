@@ -299,3 +299,13 @@ export const PRODUCTION_BUILDINGS = [
     { id: 'ether_condenser', nameKey: 'production.ether_condenser.name', descKey: 'production.ether_condenser.desc', icon: '⚗️', resource: 'ether', baseRate: 0.05, baseCost: 1000, costMult: 2.0, maxLevel: 10 },
     { id: 'void_harvester', nameKey: 'production.void_harvester.name', descKey: 'production.void_harvester.desc', icon: '🌌', resource: 'void_shard', baseRate: 0.02, baseCost: 5000, costMult: 2.5, maxLevel: 5 }
 ];
+
+/**
+ * Endless prestige configuration
+ */
+export const ENDLESS_PRESTIGE_CONFIG = {
+    minWave: 50,
+    defaultInterval: 100,
+    bonusPerCycle: 0.05,
+    maxBonusStacks: 20
+};
