@@ -109,6 +109,11 @@ export class EventDelegationManager {
             this.game.togglePause?.();
         });
 
+        // Hold wave toggle
+        this.register('toggleHoldWave', () => {
+            this.game.toggleHoldWave?.();
+        });
+
         // Challenge actions
         this.register('challenge.start', (params) => {
             this.game.challenges.startChallenge(params.id);
