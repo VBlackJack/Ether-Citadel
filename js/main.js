@@ -4429,51 +4429,6 @@ function setupStaticModalFocusTraps() {
     });
 }
 
-// Global action handler for data-action buttons with visual feedback
-(function initActionHandler() {
-    document.addEventListener('click', (e) => {
-        // Handle stat upgrade buttons (data-upgrade-stat)
-        const statBtn = e.target.closest('[data-upgrade-stat]');
-        if (statBtn && !statBtn.disabled && window.game) {
-            const statId = statBtn.dataset.upgradeStat;
-            if (game.upgradeStat(statId)) {
-                const card = statBtn.closest('.lab-stat-card');
-                if (card) {
-                    card.classList.add('upgrade-success-anim');
-                    setTimeout(() => card.classList.remove('upgrade-success-anim'), 400);
-                }
-            }
-            return;
-        }
-
-        const btn = e.target.closest('[data-action]');
-        if (!btn || btn.disabled) return;
-
-        const action = btn.dataset.action;
-        const id = btn.dataset.id;
-
-        // Handle different actions
-        if (action === 'stat.upgrade' && window.game) {
-            if (game.upgradeStat(id)) {
-                // Success animation
-                const row = btn.closest('.stat-row');
-                if (row) {
-                    row.classList.add('upgrade-success-anim');
-                    setTimeout(() => row.classList.remove('upgrade-success-anim'), 400);
-                }
-            }
-        } else if (action === 'passive.upgrade' && window.game) {
-            // Handle passive upgrades
-            btn.classList.add('upgrade-success-anim');
-            setTimeout(() => btn.classList.remove('upgrade-success-anim'), 400);
-        } else if (action === 'turretSlot.remove' && window.game) {
-            const slotId = parseInt(id);
-            game.turretSlots.removeTurret(slotId);
-            game.renderTurretSlotsUI();
-        }
-    });
-})();
-
 // Touch-friendly tooltips for mobile devices
 (function initTouchTooltips() {
     let activeTooltip = null;
@@ -4509,10 +4464,10 @@ function setupStaticModalFocusTraps() {
     }
 
     // Touch handler for elements with title attribute
+    // Note: Do NOT use e.preventDefault() here - it blocks click events on buttons
     document.addEventListener('touchstart', (e) => {
         const target = e.target.closest('[title]');
         if (target && target.title) {
-            e.preventDefault();
             if (activeTooltip === target) {
                 hideTooltip();
             } else {
@@ -4521,7 +4476,7 @@ function setupStaticModalFocusTraps() {
         } else {
             hideTooltip();
         }
-    }, { passive: false });
+    }, { passive: true });
 
     // Hide on scroll
     document.addEventListener('scroll', hideTooltip, { passive: true });
