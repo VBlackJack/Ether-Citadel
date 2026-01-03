@@ -30,8 +30,11 @@ export class EventDelegationManager {
         this.registerDefaultActions();
         this._boundClickHandler = (e) => this.handleClick(e);
         this._boundKeydownHandler = (e) => this.handleKeydown(e);
+        this._boundModalBackdropHandler = (e) => this.handleModalBackdropClick(e);
         document.addEventListener('click', this._boundClickHandler);
         document.addEventListener('keydown', this._boundKeydownHandler);
+        // Handle modal backdrop clicks (close on outside click)
+        document.addEventListener('click', this._boundModalBackdropHandler);
     }
 
     /**
@@ -268,6 +271,115 @@ export class EventDelegationManager {
                 this.game.renderLabPassivesUI();
             }
         });
+
+        // Speed control (with specific speed value)
+        this.register('speed.set', (params) => {
+            this.game.setSpeed(safeParseInt(params.value, 1));
+        });
+
+        // Lab tab switching
+        this.register('lab.switchTab', (params) => {
+            this.game.switchLabTab(params.tab);
+        });
+
+        this.register('lab.switchUpgradeTab', (params) => {
+            this.game.switchTab(safeParseInt(params.tab));
+        });
+
+        this.register('lab.switchPassiveTab', (params) => {
+            this.game.switchLabPassiveTab(params.tab);
+        });
+
+        this.register('lab.selectTech', (params) => {
+            this.game.selectTechSpecial(params.id);
+        });
+
+        this.register('lab.toggleBulk', () => {
+            this.game.toggleBulk();
+        });
+
+        this.register('lab.refundPassives', () => {
+            this.game.passives?.refundAll();
+            this.game.renderLabPassivesUI();
+        });
+
+        // Goals and suggestions
+        this.register('goal.dismiss', () => {
+            this.game.goals?.dismissCurrent();
+        });
+
+        this.register('suggestion.dismiss', () => {
+            this.game.dismissSuggestion?.();
+        });
+
+        // Settings actions
+        this.register('settings.export', () => {
+            this.game.exportSave();
+        });
+
+        this.register('settings.confirmReset', () => {
+            this.game.confirmReset();
+        });
+
+        this.register('settings.restartTutorial', () => {
+            this.game.tutorial?.reset();
+            this.game.save();
+            this.game.tutorial?.check();
+            const modal = document.getElementById('settings-modal');
+            if (modal) modal.classList.add('hidden');
+        });
+
+        // Import modal
+        this.register('import.confirm', () => {
+            this.game.importSaveFromModal();
+        });
+
+        // Game over
+        this.register('game.restart', () => {
+            this.game.manualRestart();
+        });
+
+        // Feature intro
+        this.register('feature.closeIntro', () => {
+            this.game.closeFeatureIntro();
+        });
+
+        // Offline modal
+        this.register('offline.collect', () => {
+            // Just close the modal - rewards already calculated
+        });
+
+        // Challenge cancel
+        this.register('challenge.cancel', () => {
+            this.game.challenges.cancelChallenge();
+        });
+
+        // Prestige confirm
+        this.register('prestige.confirm', () => {
+            if (this.game.prestige.canPrestige()) {
+                this.game.gameConfirm(this.game.t('prestige.confirmReset'), () => this.game.prestige.doPrestige());
+            }
+        });
+
+        // Dev secret trigger
+        this.register('dev.triggerSecret', () => {
+            this.game.triggerDevSecret();
+        });
+
+        // Awakening
+        this.register('awakening.activate', () => {
+            this.game.awakening.awaken();
+            this.game.renderAwakeningUI();
+        });
+    }
+
+    /**
+     * Handle modal backdrop clicks (close on outside click)
+     */
+    handleModalBackdropClick(e) {
+        if (e.target.classList.contains('modal-backdrop')) {
+            e.target.classList.add('hidden');
+        }
     }
 
     /**
@@ -317,6 +429,14 @@ export class EventDelegationManager {
         if (this._boundClickHandler) {
             document.removeEventListener('click', this._boundClickHandler);
             this._boundClickHandler = null;
+        }
+        if (this._boundKeydownHandler) {
+            document.removeEventListener('keydown', this._boundKeydownHandler);
+            this._boundKeydownHandler = null;
+        }
+        if (this._boundModalBackdropHandler) {
+            document.removeEventListener('click', this._boundModalBackdropHandler);
+            this._boundModalBackdropHandler = null;
         }
         this.actions.clear();
     }

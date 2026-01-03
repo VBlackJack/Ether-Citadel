@@ -9,7 +9,7 @@ export const BALANCE = {
         // Key: HP grows faster than player damage upgrades forcing continuous investment
         HP_GROWTH: 1.22,       // Enemies get tougher (+22%/wave) - reduced from 1.25 for smoother curve
         DAMAGE_GROWTH: 1.12,   // Enemy damage scales steadily (reduced from 1.15)
-        GOLD_GROWTH: 1.08,     // Gold scales to keep pace with difficulty (was 1.06)
+        GOLD_GROWTH: 1.10,     // Gold scales to keep pace with difficulty (was 1.08)
 
         // Wave management
         BOSS_WAVE_INTERVAL: 10,

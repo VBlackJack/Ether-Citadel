@@ -3319,6 +3319,93 @@ class Game {
         return nearest;
     }
 
+    /**
+     * In-place array compaction for enemies (avoids creating new array)
+     */
+    _compactEnemies() {
+        let writeIdx = 0;
+        for (let i = 0; i < this.enemies.length; i++) {
+            if (this.enemies[i].hp > 0) {
+                if (writeIdx !== i) {
+                    this.enemies[writeIdx] = this.enemies[i];
+                }
+                writeIdx++;
+            }
+        }
+        this.enemies.length = writeIdx;
+    }
+
+    /**
+     * In-place array compaction for projectiles (releases to pool)
+     */
+    _compactProjectiles() {
+        let writeIdx = 0;
+        for (let i = 0; i < this.projectiles.length; i++) {
+            const p = this.projectiles[i];
+            if (p.active && !p.dead) {
+                if (writeIdx !== i) {
+                    this.projectiles[writeIdx] = p;
+                }
+                writeIdx++;
+            } else {
+                // Release back to pool
+                Projectile.release(p);
+            }
+        }
+        this.projectiles.length = writeIdx;
+    }
+
+    /**
+     * In-place array compaction for particles
+     */
+    _compactParticles() {
+        let writeIdx = 0;
+        for (let i = 0; i < this.particles.length; i++) {
+            if (this.particles[i].life > 0) {
+                if (writeIdx !== i) {
+                    this.particles[writeIdx] = this.particles[i];
+                }
+                writeIdx++;
+            }
+        }
+        this.particles.length = writeIdx;
+    }
+
+    /**
+     * In-place array compaction for floating texts (releases to pool)
+     */
+    _compactFloatingTexts() {
+        let writeIdx = 0;
+        for (let i = 0; i < this.floatingTexts.length; i++) {
+            const t = this.floatingTexts[i];
+            if (t.life > 0) {
+                if (writeIdx !== i) {
+                    this.floatingTexts[writeIdx] = t;
+                }
+                writeIdx++;
+            } else {
+                t.release?.();
+            }
+        }
+        this.floatingTexts.length = writeIdx;
+    }
+
+    /**
+     * In-place array compaction for runes
+     */
+    _compactRunes() {
+        let writeIdx = 0;
+        for (let i = 0; i < this.runes.length; i++) {
+            if (this.runes[i].life > 0) {
+                if (writeIdx !== i) {
+                    this.runes[writeIdx] = this.runes[i];
+                }
+                writeIdx++;
+            }
+        }
+        this.runes.length = writeIdx;
+    }
+
     shoot(target) {
         if (!target) return;
         let color = getCastleTierColor(this.castle.tier) || COLORS.PROJECTILE_BASE;
@@ -3482,7 +3569,7 @@ class Game {
         this.castle.update(dt);
         this.turrets.forEach(t => t.update(dt, this.gameTime, this));
         this.runes.forEach(r => r.update(dt));
-        this.runes = this.runes.filter(r => r.life > 0);
+        this._compactRunes();
 
         // Efficient array capacity management (avoid O(n) shift every frame)
         // Only truncate when significantly over limit, removing batch at once
@@ -3506,17 +3593,12 @@ class Game {
         this.projectiles.forEach(p => p.update(dt));
         this.particles.forEach(p => p.update(dt));
         this.floatingTexts.forEach(t => t.update(dt));
-        this.enemies = this.enemies.filter(e => e.hp > 0);
-        this.projectiles = this.projectiles.filter(p => p.active && !p.dead);
-        this.particles = this.particles.filter(p => p.life > 0);
-        // Release dead floating texts back to pool and filter in single pass
-        this.floatingTexts = this.floatingTexts.filter(t => {
-            if (t.life <= 0) {
-                t.release?.();
-                return false;
-            }
-            return true;
-        });
+
+        // In-place array compaction to avoid GC pressure (no new arrays created)
+        this._compactEnemies();
+        this._compactProjectiles();
+        this._compactParticles();
+        this._compactFloatingTexts();
 
         // Use cached HUD elements to avoid DOM queries every frame
         const hud = this._hudElements;

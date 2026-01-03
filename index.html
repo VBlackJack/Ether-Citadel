@@ -319,7 +319,7 @@
             <div class="flex items-center gap-2 mb-1">
                 <span class="text-green-400 text-sm" aria-hidden="true">🎯</span>
                 <span class="text-green-400 text-xs font-bold uppercase" data-i18n="goals.label">Next Goal</span>
-                <button type="button" id="dismiss-goal" onclick="game.goals?.dismissCurrent()" class="ml-auto text-slate-400 hover:text-white text-xs" aria-label="Dismiss goal">✕</button>
+                <button type="button" id="dismiss-goal" data-action="goal.dismiss" class="ml-auto text-slate-400 hover:text-white text-xs" aria-label="Dismiss goal">✕</button>
             </div>
             <div id="next-goal-text" class="text-slate-200 text-sm"></div>
             <div class="mt-1 h-1 bg-slate-700 rounded-full overflow-hidden">
@@ -332,7 +332,7 @@
             <div class="flex items-center gap-2">
                 <span class="text-blue-400 text-lg" aria-hidden="true">💡</span>
                 <span id="suggested-action-text" class="text-slate-200 text-sm"></span>
-                <button type="button" onclick="game.dismissSuggestion?.()" class="ml-auto text-slate-400 hover:text-white text-xs" aria-label="Dismiss suggestion">✕</button>
+                <button type="button" data-action="suggestion.dismiss" class="ml-auto text-slate-400 hover:text-white text-xs" aria-label="Dismiss suggestion">✕</button>
             </div>
         </div>
 
@@ -349,14 +349,14 @@
 
         <!-- MODALS -->
         <!-- Relic Modal -->
-        <div id="relic-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="relic-modal-title">
+        <div id="relic-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="relic-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-yellow-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="relic-modal-title" class="text-2xl text-yellow-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="modals.collection.title">Collection</span>
                         <button type="button" class="help-icon" data-help="collection" aria-label="Help for Collection">?</button>
                     </h2>
-                    <button onclick="document.getElementById('relic-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="relic-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div id="relic-grid" class="p-4 grid grid-cols-2 md:grid-cols-3 gap-4 overflow-y-auto">
                     <div class="empty-state col-span-full text-center py-8 text-slate-400">
@@ -369,14 +369,14 @@
         </div>
 
         <!-- Codex Modal -->
-        <div id="codex-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="codex-modal-title">
+        <div id="codex-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="codex-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-blue-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="codex-modal-title" class="text-2xl text-blue-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="modals.codex.title">Codex</span>
                         <button type="button" class="help-icon" data-help="codex" aria-label="Help for Codex">?</button>
                     </h2>
-                    <button onclick="document.getElementById('codex-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="codex-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div id="codex-grid" class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto">
                     <div class="empty-state col-span-full text-center py-8 text-slate-400">
@@ -389,28 +389,28 @@
         </div>
 
         <!-- Statistics Modal -->
-        <div id="statistics-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="statistics-modal-title">
+        <div id="statistics-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="statistics-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-emerald-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="statistics-modal-title" class="text-2xl text-emerald-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="statistics.title">Statistics</span>
                         <button type="button" class="help-icon" data-help="statistics" aria-label="Help for Statistics">?</button>
                     </h2>
-                    <button onclick="document.getElementById('statistics-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="statistics-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div id="statistics-grid" class="p-4 grid grid-cols-1 gap-2 overflow-y-auto"></div>
             </div>
         </div>
 
         <!-- Mining Modal -->
-        <div id="mining-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="mining-modal-title">
+        <div id="mining-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="mining-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-cyan-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="mining-modal-title" class="text-2xl text-cyan-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="mining.title">Mining</span>
                         <button type="button" class="help-icon" data-help="mining" aria-label="Help for Mining">?</button>
                     </h2>
-                    <button onclick="document.getElementById('mining-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="mining-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 bg-cyan-900/30 p-3 rounded border border-cyan-800 text-center">
@@ -423,14 +423,14 @@
         </div>
 
         <!-- Forge Modal -->
-        <div id="forge-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="forge-modal-title">
+        <div id="forge-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="forge-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-yellow-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="forge-modal-title" class="text-2xl text-yellow-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="forge.title">Relic Forge</span>
                         <button type="button" class="help-icon" data-help="forge" aria-label="Help for Forge">?</button>
                     </h2>
-                    <button onclick="document.getElementById('forge-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="forge-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="forge.desc">Upgrade, reroll, or fuse your relics using mining resources.</div>
@@ -440,7 +440,7 @@
         </div>
 
         <!-- Research Modal -->
-        <div id="research-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="research-modal-title">
+        <div id="research-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="research-modal-title">
             <div class="w-full max-w-4xl bg-slate-800 border border-purple-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="research-modal-title" class="text-2xl text-purple-400 font-bold uppercase flex items-center gap-1">
@@ -449,7 +449,7 @@
                     </h2>
                     <div class="flex items-center gap-4">
                         <span class="text-cyan-400">💎 <span id="research-crystals">0</span></span>
-                        <button onclick="document.getElementById('research-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                        <button data-action="modal.close" data-id="research-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                     </div>
                 </div>
                 <div class="p-4 overflow-y-auto">
@@ -466,14 +466,14 @@
         </div>
 
         <!-- Challenges Modal -->
-        <div id="challenges-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="challenges-modal-title">
+        <div id="challenges-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="challenges-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-red-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="challenges-modal-title" class="text-2xl text-red-500 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="modals.challenges.title">Hardcore Mode</span>
                         <button type="button" class="help-icon" data-help="challenges" aria-label="Help for Challenges">?</button>
                     </h2>
-                    <button onclick="document.getElementById('challenges-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="challenges-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <!-- Dread Mode Section -->
@@ -499,18 +499,18 @@
                     <h3 class="text-lg font-bold text-red-400 mb-2" data-i18n="modals.challenges.availableChallenges">Available Challenges</h3>
                     <div id="challenges-list" class="space-y-2"></div>
                     <div class="mt-4 text-center">
-                        <button onclick="game.challenges.cancelChallenge()" id="btn-cancel-challenge" class="hidden px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white text-sm rounded" data-i18n="modals.challenges.abandon">Abandon challenge</button>
+                        <button data-action="challenge.cancel" id="btn-cancel-challenge" class="hidden px-4 py-2 bg-slate-600 hover:bg-slate-500 text-white text-sm rounded" data-i18n="modals.challenges.abandon">Abandon challenge</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Mastery Modal -->
-        <div id="mastery-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="mastery-modal-title">
+        <div id="mastery-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="mastery-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-cyan-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="mastery-modal-title" class="text-2xl text-cyan-400 font-bold uppercase" data-i18n="modals.mastery.title">Mastery</h2>
-                    <button onclick="document.getElementById('mastery-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="mastery-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4">
                     <div class="text-center mb-4 text-white">
@@ -522,11 +522,11 @@
         </div>
 
         <!-- Achievements Modal -->
-        <div id="achieve-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="achieve-modal-title">
+        <div id="achieve-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="achieve-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-green-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="achieve-modal-title" class="text-2xl text-green-400 font-bold uppercase" data-i18n="modals.achievements.title">Achievements</h2>
-                    <button onclick="document.getElementById('achieve-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="achieve-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="grid grid-cols-2 gap-2 mb-6 text-sm text-slate-300 font-mono bg-black/20 p-2 rounded">
@@ -541,11 +541,11 @@
         </div>
 
         <!-- Settings Modal -->
-        <div id="settings-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+        <div id="settings-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
             <div class="bg-slate-800 border border-slate-500 p-8 rounded-2xl max-w-md w-full shadow-2xl">
                 <div class="flex justify-between items-center mb-6">
                     <h2 id="settings-modal-title" class="text-2xl text-white font-bold" data-i18n="modals.settings.title">Settings</h2>
-                    <button onclick="document.getElementById('settings-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="settings-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="space-y-4">
                     <!-- Language Selector -->
@@ -590,13 +590,13 @@
                         <textarea id="save-string" class="w-full h-24 bg-black/50 border border-slate-600 rounded p-2 text-xs text-slate-300 break-all" readonly aria-readonly="true" aria-label="Save data"></textarea>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="game.exportSave()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-sm font-bold" data-i18n="modals.settings.copy">COPY</button>
-                        <button onclick="document.getElementById('import-modal').classList.remove('hidden')" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-sm font-bold" data-i18n="modals.settings.import">IMPORT</button>
+                        <button data-action="settings.export" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-sm font-bold" data-i18n="modals.settings.copy">COPY</button>
+                        <button data-action="modal.open" data-id="import-modal" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-sm font-bold" data-i18n="modals.settings.import">IMPORT</button>
                     </div>
                     <hr class="border-slate-700 my-4">
                     <div class="flex gap-2">
-                        <button type="button" onclick="game.tutorial?.reset(); game.save(); game.tutorial?.check(); document.getElementById('settings-modal').classList.add('hidden')" class="flex-1 bg-blue-900 hover:bg-blue-700 text-blue-200 py-2 rounded text-sm font-bold border border-blue-700" data-i18n="modals.settings.restartTutorial">Restart Tutorial</button>
-                        <button type="button" onclick="game.confirmReset()" class="flex-1 bg-red-900 hover:bg-red-700 text-red-200 py-2 rounded text-sm font-bold border border-red-700" data-i18n="modals.settings.reset">RESET</button>
+                        <button type="button" data-action="settings.restartTutorial" class="flex-1 bg-blue-900 hover:bg-blue-700 text-blue-200 py-2 rounded text-sm font-bold border border-blue-700" data-i18n="modals.settings.restartTutorial">Restart Tutorial</button>
+                        <button type="button" data-action="settings.confirmReset" class="flex-1 bg-red-900 hover:bg-red-700 text-red-200 py-2 rounded text-sm font-bold border border-red-700" data-i18n="modals.settings.reset">RESET</button>
                     </div>
                     <!-- Keyboard Shortcuts Section -->
                     <hr class="border-slate-700 my-4">
@@ -634,31 +634,31 @@
         </div>
 
         <!-- Import Save Modal -->
-        <div id="import-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-[60] backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="import-modal-title">
+        <div id="import-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-[60] backdrop-blur-sm modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="import-modal-title">
             <div class="w-full max-w-md bg-slate-800 border border-purple-600 rounded-2xl shadow-2xl p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 id="import-modal-title" class="text-xl text-purple-400 font-bold" data-i18n="import.title">Import Save</h2>
-                    <button onclick="document.getElementById('import-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="import-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <p class="text-sm text-slate-400 mb-4" data-i18n="import.desc">Paste your save data below. This will overwrite your current progress.</p>
                 <textarea id="import-save-input" class="w-full h-32 bg-black/50 border border-slate-600 rounded p-3 text-sm text-slate-300 mb-4 focus:border-purple-500 focus:outline-none" placeholder="Paste save data here..." aria-label="Save data input"></textarea>
                 <div id="import-error" class="hidden text-red-400 text-sm mb-4"></div>
                 <div class="flex gap-3">
-                    <button onclick="document.getElementById('import-modal').classList.add('hidden')" class="flex-1 bg-slate-600 hover:bg-slate-500 text-white py-2 rounded font-bold" data-i18n="ui.cancel">Cancel</button>
-                    <button onclick="game.importSaveFromModal()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-2 rounded font-bold" data-i18n="import.confirm">Import</button>
+                    <button data-action="modal.close" data-id="import-modal" class="flex-1 bg-slate-600 hover:bg-slate-500 text-white py-2 rounded font-bold" data-i18n="ui.cancel">Cancel</button>
+                    <button data-action="import.confirm" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white py-2 rounded font-bold" data-i18n="import.confirm">Import</button>
                 </div>
             </div>
         </div>
 
         <!-- Production Modal -->
-        <div id="production-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="production-modal-title">
+        <div id="production-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="production-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-orange-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="production-modal-title" class="text-2xl text-orange-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="production.title">Production</span>
                         <button type="button" class="help-icon" data-help="production" aria-label="Help for Production">?</button>
                     </h2>
-                    <button onclick="document.getElementById('production-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="production-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="production.desc">Build passive resource generators to earn resources over time.</div>
@@ -672,7 +672,7 @@
         </div>
 
         <!-- Daily Quests Modal -->
-        <div id="quests-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="quests-modal-title">
+        <div id="quests-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="quests-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-emerald-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="quests-modal-title" class="text-2xl text-emerald-400 font-bold uppercase flex items-center gap-1">
@@ -682,7 +682,7 @@
                     <div class="flex items-center gap-4">
                         <span class="text-xs text-slate-400" data-i18n="quests.resetIn">Reset in</span>
                         <span id="quests-timer" class="text-emerald-300 font-mono text-sm">--:--:--</span>
-                        <button onclick="document.getElementById('quests-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                        <button data-action="modal.close" data-id="quests-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                     </div>
                 </div>
                 <div class="p-4 overflow-y-auto">
@@ -692,14 +692,14 @@
         </div>
 
         <!-- Prestige Modal -->
-        <div id="prestige-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="prestige-modal-title">
+        <div id="prestige-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="prestige-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-amber-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="prestige-modal-title" class="text-2xl text-amber-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="prestige.title">Prestige</span>
                         <button type="button" class="help-icon" data-help="prestige" aria-label="Help for Prestige">?</button>
                     </h2>
-                    <button onclick="document.getElementById('prestige-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="prestige-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-6 bg-amber-900/30 p-4 rounded border border-amber-800 text-center">
@@ -729,7 +729,7 @@
                             </div>
                             <div class="text-xs text-slate-500 mt-2" data-i18n="prestige.calculatorTip">Push to higher waves for more points!</div>
                         </div>
-                        <button onclick="if(game.prestige.canPrestige()) gameConfirm(game.t('prestige.confirmReset'), () => game.prestige.doPrestige())" id="btn-prestige" class="mt-4 px-8 py-3 bg-amber-600 hover:bg-amber-500 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-bold rounded text-lg transition" data-i18n="prestige.doPrestige">
+                        <button data-action="prestige.confirm" id="btn-prestige" class="mt-4 px-8 py-3 bg-amber-600 hover:bg-amber-500 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-bold rounded text-lg transition" data-i18n="prestige.doPrestige">
                             PRESTIGE NOW
                         </button>
                         <div class="text-xs text-slate-400 mt-2" data-i18n="prestige.requirement">Requires Wave 25+</div>
@@ -765,14 +765,14 @@
         </div>
 
         <!-- Chips Modal -->
-        <div id="chips-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="chips-modal-title">
+        <div id="chips-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="chips-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-pink-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="chips-modal-title" class="text-2xl text-pink-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="chips.title">Turret Chips</span>
                         <button type="button" class="help-icon" data-help="chips" aria-label="Help for Chips">?</button>
                     </h2>
-                    <button onclick="document.getElementById('chips-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="chips-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="chips.desc">Equip chips to turrets for bonus effects. Chips drop from bosses.</div>
@@ -801,14 +801,14 @@
         </div>
 
         <!-- Town Modal -->
-        <div id="town-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="town-modal-title">
+        <div id="town-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="town-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-teal-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="town-modal-title" class="text-2xl text-teal-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="town.title">Town</span>
                         <button type="button" class="help-icon" data-help="town" aria-label="Help for Town">?</button>
                     </h2>
-                    <button onclick="document.getElementById('town-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="town-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-6 bg-teal-900/30 p-4 rounded border border-teal-800 text-center">
@@ -843,14 +843,14 @@
         </div>
 
         <!-- School Modal -->
-        <div id="school-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="school-modal-title">
+        <div id="school-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="school-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-indigo-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="school-modal-title" class="text-2xl text-indigo-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="school.title">School</span>
                         <button type="button" class="help-icon" data-help="school" aria-label="Help for School">?</button>
                     </h2>
-                    <button onclick="document.getElementById('school-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="school-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="school.desc">Unlock and upgrade turret types. Costs crystals.</div>
@@ -863,7 +863,7 @@
         </div>
 
         <!-- Turret Upgrade Modal -->
-        <div id="turret-upgrade-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="turret-upgrade-modal-title">
+        <div id="turret-upgrade-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="turret-upgrade-modal-title">
             <div class="w-full max-w-md bg-slate-800 border border-cyan-600 rounded-2xl shadow-2xl flex flex-col">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="turret-upgrade-modal-title" class="text-xl text-cyan-400 font-bold uppercase">
@@ -880,14 +880,14 @@
         </div>
 
         <!-- Office Modal -->
-        <div id="office-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="office-modal-title">
+        <div id="office-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="office-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-lime-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="office-modal-title" class="text-2xl text-lime-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="office.title">Office</span>
                         <button type="button" class="help-icon" data-help="office" aria-label="Help for Office">?</button>
                     </h2>
-                    <button onclick="document.getElementById('office-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="office-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="office.desc">Activate temporary boosts using gems.</div>
@@ -906,14 +906,14 @@
         </div>
 
         <!-- Awakening Modal -->
-        <div id="awakening-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="awakening-modal-title">
+        <div id="awakening-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="awakening-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-fuchsia-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="awakening-modal-title" class="text-2xl text-fuchsia-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="awakening.title">Awakening</span>
                         <button type="button" class="help-icon" data-help="awakening" aria-label="Help for Awakening">?</button>
                     </h2>
-                    <button onclick="document.getElementById('awakening-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="awakening-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 bg-slate-700/50 p-2 rounded border border-slate-600 text-xs text-slate-400 text-center">
@@ -922,7 +922,7 @@
                     <div class="mb-6 bg-fuchsia-900/30 p-4 rounded border border-fuchsia-800 text-center">
                         <div id="awakening-status" class="text-xl font-bold text-white mb-2"></div>
                         <div id="awakening-requirement" class="text-sm text-slate-400"></div>
-                        <button id="btn-awaken" onclick="game.awakening.awaken(); game.renderAwakeningUI()" class="hidden mt-4 px-8 py-3 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold rounded text-lg transition" data-i18n="awakening.activate">
+                        <button id="btn-awaken" data-action="awakening.activate" class="hidden mt-4 px-8 py-3 bg-fuchsia-600 hover:bg-fuchsia-500 text-white font-bold rounded text-lg transition" data-i18n="awakening.activate">
                             AWAKEN
                         </button>
                     </div>
@@ -933,14 +933,14 @@
         </div>
 
         <!-- Turret Slots Modal -->
-        <div id="slots-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="slots-modal-title">
+        <div id="slots-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="slots-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-cyan-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="slots-modal-title" class="text-2xl text-cyan-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="slots.title">Turret Slot</span>
                         <button type="button" class="help-icon" data-help="turrets" aria-label="Help for Turrets">?</button>
                     </h2>
-                    <button onclick="document.getElementById('slots-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="slots-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="slots.desc">Select a turret to place in this slot.</div>
@@ -955,14 +955,14 @@
         </div>
 
         <!-- Game Modes Modal -->
-        <div id="modes-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="modes-modal-title">
+        <div id="modes-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="modes-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-violet-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="modes-modal-title" class="text-2xl text-violet-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="modes.title">Game Modes</span>
                         <button type="button" class="help-icon" data-help="modes" aria-label="Help for Game Modes">?</button>
                     </h2>
-                    <button onclick="document.getElementById('modes-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="modes-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 bg-violet-900/30 p-3 rounded border border-violet-800 text-center">
@@ -975,14 +975,14 @@
         </div>
 
         <!-- Campaign Modal -->
-        <div id="campaign-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="campaign-modal-title">
+        <div id="campaign-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="campaign-modal-title">
             <div class="w-full max-w-3xl bg-slate-800 border border-rose-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="campaign-modal-title" class="text-2xl text-rose-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="campaign.title">Campaign</span>
                         <button type="button" class="help-icon" data-help="campaign" aria-label="Help for Campaign">?</button>
                     </h2>
-                    <button onclick="document.getElementById('campaign-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="campaign-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div id="campaign-chapters" class="space-y-6">
@@ -997,14 +997,14 @@
         </div>
 
         <!-- Leaderboard Modal -->
-        <div id="leaderboard-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="leaderboard-modal-title">
+        <div id="leaderboard-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="leaderboard-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-sky-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="leaderboard-modal-title" class="text-2xl text-sky-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="leaderboard.title">Leaderboards</span>
                         <button type="button" class="help-icon" data-help="leaderboard" aria-label="Help for Leaderboards">?</button>
                     </h2>
-                    <button onclick="document.getElementById('leaderboard-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="leaderboard-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="flex gap-2 mb-4 flex-wrap justify-center items-center">
@@ -1023,13 +1023,13 @@
         </div>
 
         <!-- Presets Modal -->
-        <div id="presets-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="presets-modal-title">
+        <div id="presets-modal" class="hidden absolute inset-0 bg-black/90 flex flex-col items-center justify-center z-50 backdrop-blur-sm p-4 modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="presets-modal-title">
             <div class="w-full max-w-2xl bg-slate-800 border border-stone-600 rounded-2xl shadow-2xl flex flex-col max-h-[80vh]">
                 <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-900 rounded-t-2xl">
                     <h2 id="presets-modal-title" class="text-2xl text-stone-400 font-bold uppercase flex items-center gap-1">
                         <span data-i18n="presets.title">Build Presets</span>
                     </h2>
-                    <button onclick="document.getElementById('presets-modal').classList.add('hidden')" class="modal-close-btn" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="presets-modal" class="modal-close-btn" aria-label="Close">&times;</button>
                 </div>
                 <div class="p-4 overflow-y-auto">
                     <div class="mb-4 text-sm text-slate-300 text-center" data-i18n="presets.desc">Save and load your turret configurations.</div>
@@ -1057,7 +1057,7 @@
         </div>
 
         <!-- Ascension Modal -->
-        <div id="ascension-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="ascension-modal-title">
+        <div id="ascension-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="ascension-modal-title">
             <div class="w-[90%] h-[85%] max-w-5xl bg-slate-900 rounded-lg shadow-2xl border border-purple-700 overflow-hidden flex flex-col">
                 <div class="ascension-header">
                     <div>
@@ -1066,7 +1066,7 @@
                             <span data-i18n="ascension.currency">Ascension Points</span>: <span id="ascension-points-display">0</span>
                         </div>
                     </div>
-                    <button onclick="document.getElementById('ascension-modal').classList.add('hidden')" class="modal-close-btn text-slate-400 hover:text-white text-2xl" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="ascension-modal" class="modal-close-btn text-slate-400 hover:text-white text-2xl" aria-label="Close">&times;</button>
                 </div>
                 <div id="ascension-tree" class="ascension-tree-container">
                     <!-- Perk cards generated by JS -->
@@ -1075,14 +1075,14 @@
         </div>
 
         <!-- Cloud Save Modal -->
-        <div id="modal-cloud" class="hidden absolute inset-0 bg-black/80 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="cloud-modal-title">
+        <div id="modal-cloud" class="hidden absolute inset-0 bg-black/80 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="cloud-modal-title">
             <div class="cloud-modal-content">
                 <div class="cloud-modal-header">
                     <h2 id="cloud-modal-title" class="cloud-modal-title">
                         <span>☁️</span>
                         <span data-i18n="cloud.title">Cloud Save</span>
                     </h2>
-                    <button onclick="document.getElementById('modal-cloud').classList.add('hidden')" class="modal-close-btn text-slate-400 hover:text-white text-2xl" aria-label="Close">&times;</button>
+                    <button data-action="modal.close" data-id="modal-cloud" class="modal-close-btn text-slate-400 hover:text-white text-2xl" aria-label="Close">&times;</button>
                 </div>
 
                 <!-- Login View -->
@@ -1132,7 +1132,7 @@
         </div>
 
         <!-- Offline Modal -->
-        <div id="offline-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) this.classList.add('hidden')" role="dialog" aria-modal="true" aria-labelledby="offline-modal-title">
+        <div id="offline-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop"  role="dialog" aria-modal="true" aria-labelledby="offline-modal-title">
             <div class="bg-slate-800 border border-yellow-500 p-8 rounded-2xl max-w-md text-center shadow-2xl">
                 <h2 id="offline-modal-title" class="text-3xl text-yellow-400 font-bold mb-4" data-i18n="modals.offline.title">Welcome Back</h2>
                 <p class="text-slate-300 mb-2" data-i18n="modals.offline.subtitle">Offline Earnings</p>
@@ -1145,7 +1145,7 @@
                     <div class="text-sm text-purple-300"><span data-i18n="modals.offline.bonusApplied">Bonus applied</span>: <span id="offline-bonus-value" class="text-white font-bold">+0%</span></div>
                     <div class="text-xs text-slate-400 mt-1" data-i18n="modals.offline.bonusSource">From relics, production buildings, and upgrades</div>
                 </div>
-                <button onclick="document.getElementById('offline-modal').classList.add('hidden')" class="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded shadow-lg transition" data-i18n="modals.offline.collect">Collect</button>
+                <button data-action="modal.close" data-id="offline-modal" class="px-8 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded shadow-lg transition" data-i18n="modals.offline.collect">Collect</button>
             </div>
         </div>
 
@@ -1184,7 +1184,7 @@
                     </div>
                     <div id="meta-upgrade-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
-                <button onclick="game.manualRestart()" class="px-12 py-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded shadow transition text-2xl transform hover:scale-105" data-i18n="modals.gameOver.fight">FIGHT</button>
+                <button data-action="game.restart" class="px-12 py-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded shadow transition text-2xl transform hover:scale-105" data-i18n="modals.gameOver.fight">FIGHT</button>
             </div>
         </div>
 
@@ -1196,10 +1196,10 @@
         <!-- Speed & Auto Controls -->
         <div class="p-2 bg-slate-900 border-b border-slate-700 flex items-center justify-between gap-2">
             <div class="flex gap-1" id="lab-speed-controls">
-                <button onclick="game.setSpeed(1)" class="speed-btn-lab active" data-speed="1">1x</button>
-                <button onclick="game.setSpeed(3)" class="speed-btn-lab" data-speed="3">3x</button>
-                <button onclick="game.setSpeed(6)" class="speed-btn-lab" data-speed="6">6x</button>
-                <button onclick="game.setSpeed(10)" class="speed-btn-lab" data-speed="10">10x</button>
+                <button data-action="speed.set" data-value="1" class="speed-btn-lab active" data-speed="1">1x</button>
+                <button data-action="speed.set" data-value="3" class="speed-btn-lab" data-speed="3">3x</button>
+                <button data-action="speed.set" data-value="6" class="speed-btn-lab" data-speed="6">6x</button>
+                <button data-action="speed.set" data-value="10" class="speed-btn-lab" data-speed="10">10x</button>
             </div>
             <div class="flex gap-3 text-xs">
                 <label class="flex items-center gap-1 text-slate-400 hover:text-white cursor-pointer" data-i18n-title="hud.tooltips.autoRetry">
@@ -1215,16 +1215,16 @@
 
         <!-- PRIMARY TAB BAR -->
         <div class="flex border-b border-slate-700 bg-slate-900/50">
-            <button onclick="game.switchLabTab('upgrades')" class="lab-primary-tab active" data-tab="upgrades">
+            <button data-action="lab.switchTab" data-tab="upgrades" class="lab-primary-tab active" data-tab="upgrades">
                 <span aria-hidden="true">⚔️</span> <span data-i18n="lab.primaryTabs.upgrades">Upgrades</span>
             </button>
-            <button onclick="game.switchLabTab('stats')" class="lab-primary-tab" data-tab="stats">
+            <button data-action="lab.switchTab" data-tab="stats" class="lab-primary-tab" data-tab="stats">
                 <span aria-hidden="true">📊</span> <span data-i18n="lab.primaryTabs.stats">Stats</span>
             </button>
-            <button onclick="game.switchLabTab('passives')" class="lab-primary-tab" data-tab="passives">
+            <button data-action="lab.switchTab" data-tab="passives" class="lab-primary-tab" data-tab="passives">
                 <span aria-hidden="true">⭐</span> <span data-i18n="lab.primaryTabs.passives">Passives</span>
             </button>
-            <button onclick="game.switchLabTab('tech')" class="lab-primary-tab" data-tab="tech">
+            <button data-action="lab.switchTab" data-tab="tech" class="lab-primary-tab" data-tab="tech">
                 <span aria-hidden="true">🔬</span> <span data-i18n="lab.primaryTabs.tech">Tech</span>
             </button>
         </div>
@@ -1234,11 +1234,11 @@
             <div class="p-2 bg-slate-900/30 border-b border-slate-700">
                 <div class="flex items-center justify-between mb-2">
                     <div class="flex gap-1">
-                        <button id="tab-0" onclick="game.switchTab(0)" class="tab-btn active" data-i18n="lab.tabs.attack">Attack</button>
-                        <button id="tab-1" onclick="game.switchTab(1)" class="tab-btn" data-i18n="lab.tabs.defense">Defense</button>
-                        <button id="tab-2" onclick="game.switchTab(2)" class="tab-btn" data-i18n="lab.tabs.tech">Tech</button>
+                        <button id="tab-0" data-action="lab.switchUpgradeTab" data-tab="0" class="tab-btn active" data-i18n="lab.tabs.attack">Attack</button>
+                        <button id="tab-1" data-action="lab.switchUpgradeTab" data-tab="1" class="tab-btn" data-i18n="lab.tabs.defense">Defense</button>
+                        <button id="tab-2" data-action="lab.switchUpgradeTab" data-tab="2" class="tab-btn" data-i18n="lab.tabs.tech">Tech</button>
                     </div>
-                    <button id="btn-bulk-buy" onclick="game.toggleBulk()" class="text-xs font-bold bg-slate-700 px-2 py-1 rounded border border-slate-600 hover:border-cyan-400 transition">
+                    <button id="btn-bulk-buy" data-action="lab.toggleBulk" class="text-xs font-bold bg-slate-700 px-2 py-1 rounded border border-slate-600 hover:border-cyan-400 transition">
                         <span data-i18n="lab.bulkBuy">BUY</span>: x1
                     </button>
                 </div>
@@ -1270,13 +1270,13 @@
                 <div class="flex items-center gap-2">
                     <span class="text-cyan-400 font-bold text-sm">💎 <span id="lab-passives-crystals" class="text-white">0</span></span>
                 </div>
-                <button onclick="game.passives?.refundAll(); game.renderLabPassivesUI();" class="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded border border-slate-600" data-i18n="passives.refund">REFUND</button>
+                <button data-action="lab.refundPassives" class="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded border border-slate-600" data-i18n="passives.refund">REFUND</button>
             </div>
             <div class="lab-passives-tabs">
-                <button onclick="game.switchLabPassiveTab('offense')" class="lab-passive-tab active" data-tab="offense" data-i18n-title="passives.offense">⚔️</button>
-                <button onclick="game.switchLabPassiveTab('defense')" class="lab-passive-tab" data-tab="defense" data-i18n-title="passives.defense">🛡️</button>
-                <button onclick="game.switchLabPassiveTab('utility')" class="lab-passive-tab" data-tab="utility" data-i18n-title="passives.utility">⚡</button>
-                <button onclick="game.switchLabPassiveTab('resources')" class="lab-passive-tab" data-tab="resources" data-i18n-title="passives.resources">💰</button>
+                <button data-action="lab.switchPassiveTab" data-tab="offense" class="lab-passive-tab active" data-tab="offense" data-i18n-title="passives.offense">⚔️</button>
+                <button data-action="lab.switchPassiveTab" data-tab="defense" class="lab-passive-tab" data-tab="defense" data-i18n-title="passives.defense">🛡️</button>
+                <button data-action="lab.switchPassiveTab" data-tab="utility" class="lab-passive-tab" data-tab="utility" data-i18n-title="passives.utility">⚡</button>
+                <button data-action="lab.switchPassiveTab" data-tab="resources" class="lab-passive-tab" data-tab="resources" data-i18n-title="passives.resources">💰</button>
             </div>
             <div class="flex-grow overflow-y-auto">
                 <div id="lab-passives-grid" class="lab-passives-grid"></div>
@@ -1286,10 +1286,10 @@
         <!-- TECH CONTENT -->
         <div id="lab-content-tech" class="lab-content hidden flex-grow flex flex-col overflow-hidden">
             <div class="p-2 bg-slate-900/50 border-b border-slate-700 flex flex-wrap gap-1 justify-center">
-                <button id="lab-tech-sentry" onclick="game.selectTechSpecial('sentry')" class="text-xs px-2 py-1 bg-cyan-900/50 border border-cyan-700 rounded text-cyan-400 hover:bg-cyan-800/50" data-i18n-title="tech.sentry.tooltip">🔫 SENTRY</button>
-                <button id="lab-tech-rocket" onclick="game.selectTechSpecial('rocket')" class="text-xs px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-slate-500 opacity-60 cursor-not-allowed" data-i18n-title="tech.unlockHint">🔒 ROCKET</button>
-                <button id="lab-tech-laser" onclick="game.selectTechSpecial('laser')" class="text-xs px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-slate-500 opacity-60 cursor-not-allowed" data-i18n-title="tech.unlockHint">🔒 LASER</button>
-                <button id="lab-tech-hallow" onclick="game.selectTechSpecial('hallow')" class="text-xs px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-slate-500 opacity-60 cursor-not-allowed" data-i18n-title="tech.unlockHint">🔒 HALLOW</button>
+                <button id="lab-tech-sentry" data-action="lab.selectTech" data-id="sentry" class="text-xs px-2 py-1 bg-cyan-900/50 border border-cyan-700 rounded text-cyan-400 hover:bg-cyan-800/50" data-i18n-title="tech.sentry.tooltip">🔫 SENTRY</button>
+                <button id="lab-tech-rocket" data-action="lab.selectTech" data-id="rocket" class="text-xs px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-slate-500 opacity-60 cursor-not-allowed" data-i18n-title="tech.unlockHint">🔒 ROCKET</button>
+                <button id="lab-tech-laser" data-action="lab.selectTech" data-id="laser" class="text-xs px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-slate-500 opacity-60 cursor-not-allowed" data-i18n-title="tech.unlockHint">🔒 LASER</button>
+                <button id="lab-tech-hallow" data-action="lab.selectTech" data-id="hallow" class="text-xs px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-slate-500 opacity-60 cursor-not-allowed" data-i18n-title="tech.unlockHint">🔒 HALLOW</button>
             </div>
             <div class="flex-grow overflow-y-auto p-3">
                 <div id="lab-tech-tree" class="lab-tech-tree"></div>
@@ -1299,7 +1299,7 @@
 
         <!-- Lab Footer -->
         <div class="p-2 bg-slate-900 border-t border-slate-700">
-            <div id="lab-footer" onclick="game.triggerDevSecret()" class="text-center text-xs text-slate-500 cursor-pointer select-none" data-i18n="lab.footer">Click on Runes for bonuses!</div>
+            <div id="lab-footer" data-action="dev.triggerSecret" class="text-center text-xs text-slate-500 cursor-pointer select-none" data-i18n="lab.footer">Click on Runes for bonuses!</div>
         </div>
     </aside>
 
@@ -1307,13 +1307,13 @@
         <div id="toast-container" class="fixed bottom-20 left-1/2 -translate-x-1/2 flex flex-col gap-2 z-50 pointer-events-none" role="status" aria-live="polite" aria-atomic="false"></div>
 
         <!-- Feature Introduction Modal -->
-        <div id="feature-intro-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop" onclick="if(event.target === this) game.closeFeatureIntro()">
+        <div id="feature-intro-modal" class="hidden absolute inset-0 bg-black/90 flex items-center justify-center z-50 backdrop-blur-sm modal-backdrop">
             <div class="w-full max-w-md bg-slate-800 border border-cyan-600 rounded-2xl shadow-2xl p-6 text-center">
                 <div id="feature-intro-icon" class="text-6xl mb-4"></div>
                 <h2 id="feature-intro-title" class="text-2xl text-cyan-400 font-bold mb-2"></h2>
                 <p id="feature-intro-desc" class="text-slate-300 mb-4"></p>
                 <div id="feature-intro-tips" class="bg-slate-900 rounded p-3 text-sm text-slate-400 mb-4 text-left"></div>
-                <button onclick="game.closeFeatureIntro()" class="px-6 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded" data-i18n="tutorial.understood">Got it!</button>
+                <button data-action="feature.closeIntro" class="px-6 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold rounded" data-i18n="tutorial.understood">Got it!</button>
             </div>
         </div>
 

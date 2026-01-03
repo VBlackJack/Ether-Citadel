@@ -5,7 +5,7 @@
 
 import { MathUtils } from '../config.js';
 import { Particle } from './Particle.js';
-import { getProjectilePool } from '../utils/ObjectPool.js';
+import { getProjectilePool, registerProjectileClass } from '../utils/ObjectPool.js';
 
 export class Projectile {
     constructor(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props) {
@@ -169,10 +169,12 @@ export class Projectile {
     }
 
     /**
-     * Create a projectile (pool-friendly factory)
+     * Create a projectile using the object pool
      */
     static create(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props) {
-        return new Projectile(x, y, target, damage, speed, color, tier, isMulti, isCrit, isSuperCrit, effects, props);
+        const pool = getProjectilePool();
+        const config = { damage, speed, color, tier, isMulti, isCrit, isSuperCrit };
+        return pool.acquire(x, y, target, config, effects, props);
     }
 
     /**
@@ -189,3 +191,6 @@ export class Projectile {
         getProjectilePool().release(projectile);
     }
 }
+
+// Register Projectile class with the pool for proper instance creation
+registerProjectileClass(Projectile);

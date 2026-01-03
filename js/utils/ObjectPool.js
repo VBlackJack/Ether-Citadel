@@ -169,39 +169,73 @@ export function getFloatingTextPool() {
 
 /**
  * Projectile pool singleton
+ * Imports Projectile dynamically to avoid circular dependency
  */
 let projectilePool = null;
+let ProjectileClass = null;
 
 export function getProjectilePool() {
     if (!projectilePool) {
         projectilePool = new ObjectPool(
-            () => ({
-                x: 0, y: 0, target: null, active: false,
-                damage: 0, speed: 0, color: '#fff', tier: 1,
-                isMulti: false, isCrit: false, isSuperCrit: false,
-                effects: {}, bounceCount: 0, blastRadius: 0,
-                leech: 0, stasisChance: 0
-            }),
+            () => {
+                // Lazy load Projectile class to avoid circular dependency
+                if (!ProjectileClass) {
+                    // Return a placeholder that will be replaced on first reset
+                    return {
+                        x: 0, y: 0, target: null, active: false, dead: false,
+                        damage: 0, speed: 0, color: '#fff', tier: 1,
+                        isMulti: false, isCrit: false, isSuperCrit: false,
+                        effects: {}, bounceCount: 0, blastRadius: 0,
+                        leech: 0, stasisChance: 0,
+                        _isPlaceholder: true
+                    };
+                }
+                return new ProjectileClass(0, 0, null, 0, 0, '#fff', 1, false, false, false, {}, {});
+            },
             (p, x, y, target, config, effects = {}, props = {}) => {
-                p.x = x;
-                p.y = y;
-                p.target = target;
-                p.active = true;
-                p.damage = config.damage;
-                p.speed = config.speed;
-                p.color = config.color;
-                p.tier = config.tier;
-                p.isMulti = config.isMulti || false;
-                p.isCrit = config.isCrit || false;
-                p.isSuperCrit = config.isSuperCrit || false;
-                p.effects = effects;
-                p.bounceCount = props.bounce || 0;
-                p.blastRadius = props.blast || 0;
-                p.leech = props.leech || 0;
-                p.stasisChance = props.stasis || 0;
+                // If placeholder, we can't call reset - just set properties
+                if (p._isPlaceholder) {
+                    p.x = x;
+                    p.y = y;
+                    p.target = target;
+                    p.active = true;
+                    p.dead = false;
+                    p.damage = config.damage;
+                    p.speed = config.speed;
+                    p.color = config.color;
+                    p.tier = config.tier;
+                    p.isMulti = config.isMulti || false;
+                    p.isCrit = config.isCrit || false;
+                    p.isSuperCrit = config.isSuperCrit || false;
+                    p.effects = effects;
+                    p.bounceCount = props.bounce || 0;
+                    p.blastRadius = props.blast || 0;
+                    p.leech = props.leech || 0;
+                    p.stasisChance = props.stasis || 0;
+                } else if (p.reset) {
+                    p.reset(x, y, target, config.damage, config.speed, config.color,
+                            config.tier, config.isMulti, config.isCrit, config.isSuperCrit,
+                            effects, props);
+                }
             },
             100
         );
     }
     return projectilePool;
+}
+
+/**
+ * Register the Projectile class for proper pooling
+ */
+export function registerProjectileClass(cls) {
+    ProjectileClass = cls;
+    // Replace any placeholders in the pool with proper instances
+    if (projectilePool) {
+        projectilePool.pool = projectilePool.pool.map(p => {
+            if (p._isPlaceholder) {
+                return new cls(0, 0, null, 0, 0, '#fff', 1, false, false, false, {}, {});
+            }
+            return p;
+        });
+    }
 }
