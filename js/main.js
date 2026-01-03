@@ -778,12 +778,20 @@ class Game {
     }
 
     // Stat getter methods for UI rendering
+    /**
+     * Get stat level bonus multiplier (2% per level)
+     */
+    getStatBonus(statId) {
+        const level = this.statLevels?.[statId] || 0;
+        return 1 + (level * 0.02);
+    }
+
     getDamage() {
-        return this.currentDamage || 10;
+        return (this.currentDamage || 10) * this.getStatBonus('damage');
     }
 
     getCritMult() {
-        return this.currentCrit?.mult || 1.5;
+        return (this.currentCrit?.mult || 1.5) * this.getStatBonus('critDamage');
     }
 
     getCritChance() {
@@ -791,23 +799,24 @@ class Game {
     }
 
     getFireRate() {
-        return this.currentFireRate || 1000;
+        // Lower is better for fire rate, so we divide
+        return (this.currentFireRate || 1000) / this.getStatBonus('fireRate');
     }
 
     getRange() {
-        return this.currentRange || 150;
+        return (this.currentRange || 150) * this.getStatBonus('range');
     }
 
     getBlastRadius() {
-        return this.currentBlast || 0;
+        return (this.currentBlast || 0) * this.getStatBonus('aoe');
     }
 
     getMiningSpeedMult() {
-        return this.miningSpeedMult || 1;
+        return (this.miningSpeedMult || 1) * this.getStatBonus('mining');
     }
 
     getMaxHealth() {
-        return this.castle?.maxHp || 100;
+        return (this.castle?.maxHp || 100) * this.getStatBonus('totalHealth');
     }
 
     getCurrentDPS() {
