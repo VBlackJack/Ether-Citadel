@@ -2569,17 +2569,21 @@ select:focus-visible {
         right: calc(25% + 16px) !important;
     }
 
-    /* Hide menu toggle on desktop - menus always visible */
-    #btn-toggle-menu {
-        display: none !important;
-    }
-
     /* Menu groups always visible on desktop, override .collapsed */
     #menu-groups,
     #menu-groups.collapsed {
         display: flex !important;
+        flex-direction: column;
         max-height: calc(100vh - 120px);
         overflow-y: auto;
+        opacity: 1 !important;
+        transform: none !important;
+        pointer-events: auto !important;
+    }
+
+    /* Hide menu toggle on desktop - menus always visible */
+    #btn-toggle-menu {
+        display: none !important;
     }
 }
 
