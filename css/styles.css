@@ -2595,6 +2595,15 @@ select:focus-visible {
 
     #menu-container {
         right: 8px !important;
+        z-index: 40 !important;
+    }
+
+    /* Ensure hamburger button is visible on mobile */
+    #btn-toggle-menu {
+        display: flex !important;
+        z-index: 41;
+        background: #0e7490 !important;
+        border: 2px solid #22d3ee !important;
     }
 }
 
